@@ -26,7 +26,8 @@ extension UserDefaults: FlagValueSource {
         } else if Value.self == String.self {
             return self.string(forKey: key) as? Value
         } else if Value.self == URL.self {
-            return self.url(forKey: key) as? Value
+            guard let urlString = self.string(forKey: key), let url = URL(string: urlString) else { return nil }
+            return url as? Value
         } else if Value.self == Double.self {
             return self.double(forKey: key) as? Value
         } else if Value.self == Float.self {
@@ -76,7 +77,7 @@ extension UserDefaults: FlagValueSource {
         } else if let value = value as? String {
             self.set(value, forKey: key)
         } else if let value = value as? URL {
-            self.set(value, forKey: key)
+            self.set(value.absoluteString, forKey: key)
         } else if let value = value as? Double {
             self.set(value, forKey: key)
         } else if let value = value as? Float {

@@ -70,7 +70,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
     func testDecodeURL () {
         let value = URL(string: "https://google.com/")!
 
-        self.defaults.set(value, forKey: #function)
+        self.defaults.set(value.absoluteString, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 

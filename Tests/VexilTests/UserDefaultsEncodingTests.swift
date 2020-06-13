@@ -75,7 +75,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
             let value = URL(string: "https://google.com/")!
 
             try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.url(forKey: #function), value)
+            XCTAssertEqual(self.defaults.string(forKey: #function), value.absoluteString)
         }
     }
 
