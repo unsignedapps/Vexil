@@ -16,12 +16,12 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     override func setUp () {
         super.setUp()
-        self.defaults = UserDefaults(suiteName: self.className)
+        self.defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")
     }
 
     override func tearDown () {
         super.tearDown()
-        self.defaults.removePersistentDomain(forName: self.className)
+        self.defaults.removePersistentDomain(forName: "UserDefaultsEncodingTests")
     }
 
 
