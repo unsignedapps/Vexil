@@ -8,7 +8,7 @@ on:
     
 jobs:
   test-macos:
-    name: Test macOS
+    name: macOS
     runs-on: macOS-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
           DEVELOPER_DIR: /Applications/Xcode_11.5.app/Contents/Developer
 
   test-linux:
-    name: Test Linux
+    name: Linux
     runs-on: ubuntu-latest
 
     container:
