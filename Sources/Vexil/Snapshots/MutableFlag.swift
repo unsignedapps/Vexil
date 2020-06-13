@@ -5,8 +5,6 @@
 //  Created by Rob Amos on 9/6/20.
 //
 
-import Combine
-
 public class MutableFlag<Value> where Value: FlagValue {
 
     // MARK: - Properties

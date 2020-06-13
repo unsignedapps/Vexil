@@ -16,12 +16,12 @@ final class UserDefaultsDecodingTests: XCTestCase {
 
     override func setUp () {
         super.setUp()
-        self.defaults = UserDefaults(suiteName: self.className)
+        self.defaults = UserDefaults(suiteName: "UserDefaultsDecodingTests")
     }
 
     override func tearDown () {
         super.tearDown()
-        self.defaults.removePersistentDomain(forName: self.className)
+        self.defaults.removePersistentDomain(forName: "UserDefaultsDecodingTests")
     }
 
 
@@ -70,7 +70,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
     func testDecodeURL () {
         let value = URL(string: "https://google.com/")!
 
-        self.defaults.set(value, forKey: #function)
+        self.defaults.set(value.absoluteString, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
@@ -196,8 +196,10 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let value =
         """
             {
-                "key1": "value1",
-                "key2": "value2"
+                "wrapped": {
+                    "key1": "value1",
+                    "key2": "value2"
+                }
             }
         """
 
@@ -214,8 +216,10 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let value =
         """
             {
-                "key1": 123,
-                "key2": -987
+                "wrapped": {
+                    "key1": 123,
+                    "key2": -987
+                }
             }
         """
 
@@ -244,9 +248,11 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let input =
         """
             {
-                "property1": "value1",
-                "property2": 123,
-                "property3": "🤯"
+                "wrapped": {
+                    "property1": "value1",
+                    "property2": 123,
+                    "property3": "🤯"
+                }
             }
         """
 

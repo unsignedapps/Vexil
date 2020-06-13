@@ -5,7 +5,10 @@
 //  Created by Rob Amos on 28/5/20.
 //
 
+#if !os(Linux)
 import Combine
+#endif
+
 import Foundation
 
 // swiftlint:disable cyclomatic_complexity function_body_length
@@ -23,7 +26,8 @@ extension UserDefaults: FlagValueSource {
         } else if Value.self == String.self {
             return self.string(forKey: key) as? Value
         } else if Value.self == URL.self {
-            return self.url(forKey: key) as? Value
+            guard let urlString = self.string(forKey: key), let url = URL(string: urlString) else { return nil }
+            return url as? Value
         } else if Value.self == Double.self {
             return self.double(forKey: key) as? Value
         } else if Value.self == Float.self {
@@ -56,7 +60,7 @@ extension UserDefaults: FlagValueSource {
         // dictionaries we decode if we can't cast
         } else if let data = self.data(forKey: key) {
             let decoder = JSONDecoder()
-            return try? decoder.decode(Value.self, from: data)
+            return (try? decoder.decode(Wrapper<Value>.self, from: data))?.wrapped
         }
 
         return nil
@@ -73,7 +77,7 @@ extension UserDefaults: FlagValueSource {
         } else if let value = value as? String {
             self.set(value, forKey: key)
         } else if let value = value as? URL {
-            self.set(value, forKey: key)
+            self.set(value.absoluteString, forKey: key)
         } else if let value = value as? Double {
             self.set(value, forKey: key)
         } else if let value = value as? Float {
@@ -107,13 +111,25 @@ extension UserDefaults: FlagValueSource {
         } else {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .sortedKeys
-            self.set(try encoder.encode(value), forKey: key)
+            self.set(try encoder.encode(Wrapper(wrapped: value)), forKey: key)
         }
     }
+
+    #if !os(Linux)
 
     public var valuesDidChange: AnyPublisher<Void, Never>? {
         return NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .map { _ in () }
             .eraseToAnyPublisher()
     }
+
+    #endif
+}
+
+
+// MARK: - Encoding Wrapper
+
+// Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
+fileprivate struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+    var wrapped: Wrapped
 }

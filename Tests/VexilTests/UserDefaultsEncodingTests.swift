@@ -16,12 +16,12 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     override func setUp () {
         super.setUp()
-        self.defaults = UserDefaults(suiteName: self.className)
+        self.defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")
     }
 
     override func tearDown () {
         super.tearDown()
-        self.defaults.removePersistentDomain(forName: self.className)
+        self.defaults.removePersistentDomain(forName: "UserDefaultsEncodingTests")
     }
 
 
@@ -75,7 +75,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
             let value = URL(string: "https://google.com/")!
 
             try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.url(forKey: #function), value)
+            XCTAssertEqual(self.defaults.string(forKey: #function), value.absoluteString)
         }
     }
 
@@ -253,7 +253,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         let input = MyStruct()
 
         // manually encoding into json
-        let expected = Data(#"{"property1":"value1","property2":123,"property3":"🤯"}"#.utf8)
+        let expected = Data(#"{"wrapped":{"property1":"value1","property2":123,"property3":"🤯"}}"#.utf8)
 
         AssertNoThrow {
             try self.defaults.setFlagValue(input, key: #function)

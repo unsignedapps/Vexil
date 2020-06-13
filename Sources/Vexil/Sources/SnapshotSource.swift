@@ -5,7 +5,10 @@
 //  Created by Rob Amos on 11/6/20.
 //
 
+#if !os(Linux)
 import Combine
+#endif
+
 import Foundation
 
 class SnapshotSource<RootGroup>: FlagValueSource where RootGroup: FlagContainer {
@@ -54,6 +57,8 @@ class SnapshotSource<RootGroup>: FlagValueSource where RootGroup: FlagContainer 
 
     // MARK: - Real Time Flag Values
 
+    #if !os(Linux)
+
     lazy var latestChanges = PassthroughSubject<Void, Never>()
     var valuesDidChange: AnyPublisher<Void, Never>? {
         return self.latestChanges.eraseToAnyPublisher()
@@ -77,4 +82,6 @@ class SnapshotSource<RootGroup>: FlagValueSource where RootGroup: FlagContainer 
             }
             .store(in: &self.cancellables)
     }
+
+    #endif
 }
