@@ -196,8 +196,10 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let value =
         """
             {
-                "key1": "value1",
-                "key2": "value2"
+                "wrapped": {
+                    "key1": "value1",
+                    "key2": "value2"
+                }
             }
         """
 
@@ -214,8 +216,10 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let value =
         """
             {
-                "key1": 123,
-                "key2": -987
+                "wrapped": {
+                    "key1": 123,
+                    "key2": -987
+                }
             }
         """
 
@@ -244,9 +248,11 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let input =
         """
             {
-                "property1": "value1",
-                "property2": 123,
-                "property3": "🤯"
+                "wrapped": {
+                    "property1": "value1",
+                    "property2": 123,
+                    "property3": "🤯"
+                }
             }
         """
 

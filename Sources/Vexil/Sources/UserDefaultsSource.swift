@@ -60,7 +60,7 @@ extension UserDefaults: FlagValueSource {
         // dictionaries we decode if we can't cast
         } else if let data = self.data(forKey: key) {
             let decoder = JSONDecoder()
-            return try? decoder.decode(Value.self, from: data)
+            return (try? decoder.decode(Wrapper<Value>.self, from: data))?.wrapped
         }
 
         return nil
@@ -111,7 +111,7 @@ extension UserDefaults: FlagValueSource {
         } else {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .sortedKeys
-            self.set(try encoder.encode(value), forKey: key)
+            self.set(try encoder.encode(Wrapper(wrapped: value)), forKey: key)
         }
     }
 
@@ -124,4 +124,12 @@ extension UserDefaults: FlagValueSource {
     }
 
     #endif
+}
+
+
+// MARK: - Encoding Wrapper
+
+// Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
+fileprivate struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+    var wrapped: Wrapped
 }

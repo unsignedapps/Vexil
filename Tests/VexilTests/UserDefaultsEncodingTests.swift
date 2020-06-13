@@ -253,7 +253,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         let input = MyStruct()
 
         // manually encoding into json
-        let expected = Data(#"{"property1":"value1","property2":123,"property3":"🤯"}"#.utf8)
+        let expected = Data(#"{"wrapped":{"property1":"value1","property2":123,"property3":"🤯"}}"#.utf8)
 
         AssertNoThrow {
             try self.defaults.setFlagValue(input, key: #function)
