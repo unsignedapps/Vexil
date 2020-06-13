@@ -3,8 +3,14 @@ name: Tests
 on:
   push:
     branches: [ master ]
+    paths:
+      - '.github/workflows/tests.yml'
+      - '**/*.swift'
   pull_request:
     branches: [ master ]
+    paths:
+      - '.github/workflows/tests.yml'
+      - '**/*.swift'
     
 jobs:
   test-macos:
