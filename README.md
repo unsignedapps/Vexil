@@ -1,10 +1,11 @@
-![Vexil Logo][vexil-logo]
+![Vexil][vexil-logo]
 
-# Vexil
+<p align="center">Vexil (named for <a href="https://en.wikipedia.org/wiki/Vexillology">Vexillology</a>) is a Swift package for managing feature flags <br />(also called feature toggles) in a flexible, multi-provider way.</p>
 
-Vexil (named for [Vexillology][vexillology]) is a Swift package for managing feature flags (or feature toggles) in a flexible, multi-provider way.
-
-![CI][ci-badge] [![SonarCloud][sonarcloud-badge]][sonarcloud-dashboard]
+<p align="center">
+	<img src="https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg">
+	<a href="https://sonarcloud.io/dashboard?id=unsignedapps_Vexil"><img src="https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status"></a>
+</p>
 
 ## Features
 
@@ -304,10 +305,6 @@ We welcome all contributions! Please read the [Contribution Guide](CONTRIBUTING.
 Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
 [vexil-logo]: .github/vexil.png
-[ci-badge]: https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg
-[sonarcloud-badge]: https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status
-[sonarcloud-dashboard]: https://sonarcloud.io/dashboard?id=unsignedapps_Vexil
-[vexillology]: https://en.wikipedia.org/wiki/Vexillology
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser
 [vexil-cli]: https://github.com/unsignedapps/Vexil-cli
 [app-groups]: https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_application-groups
