@@ -301,7 +301,7 @@ We welcome all contributions! Please read the [Contribution Guide](CONTRIBUTING.
 
 Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
-[ci-badge]: https://github.com/unsignedapps/Vexil/workflows/CI/badge.svg
+[ci-badge]: https://github.com/unsignedapps/Vexil/workflows/Unit%Tests/badge.svg
 [vexillology]: https://en.wikipedia.org/wiki/Vexillology
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser
 [vexil-cli]: https://github.com/unsignedapps/Vexil-cli
