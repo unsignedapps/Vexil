@@ -1,3 +1,5 @@
+![Vexil Logo][vexil-logo]
+
 # Vexil
 
 Vexil (named for [Vexillology][vexillology]) is a Swift package for managing feature flags (or feature toggles) in a flexible, multi-provider way.
@@ -301,6 +303,7 @@ We welcome all contributions! Please read the [Contribution Guide](CONTRIBUTING.
 
 Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
+[vexil-logo]: .github/vexil.png
 [ci-badge]: https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg
 [sonarcloud-badge]: https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status
 [sonarcloud-dashboard]: https://sonarcloud.io/dashboard?id=unsignedapps_Vexil
