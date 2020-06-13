@@ -5,7 +5,10 @@
 //  Created by Rob Amos on 28/5/20.
 //
 
+#if !os(Linux)
 import Combine
+#endif
+
 import Foundation
 
 @dynamicMemberLookup
@@ -51,11 +54,23 @@ public struct Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Real Time Flag Changes
 
-    var valuesDidChange = PassthroughSubject<Void, Never>()
+    var valuesDidChange = SnapshotValueChanged()
+
 }
+
+#if !os(Linux)
 
 typealias SnapshotValueChanged = PassthroughSubject<Void, Never>
 
+#else
+
+typealias SnapshotValueChanged = NotificationSink
+
+struct NotificationSink {
+    func send () {}
+}
+
+#endif
 
 // MARK: - Identifiable and Equatable Conformance
 

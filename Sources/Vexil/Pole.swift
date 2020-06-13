@@ -5,7 +5,10 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
+#if !os(Linux)
 import Combine
+#endif
+
 import Foundation
 
 @dynamicMemberLookup
@@ -20,9 +23,13 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     public var sources: [FlagValueSource] {
         didSet {
+            #if !os(Linux)
+
             if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
                 self.setupSnapshotPublishing()
             }
+
+            #endif
         }
     }
 
@@ -41,9 +48,13 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         self.sources = sources ?? Self.defaultSources
         self.decorateRootGroup()
 
+        #if !os(Linux)
+
         if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
             self.setupSnapshotPublishing()
         }
+
+        #endif
     }
 
 
@@ -74,6 +85,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Real Time Changes
 
+    #if !os(Linux)
+
     private lazy var latestSnapshot = PassthroughSubject<Snapshot<RootGroup>, Never>()
 
     public var publisher: AnyPublisher<Snapshot<RootGroup>, Never> {
@@ -99,6 +112,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             .store(in: &self.cancellables)
     }
 
+    #endif
 
     // MARK: - Snapshots
 

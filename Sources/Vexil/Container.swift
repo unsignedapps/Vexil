@@ -5,7 +5,6 @@
 //  Created by Rob Amos on 28/5/20.
 //
 
-import Combine
 import Foundation
 
 public protocol FlagContainer {

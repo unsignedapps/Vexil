@@ -5,7 +5,10 @@
 //  Created by Rob Amos on 28/5/20.
 //
 
+#if !os(Linux)
 import Combine
+#endif
+
 import Foundation
 
 // swiftlint:disable cyclomatic_complexity function_body_length
@@ -111,9 +114,13 @@ extension UserDefaults: FlagValueSource {
         }
     }
 
+    #if !os(Linux)
+
     public var valuesDidChange: AnyPublisher<Void, Never>? {
         return NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .map { _ in () }
             .eraseToAnyPublisher()
     }
+
+    #endif
 }
