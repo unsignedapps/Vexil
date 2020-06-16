@@ -1,0 +1,24 @@
+name: Create XCFramework
+
+# Create XCFramework when a version is tagged
+on:
+  push:
+    tags:
+      - '*'
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  create_xcframework:
+    name: Create XCFramework
+    runs-on: macos-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Create XCFramework
+        uses: unsignedapps/swift-create-xcframework@v1
+
+
