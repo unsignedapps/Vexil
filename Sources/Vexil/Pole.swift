@@ -26,7 +26,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             #if !os(Linux)
 
             if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-                self.setupSnapshotPublishing()
+                self.setupSnapshotPublishing(sendImmediately: true)
             }
 
             #endif
@@ -51,7 +51,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         #if !os(Linux)
 
         if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-            self.setupSnapshotPublishing()
+            self.setupSnapshotPublishing(sendImmediately: false)
         }
 
         #endif
@@ -95,7 +95,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     private lazy var cancellables = Set<AnyCancellable>()
 
-    private func setupSnapshotPublishing () {
+    private func setupSnapshotPublishing (sendImmediately: Bool) {
 
         // cancel our existing one
         self.cancellables.forEach { $0.cancel() }
@@ -110,6 +110,10 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
                 self.latestSnapshot.send(self.snapshot())
             }
             .store(in: &self.cancellables)
+
+        if sendImmediately {
+            self.latestSnapshot.send(self.snapshot())
+        }
     }
 
     #endif
@@ -124,18 +128,16 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         return Snapshot(flagPole: self, copyCurrentFlagValues: false)
     }
 
-    private lazy var snapshotSource: SnapshotSource<RootGroup> = {
-        let source = SnapshotSource<RootGroup>()
-        self.sources.insert(source, at: 0)
-        return source
-    }()
+    public func insert (snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
+        self.sources.insert(snapshot, at: index)
 
-    public func apply (snapshot: Snapshot<RootGroup>) {
-        self.snapshotSource.add(snapshot: snapshot)
+    }
+    public func append (snapshot: Snapshot<RootGroup>) {
+        self.sources.append(snapshot)
     }
 
     public func remove (snapshot: Snapshot<RootGroup>) {
-        self.snapshotSource.remove(snapshot: snapshot)
+        self.sources.removeAll(where: { ($0 as? Snapshot<RootGroup>) == snapshot })
     }
 
 
