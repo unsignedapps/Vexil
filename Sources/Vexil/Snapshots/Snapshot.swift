@@ -12,7 +12,7 @@ import Combine
 import Foundation
 
 @dynamicMemberLookup
-public struct Snapshot<RootGroup> where RootGroup: FlagContainer {
+public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer {
 
     public let id = UUID()
     private var _rootGroup: MutableFlagGroup<RootGroup, RootGroup>
@@ -42,13 +42,20 @@ public struct Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    internal func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
+    internal func allFlags () -> [AnyMutableFlag] {
+        return self._rootGroup.allFlags()
+    }
+
+
+    // MARK: - FlagValueSource Conformance
+
+    public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { return nil }
         return flag.value
     }
 
-    internal func allFlags () -> [AnyMutableFlag] {
-        return self._rootGroup.allFlags()
+    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value : FlagValue {
+        assertionFailure("Snapshots cannot be mutated by applying other snapshots")
     }
 
 
