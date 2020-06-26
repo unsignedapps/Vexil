@@ -35,7 +35,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     public static var defaultSources: [FlagValueSource] {
         return [
-            UserDefaults.standard
+            UserDefaults.standardx
         ]
     }
 
