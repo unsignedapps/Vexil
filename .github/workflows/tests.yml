@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Build and Test
-        run: swift test
+        run: swift test | .github/convert-errors-github-annotations.sh
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.5.app/Contents/Developer
 
@@ -36,4 +36,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Build and Test
-        run: swift test --enable-test-discovery
+        run: swift test --enable-test-discovery | .github/convert-errors-github-annotations.sh
