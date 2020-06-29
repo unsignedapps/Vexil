@@ -22,13 +22,3 @@ struct BooleanFlagControl: View {
         Toggle(self.label, isOn: self.$flagValue)
     }
 }
-
-
-// MARK: - Flag Value Control Support
-
-extension UnfurledFlag: FlagValueControl where Value == Bool {
-    typealias BindingValue = Bool
-    func control<RootGroup>(label: String, flag: UnfurledFlag<Bool, RootGroup>, manager: FlagValueManager<RootGroup>) -> AnyView where RootGroup : FlagContainer {
-        return AnyView(BooleanFlagControl(label: label, flagValue: Binding(flag: flag, manager: manager)))
-    }
-}

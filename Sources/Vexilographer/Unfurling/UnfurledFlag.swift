@@ -13,13 +13,13 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
 
     // MARK: - Properties
 
-    public let name: String
-    public let flag: Flag<Value>
-    public let hasChildren = false
+    let name: String
+    let flag: Flag<Value>
+    let hasChildren = false
 
     private let manager: FlagValueManager<RootGroup>
 
-    public var id: UUID {
+    var id: UUID {
         return self.flag.id
     }
 

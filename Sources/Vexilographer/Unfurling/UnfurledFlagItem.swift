@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import Vexil
 
-public protocol UnfurledFlagItem {
+protocol UnfurledFlagItem {
     var id: UUID { get }
     var name: String { get }
     var description: String { get }

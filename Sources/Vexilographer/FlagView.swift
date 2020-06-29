@@ -36,9 +36,10 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
             }
             HStack {
                 self.flagControl
-                Button(action: { self.showDetail = true }) {
-                    Image(systemName: "info.circle")
-                }
+                Button (
+                    action: { self.showDetail = true },
+                    label: { Image(systemName: "info.circle") }
+                )
             }
         }
     }

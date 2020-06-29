@@ -19,7 +19,7 @@ extension Flag: Unfurlable {
 }
 
 extension FlagGroup: Unfurlable {
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup : FlagContainer {
+    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer {
         return UnfurledFlagGroup(name: label.localizedPropertyDisplayName, group: self, manager: manager)
     }
 }
@@ -43,8 +43,10 @@ extension String {
 
     /// Separates a string at word boundaries, eg. `oneTwoThree` becomes `one Two Three`
     ///
-    /// Capital characters are determined by testing membership in `CharacterSet.uppercaseLetters` and `CharacterSet.lowercaseLetters` (Unicode General Categories Lu and Lt).
-    /// The conversion to lower case uses `Locale.system`, also known as the ICU "root" locale. This means the result is consistent regardless of the current user's locale and language preferences.
+    /// Capital characters are determined by testing membership in `CharacterSet.uppercaseLetters`
+    /// and `CharacterSet.lowercaseLetters` (Unicode General Categories Lu and Lt).
+    /// The conversion to lower case uses `Locale.system`, also known as the ICU "root" locale. This means
+    /// the result is consistent regardless of the current user's locale and language preferences.
     ///
     /// Adapted from JSONEncoder's `toSnakeCase()`
     ///
@@ -53,8 +55,9 @@ extension String {
 
         let string = self
 
-        var words : [Range<String.Index>] = []
-        // The general idea of this algorithm is to split words on transition from lower to upper case, then on transition of >1 upper case characters to lowercase
+        var words: [Range<String.Index>] = []
+        // The general idea of this algorithm is to split words on transition from lower to upper case, then on
+        // transition of >1 upper case characters to lowercase
         //
         // myProperty -> my_property
         // myURLProperty -> my_url_property
@@ -76,7 +79,8 @@ extension String {
                 break
             }
 
-            // Is the next lowercase letter more than 1 after the uppercase? If so, we encountered a group of uppercase letters that we should treat as its own word
+            // Is the next lowercase letter more than 1 after the uppercase? If so, we encountered a group of uppercase
+            // letters that we should treat as its own word
             let nextCharacterAfterCapital = string.index(after: upperCaseRange.lowerBound)
             if lowerCaseRange.lowerBound == nextCharacterAfterCapital {
                 // The next character after capital is a lower case character and therefore not a word boundary.
@@ -94,8 +98,6 @@ extension String {
         }
         words.append(wordStart..<searchRange.upperBound)
 
-        return words.map({ (range) in
-            return string[range].lowercased()
-        })
+        return words.map { string[$0].lowercased() }
     }
 }

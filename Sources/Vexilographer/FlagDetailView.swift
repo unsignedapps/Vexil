@@ -27,7 +27,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     // MARK: - View Body
 
-    public var body: some View {
+    var body: some View {
         List {
             Text(self.flag.description)
                 .font(.footnote)
@@ -48,7 +48,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                     }
                 }
             }
-            
+
             Section(header: Text("Flag Pole's Source Hierarchy")) {
                 ForEach(0 ..< self.manager.flagPole._sources.count) { index in
                     HStack {
@@ -67,7 +67,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             .navigationBarTitle(Text(self.flag.name), displayMode: .inline)
     }
 
-    public func description (source: FlagValueSource) -> some View {
+    func description (source: FlagValueSource) -> some View {
         if let value = self.flagValue(source: source) {
             return Text(String(describing: value))
         } else {
@@ -80,6 +80,6 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     }
 
     func clearValue () {
-        try? self.manager.source.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)
+        try? self.manager.source.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
     }
 }

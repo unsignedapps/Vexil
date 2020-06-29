@@ -8,11 +8,6 @@
 import SwiftUI
 import Vexil
 
-protocol FlagValueControl {
-    associatedtype BindingValue: FlagValue
-    func control<RootGroup> (label: String, flag: UnfurledFlag<BindingValue, RootGroup>, manager: FlagValueManager<RootGroup>) -> AnyView where RootGroup: FlagContainer
-}
-
 extension Binding {
     init<RootGroup> (flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
         self.init (
@@ -28,4 +23,3 @@ extension Binding {
         )
     }
 }
-
