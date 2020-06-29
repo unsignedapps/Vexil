@@ -15,6 +15,10 @@ import Foundation
 
 extension UserDefaults: FlagValueSource {
 
+    public var name: String {
+        return "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"
+    }
+
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
 
         // this is not ideal to copy the value out of preferences twice, but the alternative

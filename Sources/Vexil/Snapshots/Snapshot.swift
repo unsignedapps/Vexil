@@ -49,6 +49,10 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
 
     // MARK: - FlagValueSource Conformance
 
+    public var name: String {
+        return "Snapshot \(self.id.uuidString)"
+    }
+
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { return nil }
         return flag.value
