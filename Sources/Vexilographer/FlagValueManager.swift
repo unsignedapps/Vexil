@@ -5,6 +5,8 @@
 // Created by Rob Amos on 29/6/20.
 //
 
+#if !os(Linux)
+
 import Combine
 import Foundation
 import SwiftUI
@@ -58,3 +60,5 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     }
 
 }
+
+#endif

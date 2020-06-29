@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
+#if !os(Linux)
+
 import SwiftUI
 import Vexil
 
@@ -54,3 +56,5 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         }
     }
 }
+
+#endif

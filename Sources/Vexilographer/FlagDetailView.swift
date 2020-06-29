@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
+#if !os(Linux)
+
 import SwiftUI
 import Vexil
 
@@ -98,3 +100,5 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
         try? self.manager.source.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
     }
 }
+
+#endif

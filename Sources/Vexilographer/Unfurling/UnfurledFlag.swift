@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
+#if !os(Linux)
+
 import Foundation
 import SwiftUI
 import Vexil
@@ -44,3 +46,5 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     }
 
 }
+
+#endif

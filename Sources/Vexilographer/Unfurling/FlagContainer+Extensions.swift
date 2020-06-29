@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 15/6/20.
 //
 
+#if !os(Linux)
+
 import Foundation
 import Vexil
 
@@ -101,3 +103,5 @@ extension String {
         return words.map { string[$0].lowercased() }
     }
 }
+
+#endif

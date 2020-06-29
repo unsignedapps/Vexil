@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 14/6/20.
 //
 
+#if !os(Linux)
+
 import SwiftUI
 import Vexil
 
@@ -33,3 +35,5 @@ public struct Vexilographer<RootGroup>: View where RootGroup: FlagContainer {
         }
     }
 }
+
+#endif

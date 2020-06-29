@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
+#if !os(Linux)
+
 import SwiftUI
 import Vexil
 
@@ -22,3 +24,5 @@ struct BooleanFlagControl: View {
         Toggle(self.label, isOn: self.$flagValue)
     }
 }
+
+#endif

@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
+#if !os(Linux)
+
 import Foundation
 import SwiftUI
 import Vexil
@@ -16,3 +18,5 @@ protocol UnfurledFlagItem {
     var hasChildren: Bool { get }
     var unfurledView: AnyView { get }
 }
+
+#endif
