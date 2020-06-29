@@ -55,13 +55,21 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value : FlagValue {
-        assertionFailure("Snapshots cannot be mutated by applying other snapshots")
+        guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { throw Error.flagKeyNotFound(key) }
+        flag.value = value
     }
 
 
     // MARK: - Real Time Flag Changes
 
     var valuesDidChange = SnapshotValueChanged()
+
+
+    // MARK: - Errors
+
+    enum Error: Swift.Error {
+        case flagKeyNotFound (String)
+    }
 
 }
 
