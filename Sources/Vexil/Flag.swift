@@ -20,6 +20,10 @@ public struct Flag<Value>: Decorated where Value: FlagValue {
         return lookup.lookup(key: key) ?? self.defaultValue
     }
 
+    public var key: String {
+        return self.decorator.key!
+    }
+
 
     // MARK: - Initialisation
 
