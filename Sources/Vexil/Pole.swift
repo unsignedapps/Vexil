@@ -16,12 +16,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Configuration
 
-    public let configuration: VexilConfiguration
+    public let _configuration: VexilConfiguration
 
 
     // MARK: - Sources
 
-    public var sources: [FlagValueSource] {
+    public var _sources: [FlagValueSource] {
         didSet {
             #if !os(Linux)
 
@@ -44,8 +44,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     public init (hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
         self._rootGroup = hoist.init()
-        self.configuration = configuration
-        self.sources = sources ?? Self.defaultSources
+        self._configuration = configuration
+        self._sources = sources ?? Self.defaultSources
         self.decorateRootGroup()
 
         #if !os(Linux)
@@ -71,7 +71,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     }
 
     private func decorateRootGroup () {
-        let prefix = self.configuration.prefix ?? ""
+        let prefix = self._configuration.prefix ?? ""
 
         Mirror(reflecting: self._rootGroup)
             .children
@@ -101,7 +101,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         self.cancellables.forEach { $0.cancel() }
         self.cancellables.removeAll()
 
-        let upstream = self.sources.compactMap { $0.valuesDidChange }
+        let upstream = self._sources.compactMap { $0.valuesDidChange }
         guard upstream.isEmpty == false else { return }
 
         Publishers.MergeMany(upstream)
@@ -129,15 +129,15 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     }
 
     public func insert (snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
-        self.sources.insert(snapshot, at: index)
+        self._sources.insert(snapshot, at: index)
 
     }
     public func append (snapshot: Snapshot<RootGroup>) {
-        self.sources.append(snapshot)
+        self._sources.append(snapshot)
     }
 
     public func remove (snapshot: Snapshot<RootGroup>) {
-        self.sources.removeAll(where: { ($0 as? Snapshot<RootGroup>) == snapshot })
+        self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>) == snapshot })
     }
 
 

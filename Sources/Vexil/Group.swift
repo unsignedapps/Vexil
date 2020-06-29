@@ -41,7 +41,7 @@ public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
 
         let codingPath = codingPath + [ codingKey ].filter { $0.isEmpty == false }
 
-        self.decorator.key = codingPath.joined(separator: lookup.configuration.separator)
+        self.decorator.key = codingPath.joined(separator: lookup._configuration.separator)
         self.decorator.lookup = lookup
 
         Mirror(reflecting: self)

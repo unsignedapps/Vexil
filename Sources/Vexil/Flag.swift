@@ -41,6 +41,6 @@ public struct Flag<Value>: Decorated where Value: FlagValue {
         let codingKey = self.codingKeyStrategy.codingKey(label: label)
             ?? lookup.codingKey(label: label)
         self.decorator.key = (codingPath + [codingKey])
-            .joined(separator: lookup.configuration.separator)
+            .joined(separator: lookup._configuration.separator)
     }
 }
