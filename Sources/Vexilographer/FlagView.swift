@@ -38,7 +38,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
                 self.flagControl
                 Button (
                     action: { self.showDetail = true },
-                    label: { Image(systemName: "info.circle") }
+                    label: self.buttonLabel
                 )
             }
         }
@@ -51,4 +51,18 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
         }
         return EmptyView().eraseToAnyView()
     }
+
+    #if os(macOS)
+
+    private func buttonLabel () -> some View {
+        EmptyView()
+    }
+
+    #else
+
+    private func buttonLabel () -> some View {
+        return Image(systemName: "info.circle")
+    }
+
+    #endif
 }

@@ -27,7 +27,23 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     // MARK: - View Body
 
+    #if os(iOS)
+
     var body: some View {
+        self.content
+            .navigationBarTitle(Text(self.flag.name), displayMode: .inline)
+    }
+
+    #else
+
+    var body: some View {
+        self.content
+    }
+
+    #endif
+
+
+    var content: some View {
         List {
             Text(self.flag.description)
                 .font(.footnote)
@@ -64,7 +80,6 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 }
             }
         }
-            .navigationBarTitle(Text(self.flag.name), displayMode: .inline)
     }
 
     func description (source: FlagValueSource) -> some View {

@@ -26,7 +26,22 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     // MARK: - View Body
 
+    #if os(iOS)
+
     var body: some View {
+        self.content
+            .navigationBarTitle(Text(self.group.name), displayMode: .inline)
+    }
+
+    #else
+
+    var body: some View {
+        self.content
+    }
+
+    #endif
+
+    var content: some View {
         Form {
             Section {
                 Text(self.group.description)
@@ -37,6 +52,5 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                 }
             }
         }
-            .navigationBarTitle(Text(self.group.name), displayMode: .inline)
     }
 }
