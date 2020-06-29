@@ -60,7 +60,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Flag Management
 
-    internal var _rootGroup: RootGroup
+    public var _rootGroup: RootGroup
 
     public subscript<Value> (dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
         return self._rootGroup[keyPath: dynamicMember]
