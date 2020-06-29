@@ -46,7 +46,7 @@ public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
         self.decorator.key = codingPath.joined(separator: lookup._configuration.separator)
         self.decorator.lookup = lookup
 
-        Mirror(reflecting: self)
+        Mirror(reflecting: self.wrappedValue)
             .children
             .lazy
             .decorated
