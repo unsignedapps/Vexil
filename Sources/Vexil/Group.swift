@@ -8,9 +8,9 @@
 import Foundation
 
 @propertyWrapper
-public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
+public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContainer {
 
-
+    public let id = UUID()
     public var description: String
 
     public var wrappedValue: Group

@@ -8,10 +8,11 @@
 import Foundation
 
 @propertyWrapper
-public struct Flag<Value>: Decorated where Value: FlagValue {
+public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     // MARK: - Properties
 
+    public var id = UUID()
     public var description: String
     public var defaultValue: Value
 
