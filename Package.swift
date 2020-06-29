@@ -14,7 +14,8 @@ let package = Package(
     ],
 
     products: [
-        .library(name: "Vexil", targets: ["Vexil"]),
+        .library(name: "Vexil", targets: [ "Vexil" ]),
+        .library(name: "Vexilographer", targets: [ "Vexilographer" ]),
     ],
 
     dependencies: [
@@ -22,6 +23,9 @@ let package = Package(
 
     targets: [
         .target(name: "Vexil", dependencies: []),
-        .testTarget(name: "VexilTests", dependencies: ["Vexil"]),
+        .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
+
+        .target(name: "Vexilographer", dependencies: [ "Vexil" ]),
+        .testTarget(name: "VexilographerTests", dependencies: [ "Vexilographer" ])
     ]
 )
