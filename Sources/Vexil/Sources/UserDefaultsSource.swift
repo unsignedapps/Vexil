@@ -134,6 +134,6 @@ extension UserDefaults: FlagValueSource {
 // MARK: - Encoding Wrapper
 
 // Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
-fileprivate struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+private struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
     var wrapped: Wrapped
 }

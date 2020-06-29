@@ -58,7 +58,7 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
         return flag.value
     }
 
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value : FlagValue {
+    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
         guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { throw Error.flagKeyNotFound(key) }
         flag.value = value
     }

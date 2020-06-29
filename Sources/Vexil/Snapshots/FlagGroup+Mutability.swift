@@ -23,7 +23,7 @@ internal extension FlagGroup {
 
 // MARK: - Creating Mutable Flag Groups
 
-fileprivate protocol MutableFlagGroupFactory {
+private protocol MutableFlagGroupFactory {
     func makeMutableFlagGroup<Root> (flagPole: FlagPole<Root>, copyCurrentFlagValues: Bool, valueChanged: SnapshotValueChanged) -> AnyMutableFlagGroup
 }
 

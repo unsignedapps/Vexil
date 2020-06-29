@@ -13,6 +13,7 @@ import Foundation
 
 public protocol FlagValueSource {
     var name: String { get }
+
     func flagValue<Value> (key: String) -> Value? where Value: FlagValue
     func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue
 
