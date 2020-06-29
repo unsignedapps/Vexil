@@ -8,12 +8,12 @@
 import Foundation
 
 @propertyWrapper
-public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
+public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContainer {
 
-
+    public let id = UUID()
     public var description: String
 
-    public var wrappedValue = Group()
+    public var wrappedValue: Group
 
 
     // MARK: - Initialisation
@@ -21,12 +21,14 @@ public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
     public init (codingKeyStrategy: CodingKeyStrategy = .default, description: String) {
         self.codingKeyStrategy = codingKeyStrategy
         self.description = description
+        self.wrappedValue = Group()
     }
 
     /// An internal initialiser used so we can create Snapshtos that are decoupled from everything
-    internal init (groupType: Group.Type) {
+    internal init (group: Group) {
         self.codingKeyStrategy = .default
         self.description = ""
+        self.wrappedValue = group
     }
 
 
@@ -41,10 +43,10 @@ public struct FlagGroup<Group>: Decorated where Group: FlagContainer {
 
         let codingPath = codingPath + [ codingKey ].filter { $0.isEmpty == false }
 
-        self.decorator.key = codingPath.joined(separator: lookup.configuration.separator)
+        self.decorator.key = codingPath.joined(separator: lookup._configuration.separator)
         self.decorator.lookup = lookup
 
-        Mirror(reflecting: self)
+        Mirror(reflecting: self.wrappedValue)
             .children
             .lazy
             .decorated

@@ -23,7 +23,7 @@ internal extension FlagGroup {
 
 // MARK: - Creating Mutable Flags
 
-fileprivate protocol MutableFlagFactory {
+private protocol MutableFlagFactory {
     func makeMutableFlag (copyCurrentFlagValue: Bool, valueChanged: SnapshotValueChanged) -> AnyMutableFlag
 }
 
@@ -37,14 +37,14 @@ extension Flag: MutableFlagFactory {
 // MARK: - Type Erasing Mutable Flags
 
 internal protocol AnyMutableFlag {
-    var key: String? { get }
+    var key: String { get }
     var isDirty: Bool { get }
 
     func save (to source: FlagValueSource) throws
 }
 
 extension MutableFlag: AnyMutableFlag {
-    var key: String? {
-        return self.flag.decorator.key
+    var key: String {
+        self.flag.key
     }
 }

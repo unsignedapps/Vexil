@@ -34,7 +34,6 @@ public class MutableFlag<Value> where Value: FlagValue {
     // MARK: - Updating Sources
 
     internal func save (to source: FlagValueSource) throws {
-        guard let key = self.key else { return }
-        try source.setFlagValue(self.value, key: key)
+        try source.setFlagValue(self.value, key: self.key)
     }
 }

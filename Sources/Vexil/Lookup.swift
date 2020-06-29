@@ -8,7 +8,7 @@
 import Foundation
 
 internal protocol Lookup: AnyObject {
-    var configuration: VexilConfiguration { get }
+    var _configuration: VexilConfiguration { get }
 
     func lookup<Value> (key: String) -> Value? where Value: FlagValue
     func codingKey (label: String) -> String
@@ -16,13 +16,13 @@ internal protocol Lookup: AnyObject {
 
 extension FlagPole: Lookup {
     func lookup<Value> (key: String) -> Value? where Value: FlagValue {
-        return self.sources
+        return self._sources
             .lazy
             .compactMap { $0.flagValue(key: key) }
             .first
     }
 
     func codingKey (label: String) -> String {
-        return self.configuration.codingPathStrategy.codingKey(label: label)
+        return self._configuration.codingPathStrategy.codingKey(label: label)
     }
 }

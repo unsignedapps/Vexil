@@ -19,7 +19,7 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
 
     internal init (flagPole: FlagPole<RootGroup>, copyCurrentFlagValues: Bool) {
         self._rootGroup = MutableFlagGroup<RootGroup, RootGroup> (
-            flagGroup: FlagGroup(groupType: RootGroup.self),
+            flagGroup: FlagGroup(group: flagPole._rootGroup),
             flagPole: flagPole,
             copyCurrentFlagValues: copyCurrentFlagValues,
             valueChanged: self.valuesDidChange
@@ -49,19 +49,31 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
 
     // MARK: - FlagValueSource Conformance
 
+    public var name: String {
+        return "Snapshot \(self.id.uuidString)"
+    }
+
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { return nil }
         return flag.value
     }
 
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value : FlagValue {
-        assertionFailure("Snapshots cannot be mutated by applying other snapshots")
+    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+        guard let flag = self._rootGroup.flag(key: key) as? MutableFlag<Value> else { throw Error.flagKeyNotFound(key) }
+        flag.value = value
     }
 
 
     // MARK: - Real Time Flag Changes
 
     var valuesDidChange = SnapshotValueChanged()
+
+
+    // MARK: - Errors
+
+    enum Error: Swift.Error {
+        case flagKeyNotFound (String)
+    }
 
 }
 

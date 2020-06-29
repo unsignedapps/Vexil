@@ -5,6 +5,7 @@ disabled_rules:
   - todo
   - type_name
   - vertical_whitespace
+  - identifier_name
 
 opt_in_rules:
   - anyobject_protocol

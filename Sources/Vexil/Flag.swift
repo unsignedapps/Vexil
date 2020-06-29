@@ -8,16 +8,21 @@
 import Foundation
 
 @propertyWrapper
-public struct Flag<Value>: Decorated where Value: FlagValue {
+public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     // MARK: - Properties
 
+    public var id = UUID()
     public var description: String
     public var defaultValue: Value
 
     public var wrappedValue: Value {
         guard let lookup = self.decorator.lookup, let key = self.decorator.key else { return self.defaultValue }
         return lookup.lookup(key: key) ?? self.defaultValue
+    }
+
+    public var key: String {
+        return self.decorator.key!
     }
 
 
@@ -41,6 +46,6 @@ public struct Flag<Value>: Decorated where Value: FlagValue {
         let codingKey = self.codingKeyStrategy.codingKey(label: label)
             ?? lookup.codingKey(label: label)
         self.decorator.key = (codingPath + [codingKey])
-            .joined(separator: lookup.configuration.separator)
+            .joined(separator: lookup._configuration.separator)
     }
 }
