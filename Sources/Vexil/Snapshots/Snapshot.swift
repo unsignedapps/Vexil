@@ -19,7 +19,7 @@ public struct Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContaine
 
     internal init (flagPole: FlagPole<RootGroup>, copyCurrentFlagValues: Bool) {
         self._rootGroup = MutableFlagGroup<RootGroup, RootGroup> (
-            flagGroup: FlagGroup(groupType: RootGroup.self),
+            flagGroup: FlagGroup(group: flagPole._rootGroup),
             flagPole: flagPole,
             copyCurrentFlagValues: copyCurrentFlagValues,
             valueChanged: self.valuesDidChange
