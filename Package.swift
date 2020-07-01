@@ -20,6 +20,7 @@ let package = Package(
         // Dynamic libraries until Xcode figures out how to do this automatically
         .library(name: "Vexil-dynamic", type: .dynamic, targets: [ "Vexil" ]),
         .library(name: "Vexilographer-dynamic", type: .dynamic, targets: [ "Vexilographer" ]),
+
     ],
 
     dependencies: [
