@@ -15,12 +15,7 @@ let package = Package(
 
     products: [
         .library(name: "Vexil", targets: [ "Vexil" ]),
-        .library(name: "Vexilographer", targets: [ "Vexilographer" ]),
-
-        // Dynamic libraries until Xcode figures out how to do this automatically
-        .library(name: "Vexil-dynamic", type: .dynamic, targets: [ "Vexil" ]),
-        .library(name: "Vexilographer-dynamic", type: .dynamic, targets: [ "Vexilographer" ]),
-
+        .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
     ],
 
     dependencies: [
@@ -30,7 +25,7 @@ let package = Package(
         .target(name: "Vexil", dependencies: []),
         .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
 
-        .target(name: "Vexilographer", dependencies: [ "Vexil" ]),
-        .testTarget(name: "VexilographerTests", dependencies: [ "Vexilographer" ])
+        .target(name: "Vexillographer", dependencies: [ "Vexil" ]),
+        .testTarget(name: "VexillographerTests", dependencies: [ "Vexillographer" ])
     ]
 )

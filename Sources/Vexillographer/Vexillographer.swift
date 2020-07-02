@@ -1,5 +1,5 @@
 //
-//  Vexilographer.swift
+//  Vexillographer.swift
 //  Vexil: Vexilographer
 //
 //  Created by Rob Amos on 14/6/20.
@@ -10,7 +10,7 @@
 import SwiftUI
 import Vexil
 
-public struct Vexilographer<RootGroup>: View where RootGroup: FlagContainer {
+public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Properties
 
