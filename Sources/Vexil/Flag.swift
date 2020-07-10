@@ -25,6 +25,10 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         return self.decorator.key!
     }
 
+    public var projectedValue: Flag<Value> {
+        return self
+    }
+
 
     // MARK: - Initialisation
 
