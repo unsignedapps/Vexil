@@ -25,6 +25,10 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         return self.decorator.key!
     }
 
+    public var projectedValue: Flag<Value> {
+        return self
+    }
+
 
     // MARK: - Initialisation
 
@@ -43,9 +47,26 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     internal func decorate (lookup: Lookup, label: String, codingPath: [String]) {
         self.decorator.lookup = lookup
 
-        let codingKey = self.codingKeyStrategy.codingKey(label: label)
-            ?? lookup.codingKey(label: label)
-        self.decorator.key = (codingPath + [codingKey])
-            .joined(separator: lookup._configuration.separator)
+        var action = self.codingKeyStrategy.codingKey(label: label)
+        if action == .default {
+            action = lookup.codingKey(label: label)
+        }
+
+        switch action {
+
+        case .append(let string):
+            self.decorator.key = (codingPath + [string])
+                .joined(separator: lookup._configuration.separator)
+
+        case .absolute(let string):
+            self.decorator.key = string
+
+        // these two options should really never happen, but just in case, use what we've got
+        case .default, .skip:
+            assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for Flag \(self)")
+            self.decorator.key = (codingPath + [label])
+                .joined(separator: lookup._configuration.separator)
+
+        }
     }
 }

@@ -71,14 +71,18 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     }
 
     private func decorateRootGroup () {
-        let prefix = self._configuration.prefix ?? ""
+
+        var codingPath: [String] = []
+        if let prefix = self._configuration.prefix {
+            codingPath.append(prefix)
+        }
 
         Mirror(reflecting: self._rootGroup)
             .children
             .lazy
             .decorated
             .forEach {
-                $0.value.decorate(lookup: self, label: $0.label, codingPath: [ prefix ])
+                $0.value.decorate(lookup: self, label: $0.label, codingPath: codingPath)
             }
     }
 

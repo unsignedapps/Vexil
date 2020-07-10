@@ -38,10 +38,26 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     private let codingKeyStrategy: CodingKeyStrategy
 
     func decorate(lookup: Lookup, label: String, codingPath: [String]) {
-        let codingKey = self.codingKeyStrategy.codingKey(label: label)
-            ?? lookup.codingKey(label: label)
+        var action = self.codingKeyStrategy.codingKey(label: label)
+        if action == .default {
+            action = lookup.codingKey(label: label)
+        }
 
-        let codingPath = codingPath + [ codingKey ].filter { $0.isEmpty == false }
+        var codingPath = codingPath
+
+        switch action {
+        case .append(let string):
+            codingPath.append(string)
+
+        case .skip:
+            break
+
+        // these actions shouldn't be possible in theory
+        case .absolute, .default:
+            assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for FlagGroup \(self)")
+            break
+
+        }
 
         self.decorator.key = codingPath.joined(separator: lookup._configuration.separator)
         self.decorator.lookup = lookup
