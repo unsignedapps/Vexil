@@ -40,19 +40,13 @@ public extension VexilConfiguration {
         /// Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name
         case snakecase
 
-        /// Manually specifies the key name for this `Flag` or `FlagGroup`.
-        case custom(String)
-
-        func codingKey (label: String) -> String {
+        internal func codingKey (label: String) -> CodingKeyAction {
             switch self {
             case .kebabcase, .default:
-                return label.convertedToSnakeCase(separator: "-")
+                return .append(label.convertedToSnakeCase(separator: "-"))
 
             case .snakecase:
-                return label.convertedToSnakeCase()
-
-            case .custom(let custom):
-                return custom
+                return .append(label.convertedToSnakeCase())
             }
         }
     }
@@ -77,15 +71,15 @@ public extension FlagGroup {
         case skip
 
         /// Manually specifies the key name for this `FlagGroup`.
-        case custom(String)
+        case customKey(String)
 
-        func codingKey (label: String) -> String? {
+        internal func codingKey (label: String) -> CodingKeyAction {
             switch self {
-            case .default:              return nil
-            case .kebabcase:            return label.convertedToSnakeCase(separator: "-")
-            case .snakecase:            return label.convertedToSnakeCase()
-            case .skip:                 return ""
-            case .custom(let custom):   return custom
+            case .default:                  return .default
+            case .kebabcase:                return .append(label.convertedToSnakeCase(separator: "-"))
+            case .snakecase:                return .append(label.convertedToSnakeCase())
+            case .skip:                     return .skip
+            case .customKey(let custom):    return .append(custom)
             }
         }
     }
@@ -106,18 +100,46 @@ public extension Flag {
         /// Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name
         case snakecase
 
-        /// Manually specifies the key name for this `FlagGroup`.
-        case custom(String)
+        /// Manually specifies the key name for this `Flag`.
+        ///
+        /// This is combined with the keys from the parent groups to create the final key.
+        ///
+        case customKey(String)
 
-        func codingKey (label: String) -> String? {
+        /// Manually specifices a fully qualified key path for this flag.
+        ///
+        /// This is the absolute key name. It is NOT combined with the keys from the parent groups.
+        case customKeyPath(String)
+
+        internal func codingKey (label: String) -> CodingKeyAction {
             switch self {
-            case .default:              return nil
-            case .kebabcase:            return label.convertedToSnakeCase(separator: "-")
-            case .snakecase:            return label.convertedToSnakeCase()
-            case .custom(let custom):   return custom
+            case .default:                      return .default
+            case .kebabcase:                    return .append(label.convertedToSnakeCase(separator: "-"))
+            case .snakecase:                    return .append(label.convertedToSnakeCase())
+            case .customKey(let custom):        return .append(custom)
+            case .customKeyPath(let custom):    return .absolute(custom)
             }
         }
     }
+}
+
+
+// MARK: - Coding Key Actions
+
+internal enum CodingKeyAction: Equatable {
+
+    /// Apply the default behaviour according to the current circumstances
+    case `default`
+
+    /// Skip the current component (only applies to groups)
+    case skip
+
+    /// Append the string to the key path
+    case append(String)
+
+    /// Use the string as the absolute key path
+    case absolute(String)
+
 }
 
 
