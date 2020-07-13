@@ -57,7 +57,6 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
         // these actions shouldn't be possible in theory
         case .absolute, .default:
             assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for FlagGroup \(self)")
-            break
 
         }
 
