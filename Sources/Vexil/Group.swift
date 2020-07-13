@@ -11,6 +11,7 @@ import Foundation
 public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContainer {
 
     public let id = UUID()
+    public var name: String?
     public var description: String
 
     public var wrappedValue: Group
@@ -18,7 +19,8 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
 
     // MARK: - Initialisation
 
-    public init (codingKeyStrategy: CodingKeyStrategy = .default, description: String) {
+    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: String) {
+        self.name = name
         self.codingKeyStrategy = codingKeyStrategy
         self.description = description
         self.wrappedValue = Group()
