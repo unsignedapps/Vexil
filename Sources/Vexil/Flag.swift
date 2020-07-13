@@ -13,6 +13,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     // MARK: - Properties
 
     public var id = UUID()
+    public var name: String?
     public var description: String
     public var defaultValue: Value
 
@@ -32,7 +33,8 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     // MARK: - Initialisation
 
-    public init (codingKeyStrategy: CodingKeyStrategy = .default, default initialValue: Value, description: String) {
+    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, default initialValue: Value, description: String) {
+        self.name = name
         self.codingKeyStrategy = codingKeyStrategy
         self.description = description
         self.defaultValue = initialValue

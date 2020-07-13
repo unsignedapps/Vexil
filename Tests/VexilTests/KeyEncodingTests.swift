@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 10/7/20.
 //
 
+// swiftlint:disable let_var_whitespace
+
 import Vexil
 import XCTest
 
