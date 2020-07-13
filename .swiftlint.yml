@@ -80,6 +80,7 @@ nesting:
 
 included:
   - "Sources"
+  - "Tests"
 
 excluded:
   - "Package.swift"
