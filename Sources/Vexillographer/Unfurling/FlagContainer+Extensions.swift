@@ -68,8 +68,10 @@ extension String {
         var wordStart = string.startIndex
         var searchRange = string.index(after: wordStart)..<string.endIndex
 
+        let uppercase = CharacterSet.uppercaseLetters.union(CharacterSet.decimalDigits)
+
         // Find next uppercase character
-        while let upperCaseRange = string.rangeOfCharacter(from: CharacterSet.uppercaseLetters, options: [], range: searchRange) {
+        while let upperCaseRange = string.rangeOfCharacter(from: uppercase, options: [], range: searchRange) {
             let untilUpperCase = wordStart..<upperCaseRange.lowerBound
             words.append(untilUpperCase)
 
