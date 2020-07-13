@@ -16,13 +16,13 @@ protocol Unfurlable {
 
 extension Flag: Unfurlable {
     func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer {
-        return UnfurledFlag(name: label.localizedPropertyDisplayName, flag: self, manager: manager)
+        return UnfurledFlag(name: self.name ?? label.localizedPropertyDisplayName, flag: self, manager: manager)
     }
 }
 
 extension FlagGroup: Unfurlable {
     func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer {
-        return UnfurledFlagGroup(name: label.localizedPropertyDisplayName, group: self, manager: manager)
+        return UnfurledFlagGroup(name: self.name ?? label.localizedPropertyDisplayName, group: self, manager: manager)
     }
 }
 
