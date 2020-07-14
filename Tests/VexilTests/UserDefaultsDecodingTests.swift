@@ -193,42 +193,22 @@ final class UserDefaultsDecodingTests: XCTestCase {
     // MARK: - Dictionary Tests
 
     func testDecodeStringDictionary () {
-        let value =
-        """
-            {
-                "wrapped": {
-                    "key1": "value1",
-                    "key2": "value2"
-                }
-            }
-        """
-
         let expected = [
             "key1": "value1",
             "key2": "value2"
         ]
 
-        self.defaults.set(Data(value.utf8), forKey: #function)
+        self.defaults.set(expected, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), expected)
     }
 
     func testDecodeIntegerDictionary () {
-        let value =
-        """
-            {
-                "wrapped": {
-                    "key1": 123,
-                    "key2": -987
-                }
-            }
-        """
-
         let expected = [
             "key1": 123,
             "key2": -987
         ]
 
-        self.defaults.set(Data(value.utf8), forKey: #function)
+        self.defaults.set(expected, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), expected)
     }
 
