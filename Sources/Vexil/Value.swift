@@ -5,10 +5,13 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
+// swiftlint:disable extension_access_modifier
+
 import Foundation
 
 public protocol FlagValue: Codable {
     init? (boxedFlagValue: BoxedFlagValue)
+
     var boxedFlagValue: BoxedFlagValue { get }
 }
 
@@ -23,8 +26,8 @@ public enum BoxedFlagValue {
     case double(Double)
     case float(Float)
     case integer(Int)
-    case array(Array<BoxedFlagValue>)
-    case dictionary(Dictionary<String, BoxedFlagValue>)
+    case array([BoxedFlagValue])
+    case dictionary([String: BoxedFlagValue])
 }
 
 
@@ -79,7 +82,7 @@ extension Date: FlagValue {
     }
 }
 
-extension Data {
+extension Data: FlagValue {
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .data(let value) = boxedFlagValue else { return nil }
         self = value
