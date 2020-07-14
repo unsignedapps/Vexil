@@ -14,5 +14,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: "🧹 SwiftLint changed files"
         uses: norio-nomura/action-swiftlint@3.1.0
+        with:
+          args: --strict
         env:
           DIFF_BASE: ${{ github.base_ref }}
