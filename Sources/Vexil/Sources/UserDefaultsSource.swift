@@ -21,53 +21,12 @@ extension UserDefaults: FlagValueSource {
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
 
-        // this is not ideal to copy the value out of preferences twice, but the alternative
-        // is we replicate the entire type unboxing found in UserDefaults
-        guard self.object(forKey: key) != nil else { return nil }
+        guard
+            let object = self.object(forKey: key),
+            let boxed = BoxedFlagValue(object: object)
+        else { return nil }
 
-        if Value.self == Bool.self {
-            return self.bool(forKey: key) as? Value
-        } else if Value.self == String.self {
-            return self.string(forKey: key) as? Value
-        } else if Value.self == URL.self {
-            guard let urlString = self.string(forKey: key), let url = URL(string: urlString) else { return nil }
-            return url as? Value
-        } else if Value.self == Double.self {
-            return self.double(forKey: key) as? Value
-        } else if Value.self == Float.self {
-            return self.float(forKey: key) as? Value
-        } else if Value.self == Int.self {
-            return self.integer(forKey: key) as? Value
-        } else if Value.self == Int8.self {
-            return Int8(self.integer(forKey: key)) as? Value
-        } else if Value.self == Int16.self {
-            return Int16(self.integer(forKey: key)) as? Value
-        } else if Value.self == Int32.self {
-            return Int32(self.integer(forKey: key)) as? Value
-        } else if Value.self == Int64.self {
-            return Int64(self.integer(forKey: key)) as? Value
-        } else if Value.self == UInt.self {
-            return UInt(self.integer(forKey: key)) as? Value
-        } else if Value.self == UInt8.self {
-            return UInt8(self.integer(forKey: key)) as? Value
-        } else if Value.self == UInt16.self {
-            return UInt16(self.integer(forKey: key)) as? Value
-        } else if Value.self == UInt32.self {
-            return UInt32(self.integer(forKey: key)) as? Value
-        } else if Value.self == UInt64.self {
-            return UInt64(self.integer(forKey: key)) as? Value
-
-        // arrays we blindly try to cast
-        } else if let array = self.array(forKey: key) {
-            return array as? Value
-
-        // dictionaries we decode if we can't cast
-        } else if let data = self.data(forKey: key) {
-            let decoder = JSONDecoder()
-            return (try? decoder.decode(Wrapper<Value>.self, from: data))?.wrapped
-        }
-
-        return nil
+        return Value(boxedFlagValue: boxed)
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
@@ -76,47 +35,8 @@ extension UserDefaults: FlagValueSource {
             return
         }
 
-        if let value = value as? Bool {
-            self.set(value, forKey: key)
-        } else if let value = value as? String {
-            self.set(value, forKey: key)
-        } else if let value = value as? URL {
-            self.set(value.absoluteString, forKey: key)
-        } else if let value = value as? Double {
-            self.set(value, forKey: key)
-        } else if let value = value as? Float {
-            self.set(value, forKey: key)
-        } else if let value = value as? Int {
-            self.set(value, forKey: key)
-        } else if let value = value as? Int8 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? Int16 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? Int32 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? Int64 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? UInt {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? UInt8 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? UInt16 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? UInt32 {
-            self.set(Int(value), forKey: key)
-        } else if let value = value as? UInt64 {
-            self.set(Int(value), forKey: key)
+        self.set(value.boxedFlagValue.object, forKey: key)
 
-        } else if let value = value as? [FlagValue] {
-            self.set(value, forKey: key)
-        } else if let value = value as? [String: FlagValue] {
-            self.set(value, forKey: key)
-
-        } else {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .sortedKeys
-            self.set(try encoder.encode(Wrapper(wrapped: value)), forKey: key)
-        }
     }
 
     #if !os(Linux)
@@ -131,9 +51,52 @@ extension UserDefaults: FlagValueSource {
 }
 
 
-// MARK: - Encoding Wrapper
+// MARK: - Unboxing
 
-// Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
-private struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
-    var wrapped: Wrapped
+private extension BoxedFlagValue {
+    init? (object: Any) {
+        switch object {
+//        case let value as NSNumber:
+//            let numberType = CFNumberGetType(value)
+//            switch numberType {
+//            case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type, .shortType, .intType, .longType, .longLongType, .nsIntegerType, .cfIndexType:
+//                self = .integer(value.intValue)
+//
+//            case .float32Type, .float64Type, .floatType, .doubleType, .cgFloatType:
+//                self = .double(value.doubleValue)
+//
+//            case .charType:
+//                self = .bool(value.boolValue)
+//
+//            @unknown default:
+//                return nil
+//            }
+
+        case let value as Bool:                     self = .bool(value)
+        case let value as Data:                     self = .data(value)
+        case let value as Int:                      self = .integer(value)
+        case let value as Float:                    self = .float(value)
+        case let value as Double:                   self = .double(value)
+        case let value as String:                   self = .string(value)
+
+        case let value as Array<Any>:               self = .array(value.compactMap({ BoxedFlagValue(object: $0) }))
+        case let value as Dictionary<String, Any>:  self = .dictionary(value.compactMapValues({ BoxedFlagValue(object: $0) }))
+
+        default:
+            return nil
+        }
+    }
+
+    var object: NSObject {
+        switch self {
+        case let .bool(value):          return NSNumber(booleanLiteral: value)
+        case let .string(value):        return value as NSString
+        case let .data(value):          return value as NSData
+        case let .double(value):        return NSNumber(value: value)
+        case let .float(value):         return NSNumber(value: value)
+        case let .integer(value):       return NSNumber(value: value)
+        case let .array(value):         return value.map({ $0.object }) as NSArray
+        case let .dictionary(value):    return value.mapValues({ $0.object }) as NSDictionary
+        }
+    }
 }
