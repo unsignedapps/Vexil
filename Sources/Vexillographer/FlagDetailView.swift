@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import SwiftUI
 import Vexil
@@ -33,7 +33,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     var body: some View {
         self.content
-            .navigationBarTitle(Text(self.flag.name), displayMode: .inline)
+            .navigationBarTitle(Text(self.flag.info.name), displayMode: .inline)
     }
 
     #else
@@ -46,9 +46,10 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
 
     var content: some View {
-        List {
-            Text(self.flag.description)
-                .font(.footnote)
+        Form {
+            Section(header: Text("Description")) {
+                Text(self.flag.info.description)
+            }
 
             Section(header: Text("Current Source")) {
                 HStack {
@@ -67,7 +68,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 }
             }
 
-            Section(header: Text("Flag Pole's Source Hierarchy")) {
+            Section(header: Text("FlagPole Source Hierarchy")) {
                 ForEach(0 ..< self.manager.flagPole._sources.count) { index in
                     HStack {
                         Text(self.manager.flagPole._sources[index].name)

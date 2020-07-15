@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import SwiftUI
 import Vexil
@@ -32,41 +32,70 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     // MARK: - View Body
 
     var body: some View {
-        ZStack {
-            NavigationLink(destination: FlagDetailView(flag: self.flag, manager: self.manager), isActive: self.$showDetail) {
-                EmptyView()
-            }
-            HStack {
-                self.flagControl
-                Button (
-                    action: { self.showDetail = true },
-                    label: self.buttonLabel
-                )
-            }
-        }
+        self.content
+            .sheet (
+                isPresented: self.$showDetail,
+                content: {
+                    self.detailView
+                }
+            )
     }
 
-    var flagControl: some View {
-        if let flag = self.flag as? UnfurledFlag<Bool, RootGroup> {
-            return BooleanFlagControl(label: flag.name, flagValue: Binding(flag: flag, manager: self.manager))
+    var content: some View {
+
+        if let flag = self.flag as? BooleanEditableFlag {
+            return flag.control (
+                label: self.flag.info.name,
+                manager: self.manager,
+                showDetail: self.$showDetail
+            )
+                .eraseToAnyView()
+
+        } else if let flag = self.flag as? CaseIterableEditableFlag {
+            return flag.control (
+                label: self.flag.info.name,
+                manager: self.manager,
+                showDetail: self.$showDetail
+            )
+
+        } else if let flag = self.flag as? StringEditableFlag {
+            return flag.control (
+                label: self.flag.info.name,
+                manager: self.manager,
+                showDetail: self.$showDetail
+            )
                 .eraseToAnyView()
         }
+
         return EmptyView().eraseToAnyView()
     }
 
-    #if os(macOS)
+    #if os(iOS)
 
-    private func buttonLabel () -> some View {
-        EmptyView()
+    var detailView: some View {
+        NavigationView {
+            FlagDetailView(flag: self.flag, manager: self.manager)
+                .navigationBarItems(trailing: self.detailDoneButton)
+        }
     }
 
-    #else
+    #elseif os(macOS)
 
-    private func buttonLabel () -> some View {
-        return Image(systemName: "info.circle")
+    var detailView: some View {
+        NavigationView {
+            FlagDetailView(flag: self.flag, manager: self.manager)
+        }
     }
 
     #endif
+
+    var detailDoneButton: some View {
+        Button (
+            action: { self.showDetail = false },
+            label: { Text("Close").font(.headline) }
+        )
+    }
+
 }
 
 #endif

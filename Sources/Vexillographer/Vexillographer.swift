@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 14/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import SwiftUI
 import Vexil

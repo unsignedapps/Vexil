@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import Foundation
 import SwiftUI
@@ -15,7 +15,7 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
 
     // MARK: - Properties
 
-    let name: String
+    let info: UnfurledFlagInfo
     let flag: Flag<Value>
     let hasChildren = false
 
@@ -29,17 +29,13 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     // MARK: - Initialisation
 
     init (name: String, flag: Flag<Value>, manager: FlagValueManager<RootGroup>) {
-        self.name = name
+        self.info = UnfurledFlagInfo(info: flag.info, defaultName: name)
         self.flag = flag
         self.manager = manager
     }
 
 
     // MARK: - Unfurled Flag Item Conformance
-
-    var description: String {
-        return self.flag.description
-    }
 
     var unfurledView: AnyView {
         return AnyView(UnfurledFlagView(flag: self, manager: self.manager))
