@@ -21,13 +21,14 @@ extension UserDefaults: FlagValueSource {
 
         guard
             let object = self.object(forKey: key),
-            let boxed = BoxedFlagValue(object: object)
+            let boxed = BoxedFlagValue(object: object, typeHint: Value.self)
         else { return nil }
 
         return Value(boxedFlagValue: boxed)
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+        print("[UserDefaultsSource] Setting flag \(key) to \(String(describing: value))")
         guard let value = value else {
             self.removeObject(forKey: key)
             return
@@ -52,17 +53,19 @@ extension UserDefaults: FlagValueSource {
 // MARK: - Unboxing
 
 private extension BoxedFlagValue {
-    init? (object: Any) {
+    init?<Value> (object: Any, typeHint: Value.Type) {
         switch object {
-        case let value as Bool:             self = .bool(value)
+        case let value as Bool where typeHint == Bool.self:
+            self = .bool(value)
+
         case let value as Data:             self = .data(value)
         case let value as Int:              self = .integer(value)
         case let value as Float:            self = .float(value)
         case let value as Double:           self = .double(value)
         case let value as String:           self = .string(value)
 
-        case let value as [Any]:            self = .array(value.compactMap({ BoxedFlagValue(object: $0) }))
-        case let value as [String: Any]:    self = .dictionary(value.compactMapValues({ BoxedFlagValue(object: $0) }))
+        case let value as [Any]:            self = .array(value.compactMap({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
+        case let value as [String: Any]:    self = .dictionary(value.compactMapValues({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
 
         default:
             return nil
