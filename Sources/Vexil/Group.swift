@@ -11,26 +11,27 @@ import Foundation
 public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContainer {
 
     public let id = UUID()
-    public var name: String?
-    public var description: String
+    public let info: FlagInfo
 
     public var wrappedValue: Group
 
 
     // MARK: - Initialisation
 
-    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: String) {
-        self.name = name
+    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
         self.codingKeyStrategy = codingKeyStrategy
-        self.description = description
         self.wrappedValue = Group()
+
+        var info = description
+        info.name = name
+        self.info = info
     }
 
     /// An internal initialiser used so we can create Snapshtos that are decoupled from everything
     internal init (group: Group) {
         self.codingKeyStrategy = .default
-        self.description = ""
         self.wrappedValue = group
+        self.info = .hidden
     }
 
 
