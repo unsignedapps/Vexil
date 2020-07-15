@@ -5,7 +5,7 @@
 // Created by Rob Amos on 29/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import Combine
 import Foundation
@@ -37,7 +37,12 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     }
 
 
-    // MARK: - Updating Flag Values
+    // MARK: - Flag Values
+
+    func flagValue<Value> (key: String) -> Value? where Value: FlagValue {
+        let snapshot = self.flagPole.snapshot()
+        return snapshot.flagValue(key: key)
+    }
 
     func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue {
         let snapshot = self.flagPole.emptySnapshot()
@@ -54,7 +59,6 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
             .compactMap { child -> UnfurledFlagItem? in
                 guard let label = child.label, let unfurlable = child.value as? Unfurlable else { return nil }
                 let unfurled = unfurlable.unfurl(label: label, manager: self)
-                print("\(unfurled.name) - \(unfurled.id)")
                 return unfurled
             }
     }

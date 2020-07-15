@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import SwiftUI
 import Vexil
@@ -32,7 +32,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     var body: some View {
         self.content
-            .navigationBarTitle(Text(self.group.name), displayMode: .inline)
+            .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
 
     #else
@@ -45,10 +45,10 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     var content: some View {
         Form {
-            Section {
-                Text(self.group.description)
+            Section(header: Text("Description")) {
+                Text(self.group.info.description)
             }
-            Section {
+            Section(header: Text("Flags")) {
                 ForEach(self.group.allItems(), id: \.id) { item in
                     item.unfurledView
                 }

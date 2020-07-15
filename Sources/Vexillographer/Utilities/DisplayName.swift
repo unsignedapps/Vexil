@@ -1,41 +1,24 @@
 //
-//  FlagContainer+Extensions.swift
-//  Vexil: Vexilographer
+//  DisplayName.swift
+//  Vexil: Vexillographer
 //
-//  Created by Rob Amos on 15/6/20.
+//  Created by Rob Amos on 15/7/20.
 //
 
-#if !os(Linux)
+#if os(iOS) || os(macOS)
 
 import Foundation
-import Vexil
-
-protocol Unfurlable {
-    func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer
-}
-
-extension Flag: Unfurlable {
-    func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer {
-        return UnfurledFlag(name: self.name ?? label.localizedPropertyDisplayName, flag: self, manager: manager)
-    }
-}
-
-extension FlagGroup: Unfurlable {
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem where RootGroup: FlagContainer {
-        return UnfurledFlagGroup(name: self.name ?? label.localizedPropertyDisplayName, group: self, manager: manager)
-    }
-}
 
 extension String {
-    var localizedPropertyDisplayName: String {
-        return self.propertyDisplayName(with: Locale.autoupdatingCurrent)
+    var localizedDisplayName: String {
+        return self.displayName(with: Locale.autoupdatingCurrent)
     }
 
-    var propertyDisplayName: String {
-        return self.propertyDisplayName(with: nil)
+    var displayName: String {
+        return self.displayName(with: nil)
     }
 
-    func propertyDisplayName (with locale: Locale?) -> String {
+    func displayName (with locale: Locale?) -> String {
         let uppercased = CharacterSet.uppercaseLetters
         return (self.hasPrefix("_") ? String(self.dropFirst()) : self)
             .separatedAtWordBoundaries
