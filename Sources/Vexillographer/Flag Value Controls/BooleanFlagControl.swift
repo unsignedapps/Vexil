@@ -38,7 +38,7 @@ protocol BooleanEditableFlag {
 extension UnfurledFlag: BooleanEditableFlag where Value == Bool {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> BooleanFlagControl where RootGroup: FlagContainer {
         let binding = Binding(key: self.flag.key, manager: manager, defaultValue: self.flag.defaultValue, transformer: PassthroughTransformer<Value>.self)
-        return BooleanFlagControl (label: label,showDetail: showDetail, flagValue: binding)
+        return BooleanFlagControl (label: label, showDetail: showDetail, flagValue: binding)
     }
 }
 
