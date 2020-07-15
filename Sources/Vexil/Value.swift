@@ -15,6 +15,10 @@ public protocol FlagValue: Codable {
     var boxedFlagValue: BoxedFlagValue { get }
 }
 
+public protocol FlagDisplayValue: FlagValue {
+    var flagDisplayValue: String { get }
+}
+
 // MARK: - Boxed Flag Values
 
 /// An intermediate type used to make encoding and decoding of types simpler for `FlagValueSource`s
