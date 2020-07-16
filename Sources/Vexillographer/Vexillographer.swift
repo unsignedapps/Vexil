@@ -27,12 +27,10 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     // MARK: - Body
 
     public var body: some View {
-        Form {
-            ForEach(self.manager.allItems(), id: \.id) { item in
-                item.unfurledView
-            }
-                .environmentObject(self.manager)
+        ForEach(self.manager.allItems(), id: \.id) { item in
+            item.unfurledView
         }
+            .environmentObject(self.manager)
     }
 }
 
