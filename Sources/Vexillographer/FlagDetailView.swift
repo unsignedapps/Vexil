@@ -79,7 +79,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 HStack {
                     Text("Default Value")
                     Spacer()
-                    Text(String(describing: self.flag.flag.defaultValue))
+                    FlagDisplayValueView(value: self.flag.flag.defaultValue)
                 }
             }
         }
@@ -87,9 +87,9 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     func description (source: FlagValueSource) -> some View {
         if let value = self.flagValue(source: source) {
-            return Text(String(describing: value))
+            return FlagDisplayValueView(value: value).eraseToAnyView()
         } else {
-            return Text("not set").italic()
+            return Text("not set").italic().eraseToAnyView()
         }
     }
 
