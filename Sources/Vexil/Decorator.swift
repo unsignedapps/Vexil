@@ -8,7 +8,7 @@
 import Foundation
 
 internal protocol Decorated {
-    func decorate (lookup: Lookup, label: String, codingPath: [String])
+    func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
 }
 
 internal class Decorator {

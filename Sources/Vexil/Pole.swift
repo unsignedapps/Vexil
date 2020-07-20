@@ -82,7 +82,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             .lazy
             .decorated
             .forEach {
-                $0.value.decorate(lookup: self, label: $0.label, codingPath: codingPath)
+                $0.value.decorate(lookup: self, label: $0.label, codingPath: codingPath, config: self._configuration)
             }
     }
 
