@@ -40,10 +40,10 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     internal var decorator = Decorator()
     private let codingKeyStrategy: CodingKeyStrategy
 
-    func decorate(lookup: Lookup, label: String, codingPath: [String]) {
+    func decorate(lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration) {
         var action = self.codingKeyStrategy.codingKey(label: label)
         if action == .default {
-            action = lookup.codingKey(label: label)
+            action = config.codingPathStrategy.codingKey(label: label)
         }
 
         var codingPath = codingPath
@@ -61,7 +61,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
 
         }
 
-        self.decorator.key = codingPath.joined(separator: lookup._configuration.separator)
+        self.decorator.key = codingPath.joined(separator: config.separator)
         self.decorator.lookup = lookup
 
         Mirror(reflecting: self.wrappedValue)
@@ -69,7 +69,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
             .lazy
             .decorated
             .forEach {
-                $0.value.decorate(lookup: lookup, label: $0.label, codingPath: codingPath)
+                $0.value.decorate(lookup: lookup, label: $0.label, codingPath: codingPath, config: config)
             }
     }
 }

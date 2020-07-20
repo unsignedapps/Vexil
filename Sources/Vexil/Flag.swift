@@ -47,19 +47,19 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     internal var decorator = Decorator()
     internal let codingKeyStrategy: CodingKeyStrategy
 
-    internal func decorate (lookup: Lookup, label: String, codingPath: [String]) {
+    internal func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration) {
         self.decorator.lookup = lookup
 
         var action = self.codingKeyStrategy.codingKey(label: label)
         if action == .default {
-            action = lookup.codingKey(label: label)
+            action = config.codingPathStrategy.codingKey(label: label)
         }
 
         switch action {
 
         case .append(let string):
             self.decorator.key = (codingPath + [string])
-                .joined(separator: lookup._configuration.separator)
+                .joined(separator: config.separator)
 
         case .absolute(let string):
             self.decorator.key = string
@@ -68,7 +68,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         case .default, .skip:
             assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for Flag \(self)")
             self.decorator.key = (codingPath + [label])
-                .joined(separator: lookup._configuration.separator)
+                .joined(separator: config.separator)
 
         }
     }

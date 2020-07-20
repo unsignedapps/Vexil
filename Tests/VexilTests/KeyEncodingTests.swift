@@ -68,7 +68,7 @@ final class KeyEncodingTests: XCTestCase {
 
 // MARK: - Fixtures
 
-struct TestFlags: FlagContainer {
+private struct TestFlags: FlagContainer {
 
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
@@ -78,7 +78,7 @@ struct TestFlags: FlagContainer {
 
 }
 
-struct OneFlags: FlagContainer {
+private struct OneFlags: FlagContainer {
 
     @FlagGroup(codingKeyStrategy: .customKey("two"), description: "Test Two")
     var twoFlagGroup: TwoFlags
@@ -87,7 +87,7 @@ struct OneFlags: FlagContainer {
     var secondLevelFlag: Bool
 }
 
-struct TwoFlags: FlagContainer {
+private struct TwoFlags: FlagContainer {
 
     @FlagGroup(codingKeyStrategy: .skip, description: "Skipping test 3")
     var flagGroupThree: ThreeFlags
@@ -100,7 +100,7 @@ struct TwoFlags: FlagContainer {
 
 }
 
-struct ThreeFlags: FlagContainer {
+private struct ThreeFlags: FlagContainer {
 
     @Flag(codingKeyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
     var custom: Bool
