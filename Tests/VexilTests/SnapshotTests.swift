@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 16/7/20.
 //
 
+// swiftlint:disable let_var_whitespace
+
 import Vexil
 import XCTest
 
@@ -14,9 +16,9 @@ final class SnapshotTests: XCTestCase {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let snapshot = pole.emptySnapshot()
 
-        XCTAssertEqual(snapshot.topLevelFlag, false)
-        XCTAssertEqual(snapshot.subgroup.secondLevelFlag, false)
-        XCTAssertEqual(snapshot.subgroup.doubleSubgroup.thirdLevelFlag, false)
+        XCTAssertFalse(snapshot.topLevelFlag)
+        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
+        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
     func testSnapshotWriting () {
@@ -25,9 +27,9 @@ final class SnapshotTests: XCTestCase {
         snapshot.topLevelFlag = true
         snapshot.subgroup.secondLevelFlag = true
         snapshot.subgroup.doubleSubgroup.thirdLevelFlag = true
-        XCTAssertEqual(snapshot.topLevelFlag, true)
-        XCTAssertEqual(snapshot.subgroup.secondLevelFlag, true)
-        XCTAssertEqual(snapshot.subgroup.doubleSubgroup.thirdLevelFlag, true)
+        XCTAssertTrue(snapshot.topLevelFlag)
+        XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
+        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
 
@@ -48,10 +50,10 @@ final class SnapshotTests: XCTestCase {
         let snapshot = pole.emptySnapshot()
 
         // everything should be reset
-        XCTAssertEqual(snapshot.topLevelFlag, false)
-        XCTAssertEqual(snapshot.secondTestFlag, false)
-        XCTAssertEqual(snapshot.subgroup.secondLevelFlag, false)
-        XCTAssertEqual(snapshot.subgroup.doubleSubgroup.thirdLevelFlag, false)
+        XCTAssertFalse(snapshot.topLevelFlag)
+        XCTAssertFalse(snapshot.secondTestFlag)
+        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
+        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
     func testCurrentValueSnapshot () {
@@ -69,10 +71,10 @@ final class SnapshotTests: XCTestCase {
         let snapshot = pole.snapshot()
 
         // everything should be reflect the new source
-        XCTAssertEqual(snapshot.topLevelFlag, true)
-        XCTAssertEqual(snapshot.secondTestFlag, true)
-        XCTAssertEqual(snapshot.subgroup.secondLevelFlag, true)
-        XCTAssertEqual(snapshot.subgroup.doubleSubgroup.thirdLevelFlag, true)
+        XCTAssertTrue(snapshot.topLevelFlag)
+        XCTAssertTrue(snapshot.secondTestFlag)
+        XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
+        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 }
 

@@ -23,7 +23,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
     internal var lastAccessedKey: String?
 
     internal init (flagPole: FlagPole<RootGroup>, copyCurrentFlagValues: Bool) {
-        self._rootGroup = RootGroup.init()
+        self._rootGroup = RootGroup()
         self.decorateRootGroup(config: flagPole._configuration)
 
         if copyCurrentFlagValues {
@@ -63,7 +63,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
             self.lock.withLock {
 
                 // noop to access the existing property
-                let _ = self._rootGroup[keyPath: dynamicMember]
+                _ = self._rootGroup[keyPath: dynamicMember]
 
                 guard let key = self.lastAccessedKey else { return }
                 self.set(newValue, key: key)

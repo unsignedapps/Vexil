@@ -37,7 +37,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
             // see Snapshot.swift for how terrible this is
             return snapshot.lock.withLock {
-                let _ = self.group[keyPath: dynamicMember]
+                _ = self.group[keyPath: dynamicMember]
                 guard let key = snapshot.lastAccessedKey else { return }
                 snapshot.set(newValue, key: key)
             }
