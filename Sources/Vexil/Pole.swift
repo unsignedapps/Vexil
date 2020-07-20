@@ -66,10 +66,6 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         return self._rootGroup[keyPath: dynamicMember]
     }
 
-    public subscript (dynamicMember dynamicMember: KeyPath<RootGroup, Bool>) -> Bool {
-        return self._rootGroup[keyPath: dynamicMember]
-    }
-
     private func decorateRootGroup () {
 
         var codingPath: [String] = []
@@ -148,8 +144,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     // MARK: - Mutating Flag Sources
 
     public func save (snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
-        try snapshot.allFlags()
-            .filter { $0.isDirty == true }
+        try snapshot.changedFlags()
             .forEach { try $0.save(to: source) }
     }
 }
