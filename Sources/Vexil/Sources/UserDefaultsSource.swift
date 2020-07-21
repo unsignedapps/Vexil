@@ -63,6 +63,7 @@ private extension BoxedFlagValue {
         case let value as Float:            self = .float(value)
         case let value as Double:           self = .double(value)
         case let value as String:           self = .string(value)
+        case is NSNull:                     self = .none
 
         case let value as [Any]:            self = .array(value.compactMap({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
         case let value as [String: Any]:    self = .dictionary(value.compactMapValues({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
@@ -74,14 +75,15 @@ private extension BoxedFlagValue {
 
     var object: NSObject {
         switch self {
+        case let .array(value):         return value.map({ $0.object }) as NSArray
         case let .bool(value):          return value as NSNumber
-        case let .string(value):        return value as NSString
         case let .data(value):          return value as NSData
+        case let .dictionary(value):    return value.mapValues({ $0.object }) as NSDictionary
         case let .double(value):        return value as NSNumber
         case let .float(value):         return value as NSNumber
         case let .integer(value):       return value as NSNumber
-        case let .array(value):         return value.map({ $0.object }) as NSArray
-        case let .dictionary(value):    return value.mapValues({ $0.object }) as NSDictionary
+        case .none:                     return NSNull()
+        case let .string(value):        return value as NSString
         }
     }
 }
