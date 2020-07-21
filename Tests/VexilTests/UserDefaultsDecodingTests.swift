@@ -187,14 +187,14 @@ final class UserDefaultsDecodingTests: XCTestCase {
     }
 
     func testOptionalSome () {
-        let value: Optional = .some("Test Value")
+        let value: String? = "Test Value"
 
         self.defaults.set(value, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
     func testOptionalNone () {
-        let value: Optional<String> = .none
+        let value: String? = nil
 
         self.defaults.set(value, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)

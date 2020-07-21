@@ -191,14 +191,14 @@ final class FlagValueUnboxingTests: XCTestCase {
         let boxed = BoxedFlagValue.integer(123)
         let expected: Int? = 123
 
-        XCTAssertEqual(Optional<Int>(boxedFlagValue: boxed), expected)
+        XCTAssertEqual(Int?(boxedFlagValue: boxed), expected)
     }
 
     func testOptionalNoFlagValue () {
         let boxed = BoxedFlagValue.none
         let expected: Int? = nil
 
-        XCTAssertEqual(Optional<Int>(boxedFlagValue: boxed), expected)
+        XCTAssertEqual(Int?(boxedFlagValue: boxed), expected)
     }
 
 
@@ -237,4 +237,3 @@ final class FlagValueUnboxingTests: XCTestCase {
         }
     }
 }
-

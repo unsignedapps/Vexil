@@ -211,7 +211,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     func testOptionalSome () {
         AssertNoThrow {
-            let value: Optional = .some("Test Value")
+            let value: String? = "Test Value"
 
             try self.defaults.setFlagValue(value, key: #function)
             XCTAssertEqual(self.defaults.string(forKey: #function), value)
@@ -220,7 +220,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     func testOptionalNone () {
         AssertNoThrow {
-            let value: Optional<String> = .none
+            let value: String? = nil
 
             try self.defaults.setFlagValue(value, key: #function)
             XCTAssertEqual(self.defaults.string(forKey: #function), value)
