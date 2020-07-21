@@ -42,8 +42,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    public init (hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
-        self._rootGroup = hoist.init()
+    public convenience init (hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
+        self.init(hoisting: RootGroup(), configuration: configuration, sources: sources)
+    }
+
+    internal init (hoisting: RootGroup, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
+        self._rootGroup = hoisting
         self._configuration = configuration
         self._sources = sources ?? Self.defaultSources
         self.decorateRootGroup()
