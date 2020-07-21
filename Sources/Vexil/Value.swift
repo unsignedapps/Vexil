@@ -23,15 +23,16 @@ public protocol FlagDisplayValue: FlagValue {
 
 /// An intermediate type used to make encoding and decoding of types simpler for `FlagValueSource`s
 ///
-public enum BoxedFlagValue {
+public enum BoxedFlagValue: Equatable {
+    case array([BoxedFlagValue])
     case bool(Bool)
-    case string(String)
+    case dictionary([String: BoxedFlagValue])
     case data(Data)
     case double(Double)
     case float(Float)
     case integer(Int)
-    case array([BoxedFlagValue])
-    case dictionary([String: BoxedFlagValue])
+    case none
+    case string(String)
 }
 
 
@@ -246,6 +247,24 @@ extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
     }
 }
 
+extension Optional: FlagValue where Wrapped: FlagValue {
+    public init? (boxedFlagValue: BoxedFlagValue) {
+        if case .none = boxedFlagValue {
+            self = .none
+
+        } else if let wrapped = Wrapped(boxedFlagValue: boxedFlagValue) {
+            self = wrapped
+
+        } else {
+            self = .none
+        }
+    }
+
+    public var boxedFlagValue: BoxedFlagValue {
+        return self?.boxedFlagValue ?? .none
+    }
+}
+
 extension Array: FlagValue where Element: FlagValue {
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .array(let array) = boxedFlagValue else { return nil }
@@ -301,6 +320,6 @@ extension Encodable where Self: FlagValue {
 }
 
 // Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
-private struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+internal struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
     var wrapped: Wrapped
 }

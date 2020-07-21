@@ -173,6 +173,34 @@ final class UserDefaultsDecodingTests: XCTestCase {
     }
 
 
+    // MARK: - Wrapping Types
+
+    func testRawRepresentable () {
+        let value = TestStruct(rawValue: "Test Value")
+
+        self.defaults.set(value.rawValue, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), value)
+
+        struct TestStruct: RawRepresentable, FlagValue, Equatable {
+            var rawValue: String
+        }
+    }
+
+    func testOptionalSome () {
+        let value: String? = "Test Value"
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), value)
+    }
+
+    func testOptionalNone () {
+        let value: String? = nil
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), value)
+    }
+
+
     // MARK: - Array Tests
 
     func testDecodeStringArray () {

@@ -194,6 +194,40 @@ final class UserDefaultsEncodingTests: XCTestCase {
     }
 
 
+    // MARK: - Wrapping Types
+
+    func testRawRepresentable () {
+        AssertNoThrow {
+            let value = TestStruct(rawValue: "Test Value")
+
+            try self.defaults.setFlagValue(value, key: #function)
+            XCTAssertEqual(self.defaults.string(forKey: #function), value.rawValue)
+        }
+
+        struct TestStruct: RawRepresentable, FlagValue, Equatable {
+            var rawValue: String
+        }
+    }
+
+    func testOptionalSome () {
+        AssertNoThrow {
+            let value: String? = "Test Value"
+
+            try self.defaults.setFlagValue(value, key: #function)
+            XCTAssertEqual(self.defaults.string(forKey: #function), value)
+        }
+    }
+
+    func testOptionalNone () {
+        AssertNoThrow {
+            let value: String? = nil
+
+            try self.defaults.setFlagValue(value, key: #function)
+            XCTAssertEqual(self.defaults.string(forKey: #function), value)
+        }
+    }
+
+
     // MARK: - Array Tests
 
     func testEncodeStringArray () {
