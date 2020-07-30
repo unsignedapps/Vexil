@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
+// swiftlint:disable multiple_closures_with_trailing_closure
+
 #if os(iOS) || os(macOS)
 
 import SwiftUI
@@ -45,9 +47,15 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     var content: some View {
         Form {
-            Section(header: Text("Description")) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Description").font(.headline)
                 Text(self.group.info.description)
             }
+                .contextMenu {
+                    Button(action: { self.group.info.description.copyToPasteboard() }) {
+                        Text("Copy description to clipboard")
+                    }
+                }
             Section(header: Text("Flags")) {
                 ForEach(self.group.allItems(), id: \.id) { item in
                     item.unfurledView
