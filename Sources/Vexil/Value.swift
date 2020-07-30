@@ -17,7 +17,7 @@ public protocol FlagValue: Codable {
     var boxedFlagValue: BoxedFlagValue { get }
 }
 
-public protocol FlagDisplayValue: FlagValue {
+public protocol FlagDisplayValue {
     var flagDisplayValue: String { get }
 }
 
