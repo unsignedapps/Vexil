@@ -91,7 +91,13 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     #if !os(Linux)
 
-    private lazy var latestSnapshot = PassthroughSubject<Snapshot<RootGroup>, Never>()
+    private var shouldSetupSnapshotPublishing = false
+
+    private lazy var latestSnapshot: PassthroughSubject<Snapshot<RootGroup>, Never> = {
+        self.shouldSetupSnapshotPublishing = true
+        self.setupSnapshotPublishing(sendImmediately: true)
+        return PassthroughSubject<Snapshot<RootGroup>, Never>()
+    }()
 
     public var publisher: AnyPublisher<Snapshot<RootGroup>, Never> {
         self.latestSnapshot.eraseToAnyPublisher()
@@ -100,6 +106,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     private lazy var cancellables = Set<AnyCancellable>()
 
     private func setupSnapshotPublishing (sendImmediately: Bool) {
+        guard self.shouldSetupSnapshotPublishing else { return }
 
         // cancel our existing one
         self.cancellables.forEach { $0.cancel() }
