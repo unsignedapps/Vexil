@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
+// swiftlint:disable multiple_closures_with_trailing_closure
+
 #if os(iOS) || os(macOS)
 
 import SwiftUI
@@ -47,8 +49,27 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     var content: some View {
         Form {
-            Section(header: Text("Description")) {
-                Text(self.flag.info.description)
+            Section(header: Text("Flag Details")) {
+                HStack {
+                    Text("Key").font(.headline)
+                    Spacer()
+                    Text(self.flag.info.key)
+                }
+                    .contextMenu {
+                        Button(action: { self.flag.info.key.copyToPasteboard() }) {
+                            Text("Copy key to clipboard")
+                        }
+                    }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Description").font(.headline)
+                    Text(self.flag.info.description)
+                }
+                    .contextMenu {
+                        Button(action: { self.flag.info.description.copyToPasteboard() }) {
+                            Text("Copy description to clipboard")
+                        }
+                    }
             }
 
             Section(header: Text("Current Source")) {

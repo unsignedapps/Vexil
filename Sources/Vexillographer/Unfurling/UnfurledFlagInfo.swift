@@ -13,6 +13,9 @@ struct UnfurledFlagInfo {
 
     // MARK: - Properties
 
+    /// The flag's key
+    let key: String
+
     /// The name of the unfurled flag or flag group
     let name: String
 
@@ -22,7 +25,8 @@ struct UnfurledFlagInfo {
 
     // MARK: - Initialisation
 
-    init (info: FlagInfo, defaultName: String) {
+    init (key: String, info: FlagInfo, defaultName: String) {
+        self.key = key
         self.name = info.name ?? defaultName
         self.description = info.description
     }

@@ -29,7 +29,7 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     // MARK: - Initialisation
 
     init (name: String, group: FlagGroup<Group>, manager: FlagValueManager<Root>) {
-        self.info = UnfurledFlagInfo(info: group.info, defaultName: name)
+        self.info = UnfurledFlagInfo(key: "", info: group.info, defaultName: name)
         self.group = group
         self.manager = manager
     }
