@@ -93,14 +93,14 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     private var shouldSetupSnapshotPublishing = false
 
-    private lazy var latestSnapshot: PassthroughSubject<Snapshot<RootGroup>, Never> = {
-        self.shouldSetupSnapshotPublishing = true
-        self.setupSnapshotPublishing(sendImmediately: true)
-        return PassthroughSubject<Snapshot<RootGroup>, Never>()
-    }()
+    private lazy var latestSnapshot = PassthroughSubject<Snapshot<RootGroup>, Never>()
 
     public var publisher: AnyPublisher<Snapshot<RootGroup>, Never> {
-        self.latestSnapshot.eraseToAnyPublisher()
+        if self.shouldSetupSnapshotPublishing == false {
+            self.shouldSetupSnapshotPublishing = true
+            self.setupSnapshotPublishing(sendImmediately: true)
+        }
+        return self.latestSnapshot.eraseToAnyPublisher()
     }
 
     private lazy var cancellables = Set<AnyCancellable>()
