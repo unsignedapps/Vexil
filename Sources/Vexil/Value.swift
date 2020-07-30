@@ -10,6 +10,8 @@
 import Foundation
 
 public protocol FlagValue: Codable {
+    associatedtype BoxedValueType = Data
+
     init? (boxedFlagValue: BoxedFlagValue)
 
     var boxedFlagValue: BoxedFlagValue { get }
@@ -39,6 +41,8 @@ public enum BoxedFlagValue: Equatable {
 // MARK: - Conforming Simple Types
 
 extension Bool: FlagValue {
+    public typealias BoxedValueType = Bool
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .bool(let value) = boxedFlagValue else { return nil }
         self = value
@@ -50,6 +54,8 @@ extension Bool: FlagValue {
 }
 
 extension String: FlagValue {
+    public typealias BoxedValueType = String
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .string(let value) = boxedFlagValue else { return nil }
         self = value
@@ -61,6 +67,8 @@ extension String: FlagValue {
 }
 
 extension URL: FlagValue {
+    public typealias BoxedValueType = String
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .string(let value) = boxedFlagValue else { return nil }
         self.init(string: value)
@@ -72,6 +80,8 @@ extension URL: FlagValue {
 }
 
 extension Date: FlagValue {
+    public typealias BoxedValueType = String
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .string(let value) = boxedFlagValue else { return nil }
 
@@ -88,6 +98,8 @@ extension Date: FlagValue {
 }
 
 extension Data: FlagValue {
+    public typealias BoxedValueType = Data
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .data(let value) = boxedFlagValue else { return nil }
         self = value
@@ -99,6 +111,8 @@ extension Data: FlagValue {
 }
 
 extension Double: FlagValue {
+    public typealias BoxedValueType = Double
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .double(let value) = boxedFlagValue else { return nil }
         self = value
@@ -110,6 +124,8 @@ extension Double: FlagValue {
 }
 
 extension Float: FlagValue {
+    public typealias BoxedValueType = Float
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         switch boxedFlagValue {
         case let .float(value):         self = value
@@ -124,6 +140,8 @@ extension Float: FlagValue {
 }
 
 extension Int: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = value
@@ -135,6 +153,8 @@ extension Int: FlagValue {
 }
 
 extension Int8: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = Int8(value)
@@ -146,6 +166,8 @@ extension Int8: FlagValue {
 }
 
 extension Int16: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = Int16(value)
@@ -157,6 +179,8 @@ extension Int16: FlagValue {
 }
 
 extension Int32: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = Int32(value)
@@ -168,6 +192,8 @@ extension Int32: FlagValue {
 }
 
 extension Int64: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = Int64(value)
@@ -179,6 +205,8 @@ extension Int64: FlagValue {
 }
 
 extension UInt: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = UInt(value)
@@ -190,6 +218,8 @@ extension UInt: FlagValue {
 }
 
 extension UInt8: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = UInt8(value)
@@ -201,6 +231,8 @@ extension UInt8: FlagValue {
 }
 
 extension UInt16: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = UInt16(value)
@@ -212,6 +244,8 @@ extension UInt16: FlagValue {
 }
 
 extension UInt32: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = UInt32(value)
@@ -223,6 +257,8 @@ extension UInt32: FlagValue {
 }
 
 extension UInt64: FlagValue {
+    public typealias BoxedValueType = Int
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .integer(let value) = boxedFlagValue else { return nil }
         self = UInt64(value)
@@ -237,6 +273,8 @@ extension UInt64: FlagValue {
 // MARK: - Conforming Other Types
 
 extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
+    public typealias BoxedValueType = RawValue.BoxedValueType
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard let rawValue = RawValue(boxedFlagValue: boxedFlagValue) else { return nil }
         self.init(rawValue: rawValue)
@@ -248,6 +286,8 @@ extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
 }
 
 extension Optional: FlagValue where Wrapped: FlagValue {
+    public typealias BoxedValueType = Wrapped.BoxedValueType?
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         if case .none = boxedFlagValue {
             self = .none
@@ -266,6 +306,8 @@ extension Optional: FlagValue where Wrapped: FlagValue {
 }
 
 extension Array: FlagValue where Element: FlagValue {
+    public typealias BoxedValueType = [Element.BoxedValueType]
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .array(let array) = boxedFlagValue else { return nil }
         self = array.compactMap { Element(boxedFlagValue: $0) }
@@ -277,6 +319,8 @@ extension Array: FlagValue where Element: FlagValue {
 }
 
 extension Dictionary: FlagValue where Key == String, Value: FlagValue {
+    public typealias BoxedValueType = [String: Value.BoxedValueType]
+
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .dictionary(let dictionary) = boxedFlagValue else { return nil }
         self = dictionary.compactMapValues { Value(boxedFlagValue: $0) }
