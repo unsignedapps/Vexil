@@ -90,7 +90,10 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
                 $0.value.decorate(lookup: self, label: $0.label, codingPath: codingPath, config: config)
             }
 
-        self.allFlags = children.lazy.allFlags()
+        self.allFlags = children
+            .lazy
+            .map({ $0.value })
+            .allFlags()
     }
 
     private func copyCurrentValues (flagPole: FlagPole<RootGroup>) {
