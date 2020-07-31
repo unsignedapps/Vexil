@@ -93,14 +93,17 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     private var shouldSetupSnapshotPublishing = false
 
-    private lazy var latestSnapshot = PassthroughSubject<Snapshot<RootGroup>, Never>()
+    private lazy var latestSnapshot: CurrentValueSubject<Snapshot<RootGroup>, Never> = {
+        return CurrentValueSubject(self.snapshot())
+    }()
 
     public var publisher: AnyPublisher<Snapshot<RootGroup>, Never> {
+        let snapshot = self.latestSnapshot
         if self.shouldSetupSnapshotPublishing == false {
             self.shouldSetupSnapshotPublishing = true
             self.setupSnapshotPublishing(sendImmediately: true)
         }
-        return self.latestSnapshot.eraseToAnyPublisher()
+        return snapshot.eraseToAnyPublisher()
     }
 
     private lazy var cancellables = Set<AnyCancellable>()
@@ -113,7 +116,6 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         self.cancellables.removeAll()
 
         let upstream = self._sources.compactMap { $0.valuesDidChange }
-        guard upstream.isEmpty == false else { return }
 
         Publishers.MergeMany(upstream)
             .sink { [weak self] in
