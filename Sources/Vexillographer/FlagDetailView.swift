@@ -91,16 +91,16 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             }
 
             Section(header: Text("FlagPole Source Hierarchy")) {
-                ForEach(0 ..< self.manager.flagPole._sources.count) { index in
+                ForEach(self.manager.flagPole._sources, id: \.name) { source in
                     HStack {
-                        if (self.manager.flagPole._sources[index] as AnyObject) === (self.manager.source as AnyObject) {
-                            Text(self.manager.flagPole._sources[index].name)
+                        if (source as AnyObject) === (self.manager.source as AnyObject) {
+                            Text(source.name)
                                 .font(.headline)
                         } else {
-                            Text(self.manager.flagPole._sources[index].name)
+                            Text(source.name)
                         }
                         Spacer()
-                        self.description(source: self.manager.flagPole._sources[index])
+                        self.description(source: source)
                     }
                 }
                 HStack {
