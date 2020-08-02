@@ -22,7 +22,7 @@ Feel free to contact [@bok_][twitter] on Twitter, or [open a new issue][new-issu
 
 Discuss your idea first, so that your changes have a good chance of being merged in.
 
-Submit your pull request against the `master` branch.
+Submit your pull request against the `main` branch.
 
 Pull requests that include tests for modified and new functionalities, inline documentation, and relevant updates to the main README.md are merged faster, because you won't have to wait for somebody else to complete your contribution.
 

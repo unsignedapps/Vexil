@@ -1,5 +1,5 @@
 <!--
-    Thanks for contributing to swift-create-xcframework!
+    Thanks for contributing to Vexil!
 
     Before you submit your request, please replace each paragraph
     below with the relevant details, and complete the steps in the
@@ -9,11 +9,11 @@
     - [ ] This task isn't completed
 -->
 
-### Description
+### 📒 Description
 
 Replace this paragraph with a description of your changes and rationale. Provide links to an existing issue or external references/discussions, if appropriate.
 
-### Detailed Design
+### 🔍 Detailed Design
 
 Include any additional information about the design here. At minimum, show any new API:
 
@@ -22,19 +22,19 @@ Include any additional information about the design here. At minimum, show any n
 struct NewFeature {}
 ```
 
-### Documentation Plan
+### 📓 Documentation Plan
 
 How has the new feature been documented? Have the relevant portions of the guide been updated in addition to symbol-level documentation?
 
-### Test Plan
+### 🗳 Test Plan
 
 How is the new feature tested?
 
-### Source Impact
+### 🧯 Source Impact
 
 What is the impact of this change on existing users? Does it deprecate or remove any existing API?
 
-### Checklist
+### ✅ Checklist
 
 - [ ] I've added at least one test that validates that my change is working, if appropriate
 - [ ] I've followed the code style of the rest of the project
