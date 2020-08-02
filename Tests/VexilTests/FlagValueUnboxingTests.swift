@@ -17,6 +17,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = true
 
         XCTAssertEqual(Bool(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Bool(boxedFlagValue: .none))
     }
 
     func testBooleanFalseFlagValue () {
@@ -34,6 +35,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = "Test String"
 
         XCTAssertEqual(String(boxedFlagValue: boxed), expected)
+        XCTAssertNil(String(boxedFlagValue: .none))
     }
 
     func testURLStringFlagValue () {
@@ -41,6 +43,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = URL(string: "https://google.com/")!
 
         XCTAssertEqual(URL(boxedFlagValue: boxed), expected)
+        XCTAssertNil(URL(boxedFlagValue: .none))
     }
 
 
@@ -51,6 +54,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let boxed = BoxedFlagValue.data(expected)
 
         XCTAssertEqual(Data(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Data(boxedFlagValue: .none))
     }
 
     func testDateFlagValue () {
@@ -65,6 +69,7 @@ final class FlagValueUnboxingTests: XCTestCase {
             }
 
             XCTAssertEqual(calendar.compare(expected, to: date, toGranularity: .second), .orderedSame)
+            XCTAssertNil(Date(boxedFlagValue: .none))
         }
 
         enum Error: Swift.Error {
@@ -80,6 +85,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: Int = 123
 
         XCTAssertEqual(Int(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Int(boxedFlagValue: .none))
     }
 
     func testInt8FlagValue () {
@@ -87,6 +93,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: Int8 = 12
 
         XCTAssertEqual(Int8(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Int8(boxedFlagValue: .none))
     }
 
     func testInt16FlagValue () {
@@ -94,6 +101,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: Int16 = 123
 
         XCTAssertEqual(Int16(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Int16(boxedFlagValue: .none))
     }
 
     func testInt32FlagValue () {
@@ -101,6 +109,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: Int32 = 123
 
         XCTAssertEqual(Int32(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Int32(boxedFlagValue: .none))
     }
 
     func testInt64FlagValue () {
@@ -108,6 +117,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: Int64 = 123
 
         XCTAssertEqual(Int64(boxedFlagValue: boxed), expected)
+        XCTAssertNil(Int64(boxedFlagValue: .none))
     }
 
     func testUIntFlagValue () {
@@ -115,6 +125,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: UInt = 123
 
         XCTAssertEqual(UInt(boxedFlagValue: boxed), expected)
+        XCTAssertNil(UInt(boxedFlagValue: .none))
     }
 
     func testUInt8FlagValue () {
@@ -122,6 +133,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: UInt8 = 12
 
         XCTAssertEqual(UInt8(boxedFlagValue: boxed), expected)
+        XCTAssertNil(UInt8(boxedFlagValue: .none))
     }
 
     func testUInt16FlagValue () {
@@ -129,6 +141,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: UInt16 = 123
 
         XCTAssertEqual(UInt16(boxedFlagValue: boxed), expected)
+        XCTAssertNil(UInt16(boxedFlagValue: .none))
     }
 
     func testUInt32FlagValue () {
@@ -136,6 +149,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: UInt32 = 123
 
         XCTAssertEqual(UInt32(boxedFlagValue: boxed), expected)
+        XCTAssertNil(UInt32(boxedFlagValue: .none))
     }
 
     func testUInt64FlagValue () {
@@ -143,6 +157,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected: UInt64 = 123
 
         XCTAssertEqual(UInt64(boxedFlagValue: boxed), expected)
+        XCTAssertNil(UInt64(boxedFlagValue: .none))
     }
 
 
@@ -150,6 +165,20 @@ final class FlagValueUnboxingTests: XCTestCase {
 
     func testFloatFlagValue () {
         let boxed = BoxedFlagValue.float(123.456)
+        let expected: Float = 123.456
+
+        let result = Float(boxedFlagValue: boxed)
+        XCTAssertNotNil(result)
+
+        if let result = result {
+            XCTAssertEqual(result, expected, accuracy: 0.0001)
+        }
+
+        XCTAssertNil(Float(boxedFlagValue: .none))
+    }
+
+    func testFloatDoubleFlagValue () {
+        let boxed = BoxedFlagValue.double(123.456)
         let expected: Float = 123.456
 
         let result = Float(boxedFlagValue: boxed)
@@ -170,6 +199,8 @@ final class FlagValueUnboxingTests: XCTestCase {
         if let result = result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
+
+        XCTAssertNil(Double(boxedFlagValue: .none))
     }
 
 
@@ -180,6 +211,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = TestStruct(rawValue: 123)
 
         XCTAssertEqual(TestStruct(boxedFlagValue: boxed), expected)
+        XCTAssertNil(TestStruct(boxedFlagValue: .none))
 
 
         struct TestStruct: RawRepresentable, FlagValue, Equatable {
@@ -209,6 +241,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = [ 123, 456, 789 ]
 
         XCTAssertEqual([Int](boxedFlagValue: boxed), expected)
+        XCTAssertNil([Int](boxedFlagValue: .none))
     }
 
     func testDictionaryFlagValue () {
@@ -216,6 +249,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let expected = [ "one": 123, "two": 456, "three": 789 ]
 
         XCTAssertEqual([String: Int](boxedFlagValue: boxed), expected)
+        XCTAssertNil([String: Int](boxedFlagValue: .none))
     }
 
 
@@ -228,6 +262,7 @@ final class FlagValueUnboxingTests: XCTestCase {
             let boxed = BoxedFlagValue.data(data)
 
             XCTAssertEqual(TestStruct(boxedFlagValue: boxed), expected)
+            XCTAssertNil(TestStruct(boxedFlagValue: .none))
         }
 
         struct TestStruct: Codable, FlagValue, Equatable {
