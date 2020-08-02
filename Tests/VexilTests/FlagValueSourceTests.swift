@@ -35,7 +35,7 @@ final class FlagValueSourceTests: XCTestCase {
     func testSourceSets () {
         AssertNoThrow {
             var events = [TestSetSource.Event]()
-            let source = TestSetSource() {
+            let source = TestSetSource {
                 events.append($0)
             }
 
@@ -58,6 +58,8 @@ final class FlagValueSourceTests: XCTestCase {
 
 
 // MARK: - Fixtures
+
+// swiftlint:disable let_var_whitespace
 
 private struct TestFlags: FlagContainer {
 
