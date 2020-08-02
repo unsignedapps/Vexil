@@ -244,7 +244,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
     // MARK: - Codable Tests
 
     func testDecodeCodable () {
-        struct MyStruct: FlagValue, Equatable {
+        struct MyStruct: FlagValue, Codable, Equatable {
             let property1 = "value1"
             let property2 = 123
             let property3 = "🤯"

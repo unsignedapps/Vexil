@@ -9,7 +9,7 @@
 
 import Foundation
 
-public protocol FlagValue: Codable {
+public protocol FlagValue {
     associatedtype BoxedValueType = Data
 
     init? (boxedFlagValue: BoxedFlagValue)
@@ -334,7 +334,7 @@ extension Dictionary: FlagValue where Key == String, Value: FlagValue {
 
 // MARK: - Conforming Codable Types
 
-extension Decodable where Self: FlagValue {
+extension Decodable where Self: FlagValue, Self: Encodable {
     public init? (boxedFlagValue: BoxedFlagValue) {
         guard case .data(let data) = boxedFlagValue else { return nil }
 
@@ -349,7 +349,7 @@ extension Decodable where Self: FlagValue {
     }
 }
 
-extension Encodable where Self: FlagValue {
+extension Encodable where Self: FlagValue, Self: Decodable {
     public var boxedFlagValue: BoxedFlagValue {
         do {
             let encoder = JSONEncoder()
