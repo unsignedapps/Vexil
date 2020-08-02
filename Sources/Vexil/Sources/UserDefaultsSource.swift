@@ -28,7 +28,6 @@ extension UserDefaults: FlagValueSource {
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        print("[UserDefaultsSource] Setting flag \(key) to \(String(describing: value))")
         guard let value = value else {
             self.removeObject(forKey: key)
             return
