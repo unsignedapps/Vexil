@@ -10,9 +10,3 @@ import Foundation
 public protocol FlagContainer {
     init()
 }
-
-internal extension FlagContainer {
-    subscript(checkedMirrorDescendant key: String) -> Any {
-        return Mirror(reflecting: self).descendant(key)!
-    }
-}
