@@ -33,7 +33,7 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(snapshots.first?.testFlag, false)
     }
 
-    func testPublishedSnapshotWhenAddingSource () {
+    func testPublishesSnapshotWhenAddingSource () {
         let expectation = self.expectation(description: "snapshot")
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -41,7 +41,6 @@ final class PublisherTests: XCTestCase {
         var snapshots: [Snapshot<TestFlags>] = []
 
         let cancellable = pole.publisher
-            .print()
             .sink { snapshot in
                 snapshots.append(snapshot)
                 if snapshots.count == 2 {
@@ -61,6 +60,58 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(snapshots.last?.testFlag, true)
     }
 
+    func testPublishesWhenSourceChanges () {
+        let expectation = self.expectation(description: "published")
+        let source = TestSource()
+        let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
+
+        var snapshots = [Snapshot<TestFlags>]()
+
+        let cancellable = pole.publisher
+            .sink { snapshot in
+                snapshots.append(snapshot)
+                if snapshots.count == 3 {
+                    expectation.fulfill()
+                }
+            }
+
+        source.subject.send()
+        source.subject.send()
+
+        wait(for: [ expectation ], timeout: 1)
+
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(snapshots.count, 3)
+    }
+
+    func testPublishesWithMultipleSources () {
+        let expectation = self.expectation(description: "published")
+
+        let source1 = TestSource()
+        let source2 = TestSource()
+
+        let pole = FlagPole(hoist: TestFlags.self, sources: [ source1, source2 ])
+
+        var snapshots = [Snapshot<TestFlags>]()
+
+        let cancellable = pole.publisher
+            .sink { snapshot in
+                snapshots.append(snapshot)
+                if snapshots.count == 3 {
+                    expectation.fulfill()
+                }
+            }
+
+        source1.subject.send()
+        source2.subject.send()
+
+        wait(for: [ expectation ], timeout: 1)
+
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(snapshots.count, 3)
+
+    }
+
 }
 
 // MARK: - Test Fixtures
@@ -72,6 +123,24 @@ private struct TestFlags: FlagContainer {
     @Flag(default: false, description: "This is a test flag")
     var testFlag: Bool
 
+}
+
+private final class TestSource: FlagValueSource {
+    var name = "Test Source"
+    var subject = PassthroughSubject<Void, Never>()
+
+    init () {}
+
+    func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
+        return nil
+    }
+
+    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+    }
+
+    var valuesDidChange: AnyPublisher<Void, Never>? {
+        return subject.eraseToAnyPublisher()
+    }
 }
 
 #endif

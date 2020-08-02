@@ -46,7 +46,7 @@ final class SnapshotTests: XCTestCase {
         source.subgroup.doubleSubgroup.thirdLevelFlag = true
 
         // set that as our source, and take an empty snapshot
-        pole._sources = [ source ]
+        pole.insert(snapshot: source, at: 0)
         let snapshot = pole.emptySnapshot()
 
         // everything should be reset
@@ -67,7 +67,7 @@ final class SnapshotTests: XCTestCase {
         source.subgroup.doubleSubgroup.thirdLevelFlag = true
 
         // set that as our source, and take an normal snapshot
-        pole._sources = [ source ]
+        pole.append(snapshot: source)
         let snapshot = pole.snapshot()
 
         // everything should be reflect the new source
@@ -75,6 +75,16 @@ final class SnapshotTests: XCTestCase {
         XCTAssertTrue(snapshot.secondTestFlag)
         XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
         XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+
+        // remove it again and re-test
+        pole.remove(snapshot: source)
+        let empty = pole.emptySnapshot()
+
+        // everything should be reset
+        XCTAssertFalse(empty.topLevelFlag)
+        XCTAssertFalse(empty.secondTestFlag)
+        XCTAssertFalse(empty.subgroup.secondLevelFlag)
+        XCTAssertFalse(empty.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 }
 

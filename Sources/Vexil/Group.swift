@@ -27,13 +27,6 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
         self.info = info
     }
 
-    /// An internal initialiser used so we can create Snapshtos that are decoupled from everything
-    internal init (group: Group) {
-        self.codingKeyStrategy = .default
-        self.wrappedValue = group
-        self.info = .hidden
-    }
-
 
     // MARK: - Decoratod Conformance
 
