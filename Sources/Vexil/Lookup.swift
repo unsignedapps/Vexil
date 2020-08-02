@@ -13,9 +13,11 @@ internal protocol Lookup: AnyObject {
 
 extension FlagPole: Lookup {
     func lookup<Value> (key: String) -> Value? where Value: FlagValue {
-        return self._sources
-            .lazy
-            .compactMap { $0.flagValue(key: key) }
-            .first
+        for source in self._sources {
+            if let value: Value = source.flagValue(key: key) {
+                return value
+            }
+        }
+        return nil
     }
 }
