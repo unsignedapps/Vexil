@@ -26,5 +26,9 @@ let package = Package(
         .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
 
         .target(name: "Vexillographer", dependencies: [ "Vexil" ]),
+    ],
+
+    swiftLanguageVersions: [
+        .v5
     ]
 )
