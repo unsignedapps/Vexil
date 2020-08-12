@@ -5,6 +5,10 @@
 //  Created by Rob Amos on 15/7/20.
 //
 
+/// A simple collection of information about a `Flag` or `FlagGroup`
+///
+/// This is mostly used by flag editors like Vexillographer.
+///
 public struct FlagInfo {
 
     // MARK: - Properties
@@ -21,12 +25,19 @@ public struct FlagInfo {
 
     // MARK: - Initialisation
 
+    /// Internal memberwise initialiser
+    ///
     init (name: String?, description: String, shouldDisplay: Bool) {
         self.name = name
         self.description = description
         self.shouldDisplay = shouldDisplay
     }
 
+    /// Allows a `FlagInfo` to be initialised directly when required
+    ///
+    /// - Parameters:
+    ///   - description:        A brief description of the `Flag` or `FlagGroup`s purpose.
+    ///
     public init (description: String) {
         self.init(name: nil, description: description, shouldDisplay: true)
     }
@@ -36,6 +47,8 @@ public struct FlagInfo {
 // MARK: - Hidden Flags
 
 public extension FlagInfo {
+
+    /// Hides the `Flag` or `FlagGroup` from flag editors like Vexillographer
     static let hidden = FlagInfo(name: nil, description: "", shouldDisplay: false)
 }
 
