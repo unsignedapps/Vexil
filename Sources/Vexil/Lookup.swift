@@ -5,6 +5,10 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
+#if !os(Linux)
+import Combine
+#endif
+
 import Foundation
 
 /// An internal protocol that is provided to each `Flag` when it is decorated.
@@ -15,6 +19,10 @@ import Foundation
 ///
 internal protocol Lookup: AnyObject {
     func lookup<Value> (key: String) -> Value? where Value: FlagValue
+
+    #if !os(Linux)
+    func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
+    #endif
 }
 
 extension FlagPole: Lookup {
@@ -33,4 +41,16 @@ extension FlagPole: Lookup {
         }
         return nil
     }
+
+    #if !os(Linux)
+
+    /// Retrieves a publsiher from the FlagPole that is bound to updates of a specific key
+    ///
+    func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
+        self.publisher
+            .compactMap { $0.flagValue(key: key) }
+            .eraseToAnyPublisher()
+    }
+
+    #endif
 }

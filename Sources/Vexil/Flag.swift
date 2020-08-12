@@ -5,6 +5,10 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
+#if !os(Linux)
+import Combine
+#endif
+
 import Foundation
 
 /// A wrapper representing a Feature Flag / Feature Toggle.
@@ -117,3 +121,43 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         }
     }
 }
+
+
+// MARK: - Real Time Flag Publishing
+
+#if !os(Linux)
+
+public extension Flag where Value: FlagValue & Equatable {
+
+    /// A `Publisher` that provides real-time updates if any flag value changes.
+    ///
+    /// This is essentially a filter on the `FlagPole`s Publisher.
+    ///
+    /// As your `FlagValue` is also `Equatable`, this publisher will automatically
+    /// remove duplicates.
+    ///
+    var publisher: AnyPublisher<Value, Never> {
+        decorator.lookup!.publisher(key: self.key)
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
+}
+
+public extension Flag {
+
+    /// A `Publisher` that provides real-time updates if any time the source
+    /// hierarchy changes.
+    ///
+    /// This is essentially a filter on the `FlagPole`s Publisher.
+    ///
+    /// As your `FlagValue` is not `Equatable`, this publisher will **not**
+    /// remove duplicates.
+    ///
+    var publisher: AnyPublisher<Value, Never> {
+        decorator.lookup!.publisher(key: self.key)
+    }
+
+}
+
+#endif

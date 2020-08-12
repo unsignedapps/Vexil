@@ -5,25 +5,61 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
-// swiftlint:disable extension_access_modifier
+// swiftlint:disable extension_access_modifier file_length
 
 import Foundation
 
+/// A type that represents the wrapped value of a `Flag`
+///
+/// This type exists solely so we can provide hints for boxing/unboxing or encoding/decoding
+/// into various `FlagValueSource`s.
+///
+/// See the full documentation for information and examples on using custom types
+/// with Vexil.
+///
 public protocol FlagValue {
+
+    /// The type that this `FlagValue` would be boxed into.
+    /// Used by `FlagValueSource`s to provide interop with different providers
+    ///
+    /// For `Codable` support, a default boxed type of `Data` is assumed if you
+    /// do not specify one directly.
+    ///
     associatedtype BoxedValueType = Data
 
+    /// When initialised with a BoxedFlagValue your conforming type must
+    /// be able to unbox and initialise itself. Return nil if you cannot successfully
+    /// unbox the flag value, or if it is an incompatible type.
+    ///
     init? (boxedFlagValue: BoxedFlagValue)
 
+    /// Your conforming type must return an instance of the BoxedFlagValue
+    /// with the boxed type included. This type should match the type
+    /// specified in the `BoxedValueType` assocaited type.
+    ///
     var boxedFlagValue: BoxedFlagValue { get }
 }
 
+/// A convenience protocol used by flag editors like Vexillographer.
+///
+/// Use this with your `CaseIterable` types when you want to customise
+/// the value displayed in the UI.
+///
+/// - Note: This is only used by types that are edited with a `Picker` (eg. those
+/// that are `CaseIterable`. It is not used by types that are edited
+/// with a `TextField` or `Toggle`.
+///
 public protocol FlagDisplayValue {
+
+    /// The value to display in the `Picker` for a given flag value
     var flagDisplayValue: String { get }
 }
 
 // MARK: - Boxed Flag Values
 
 /// An intermediate type used to make encoding and decoding of types simpler for `FlagValueSource`s
+///
+/// Any custom type you conform to `FlagValue` must be able to be represented using one of these types
 ///
 public enum BoxedFlagValue: Equatable {
     case array([BoxedFlagValue])
