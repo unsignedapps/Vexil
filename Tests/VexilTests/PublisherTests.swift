@@ -13,6 +13,8 @@ import XCTest
 
 final class PublisherTests: XCTestCase {
 
+    // MARK: - Flag Pole Publisher
+
     func testPublisherSetup () {
         let expectation = self.expectation(description: "snapshot")
 
@@ -110,6 +112,67 @@ final class PublisherTests: XCTestCase {
         XCTAssertNotNil(cancellable)
         XCTAssertEqual(snapshots.count, 3)
 
+    }
+
+
+    // MARK: - Individual Flag Publishers
+
+    // swiftlint:disable xct_specific_matcher
+
+    func testIndividualFlagPublisher () {
+        let expectation = self.expectation(description: "publisher")
+
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+
+        var values: [Bool] = []
+
+        let cancellable = pole.$testFlag.publisher
+            .sink { value in
+                values.append(value)
+                if values.count == 2 {
+                    expectation.fulfill()
+                }
+            }
+
+        let change = pole.emptySnapshot()
+        change.testFlag = true
+        pole.append(snapshot: change)
+
+        wait(for: [ expectation ], timeout: 1)
+
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(values.count, 2)
+        XCTAssertEqual(values.first, false)
+        XCTAssertEqual(values.last, true)
+    }
+
+
+    func testIndividualFlagPublisheRemovesDuplicates () {
+        let expectation = self.expectation(description: "publisher")
+
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+
+        var values: [Bool] = []
+
+        let cancellable = pole.$testFlag.publisher
+            .sink { value in
+                values.append(value)
+                if values.count == 2 {
+                    expectation.fulfill()
+                }
+            }
+
+        let change = pole.emptySnapshot()
+        change.testFlag = true
+        pole.append(snapshot: change)
+        pole.append(snapshot: change)
+
+        wait(for: [ expectation ], timeout: 1)
+
+        XCTAssertNotNil(cancellable)
+        XCTAssertEqual(values.count, 2)
+        XCTAssertEqual(values.first, false)
+        XCTAssertEqual(values.last, true)
     }
 
 }
