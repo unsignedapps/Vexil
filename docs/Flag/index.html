@@ -26,7 +26,7 @@
     <nav>
         <div class="wrapper">
             <h2>On This Page</h2>
-            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Nested Types</a></li><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#flag.init(name:codingkeystrategy:default:description:)">init(name:​coding​Key​Strategy:​default:​description:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#flag.id">id</a></li><li class="variable"><a href="#flag.info">info</a></li><li class="variable"><a href="#flag.defaultvalue">default​Value</a></li><li class="variable"><a href="#flag.wrappedvalue">wrapped​Value</a></li><li class="variable"><a href="#flag.key">key</a></li><li class="variable"><a href="#flag.projectedvalue">projected​Value</a></li><li class="variable"><a href="#flag.publisher">publisher</a></li></ul></li></ol>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Nested Types</a></li><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#flag.init(name:codingkeystrategy:default:description:)">init(name:​coding​Key​Strategy:​default:​description:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#flag.id">id</a></li><li class="variable"><a href="#flag.info">info</a></li><li class="variable"><a href="#flag.defaultvalue">default​Value</a></li><li class="variable"><a href="#flag.wrappedvalue">wrapped​Value</a></li><li class="variable"><a href="#flag.key">key</a></li><li class="variable"><a href="#flag.projectedvalue">projected​Value</a></li></ul></li></ol>
         </div>
     </nav>
 
@@ -88,7 +88,7 @@ you need to acess any information about the flag itself.</p>
 </g>
 </g>
 <!-- Flag&#45;&gt;Identifiable -->
-<g id="edge2" class="edge conformsTo">
+<g id="edge1" class="edge conformsTo">
 <title>Flag&#45;&gt;Identifiable</title>
 <path fill="none" stroke="black" d="M377.25,-71.97C345.4,-62.06 305.08,-49.51 271.67,-39.12"/>
 <polygon fill="black" stroke="black" points="272.59,-35.74 262,-36.11 270.51,-42.42 272.59,-35.74"/>
@@ -103,7 +103,7 @@ you need to acess any information about the flag itself.</p>
 </g>
 </g>
 <!-- Flag&#45;&gt;Decorated -->
-<g id="edge1" class="edge conformsTo">
+<g id="edge2" class="edge conformsTo">
 <title>Flag&#45;&gt;Decorated</title>
 <path fill="none" stroke="black" d="M486.75,-71.97C518.6,-62.06 558.92,-49.51 592.33,-39.12"/>
 <polygon fill="black" stroke="black" points="593.49,-42.42 602,-36.11 591.41,-35.74 593.49,-42.42"/>
@@ -250,24 +250,6 @@ access to the key or other information.</p>
 
 </div>
 </div>
-<div role="article" class="variable" id="flag.publisher">
-    <h3>
-        <code>publisher</code>
-    </h3>
-    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">publisher</span>: <span class="type">AnyPublisher</span>&lt;<span class="type">Value</span>, <span class="type">Never</span>&gt;</code></pre></body></html>
-<div class="summary" role="doc-abstract">
-    <p>A <code>Publisher</code> that provides real-time updates if any time the source
-hierarchy changes.</p>
-
-</div>
-<div class="discussion">
-    <p>This is essentially a filter on the <code>FlagPole</code>s Publisher.</p>
-
-<p>As your <code>FlagValue</code> is not <code>Equatable</code>, this publisher will <strong>not</strong>
-remove duplicates.</p>
-
-</div>
-</div>
     </section>
 
 
@@ -277,7 +259,7 @@ remove duplicates.</p>
 
     <footer>
         <p>
-    Generated on <time datetime="2020-08-13T00:09:10+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
+    Generated on <time datetime="2020-08-13T00:21:06+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
 </p>
     </footer>
 </body>
