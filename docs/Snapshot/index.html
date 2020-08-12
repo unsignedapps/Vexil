@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexil - Snapshot</title>
+    <link rel="stylesheet" type="text/css" href="/Vexil/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/Vexil">
+            <strong>
+                Vexil
+            </strong>
+            <span>Documentation</span>
+        </a>
+        <sup>Beta</sup>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#snapshot.id">id</a></li><li class="variable"><a href="#snapshot.displayname">display​Name</a></li><li class="variable"><a href="#snapshot.name">name</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#snapshot.flagvalue(key:)">flag​Value(key:​)</a></li><li class="function"><a href="#snapshot.setflagvalue(_:key:)">set​Flag​Value(_:​key:​)</a></li><li class="function"><a href="#snapshot.==(lhs:rhs:)">==(lhs:​rhs:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Class</small>
+    <code class="name">Snapshot</code>
+</h1>
+
+<html><body><pre class="highlight"><code><span class="attribute">@</span><span class="attribute">dynamicMemberLookup</span> <span class="keyword">public</span> <span class="keyword">class</span> <span class="type">Snapshot</span>&lt;<span class="variable">RootGroup</span>&gt;: <a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a> <span class="keyword">where</span> <span class="type">RootGroup</span>: <a href="/Vexil/FlagContainer"><span class="type">FlagContainer</span></a></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>A <code>Snapshot</code> serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
+mutable and can be applied / saved to a <code>FlagValueSource</code>.</p>
+
+</div>
+<div class="discussion">
+    <p><code>Snapshot</code>s are themselves a <code>FlagValueSource</code>, which means you can insert in into a <code>FlagPole</code>s
+source hierarchy as required.,</p>
+
+<p>You create snapshots using a <code>FlagPole</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="comment">// Create an empty Snapshot. It contains no values itself so any flags</span>
+<span class="comment">// accessed in it will use their `defaultValue`.</span>
+<span class="keyword">let</span> <span class="variable">empty</span> = <span class="variable">flagPole</span>.<span class="type">emptySnapshot</span>()
+
+<span class="comment">// Create a full Snapshot. The current value of *all* flags in the `FlagPole`</span>
+<span class="comment">// will be copied into it.</span>
+<span class="keyword">let</span> <span class="variable">snapshot</span> = <span class="variable">flagPole</span>.<span class="type">snapshot</span>()
+</code></pre></body></html>
+<p>Snapshots can be manipulated:</p>
+
+<html><body><pre class="highlight"><code><span class="variable">snapshot</span>.<span class="type">subgroup</span>.<span class="type">myAmazingFlag</span> = <span class="string literal">"</span><span class="string literal">somevalue</span><span class="string literal">"</span>
+</code></pre></body></html>
+<p>Snapshots can be saved or applied to a <code>FlagValueSource</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="keyword">try</span> <span class="variable">flagPole</span>.<span class="type">save</span>(<span class="variable">snapshot</span>: <span class="type">snapshot</span>, <span class="variable">to</span>: <span class="type">UserDefaults</span>.<span class="type">standard</span>)
+</code></pre></body></html>
+<p>Snapshots can be inserted into the <code>FlagPole</code>s source hierarchy:</p>
+
+<html><body><pre class="highlight"><code><span class="variable">flagPole</span>.<span class="type">insert</span>(<span class="variable">snapshot</span>: <span class="type">snapshot</span>, <span class="variable">at</span>: <span class="number literal">0</span>)
+</code></pre></body></html>
+<p>And Snapshots are emitted from a <code>FlagPole</code> when you subscribe to real-time flag updates:</p>
+
+<html><body><pre class="highlight"><code><span class="variable">flagPole</span>.<span class="type">publisher</span>
+    .<span class="type">sink</span> { <span class="variable">snapshot</span> <span class="keyword">in</span>
+        <span class="comment">// ...</span>
+    }
+</code></pre></body></html>
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        <figure>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.44.1 (20200629.0846)
+ -->
+<!-- Pages: 1 -->
+<svg width="872pt" height="116pt"
+ viewBox="0.00 0.00 872.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 868,-112 868,4 -4,4"/>
+<!-- Snapshot -->
+<g id="node1" class="node class current">
+<title>Snapshot</title>
+<g id="a_node1"><a xlink:href="/Vexil/Snapshot" xlink:title="Snapshot">
+<path fill="none" stroke="black" stroke-width="3" d="M528,-108C528,-108 336,-108 336,-108 330,-108 324,-102 324,-96 324,-96 324,-84 324,-84 324,-78 330,-72 336,-72 336,-72 528,-72 528,-72 534,-72 540,-78 540,-84 540,-84 540,-96 540,-96 540,-102 534,-108 528,-108"/>
+<text text-anchor="middle" x="432" y="-86.3" font-family="Menlo" font-size="14.00">Snapshot</text>
+</a>
+</g>
+</g>
+<!-- Equatable -->
+<g id="node2" class="node unknown">
+<title>Equatable</title>
+<g id="a_node2"><a xlink:href="/Vexil/Equatable" xlink:title="Equatable">
+<path fill="none" stroke="black" d="M303,-36C303,-36 111,-36 111,-36 105,-36 99,-30 99,-24 99,-24 99,-12 99,-12 99,-6 105,0 111,0 111,0 303,0 303,0 309,0 315,-6 315,-12 315,-12 315,-24 315,-24 315,-30 309,-36 303,-36"/>
+<text text-anchor="middle" x="207" y="-14.3" font-family="Menlo" font-size="14.00">Equatable</text>
+</a>
+</g>
+</g>
+<!-- Snapshot&#45;&gt;Equatable -->
+<g id="edge1" class="edge conformsTo">
+<title>Snapshot&#45;&gt;Equatable</title>
+<path fill="none" stroke="black" d="M377.25,-71.97C345.4,-62.06 305.08,-49.51 271.67,-39.12"/>
+<polygon fill="black" stroke="black" points="272.59,-35.74 262,-36.11 270.51,-42.42 272.59,-35.74"/>
+</g>
+<!-- FlagValueSource -->
+<g id="node3" class="node protocol">
+<title>FlagValueSource</title>
+<g id="a_node3"><a xlink:href="/Vexil/FlagValueSource" xlink:title="FlagValueSource">
+<path fill="none" stroke="black" d="M753,-36C753,-36 561,-36 561,-36 555,-36 549,-30 549,-24 549,-24 549,-12 549,-12 549,-6 555,0 561,0 561,0 753,0 753,0 759,0 765,-6 765,-12 765,-12 765,-24 765,-24 765,-30 759,-36 753,-36"/>
+<text text-anchor="middle" x="657" y="-14.3" font-family="Menlo" font-size="14.00">FlagValueSource</text>
+</a>
+</g>
+</g>
+<!-- Snapshot&#45;&gt;FlagValueSource -->
+<g id="edge2" class="edge conformsTo">
+<title>Snapshot&#45;&gt;FlagValueSource</title>
+<path fill="none" stroke="black" d="M486.75,-71.97C518.6,-62.06 558.92,-49.51 592.33,-39.12"/>
+<polygon fill="black" stroke="black" points="593.49,-42.42 602,-36.11 591.41,-35.74 593.49,-42.42"/>
+</g>
+</g>
+</svg>
+
+
+    <figcaption hidden>Inheritance graph for Snapshot.</figcaption>
+</figure>
+        <h3>Conforms To</h3>
+<dl>
+    <dt class="protocol"><code><a href="/Vexil/FlagValueSource">FlagValueSource</a></code></dt>
+<dd><p>A simple protocol that describes a source of <code>FlagValue</code>s</p>
+</dd>
+<dt class="unknown"><code>Equatable</code></dt>
+</dl>
+</section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="snapshot.id">
+    <h3>
+        <code>id</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">let</span> <span class="variable">id</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>All <code>Snapshot</code>s are <code>Identifiable</code></p>
+
+</div>
+</div>
+<div role="article" class="variable" id="snapshot.displayname">
+    <h3>
+        <code>display​Name</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">displayName</span>: <span class="type">String</span>?</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>An optional display name to use in flag editors like Vexillographer.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="snapshot.name">
+    <h3>
+        <code>name</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">name</span>: <span class="type">String</span></code></pre></body></html>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="snapshot.flagvalue(key:)">
+    <h3>
+        <code>flag​Value(key:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">flagValue</span>&lt;<span class="variable">Value</span>&gt;(<span class="variable">key</span>: <span class="type">String</span>) -&gt; <span class="type">Value</span>? <span class="keyword">where</span> <span class="type">Value</span>: <a href="/Vexil/FlagValue"><span class="type">FlagValue</span></a></code></pre></body></html>
+</div>
+<div role="article" class="function" id="snapshot.setflagvalue(_:key:)">
+    <h3>
+        <code>set​Flag​Value(_:​key:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">setFlagValue</span>&lt;<span class="variable">Value</span>&gt;(<span class="keyword">_</span> <span class="variable">value</span>: <span class="type">Value</span>?, <span class="variable">key</span>: <span class="type">String</span>) <span class="keyword">throws</span> <span class="keyword">where</span> <span class="type">Value</span>: <a href="/Vexil/FlagValue"><span class="type">FlagValue</span></a></code></pre></body></html>
+</div>
+<div role="article" class="function" id="snapshot.==(lhs:rhs:)">
+    <h3>
+        <code>==(lhs:​rhs:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">func</span> ==(<span class="variable">lhs</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>, <span class="variable">rhs</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>) -&gt; <span class="type">Bool</span></code></pre></body></html>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2020-08-13T00:09:10+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
+</p>
+    </footer>
+</body>
+</html>
