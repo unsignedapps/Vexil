@@ -1,5 +1,5 @@
 //
-//  UserDefaults.swift
+//  UserDefaults+FlagValueSource.swift
 //  Vexil
 //
 //  Created by Rob Amos on 28/5/20.
@@ -11,6 +11,8 @@ import Combine
 
 import Foundation
 
+/// Provides support for using `UserDefaults` as a `FlagValueSource`
+///
 extension UserDefaults: FlagValueSource {
 
     public var name: String {

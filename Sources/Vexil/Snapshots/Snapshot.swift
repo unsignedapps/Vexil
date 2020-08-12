@@ -11,16 +11,69 @@ import Combine
 
 import Foundation
 
+/// A `Snapshot` serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
+/// mutable and can be applied / saved to a `FlagValueSource`.
+///
+/// `Snapshot`s are themselves a `FlagValueSource`, which means you can insert in into a `FlagPole`s
+/// source hierarchy as required.,
+///
+/// You create snapshots using a `FlagPole`:
+///
+///     // Create an empty Snapshot. It contains no values itself so any flags
+///     // accessed in it will use their `defaultValue`.
+///     let empty = flagPole.emptySnapshot()
+///
+///     // Create a full Snapshot. The current value of *all* flags in the `FlagPole`
+///     // will be copied into it.
+///     let snapshot = flagPole.snapshot()
+///
+/// Snapshots can be manipulated:
+///
+///     snapshot.subgroup.myAmazingFlag = "somevalue"
+///
+/// Snapshots can be saved or applied to a `FlagValueSource`:
+///
+///     try flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
+///
+/// Snapshots can be inserted into the `FlagPole`s source hierarchy:
+///
+///     flagPole.insert(snapshot: snapshot, at: 0)
+///
+/// And Snapshots are emitted from a `FlagPole` when you subscribe to real-time flag updates:
+///
+///     flagPole.publisher
+///         .sink { snapshot in
+///             // ...
+///         }
+///
 @dynamicMemberLookup
 public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer {
 
+    // MARK: - Properties
+
+    /// All `Snapshot`s are `Identifiable`
     public let id = UUID()
+
+    /// An optional display name to use in flag editors like Vexillographer.
+    public var displayName: String?
+
+
+    // MARK: - Internal Properties
+
     private var _rootGroup: RootGroup
+
+    #if !os(Linux)
+    @Published private var values: [String: Any] = [:]
+    #else
     private var values: [String: Any] = [:]
+    #endif
 
     internal var lock = Lock()
 
     internal var lastAccessedKey: String?
+
+
+    // MARK: - Initialisation
 
     internal init (flagPole: FlagPole<RootGroup>, copyCurrentFlagValues: Bool) {
         self._rootGroup = RootGroup()
@@ -31,18 +84,19 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
         }
     }
 
-//    internal init (group: RootGroup) {
-//        self._rootGroup = group
-//    }
-
 
     // MARK: - Flag Management
 
+    /// A `@DynamicMemberLookup` implementation that returns a `MutableFlagGroup` in place of a `FlagGroup`.
+    /// The `MutableFlagGroup` provides a setter for the `Flag`s it contains, allowing them to be mutated as required.
+    ///
     public subscript<Subgroup> (dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> MutableFlagGroup<Subgroup, RootGroup> where Subgroup: FlagContainer {
         let group = self._rootGroup[keyPath: dynamicMember]
         return MutableFlagGroup<Subgroup, RootGroup>(group: group, snapshot: self)
     }
 
+    /// A `@DynamicMemberLookup` implementation that returns a `Flag.wrappedValue` and allows them to be mutated.
+    ///
     public subscript<Value> (dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value where Value: FlagValue {
         get {
             return self.lock.withLock {
@@ -119,7 +173,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
     // MARK: - FlagValueSource Conformance
 
     public var name: String {
-        return "Snapshot \(self.id.uuidString)"
+        return self.displayName ?? "Snapshot \(self.id.uuidString)"
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
@@ -187,4 +241,14 @@ extension Snapshot: Lookup {
         self.lastAccessedKey = key
         return self.values[key] as? Value
     }
+
+    #if !os(Linux)
+
+    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
+        self.$values
+            .compactMap { $0[key] as? Value }
+            .eraseToAnyPublisher()
+    }
+
+    #endif
 }

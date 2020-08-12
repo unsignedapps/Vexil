@@ -7,10 +7,18 @@
 
 import Foundation
 
+/// A type-erasing protocol used so that `FlagPole`s and `Snapshot`s can pass
+/// the necessary information so generic `Flag`s and `FlagGroup`s can "decorate" themselves
+/// with a reference to where to lookup flag values and how to calculate their key.
+///
 internal protocol Decorated {
     func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
 }
 
+/// An internal class that `Flag` and `FlagGroup`s store their information in.
+/// It is specifically a class so that  the `Flag` and `FlagGroup` structs can
+/// mutate the `Decorator` while remaining immutable themselves.
+///
 internal class Decorator {
     var key: String?
     weak var lookup: Lookup?

@@ -11,9 +11,14 @@ import Combine
 
 import Foundation
 
+/// A simple protocol that describes a source of `FlagValue`s
+///
+/// For more information and examples on creating custom `FlagValueSource`s please
+/// see the full documentation.
+///
 public protocol FlagValueSource {
 
-    /// Give the source a name (for Vexillographer)
+    /// The name of the source. Used by flag editors like Vexillographer
     var name: String { get }
 
     /// Provide a way to fetch values
@@ -34,6 +39,8 @@ public protocol FlagValueSource {
 
 #if !os(Linux)
 
+/// Make support for real-time flag updates optional by providing a default nil implementation
+///
 public extension FlagValueSource {
     var valuesDidChange: AnyPublisher<Void, Never>? {
         return nil
