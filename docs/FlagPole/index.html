@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexil - FlagPole</title>
+    <link rel="stylesheet" type="text/css" href="/Vexil/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/Vexil">
+            <strong>
+                Vexil
+            </strong>
+            <span>Documentation</span>
+        </a>
+        <sup>Beta</sup>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#initializers">Initializers</a><ul><li class="initializer"><a href="#flagpole.init(hoist:configuration:sources:)">init(hoist:​configuration:​sources:​)</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#flagpole._configuration">_configuration</a></li><li class="variable"><a href="#flagpole._sources">_sources</a></li><li class="variable"><a href="#flagpole.defaultsources">default​Sources</a></li><li class="variable"><a href="#flagpole._rootgroup">_root​Group</a></li><li class="variable"><a href="#flagpole.publisher">publisher</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#flagpole.snapshot()">snapshot()</a></li><li class="function"><a href="#flagpole.emptysnapshot()">empty​Snapshot()</a></li><li class="function"><a href="#flagpole.insert(snapshot:at:)">insert(snapshot:​at:​)</a></li><li class="function"><a href="#flagpole.append(snapshot:)">append(snapshot:​)</a></li><li class="function"><a href="#flagpole.remove(snapshot:)">remove(snapshot:​)</a></li><li class="function"><a href="#flagpole.save(snapshot:to:)">save(snapshot:​to:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Class</small>
+    <code class="name">Flag​Pole</code>
+</h1>
+
+<html><body><pre class="highlight"><code><span class="attribute">@</span><span class="attribute">dynamicMemberLookup</span> <span class="keyword">public</span> <span class="keyword">class</span> <span class="type">FlagPole</span>&lt;<span class="variable">RootGroup</span>&gt; <span class="keyword">where</span> <span class="type">RootGroup</span>: <a href="/Vexil/FlagContainer"><span class="type">FlagContainer</span></a></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>A <code>FlagPole</code> hoists a group of feature flags / feature toggles.</p>
+
+</div>
+<div class="discussion">
+    <p>It provides the primary mechanism for dynamically accessing <code>Flag</code>s, looking
+them up from multiple sources. It also provides methods for taking and interaction
+with <code>Snapshot</code>s of flags.</p>
+
+<p>Each <code>FlagPole</code> must be initalised with the type of a <code>FlagContainer</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="keyword">struct</span> <span class="type">MyFlags</span>: <a href="/Vexil/FlagContainer"><span class="type">FlagContainer</span></a> {
+    <span class="comment">// ...</span>
+}
+
+<span class="keyword">let</span> <span class="variable">flagPpole</span> = <span class="variable">FlagPole</span>(<span class="variable">hoist</span>: <span class="type">MyFlags</span>.<span class="keyword">self</span>)
+</code></pre></body></html>
+<p>You can then interact with the <code>FlagPole</code> using dynamic member lookup:</p>
+
+<html><body><pre class="highlight"><code><span class="keyword">if</span> <span class="variable">flagPole</span>.<span class="type">myFlag</span> == <span class="keyword">true</span> { ... }
+</code></pre></body></html>
+<aside class="note">
+    <p>Where possible, properties directly on <code>FlagPole</code> have been prefixed with an underscore (<code>_</code>) so as not to conflict with the dynamic member properties on your <code>FlagContainer</code>.</p>
+
+</aside>
+</div>
+
+    <section id="initializers">
+        <h2>Initializers</h2>
+
+        <div role="article" class="initializer" id="flagpole.init(hoist:configuration:sources:)">
+    <h3>
+        <code>init(hoist:​configuration:​sources:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="attribute">convenience</span> <span class="keyword">init</span>(<span class="variable">hoist</span>: <span class="type">RootGroup</span>.<span class="type">Type</span>, <span class="variable">configuration</span>: <a href="/Vexil/VexilConfiguration"><span class="type">VexilConfiguration</span></a> = .<span class="variable">default</span>, <span class="variable">sources</span>: [<a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a>]? = <span class="keyword">nil</span>)</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Initialises a <code>FlagPole</code> with the supplied info.</p>
+
+</div>
+<div class="discussion">
+    <p>At minimum you need to provide a type that contains all of your <code>Flag</code> and <code>FlagGroup</code>s that conforms to <code>FlagContainer</code>.
+You can also specify how flag keys should be calculated and an array of flag value sources.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>hoist</th>
+    <td><code class="type">Root​Group.​Type</code></td>
+    <td><p>The type of <code>FlagContainer</code> to hoist. eg. <code>MyFlags.self</code></p>
+</td>
+</tr>
+<tr>
+    <th>configuration</th>
+    <td><code class="type">Vexil​Configuration</code></td>
+    <td><p>An optional configuration describing how <code>Flag</code> keys should be calculated. Defaults to <code>VexilConfiguration.default</code></p>
+</td>
+</tr>
+<tr>
+    <th>sources</th>
+    <td><code class="type">[Flag​Value​Source]?</code></td>
+    <td><p>An optional Array of <code>FlagValueSource</code>s to use as the flag pole's source hierarchy. Defaults to <code>FlagPole.defaultSources</code></p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+    </section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="flagpole._configuration">
+    <h3>
+        <code>_configuration</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">let</span> <span class="variable">_configuration</span>: <a href="/Vexil/VexilConfiguration"><span class="type">VexilConfiguration</span></a></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>The configuration information supplied to the <code>FlagPole</code> during initialisation.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="flagpole._sources">
+    <h3>
+        <code>_sources</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">_sources</span>: [<a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a>]</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>An Array of <code>FlagValueSource</code>s that are used during flag value lookup.</p>
+
+</div>
+<div class="discussion">
+    <p>This array is mutable so you can manipulate it directly whenever your
+need to change the hierarchy of your flag sources.</p>
+
+<p>The order of this Array is the order used when looking up flag values.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="flagpole.defaultsources">
+    <h3>
+        <code>default​Sources</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">defaultSources</span>: [<a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a>]</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>The default sources to use when they are not specified during <code>init()</code>.</p>
+
+</div>
+<div class="discussion">
+    <p>The current default sources include:</p>
+
+<ul>
+<li>
+<p><code>UserDefaults.standard</code></p>
+</li>
+</ul>
+
+</div>
+</div>
+<div role="article" class="variable" id="flagpole._rootgroup">
+    <h3>
+        <code>_root​Group</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">_rootGroup</span>: <span class="type">RootGroup</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>The &quot;Root Group&quot; that  contains your Flag tree/hierarchy.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="flagpole.publisher">
+    <h3>
+        <code>publisher</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">var</span> <span class="variable">publisher</span>: <span class="type">AnyPublisher</span>&lt;<a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;, <span class="type">Never</span>&gt;</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>A <code>Publisher</code> that can be used to monitor flag value changes in real-time.</p>
+
+</div>
+<div class="discussion">
+    <p>A new <code>Snapshot</code> is emitted every time a flag value changes. The snapshot
+contains the latest state of all flag values in the tree.</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="flagpole.snapshot()">
+    <h3>
+        <code>snapshot()</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">snapshot</span>() -&gt; <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Creates a <code>Snapshot</code> of the current state of the <code>FlagPole</code></p>
+
+</div>
+<div class="discussion">
+    <p>The value of each <code>Flag</code> within the <code>FlagPole</code> is copied into the snapshot.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="flagpole.emptysnapshot()">
+    <h3>
+        <code>empty​Snapshot()</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">emptySnapshot</span>() -&gt; <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Creates an empty <code>Snapshot</code> of the current <code>FlagPole</code>.</p>
+
+</div>
+<div class="discussion">
+    <p>The snapshot itself will be empty and access to any flags
+within the snapshot will return the flag's <code>defaultValue</code>.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="flagpole.insert(snapshot:at:)">
+    <h3>
+        <code>insert(snapshot:​at:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">insert</span>(<span class="variable">snapshot</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;, <span class="variable">at</span> <span class="variable">index</span>: <span class="type">Array</span>&lt;<a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a>&gt;.<span class="type">Index</span>)</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Inserts a <code>Snapshot</code> into the <code>FlagPole</code>s source hierarchy at the specified index.</p>
+
+</div>
+<div class="discussion">
+    <p>Inserting a snapshot at the top of the hierarchy (eg at index <code>0</code>) is a good way to
+override the values in the FlagPole without saving it to a source, but you can also
+insert it anywhere in the hierarchy you need.</p>
+
+<aside class="note">
+    <p>You can also manipulate <code>_sources</code> directly.</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>snapshot</th>
+    <td><code class="type">Snapshot&lt;Root​Group&gt;</code></td>
+    <td><p>The <code>Snapshot</code> to be inserted</p>
+</td>
+</tr>
+<tr>
+    <th>at</th>
+    <td><code class="type">Array&lt;Flag​Value​Source&gt;.​Index</code></td>
+    <td><p>The index at which to insert the <code>Snapshot</code>.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="flagpole.append(snapshot:)">
+    <h3>
+        <code>append(snapshot:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">append</span>(<span class="variable">snapshot</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;)</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Appends a <code>Snapshot</code> to the end of the <code>FlagPole</code>s source hierarchy.</p>
+
+</div>
+<div class="discussion">
+    <aside class="note">
+    <p>You can also manipulate <code>_sources</code> directly.</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>snapshot</th>
+    <td><code class="type">Snapshot&lt;Root​Group&gt;</code></td>
+    <td><p>The <code>Snapshot</code> to be added to the source hierarchy.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="flagpole.remove(snapshot:)">
+    <h3>
+        <code>remove(snapshot:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">remove</span>(<span class="variable">snapshot</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;)</code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Removes a <code>Snapshot</code> from the <code>FlagPole</code>s source hierarchy.</p>
+
+</div>
+<div class="discussion">
+    <aside class="note">
+    <p>You can also manipulate <code>_sources</code> directly.</p>
+
+</aside>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>snapshot</th>
+    <td><code class="type">Snapshot&lt;Root​Group&gt;</code></td>
+    <td><p>The <code>Snapshot</code> to be removed from the source hierarchy.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="flagpole.save(snapshot:to:)">
+    <h3>
+        <code>save(snapshot:​to:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">public</span> <span class="keyword">func</span> <span class="function">save</span>(<span class="variable">snapshot</span>: <a href="/Vexil/Snapshot"><span class="type">Snapshot</span></a>&lt;<span class="type">RootGroup</span>&gt;, <span class="variable">to</span> <span class="variable">source</span>: <a href="/Vexil/FlagValueSource"><span class="type">FlagValueSource</span></a>) <span class="keyword">throws</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Saves the specified <code>Snapshot</code> to the specified <code>FlagValueSource</code>.</p>
+
+</div>
+<div class="discussion">
+    <p>Only the values that are specifically included in the <code>Snapshot</code> will be saved.
+When you create a snapshot using <code>FlagPole.snapshot()</code>, all values are copied into the <code>Snapshot</code>.</p>
+
+<p>If you created your snapshot using <code>FlagPole.emptySnapshot()</code>, no values are included. Only values that
+subsequently <strong>changed</strong> using the dynamic member lookup support would then be saved to <code>source</code>:</p>
+
+<html><body><pre class="highlight"><code><span class="comment">// Create an empty snapshot</span>
+<span class="keyword">let</span> <span class="variable">snapshot</span> = <span class="variable">flagPole</span>.<span class="type">emptySnapshot</span>()
+
+<span class="comment">// Change any flags you need to</span>
+<span class="variable">snapshot</span>.<span class="type">subgroup</span>.<span class="type">showMyTestFeature</span> = <span class="keyword">true</span>
+
+<span class="comment">// Save that back to `UserDefaults`. Only `subgroup.show-my-test-feature` will be saved.</span>
+<span class="keyword">try</span> <span class="variable">flagPole</span>.<span class="type">save</span>(<span class="variable">snapshot</span>: <span class="type">snapshot</span>, <span class="variable">to</span>: <span class="type">UserDefaults</span>.<span class="type">standard</span>)
+</code></pre></body></html>
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>snapshot</th>
+    <td><code class="type">Snapshot&lt;Root​Group&gt;</code></td>
+    <td><p>The <code>Snapshot</code> to save to the source. Only the values included in the snapshot will be saved.</p>
+</td>
+</tr>
+<tr>
+    <th>to</th>
+    <td><code class="type">Flag​Value​Source</code></td>
+    <td><p>The <code>FlagValueSource</code> to save the snapshot to.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2020-08-13T00:21:06+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
+</p>
+    </footer>
+</body>
+</html>

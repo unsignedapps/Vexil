@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexil - VexilConfiguration.CodingKeyStrategy</title>
+    <link rel="stylesheet" type="text/css" href="/Vexil/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/Vexil">
+            <strong>
+                Vexil
+            </strong>
+            <span>Documentation</span>
+        </a>
+        <sup>Beta</sup>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Member Of</a></li></ul></li><li><a href="#enumeration cases">Enumeration Cases</a><ul><li class="case"><a href="#vexilconfiguration.codingkeystrategy.`default`">`default`</a></li><li class="case"><a href="#vexilconfiguration.codingkeystrategy.kebabcase">kebabcase</a></li><li class="case"><a href="#vexilconfiguration.codingkeystrategy.snakecase">snakecase</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#vexilconfiguration.codingkeystrategy.codingkey(label:)">coding​Key(label:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Enumeration</small>
+    <code class="name">Vexil​Configuration.​Coding​Key​Strategy</code>
+</h1>
+
+<html><body><pre class="highlight"><code><span class="keyword">enum</span> <span class="type">CodingKeyStrategy</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>An enumeration describing how keys should be calculated by <code>Flag</code> and <code>FlagGroup</code>s.</p>
+
+</div>
+<div class="discussion">
+    <p>Each <code>Flag</code> and <code>FlagGroup</code> can specify its own behaviour. This is the default behaviour
+to use when they don't.</p>
+
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        
+        <h3>Member Of</h3>
+<dl>
+    <dt class="structure"><code><a href="/Vexil/VexilConfiguration">VexilConfiguration</a></code></dt>
+<dd><p>A configuration struct passed into the <code>FlagPole</code> to configure it.</p>
+</dd>
+</dl>
+</section>
+    <section id="enumeration cases">
+        <h2>Enumeration Cases</h2>
+
+        <div role="article" class="case" id="vexilconfiguration.codingkeystrategy.`default`">
+    <h3>
+        <code>`default`</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">case</span> <span class="variable">`default`</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Follow the default behaviour. This is basically a synonym for <code>.kebabcase</code></p>
+
+</div>
+</div>
+<div role="article" class="case" id="vexilconfiguration.codingkeystrategy.kebabcase">
+    <h3>
+        <code>kebabcase</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">case</span> <span class="variable">kebabcase</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Converts the property name into a kebab-case string. e.g. myPropertyName becomes my-property-name</p>
+
+</div>
+</div>
+<div role="article" class="case" id="vexilconfiguration.codingkeystrategy.snakecase">
+    <h3>
+        <code>snakecase</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">case</span> <span class="variable">snakecase</span></code></pre></body></html>
+<div class="summary" role="doc-abstract">
+    <p>Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="vexilconfiguration.codingkeystrategy.codingkey(label:)">
+    <h3>
+        <code>coding​Key(label:​)</code>
+    </h3>
+    <html><body><pre class="highlight"><code><span class="keyword">internal</span> <span class="keyword">func</span> <span class="function">codingKey</span>(<span class="variable">label</span>: <span class="type">String</span>) -&gt; <a href="/Vexil/CodingKeyAction"><span class="type">CodingKeyAction</span></a></code></pre></body></html>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2020-08-13T00:21:06+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
+</p>
+    </footer>
+</body>
+</html>

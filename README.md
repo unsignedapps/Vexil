@@ -15,6 +15,13 @@
 * Get real-time flag updates using Combine
 * Vexillographer: A simple SwiftUI interface for editing flags
 
+## Documentation
+
+In addition to this README, which covers basic usage and installation, you can find more documentation:
+
+- Detailed documentation and guides in the [Documentation](Documentation) subdirectory
+- Generated API documentation at [https://unsignedapps.github.io/Vexil/](https://unsignedapps.github.io/Vexil/)
+
 ## Usage
 
 ### Defining Flags
