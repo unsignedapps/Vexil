@@ -35,7 +35,8 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     ///     var myFlagGroup: MyFlags
     ///
     /// - Parameters:
-    ///   - name:               An optional display name to give the group. Only visible in flag editors like Vexillographer. Default is to calculate one based on the property name.
+    ///   - name:               An optional display name to give the group. Only visible in flag editors like Vexillographer.
+    ///                         Default is to calculate one based on the property name.
     ///   - codingKeyStragey:   An optional strategy to use when calculating the key name for this group. The default is to use the `FlagPole`s strategy.
     ///   - description:        A description of this flag group. Used in flag editors like Vexillographer and also for future developer context.
     ///                         You can also specify `.hidden` to hide this flag group from Vexillographer.
