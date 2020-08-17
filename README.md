@@ -100,6 +100,8 @@ Vexil provides a mechanism to mutate, save, load and apply snapshots of flag sta
 
 Snapshots are implemented as a `FlagValueSource`, so you can easily apply multiple snapshots in a prioritised order.
 
+Snapshots can do a lot. See our [Snapshots Guide][snapshots] for more.
+
 ## Creating snapshots
 
 You can manually create snapshots and specify which flags are affected:
@@ -182,4 +184,5 @@ Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for mo
 
 [defining-flags]: Documentation/Defining-Flags.md
 [flag-value-sources]: Documentation/Sources.md
+[snapshots]: Documentation/Snapshots.md
 [vexillographer]: Documentation/Vexillographer.md

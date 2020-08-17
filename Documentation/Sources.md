@@ -1,4 +1,4 @@
-# Flag Value Sources
+# Working with Flag Value Sources
 
 The Vexil `FlagPole` supports multiple backend flag sources, and ships with the following sources built-in:
 
@@ -84,5 +84,8 @@ public protocol FlagValueSource {
 }
 ```
 
+See our full guide on [Creating Custom FlagValueSources][custom-sources] for more.
+
 [firebase-remote-config]: https://firebase.google.com/docs/remote-config
 [vexillographer]: [Vexillographer.md]
+[custom-sources]: Custom-Sources.md
