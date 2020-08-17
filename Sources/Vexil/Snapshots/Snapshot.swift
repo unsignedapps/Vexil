@@ -62,11 +62,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
 
     private var _rootGroup: RootGroup
 
-    #if !os(Linux)
-    @Published private var values: [String: Any] = [:]
-    #else
     private var values: [String: Any] = [:]
-    #endif
 
     internal var lock = Lock()
 
@@ -197,7 +193,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
 
     // MARK: - Real Time Flag Changes
 
-    var valuesDidChange = SnapshotValueChanged()
+    private var valuesDidChange = SnapshotValueChanged()
 
 
     // MARK: - Errors
@@ -245,8 +241,10 @@ extension Snapshot: Lookup {
     #if !os(Linux)
 
     func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-        self.$values
-            .compactMap { $0[key] as? Value }
+        self.valuesDidChange
+            .compactMap { [weak self] _ in
+                self?.values[key] as? Value
+            }
             .eraseToAnyPublisher()
     }
 
