@@ -27,3 +27,10 @@ public func AssertThrows (file: StaticString = #file, line: UInt = #line, _ expr
     }
     return result
 }
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        guard index < self.endIndex else { return nil }
+        return self[index]
+    }
+}
