@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Guides on Vexil</title>
+    <link>http://unsignedapps.github.io/Vexil/guides/</link>
+    <description>Recent content in Guides on Vexil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 17 Aug 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://unsignedapps.github.io/Vexil/guides/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating Custom Flag Value Sources</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/custom-sources/</link>
+      <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/custom-sources/</guid>
+      <description>This guide will walk through the basics in creating a custom FlagValueSource, using the bundled sources as examples.
+The simplest source Because a FlagValueSource is effectively a plain key-value dictionary, the simplest source is exactly that: a Dictionary&amp;lt;String, Any&amp;gt;.
+There are the two methods from the protocol you need to implement: func flagValue&amp;lt;Value&amp;gt; (key: String) -&amp;gt; Value? and func setFlagValue&amp;lt;Value&amp;gt; (_ value: Value?, key: String) throws.
+class FlagValueDictionary: FlagValueSource { var storage: [String: Any] init (_ dictionary: [String: Any] = [:]) { self.</description>
+    </item>
+    
+    <item>
+      <title>Documentation</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/readme/</link>
+      <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/readme/</guid>
+      <description>You can find additional Vexil documentation in this folder. A summary of each document is below.
+   Document Description     Quick Start and Installation Back in the repository root, the README provides a quick overview, some examples and installation instructions.   Creating Custom Flag Value Sources How to create your own custom FlagValueSource. See also Working with Flag Value Sources.   Defining Flags A deep dive into defining your flag hierarchy and the supported flag types and options.</description>
+    </item>
+    
+    <item>
+      <title>Flag Keys</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/flag-keys/</link>
+      <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/flag-keys/</guid>
+      <description>Lets be honest, any Feature Flag or Feature Toggle platform is just a glorified Key-Value store, and all Vexil does is map string-based keys into a strongly-typed hierarchy and provide a (hopefully) nice developer experience.
+It&amp;rsquo;s very important then when working with different FlagValueSources that you know how Vexil maps the FlagContainer, FlagGroup and Flags into something that can work with any key-value store.
+If you&amp;rsquo;d prefer to read this guide in code format check out KeyEncodingTests.</description>
+    </item>
+    
+    <item>
+      <title>Snapshots</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/snapshots/</link>
+      <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/snapshots/</guid>
+      <description>Snapshots are one of the most verisitile features of Vexil. They are used to support real-time flag monitoring using Combine and provide the primary source of mutability to a FlagPole.
+Subscribing to flag changes A key part of declerative programming is the ability to react to changes over time. Vexil supports this by declaring a Publisher that will deliver a Snapshot of the FlagPole any time one of its values changes.</description>
+    </item>
+    
+    <item>
+      <title>Working with Flag Value Sources</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/sources/</link>
+      <pubDate>Mon, 17 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/sources/</guid>
+      <description>The Vexil FlagPole supports multiple backend flag sources, and ships with the following sources built-in:
+   Name Description     UserDefaults Any UserDefaults instance automatically conforms to FlagValueSource   Snapshot All snapshots taken of a FlagPole can be used as a source.    Initialisation When initialising a FlagPole, it will default to a single source: UserDefaults.standard.
+You can always be explicit if you want to use a different set of sources:</description>
+    </item>
+    
+    <item>
+      <title>Defining Flags</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/defining-flags/</link>
+      <pubDate>Sun, 02 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/defining-flags/</guid>
+      <description>In Vexil, the definition of flags follows a similar pattern to Swift Argument Parser.
+Vexil supports a tree of flags, so we need a structure to hold them:
+import Vexil struct LoginFlags: FlagContainer { @Flag(&amp;#34;Enables the forgot password button on the login screen and associated flows&amp;#34;) var forgotPassword: Bool } Side Note: Vexil requires descriptions for all of its flags and flag groups. This is used by Vexillographer for providing context for the flags you are enabling/disabling in the UI, but it also provides context for future developers (especially yourself in 12 months time) as to what flags mean and what their intended use is.</description>
+    </item>
+    
+    <item>
+      <title>Vexillographer</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/vexillographer/</link>
+      <pubDate>Sun, 02 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/vexillographer/</guid>
+      <description>The second library product of Vexil is Vexillographer, a small SwiftUI tool for displaying and manipulating flags.
+Usage You include it in your project somewhere and initialise it with a FlagPole and FlagValueSource:
+import Vexillographer struct MyView: View { let flagPole = FlagPole(hoist: AppFlags.swift) var body: some View { NavigationView { Form { Vexillographer(flagPole: flagPole, source: UserDefaults.standard) } } } } Vexillographer will then display a that lists all of your Flags and FlagGroups, allowing you to drill down your configured flags and edit their values directly.</description>
+    </item>
+    
+  </channel>
+</rss>

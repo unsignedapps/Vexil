@@ -65,8 +65,10 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     ///
     /// You must at least provide a `default` value and `description` of the flag:
     ///
-    ///     @Flag(default: false, description: "This is a test flag. Isn't it nice?")
-    ///     var myFlag: Bool
+    /// ```swift
+    /// @Flag(default: false, description: "This is a test flag. Isn't it nice?")
+    /// var myFlag: Bool
+    /// ```
     ///
     /// - Parameters:
     ///   - name:               An optional display name to give the flag. Only visible in flag editors like Vexillographer. Default is to calculate one based on the property name.

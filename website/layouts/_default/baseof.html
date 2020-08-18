@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+    <head>
+        {{ partial "head" . }}
+    </head>
+    <body{{ if eq .IsHome true }} id="homepage"{{ end }}>
+        <div class="container">
+            {{ partial "header" . }}
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    {{ block "main" . }}
+                    <main>
+                        {{ .Content }}
+                    </main>
+                    {{ end }}
+                </div>
+                {{ if .Params.toc }}
+                <div class="col-3 sidebar d-none d-md-block">
+                    <h2>On This Page</h2>
+                    {{ .TableOfContents }}
+                </div>
+                {{ end }}
+            </div>
+            {{ partial "footer" . }}
+        </div>
+    </body>
+</html>

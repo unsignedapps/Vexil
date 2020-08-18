@@ -1,200 +1,270 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vexil - Vexil</title>
-    <link rel="stylesheet" type="text/css" href="/Vexil/all.css" media="all" />
-</head>
-<body>
-    <header>
-        <a href="/Vexil">
-            <strong>
-                Vexil
-            </strong>
-            <span>Documentation</span>
+<!doctype html>
+<html>
+    <head>
+	<meta name="generator" content="Hugo 0.74.3" />
+        <meta charset="utf-8">
+
+<title></title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//syntax.css">
+<script type="text/javascript" src="http://unsignedapps.github.io/Vexil//boottrap.min.js"></script>
+
+    </head>
+    <body id="homepage">
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">
+            <img src="http://unsignedapps.github.io/Vexil//vexil-logo.png" alt="Vexil logo">
+            Vexil
         </a>
-        <sup>Beta</sup>
-    </header>
-
-    <!--
-    <form class="search">
-        <input type="search" placeholder="Search" />
-    </form>
-    -->
-
-    <nav>
-        <div class="wrapper">
-            <h2>On This Page</h2>
-            <ol><li><a href="#classes">Classes</a></li><li><a href="#structures">Structures</a></li><li><a href="#enumerations">Enumerations</a></li><li><a href="#protocols">Protocols</a></li></ol>
-        </div>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//api">APIs</a></li>
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//guides">Guides</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/unsignedapps/Vexil/">GitHub</a></li>
+        </ul>
     </nav>
-
-    <main>
-        <article>
-                <section id="classes">
-        <h2>Classes</h2>
-        <dl>
-            <dt class="class">
-    <a href="/Vexil/FlagPole" title="class - FlagPole">
-        Flag​Pole
-    </a>
-</dt>
-<dd>
-    <p>A <code>FlagPole</code> hoists a group of feature flags / feature toggles.</p>
-
-</dd>
-<dt class="class">
-    <a href="/Vexil/MutableFlagGroup" title="class - MutableFlagGroup">
-        Mutable​Flag​Group
-    </a>
-</dt>
-<dd>
-    <p>A <code>MutableFlagGroup</code> is a wrapper type that provides a &quot;setter&quot; for each contained <code>Flag</code>.</p>
-
-</dd>
-<dt class="class">
-    <a href="/Vexil/Snapshot" title="class - Snapshot">
-        Snapshot
-    </a>
-</dt>
-<dd>
-    <p>A <code>Snapshot</code> serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
-mutable and can be applied / saved to a <code>FlagValueSource</code>.</p>
-
-</dd>
-        </dl>
-    </section>
-    <section id="structures">
-        <h2>Structures</h2>
-        <dl>
-            <dt class="structure">
-    <a href="/Vexil/VexilConfiguration" title="structure - VexilConfiguration">
-        Vexil​Configuration
-    </a>
-</dt>
-<dd>
-    <p>A configuration struct passed into the <code>FlagPole</code> to configure it.</p>
-
-</dd>
-<dt class="structure">
-    <a href="/Vexil/Flag" title="structure - Flag">
-        Flag
-    </a>
-</dt>
-<dd>
-    <p>A wrapper representing a Feature Flag / Feature Toggle.</p>
-
-</dd>
-<dt class="structure">
-    <a href="/Vexil/FlagInfo" title="structure - FlagInfo">
-        Flag​Info
-    </a>
-</dt>
-<dd>
-    <p>A simple collection of information about a <code>Flag</code> or <code>FlagGroup</code></p>
-
-</dd>
-<dt class="structure">
-    <a href="/Vexil/FlagGroup" title="structure - FlagGroup">
-        Flag​Group
-    </a>
-</dt>
-<dd>
-    <p>A wrapper representing a group of Feature Flags / Feature Toggles.</p>
-
-</dd>
-        </dl>
-    </section>
-    <section id="enumerations">
-        <h2>Enumerations</h2>
-        <dl>
-            <dt class="enumeration">
-    <a href="/Vexil/VexilConfiguration_CodingKeyStrategy" title="enumeration - VexilConfiguration.CodingKeyStrategy">
-        Vexil​Configuration.​Coding​Key​Strategy
-    </a>
-</dt>
-<dd>
-    <p>An enumeration describing how keys should be calculated by <code>Flag</code> and <code>FlagGroup</code>s.</p>
-
-</dd>
-<dt class="enumeration">
-    <a href="/Vexil/FlagGroup_CodingKeyStrategy" title="enumeration - FlagGroup.CodingKeyStrategy">
-        Flag​Group.​Coding​Key​Strategy
-    </a>
-</dt>
-<dd>
-    <p>An enumeration describing how the key should be calculated for this specific <code>FlagGroup</code>.</p>
-
-</dd>
-<dt class="enumeration">
-    <a href="/Vexil/Flag_CodingKeyStrategy" title="enumeration - Flag.CodingKeyStrategy">
-        Flag.​Coding​Key​Strategy
-    </a>
-</dt>
-<dd>
-    <p>An enumeration describing how the key should be calculated for this specific <code>Flag</code>.</p>
-
-</dd>
-<dt class="enumeration">
-    <a href="/Vexil/BoxedFlagValue" title="enumeration - BoxedFlagValue">
-        Boxed​Flag​Value
-    </a>
-</dt>
-<dd>
-    <p>An intermediate type used to make encoding and decoding of types simpler for <code>FlagValueSource</code>s</p>
-
-</dd>
-        </dl>
-    </section>
-    <section id="protocols">
-        <h2>Protocols</h2>
-        <dl>
-            <dt class="protocol">
-    <a href="/Vexil/FlagContainer" title="protocol - FlagContainer">
-        Flag​Container
-    </a>
-</dt>
-<dd>
-    <p>A <code>FlagContainer</code> is a type that encapsulates your <code>Flag</code> and <code>FlagGroup</code>
-types. The only requirement of a <code>FlagContainer</code> is that it can be initialised
-with an empty <code>init()</code>.</p>
-
-</dd>
-<dt class="protocol">
-    <a href="/Vexil/FlagValueSource" title="protocol - FlagValueSource">
-        Flag​Value​Source
-    </a>
-</dt>
-<dd>
-    <p>A simple protocol that describes a source of <code>FlagValue</code>s</p>
-
-</dd>
-<dt class="protocol">
-    <a href="/Vexil/FlagValue" title="protocol - FlagValue">
-        Flag​Value
-    </a>
-</dt>
-<dd>
+</header>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    
+<main>
+    <article>
+        <h1></h1>
     
-</dd>
-<dt class="protocol">
-    <a href="/Vexil/FlagDisplayValue" title="protocol - FlagDisplayValue">
-        Flag​Display​Value
-    </a>
-</dt>
-<dd>
-    
-</dd>
-        </dl>
-    </section>
-        </article>
-    </main>
-
-    <footer>
-        <p>
-    Generated on <time datetime="2020-08-13T00:21:06+1000">13 August 2020</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-beta.3</span>.
+        <p><img class="img-fluid" src="https://github.com/unsignedapps/Vexil/raw/main/.github/vexil.png" alt="Vexil"  /></p>
+<p align="center">Vexil (named for <a href="https://en.wikipedia.org/wiki/Vexillology">Vexillology</a>) is a Swift package for managing feature flags <br />(also called feature toggles) in a flexible, multi-provider way.</p>
+<p align="center">
+	<img src="https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg">
+	<a href="https://sonarcloud.io/dashboard?id=unsignedapps_Vexil"><img src="https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status"></a>
 </p>
-    </footer>
-</body>
+
+    <hr />
+
+<h2 id="features">Features <a href="#features" class="permalink">¶</a></h2><ul>
+<li>Define your flags in a structured tree</li>
+<li>Extensible to support any backend flag storage or platform</li>
+<li>Take and apply snapshots of flag states</li>
+<li>Get real-time flag updates using Combine</li>
+<li>Vexillographer: A simple SwiftUI interface for editing flags</li>
+</ul>
+
+    <hr />
+
+<h2 id="documentation">Documentation <a href="#documentation" class="permalink">¶</a></h2><p>In addition to this README, which covers basic usage and installation, you can find more documentation:</p>
+<ul>
+<li>On our documentation website: 
+<a href="https://unsignedapps.github.io/Vexil/">https://unsignedapps.github.io/Vexil/</a>
+
+</li>
+<li>Detailed documentation and guides in the 
+<a href="guides">Documentation</a>
+
+ subdirectory</li>
+</ul>
+
+    <hr />
+
+<h2 id="usage">Usage <a href="#usage" class="permalink">¶</a></h2>
+<h3 id="defining-flags">Defining Flags <a href="#defining-flags" class="permalink">¶</a></h3><p>If you&rsquo;ve ever used 
+<a href="https://github.com/apple/swift-argument-parser">swift-argument-parser</a>
+
+ defining flags in Vexil will be a familiar experience.</p>
+<p>Vexil supports a tree of flags, so we need a structure to hold them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="nc">Vexil</span>
+
+<span class="kd">struct</span> <span class="nc">LoginFlags</span><span class="p">:</span> <span class="n">FlagContainer</span> <span class="p">{</span>
+
+    <span class="p">@</span><span class="n">Flag</span><span class="p">(</span><span class="s">&#34;Enables the forgot password button on the login screen and associated flows&#34;</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nv">forgotPassword</span><span class="p">:</span> <span class="nb">Bool</span>
+
+<span class="p">}</span>
+</code></pre></div><p><strong>Side Note:</strong> Vexil requires descriptions for all of its flags and flag groups. This is used by 
+<a href="#vexillographer-a-swiftui-flag-manipulation-tool">Vexillographer</a>
+
+ for providing context for the flags you are enabling/disabling in the UI, but it also provides context for future developers (especially yourself in 12 months time) as to what flags mean and what their intended use is.</p>
+<p>See the 
+<a href="guides/defining-flags">full documentation for how to define flags</a>
+
+ to read more</p>
+
+<h3 id="checking-flags">Checking flags <a href="#checking-flags" class="permalink">¶</a></h3><p>To check your flags, you need to run them up a Flag Pole:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="nc">Vexil</span>
+
+<span class="kd">let</span> <span class="nv">flagPole</span> <span class="p">=</span> <span class="n">FlagPole</span><span class="p">(</span><span class="n">hoist</span><span class="p">:</span> <span class="n">AppFlags</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+
+<span class="c1">// should we show the change password screen?</span>
+<span class="k">if</span> <span class="n">flagPole</span><span class="p">.</span><span class="n">profile</span><span class="p">.</span><span class="n">password</span><span class="p">.</span><span class="n">changePassword</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="mutating-flags">Mutating flags <a href="#mutating-flags" class="permalink">¶</a></h3><p>By default access to flags on the FlagPole is immutable from your source code. This is a deliberate design decision: flags should not be easily mutatable from your app as it can lead to mistakes (eg. <code>flag = true</code> instead of <code>flag == true</code>).</p>
+<p>That said, it is still very easy to mutate any flags if you need to using a snapshot:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="nc">Vexil</span>
+
+<span class="kd">let</span> <span class="nv">flagPole</span> <span class="p">=</span> <span class="n">FlagPole</span><span class="p">(</span><span class="n">hoist</span><span class="p">:</span> <span class="n">AppFlags</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+
+<span class="kd">var</span> <span class="nv">snapshot</span> <span class="p">=</span> <span class="n">flagPole</span><span class="p">.</span><span class="n">emptySnapshot</span><span class="p">()</span>
+<span class="n">snapshot</span><span class="p">.</span><span class="n">profile</span><span class="p">.</span><span class="n">password</span><span class="p">.</span><span class="n">changePassword</span> <span class="p">=</span> <span class="kc">true</span>
+
+<span class="c1">// insert it at the top of the hierarchy</span>
+<span class="n">flagPole</span><span class="p">.</span><span class="bp">insert</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="n">snapshot</span><span class="p">,</span> <span class="n">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div><p>For more info see 
+<a href="#snapshots">Snapshots</a>
+
+.</p>
+
+    <hr />
+
+<h2 id="flag-value-sources">Flag Value Sources <a href="#flag-value-sources" class="permalink">¶</a></h2><p>The Vexil <code>FlagPole</code> supports multiple backend flag sources, and ships with the following sources built-in:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserDefaults</code></td>
+<td>Any <code>UserDefaults</code> instance automatically conforms to <code>FlagValueSource</code></td>
+</tr>
+<tr>
+<td><code>Snapshot</code></td>
+<td>All snapshots taken of a FlagPole can be used as a source.</td>
+</tr>
+</tbody>
+</table>
+<p>See the full documentation on 
+<a href="guides/sources">Flag Value Sources</a>
+
+ for more on working with sources and how to define your own.</p>
+
+    <hr />
+
+<h2 id="snapshots">Snapshots <a href="#snapshots" class="permalink">¶</a></h2><p>Vexil provides a mechanism to mutate, save, load and apply snapshots of flag states and values.</p>
+<p><strong>Important:</strong> Snapshots only reflect values and states <em>that have been mutated</em>. That is, a snapshot is only applied to values that have been explicitly set within it. Any values that have not been set will defer to the next source in the list, or the default value. The exception is when you take a <em>full snapshot</em> of a FlagPole, which captures the value of every flag.</p>
+<p>Snapshots are implemented as a <code>FlagValueSource</code>, so you can easily apply multiple snapshots in a prioritised order.</p>
+<p>Snapshots can do a lot. See our 
+<a href="guides/snapshots">Snapshots Guide</a>
+
+ for more.</p>
+
+    <hr />
+
+<h2 id="creating-snapshots">Creating snapshots <a href="#creating-snapshots" class="permalink">¶</a></h2><p>You can manually create snapshots and specify which flags are affected:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="nc">Vexil</span>
+
+<span class="c1">// create an empty snapshot</span>
+<span class="kd">var</span> <span class="nv">snapshot</span> <span class="p">=</span> <span class="n">flagPole</span><span class="p">.</span><span class="n">emptySnapshot</span><span class="p">()</span>
+
+<span class="c1">// update some values and states</span>
+<span class="n">snapshot</span><span class="p">.</span><span class="n">login</span><span class="p">.</span><span class="n">forgotPassword</span> <span class="p">=</span> <span class="kc">false</span>
+<span class="n">snapshot</span><span class="p">.</span><span class="n">profile</span><span class="p">.</span><span class="n">password</span> <span class="p">=</span> <span class="kc">false</span>
+
+<span class="c1">// apply that snapshot - only the two values above will change</span>
+<span class="n">flagPole</span><span class="p">.</span><span class="bp">insert</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="n">snapshot</span><span class="p">,</span> <span class="n">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div><p>You can also take a snapshot of the current state of your FlagPole:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="nc">Vexil</span>
+
+<span class="kd">let</span> <span class="nv">flagPole</span> <span class="p">=</span> <span class="n">FlagPole</span><span class="p">(</span><span class="n">hoist</span><span class="p">:</span> <span class="n">AppFlags</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+
+<span class="c1">// snapshot the current state - this will get the state of *all* flags</span>
+<span class="kd">let</span> <span class="nv">snapshot</span> <span class="p">=</span> <span class="n">flagPole</span><span class="p">.</span><span class="n">snapshot</span><span class="p">()</span>
+
+<span class="c1">// save them, mutate them, whatever you like</span>
+<span class="c1">// ...</span>
+</code></pre></div>
+    <hr />
+
+<h2 id="installing-vexil">Installing Vexil <a href="#installing-vexil" class="permalink">¶</a></h2><p>To use Vexil in your project add it as a dependency in a Swift Package, add it to your <code>Package.swift</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="n">dependencies</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">.</span><span class="n">package</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="s">&#34;https://github.com/unsignedapps/Vexil.git&#34;</span><span class="p">,</span> <span class="n">from</span><span class="p">:</span> <span class="s">&#34;1.0.0&#34;</span><span class="p">)</span>
+<span class="p">]</span>
+</code></pre></div><p>And add it as a dependency of your target:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="n">targets</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">.</span><span class="n">target</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">&#34;MyTarget&#34;</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">.</span><span class="n">product</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s">&#34;Vexil&#34;</span><span class="p">,</span> <span class="n">package</span><span class="p">:</span> <span class="s">&#34;Vexil&#34;</span><span class="p">)</span>
+    <span class="p">])</span>
+<span class="p">]</span>
+</code></pre></div>
+<h3 id="in-xcode-11">In Xcode 11+ <a href="#in-xcode-11" class="permalink">¶</a></h3><p>To use Vexil in Xcode 11 or higher, navigate to the <em>File</em> menu and choose <em>Swift Packages</em> -&gt; <em>Add Package Dependency&hellip;</em>, then enter the repository URL and version details for the release as desired.</p>
+
+    <hr />
+
+<h2 id="vexillographer-a-swiftui-flag-manipulation-tool">Vexillographer: A SwiftUI Flag Manipulation Tool <a href="#vexillographer-a-swiftui-flag-manipulation-tool" class="permalink">¶</a></h2><p>The second library product of Vexil is Vexillographer, a small SwiftUI tool for displaying and manipulating flags.</p>
+<div>
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-1.png" />
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-2.png" />
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-3.png" />
+</div>
+<p>Read more about 
+<a href="guides/vexillographer">Vexillographer</a>
+
+.</p>
+
+    <hr />
+
+<h2 id="contributing">Contributing <a href="#contributing" class="permalink">¶</a></h2><p>We welcome all contributions! Please read the 
+<a href="https://github.com/unsignedapps/Vexil/blob/main/CONTRIBUTING.md
+">Contribution Guide</a>
+
+ for details on how to get started.</p>
+
+    <hr />
+
+<h2 id="license">License <a href="#license" class="permalink">¶</a></h2><p>Vexil is available under the MIT license. See the 
+<a href="https://github.com/unsignedapps/Vexil/blob/main/LICENSE
+">LICENSE</a>
+
+ file for more info.</p>
+
+    </article>
+</main>
+
+                </div>
+                
+                <div class="col-3 sidebar d-none d-md-block">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#documentation">Documentation</a></li>
+    <li><a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#defining-flags">Defining Flags</a></li>
+        <li><a href="#checking-flags">Checking flags</a></li>
+        <li><a href="#mutating-flags">Mutating flags</a></li>
+      </ul>
+    </li>
+    <li><a href="#flag-value-sources">Flag Value Sources</a></li>
+    <li><a href="#snapshots">Snapshots</a></li>
+    <li><a href="#creating-snapshots">Creating snapshots</a></li>
+    <li><a href="#installing-vexil">Installing Vexil</a>
+      <ul>
+        <li><a href="#in-xcode-11">In Xcode 11+</a></li>
+      </ul>
+    </li>
+    <li><a href="#vexillographer-a-swiftui-flag-manipulation-tool">Vexillographer: A SwiftUI Flag Manipulation Tool</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+  </ul>
+</nav>
+                </div>
+                
+            </div>
+            <footer id="footer">
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
+    </div>
+</footer>
+        </div>
+    </body>
 </html>

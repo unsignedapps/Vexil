@@ -1,5 +1,7 @@
 # Vexillographer
 
+<!-- summary: "How why and where to use Vexillographer, Vexil's SwiftUI-based flag editing UI" -->
+
 The second library product of Vexil is Vexillographer, a small SwiftUI tool for displaying and manipulating flags.
 
 <div>

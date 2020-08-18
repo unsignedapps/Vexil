@@ -1,5 +1,7 @@
 # Defining Flags
 
+<!-- summary: "Defining Flags is the cornerstone of Vexil. Learn how to structure your FlagContainer, use FlagGroups and Flags of various types." -->
+
 In Vexil, the definition of flags follows a similar pattern to [Swift Argument Parser][swift-argument-parser].
 
 Vexil supports a tree of flags, so we need a structure to hold them:

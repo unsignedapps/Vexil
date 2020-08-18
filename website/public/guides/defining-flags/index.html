@@ -1,0 +1,421 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title>Defining Flags</title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">Vexil</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                
+                
+                <li class="nav-item"><a class="nav-link" href="/Vexil/api/" title="Apis">Apis</a></li>
+                
+                <li class="nav-item active"><a class="nav-link" href="/Vexil/guides/" title="Guides">Guides</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-9">
+                    
+<main>
+    <article>
+        <h1>Defining Flags</h1>
+    
+        <p>In Vexil, the definition of flags follows a similar pattern to <a href="https://github.com/apple/swift-argument-parser">Swift Argument Parser</a>.</p>
+<p>Vexil supports a tree of flags, so we need a structure to hold them:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vexil</span>
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">LoginFlags</span>: FlagContainer {
+
+    @Flag(<span style="color:#e6db74">&#34;Enables the forgot password button on the login screen and associated flows&#34;</span>)
+    <span style="color:#66d9ef">var</span> forgotPassword: Bool
+
+}
+</code></pre></div><p><strong>Side Note:</strong> Vexil requires descriptions for all of its flags and flag groups. This is used by Vexillographer for providing context for the flags you are enabling/disabling in the UI, but it also provides context for future developers (especially yourself in 12 months time) as to what flags mean and what their intended use is.</p>
+<h2 id="flag-groups">Flag Groups</h2>
+<p>You can also create nested flag groups. These can live in separate files or anywhere in your code that is suitable. This allows you to structure your flags in the way that makes the most sense to you.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vexil</span>
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PasswordFlags</span>: FlagContainer {
+
+    @Flag(<span style="color:#e6db74">&#34;Enables or disables the change password button on the profile screen and associated flows&#34;</span>)
+    <span style="color:#66d9ef">var</span> changePassword: Bool
+    
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">ProfileFlags</span>: FlagContainer {
+
+    @FlagGroup(<span style="color:#e6db74">&#34;Flags related to passwords in the profile screen&#34;</span>)
+    <span style="color:#66d9ef">var</span> password: PasswordFlags
+
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">AppFlags</span>: FlagContainer {
+
+    @FlagGroup(<span style="color:#e6db74">&#34;Flags that affect the login screen&#34;</span>)
+    <span style="color:#66d9ef">var</span> login: LoginFlags
+    
+    @FlagGroup(<span style="color:#e6db74">&#34;Flags related to the profile screen&#34;</span>)
+    <span style="color:#66d9ef">var</span> profile: ProfileFlags
+    
+}
+</code></pre></div><h2 id="flag-types">Flag types</h2>
+<p>So far we&rsquo;ve only looked at basic boolean flags, but Vexil supports flags of any basic type, and almost any type that can be made <code>Codable</code>.</p>
+<p><strong>Important:</strong> All <code>FlagValueSource</code>s that are included as part of Vexil support all types mentioned here, but some third-party providers might not support all flag types, be sure to check their documentation.</p>
+<h3 id="standard-types">Standard Types</h3>
+<p>You can specify your flag as an integer, double or string. Note that you need to provide a default value for your non-boolean flags.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vexil</span>
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">NormalFlags</span>: FlagContainer {
+
+    @Flag(<span style="color:#66d9ef">default</span>: <span style="color:#ae81ff">10</span>, <span style="color:#e6db74">&#34;This is a demonstration Int flag&#34;</span>)
+    <span style="color:#66d9ef">var</span> myIntFlag: Int
+
+    @Flag(<span style="color:#66d9ef">default</span>: <span style="color:#ae81ff">0.5</span>, <span style="color:#e6db74">&#34;This is a demonstration Double flag&#34;</span>)
+    <span style="color:#66d9ef">var</span> myDoubleFlag: Double
+
+    @Flag(<span style="color:#66d9ef">default</span>: <span style="color:#e6db74">&#34;Placeholder&#34;</span>, <span style="color:#e6db74">&#34;This is a demonstration String flag&#34;</span>)
+    <span style="color:#66d9ef">var</span> myStringFlag: String
+
+}
+</code></pre></div><h3 id="enum-types">Enum Types</h3>
+<p>You can make any enum into a flag by conforming to <code>FlagValue</code>, so you can specify from a list of options in your flag backend or UI. Your enum needs to be backed by a standard type (string, integer, double, etc) and/or implement <code>RawRepresentable</code> with a standard type.</p>
+<p>If you want your enum options to appear selectable in Vexillographer you also need to conform to <code>CaseIterable</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vexil</span>
+
+<span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">MyTheme</span>: String, FlagValue, CaseIterable {
+    <span style="color:#66d9ef">case</span> blue
+    <span style="color:#66d9ef">case</span> green
+    <span style="color:#66d9ef">case</span> red
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">ThemeFlags</span> {
+
+    @Flag(<span style="color:#66d9ef">default</span>: .blue, <span style="color:#e6db74">&#34;The theme to use for the app&#34;</span>)
+    <span style="color:#66d9ef">var</span> currentTheme: MyTheme
+    
+}
+</code></pre></div><h3 id="codable-types">Codable Types</h3>
+<p>Vexil provides default implementations for <code>Codable</code> types, so all you need to do declare that your type conforms to <code>FlagValue</code> as well.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">MyStruct</span>: FlagValue, Codable {
+    <span style="color:#66d9ef">let</span> property1: String
+    <span style="color:#66d9ef">let</span> property2: Int
+    <span style="color:#66d9ef">let</span> property3: String
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">TestFlags</span>: FlagContainer {
+
+    @Flag(defaultValue: MyStruct(property1: <span style="color:#e6db74">&#34;abc123&#34;</span>, property2: <span style="color:#ae81ff">123</span>, property3: <span style="color:#e6db74">&#34;🤯&#34;</span>), description: <span style="color:#e6db74">&#34;...&#34;</span>)
+    <span style="color:#66d9ef">var</span> testFlag: MyStruct
+    
+}
+</code></pre></div><h3 id="all-supported-flag-values">All Supported Flag Values</h3>
+<p>The following existing types are supported out of the box:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bool</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>String</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>URL</code></td>
+<td>Boxed into a string</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td>Boxed into an ISO8601 date string</td>
+</tr>
+<tr>
+<td><code>Data</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Float</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Double</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Int</code></td>
+<td><code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, and their <code>UInt</code> equivalents are all supported and boxed into an <code>Int</code></td>
+</tr>
+<tr>
+<td><code>RawRepresentable</code></td>
+<td>When <code>RawValue</code> is also a supported <code>FlagValue</code></td>
+</tr>
+<tr>
+<td><code>Optional</code></td>
+<td>When <code>Wrapped</code> is also a supported <code>FlagValue</code></td>
+</tr>
+<tr>
+<td><code>Array</code></td>
+<td>When <code>Element</code> is also a supported <code>FlagValue</code></td>
+</tr>
+<tr>
+<td><code>Dictionary</code></td>
+<td>With <code>String</code> keys and when <code>Value</code> is also a supported <code>FlagValue</code></td>
+</tr>
+<tr>
+<td><code>Codable</code></td>
+<td>Default implementation is provided if you declare that your <code>Codable</code> types also conform to <code>FlagValue</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="supporting-custom-types">Supporting Custom Types</h2>
+<p>In fact, any type can be used as a flag as long as it conforms to <code>FlagValue</code>. You just need to be to box/unbox it from a simple type that the <code>FlagValueSource</code>s support.</p>
+<p>But be warned here, the boxing and unboxing of <code>FlagValue</code>s is designed around what <code>UserDefaults</code> supports, and not all <code>FlagValueSource </code> backends support all boxed types.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">extension</span> <span style="color:#a6e22e">MyCustomType</span>: FlagValue {
+	 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">typealias</span> BoxedValueType = String
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">init</span>? (boxedFlagValue: BoxedFlagValue) {
+        <span style="color:#66d9ef">guard</span> <span style="color:#66d9ef">case</span> .string(<span style="color:#66d9ef">let</span> value) = boxedFlagValue <span style="color:#66d9ef">else</span> { <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span> }
+        
+        <span style="color:#75715e">// decode your type here</span>
+        <span style="color:#66d9ef">let</span> decoded = ...
+        <span style="color:#66d9ef">self</span> = decoded
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">var</span> boxedFlagValue: BoxedFlagValue {
+
+		 <span style="color:#75715e">// encode your type here</span>
+        <span style="color:#66d9ef">let</span> encoded = ...
+        <span style="color:#66d9ef">return</span> .string(encoded)
+    }
+}
+</code></pre></div>
+    </article>
+</main>
+
+                </div>
+                <div class="col-3 sidebar">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#flag-groups">Flag Groups</a></li>
+    <li><a href="#flag-types">Flag types</a>
+      <ul>
+        <li><a href="#standard-types">Standard Types</a></li>
+        <li><a href="#enum-types">Enum Types</a></li>
+        <li><a href="#codable-types">Codable Types</a></li>
+        <li><a href="#all-supported-flag-values">All Supported Flag Values</a></li>
+      </ul>
+    </li>
+    <li><a href="#supporting-custom-types">Supporting Custom Types</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <footer id="footer">
+    <nav>
+        <ul>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/custom-sources/">Creating Custom Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/readme/">Documentation</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/flag-keys/">Flag Keys</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/snapshots/">Snapshots</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/sources/">Working with Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/defining-flags/">Defining Flags</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/vexillographer/">Vexillographer</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertnothrowfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowserrorfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowsfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/boxedflagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagcontainer/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagdisplayvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaginfo/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagpole/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluedictionary/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluesource/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/home/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/mutableflaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/snapshot/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexillographer/"></a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

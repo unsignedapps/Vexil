@@ -1,5 +1,7 @@
 # Creating Custom Flag Value Sources
 
+<!-- summary: "This guide walks you through the basics in creating a custom FlagValueSource using the bundled sources as examples." -->
+
 This guide will walk through the basics in creating a custom `FlagValueSource`, using the bundled sources as examples.
 
 ## The simplest source

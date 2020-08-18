@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title>Flag.CodingKeyStrategy</title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//syntax.css">
+<script type="text/javascript" src="http://unsignedapps.github.io/Vexil//boottrap.min.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">
+            <img src="http://unsignedapps.github.io/Vexil//vexil-logo.png" alt="Vexil logo">
+            Vexil
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//api">APIs</a></li>
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//guides">Guides</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/unsignedapps/Vexil/">GitHub</a></li>
+        </ul>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    
+<main>
+    <article>
+        <h1>Flag.CodingKeyStrategy</h1>
+    
+        <p>An enumeration describing how the key should be calculated for this specific <code>Flag</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">enum</span> <span class="nc">CodingKeyStrategy</span>
+</code></pre></div>
+    <hr />
+
+<h2 id="enumeration-cases">Enumeration Cases <a href="#enumeration-cases" class="permalink">¶</a></h2>
+<h3 id="-default-"><code>`default`</code> <a href="#-default-" class="permalink">¶</a></h3><p>Follow the default behaviour applied to the <code>FlagPole</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="k">case</span> <span class="p">`</span><span class="k">default</span><span class="p">`</span>
+</code></pre></div>
+<h3 id="kebabcase"><code>kebabcase</code> <a href="#kebabcase" class="permalink">¶</a></h3><p>Converts the property name into a kebab-case string. e.g. myPropertyName becomes my-property-name</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="k">case</span> <span class="n">kebabcase</span>
+</code></pre></div>
+<h3 id="snakecase"><code>snakecase</code> <a href="#snakecase" class="permalink">¶</a></h3><p>Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="k">case</span> <span class="n">snakecase</span>
+</code></pre></div>
+<h3 id="customkey"><code>customKey</code> <a href="#customkey" class="permalink">¶</a></h3><p>Manually specifies the key name for this <code>Flag</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="k">case</span> <span class="n">customKey</span><span class="p">(:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span>
+</code></pre></div><p>This is combined with the keys from the parent groups to create the final key.</p>
+
+<h3 id="customkeypath"><code>customKeyPath</code> <a href="#customkeypath" class="permalink">¶</a></h3><p>Manually specifices a fully qualified key path for this flag.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="k">case</span> <span class="n">customKeyPath</span><span class="p">(:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span>
+</code></pre></div><p>This is the absolute key name. It is NOT combined with the keys from the parent groups.</p>
+
+    <hr />
+
+<h2 id="methods">Methods <a href="#methods" class="permalink">¶</a></h2>
+<h3 id="codingkeylabel"><code>codingKey(label:​)</code> <a href="#codingkeylabel" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">internal</span> <span class="kd">func</span> <span class="nf">codingKey</span><span class="p">(</span><span class="n">label</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">CodingKeyAction</span>
+</code></pre></div>
+    </article>
+</main>
+
+                </div>
+                
+                <div class="col-3 sidebar d-none d-md-block">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#enumeration-cases">Enumeration Cases</a>
+      <ul>
+        <li><a href="#-default-"><code>`default`</code></a></li>
+        <li><a href="#kebabcase"><code>kebabcase</code></a></li>
+        <li><a href="#snakecase"><code>snakecase</code></a></li>
+        <li><a href="#customkey"><code>customKey</code></a></li>
+        <li><a href="#customkeypath"><code>customKeyPath</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#methods">Methods</a>
+      <ul>
+        <li><a href="#codingkeylabel"><code>codingKey(label:​)</code></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                </div>
+                
+            </div>
+            <footer id="footer">
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

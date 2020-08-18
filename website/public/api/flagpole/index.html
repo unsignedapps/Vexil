@@ -1,0 +1,378 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title></title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">Vexil</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                
+                
+                <li class="nav-item active"><a class="nav-link" href="/Vexil/api/" title="Apis">Apis</a></li>
+                
+                <li class="nav-item"><a class="nav-link" href="/Vexil/guides/" title="Guides">Guides</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-9">
+                    
+<main>
+    <article>
+        <h1></h1>
+    
+        <h1 id="flagpole">FlagPole</h1>
+<p>A <code>FlagPole</code> hoists a group of feature flags / feature toggles.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">@dynamicMemberLookup <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FlagPole</span>&lt;RootGroup&gt; <span style="color:#66d9ef">where</span> RootGroup:<span style="color:#960050;background-color:#1e0010">​</span> FlagContainer
+</code></pre></div><p>It provides the primary mechanism for dynamically accessing <code>Flag</code>s, looking
+them up from multiple sources. It also provides methods for taking and interaction
+with <code>Snapshot</code>s of flags.</p>
+<p>Each <code>FlagPole</code> must be initalised with the type of a <code>FlagContainer</code>:​</p>
+<pre><code>struct MyFlags:​ FlagContainer {
+    // ...
+}
+
+let flagPpole = FlagPole(hoist:​ MyFlags.self)
+</code></pre><p>You can then interact with the <code>FlagPole</code> using dynamic member lookup:​</p>
+<pre><code>if flagPole.myFlag == true { ... }
+</code></pre><blockquote>
+</blockquote>
+<h2 id="initializers">Initializers</h2>
+<h3 id="inithoistconfigurationsources"><code>init(hoist:​configuration:​sources:​)</code></h3>
+<p>Initialises a <code>FlagPole</code> with the supplied info.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">convenience</span> <span style="color:#66d9ef">init</span>(hoist:<span style="color:#960050;background-color:#1e0010">​</span> RootGroup.<span style="color:#66d9ef">Type</span>, configuration:<span style="color:#960050;background-color:#1e0010">​</span> VexilConfiguration = .<span style="color:#66d9ef">default</span>, sources:<span style="color:#960050;background-color:#1e0010">​</span> [FlagValueSource]? = <span style="color:#66d9ef">nil</span>)
+</code></pre></div><p>At minimum you need to provide a type that contains all of your <code>Flag</code> and <code>FlagGroup</code>s that conforms to <code>FlagContainer</code>.
+You can also specify how flag keys should be calculated and an array of flag value sources.</p>
+<h4 id="parameters">Parameters</h4>
+<ul>
+<li>hoist:​ - hoist:​ The type of <code>FlagContainer</code> to hoist. eg. <code>MyFlags.self</code></li>
+<li>configuration:​ - configuration:​ An optional configuration describing how <code>Flag</code> keys should be calculated. Defaults to <code>VexilConfiguration.default</code></li>
+<li>sources:​ - sources:​ An optional Array of <code>FlagValueSource</code>s to use as the flag pole&rsquo;s source hierarchy. Defaults to <code>FlagPole.defaultSources</code></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<h3 id="_configuration"><code>_configuration</code></h3>
+<p>The configuration information supplied to the <code>FlagPole</code> during initialisation.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">let</span> _configuration:<span style="color:#960050;background-color:#1e0010">​</span> VexilConfiguration
+</code></pre></div><h3 id="_sources"><code>_sources</code></h3>
+<p>An Array of <code>FlagValueSource</code>s that are used during flag value lookup.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> _sources:<span style="color:#960050;background-color:#1e0010">​</span> [FlagValueSource]
+</code></pre></div><p>This array is mutable so you can manipulate it directly whenever your
+need to change the hierarchy of your flag sources.</p>
+<p>The order of this Array is the order used when looking up flag values.</p>
+<h3 id="defaultsources"><code>defaultSources</code></h3>
+<p>The default sources to use when they are not specified during <code>init()</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> defaultSources:<span style="color:#960050;background-color:#1e0010">​</span> [FlagValueSource]
+</code></pre></div><p>The current default sources include:​</p>
+<ul>
+<li><code>UserDefaults.standard</code></li>
+</ul>
+<h3 id="_rootgroup"><code>_rootGroup</code></h3>
+<p>The &ldquo;Root Group&rdquo; that  contains your Flag tree/hierarchy.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> _rootGroup:<span style="color:#960050;background-color:#1e0010">​</span> RootGroup
+</code></pre></div><h3 id="publisher"><code>publisher</code></h3>
+<!-- raw HTML omitted -->
+<p>A <code>Publisher</code> that can be used to monitor flag value changes in real-time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> publisher:<span style="color:#960050;background-color:#1e0010">​</span> AnyPublisher&lt;Snapshot&lt;RootGroup&gt;, Never&gt;
+</code></pre></div><p>A new <code>Snapshot</code> is emitted every time a flag value changes. The snapshot
+contains the latest state of all flag values in the tree.</p>
+<!-- raw HTML omitted -->
+<h2 id="methods">Methods</h2>
+<h3 id="snapshot"><code>snapshot()</code></h3>
+<p>Creates a <code>Snapshot</code> of the current state of the <code>FlagPole</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">snapshot</span>() -&gt; Snapshot&lt;RootGroup&gt;
+</code></pre></div><p>The value of each <code>Flag</code> within the <code>FlagPole</code> is copied into the snapshot.</p>
+<h3 id="emptysnapshot"><code>emptySnapshot()</code></h3>
+<p>Creates an empty <code>Snapshot</code> of the current <code>FlagPole</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">emptySnapshot</span>() -&gt; Snapshot&lt;RootGroup&gt;
+</code></pre></div><p>The snapshot itself will be empty and access to any flags
+within the snapshot will return the flag&rsquo;s <code>defaultValue</code>.</p>
+<h3 id="insertsnapshotat"><code>insert(snapshot:​at:​)</code></h3>
+<p>Inserts a <code>Snapshot</code> into the <code>FlagPole</code>s source hierarchy at the specified index.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">insert</span>(snapshot:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot&lt;RootGroup&gt;, at index:<span style="color:#960050;background-color:#1e0010">​</span> Array&lt;FlagValueSource&gt;.Index)
+</code></pre></div><p>Inserting a snapshot at the top of the hierarchy (eg at index <code>0</code>) is a good way to
+override the values in the FlagPole without saving it to a source, but you can also
+insert it anywhere in the hierarchy you need.</p>
+<blockquote>
+</blockquote>
+<h4 id="parameters-1">Parameters</h4>
+<ul>
+<li>snapshot:​ - snapshot:​ The <code>Snapshot</code> to be inserted</li>
+<li>at:​ - at:​ The index at which to insert the <code>Snapshot</code>.</li>
+</ul>
+<h3 id="appendsnapshot"><code>append(snapshot:​)</code></h3>
+<p>Appends a <code>Snapshot</code> to the end of the <code>FlagPole</code>s source hierarchy.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">append</span>(snapshot:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot&lt;RootGroup&gt;)
+</code></pre></div><blockquote>
+</blockquote>
+<h4 id="parameters-2">Parameters</h4>
+<ul>
+<li>snapshot:​ - snapshot:​ The <code>Snapshot</code> to be added to the source hierarchy.</li>
+</ul>
+<h3 id="removesnapshot"><code>remove(snapshot:​)</code></h3>
+<p>Removes a <code>Snapshot</code> from the <code>FlagPole</code>s source hierarchy.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">remove</span>(snapshot:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot&lt;RootGroup&gt;)
+</code></pre></div><blockquote>
+</blockquote>
+<h4 id="parameters-3">Parameters</h4>
+<ul>
+<li>snapshot:​ - snapshot:​ The <code>Snapshot</code> to be removed from the source hierarchy.</li>
+</ul>
+<h3 id="savesnapshotto"><code>save(snapshot:​to:​)</code></h3>
+<p>Saves the specified <code>Snapshot</code> to the specified <code>FlagValueSource</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">save</span>(snapshot:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot&lt;RootGroup&gt;, to source:<span style="color:#960050;background-color:#1e0010">​</span> FlagValueSource) <span style="color:#66d9ef">throws</span>
+</code></pre></div><p>Only the values that are specifically included in the <code>Snapshot</code> will be saved.
+When you create a snapshot using <code>FlagPole.snapshot()</code>, all values are copied into the <code>Snapshot</code>.</p>
+<p>If you created your snapshot using <code>FlagPole.emptySnapshot()</code>, no values are included. Only values that
+subsequently <strong>changed</strong> using the dynamic member lookup support would then be saved to <code>source</code>:​</p>
+<pre><code>// Create an empty snapshot
+let snapshot = flagPole.emptySnapshot()
+
+// Change any flags you need to
+snapshot.subgroup.showMyTestFeature = true
+
+// Save that back to `UserDefaults`. Only `subgroup.show-my-test-feature` will be saved.
+try flagPole.save(snapshot:​ snapshot, to:​ UserDefaults.standard)
+</code></pre><h4 id="parameters-4">Parameters</h4>
+<ul>
+<li>snapshot:​ - snapshot:​ The <code>Snapshot</code> to save to the source. Only the values included in the snapshot will be saved.</li>
+<li>to:​ - to:​ The <code>FlagValueSource</code> to save the snapshot to.</li>
+</ul>
+
+    </article>
+</main>
+
+                </div>
+                <div class="col-3 sidebar">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#initializers">Initializers</a>
+      <ul>
+        <li><a href="#inithoistconfigurationsources"><code>init(hoist:​configuration:​sources:​)</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#properties">Properties</a>
+      <ul>
+        <li><a href="#_configuration"><code>_configuration</code></a></li>
+        <li><a href="#_sources"><code>_sources</code></a></li>
+        <li><a href="#defaultsources"><code>defaultSources</code></a></li>
+        <li><a href="#_rootgroup"><code>_rootGroup</code></a></li>
+        <li><a href="#publisher"><code>publisher</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#methods">Methods</a>
+      <ul>
+        <li><a href="#snapshot"><code>snapshot()</code></a></li>
+        <li><a href="#emptysnapshot"><code>emptySnapshot()</code></a></li>
+        <li><a href="#insertsnapshotat"><code>insert(snapshot:​at:​)</code></a></li>
+        <li><a href="#appendsnapshot"><code>append(snapshot:​)</code></a></li>
+        <li><a href="#removesnapshot"><code>remove(snapshot:​)</code></a></li>
+        <li><a href="#savesnapshotto"><code>save(snapshot:​to:​)</code></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <footer id="footer">
+    <nav>
+        <ul>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/custom-sources/">Creating Custom Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/readme/">Documentation</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/flag-keys/">Flag Keys</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/snapshots/">Snapshots</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/sources/">Working with Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/defining-flags/">Defining Flags</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/vexillographer/">Vexillographer</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertnothrowfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowserrorfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowsfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/boxedflagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagcontainer/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagdisplayvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaginfo/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagpole/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluedictionary/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluesource/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/home/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/mutableflaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/snapshot/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexillographer/"></a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

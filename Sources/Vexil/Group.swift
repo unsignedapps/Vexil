@@ -31,8 +31,10 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
 
     /// Initialises a new `FlagGroup` with the supplied info
     ///
-    ///     @FlagGroup(description: "This is a test flag group. Isn't it grand?"
-    ///     var myFlagGroup: MyFlags
+    /// ```swift
+    /// @FlagGroup(description: "This is a test flag group. Isn't it grand?"
+    /// var myFlagGroup: MyFlags
+    /// ```
     ///
     /// - Parameters:
     ///   - name:               An optional display name to give the group. Only visible in flag editors like Vexillographer.

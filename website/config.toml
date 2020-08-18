@@ -1,0 +1,9 @@
+baseURL = "http://unsignedapps.github.io/Vexil/"
+languageCode = "en-us"
+title = "Vexil"
+sectionPagesMenu = "main"
+pygmentsUseClasses=true
+publishDir = "../docs"
+
+[markup.goldmark.renderer]
+unsafe = true

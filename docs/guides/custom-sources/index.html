@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title>Creating Custom Flag Value Sources</title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//syntax.css">
+<script type="text/javascript" src="http://unsignedapps.github.io/Vexil//boottrap.min.js"></script>
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">
+            <img src="http://unsignedapps.github.io/Vexil//vexil-logo.png" alt="Vexil logo">
+            Vexil
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//api">APIs</a></li>
+            <li class="nav-item"><a class="nav-link" href="http://unsignedapps.github.io/Vexil//guides">Guides</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://github.com/unsignedapps/Vexil/">GitHub</a></li>
+        </ul>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    
+<main>
+    <article>
+        <h1>Creating Custom Flag Value Sources</h1>
+    
+        <!-- summary: "This guide walks you through the basics in creating a custom FlagValueSource using the bundled sources as examples." -->
+<p>This guide will walk through the basics in creating a custom <code>FlagValueSource</code>, using the bundled sources as examples.</p>
+
+    <hr />
+
+<h2 id="the-simplest-source">The simplest source <a href="#the-simplest-source" class="permalink">¶</a></h2><p>Because a <code>FlagValueSource</code> is effectively a plain key-value dictionary, the simplest source is exactly that: a <code>Dictionary&lt;String, Any&gt;</code>.</p>
+<p>There are the two methods from the protocol you need to implement: <code>func flagValue&lt;Value&gt; (key: String) -&gt; Value?</code> and <code>func setFlagValue&lt;Value&gt; (_ value: Value?, key: String) throws</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">FlagValueDictionary</span><span class="p">:</span> <span class="n">FlagValueSource</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nv">storage</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]</span>
+
+    <span class="kd">init</span> <span class="p">(</span><span class="kc">_</span> <span class="n">dictionary</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]</span> <span class="p">=</span> <span class="p">[:])</span> <span class="p">{</span>
+        <span class="kc">self</span><span class="p">.</span><span class="n">storage</span> <span class="p">=</span> <span class="n">dictionary</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">String</span><span class="p">(</span><span class="n">describing</span><span class="p">:</span> <span class="kc">Self</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">as</span><span class="p">?</span> <span class="n">Value</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">value</span> <span class="p">=</span> <span class="n">value</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">.</span><span class="n">updateValue</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">.</span><span class="n">removeValue</span><span class="p">(</span><span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Thats it.</p>
+
+    <hr />
+
+<h2 id="real-time-flag-value-publishing">Real-time flag value publishing <a href="#real-time-flag-value-publishing" class="permalink">¶</a></h2><p>If you&rsquo;re using the <code>Publisher</code>s provided by Vexil though, you&rsquo;ll want to make sure your custom source also notifies the <code>FlagPole</code> when it is changed. To do that there is a simple additional property in the protocol you need to implement: <code>var valuesDidChange: AnyPublisher&lt;Void, Never&gt;</code>.</p>
+<p>(At the time of writing this document, Combine is still not available on Linux, so we take care in our implementation. These conditional compilation steps are omitted from the examples for brevity.)</p>
+<p>Here is a fuller example of the <code>FlagValueDictionary</code> above.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">class</span> <span class="nc">FlagValueDictionary</span><span class="p">:</span> <span class="n">FlagValueSource</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nv">storage</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]</span> <span class="p">{</span>
+        <span class="kr">didSet</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">subject</span><span class="p">.</span><span class="n">send</span><span class="p">()</span>
+        <span class="p">}</span>
+	 <span class="p">}</span>
+
+    <span class="c1">// we use a subject + didSet instead of `@Published` because `@Published` works more like a `willSet`</span>
+    <span class="c1">// so the Snapshot ends up not including the new values</span>
+    <span class="kd">private</span> <span class="kd">var</span> <span class="nv">subject</span> <span class="p">=</span> <span class="n">PassthroughSubject</span><span class="p">()</span>
+
+    <span class="kd">init</span> <span class="p">(</span><span class="kc">_</span> <span class="n">dictionary</span><span class="p">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]</span> <span class="p">=</span> <span class="p">[:])</span> <span class="p">{</span>
+        <span class="kc">self</span><span class="p">.</span><span class="n">storage</span> <span class="p">=</span> <span class="n">dictionary</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">String</span><span class="p">(</span><span class="n">describing</span><span class="p">:</span> <span class="kc">Self</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">as</span><span class="p">?</span> <span class="n">Value</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">value</span> <span class="p">=</span> <span class="n">value</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">.</span><span class="n">updateValue</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">storage</span><span class="p">.</span><span class="n">removeValue</span><span class="p">(</span><span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="kd">var</span> <span class="nv">valuesDidChange</span><span class="p">:</span> <span class="n">AnyPublisher</span><span class="p">&lt;</span><span class="nb">Void</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;</span> <span class="p">{</span>
+        <span class="kc">self</span><span class="p">.</span><span class="n">subject</span><span class="p">.</span><span class="n">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+    <hr />
+
+<h2 id="boxing-flag-values">Boxing flag values <a href="#boxing-flag-values" class="permalink">¶</a></h2><p>But not everything can be type-erased into an <code>Any</code> so easily. Sometimes you need to be able to &ldquo;box&rdquo; (encode or serialise) it into a different type. For example, <code>UserDefaults</code> stores all of its values as an <code>NSObject</code> subclass.</p>
+<p>To make this simpler, Vexil provides the <code>BoxedFlagValue</code> type, and each <code>FlagValue</code> type needs to provide an implementation for boxing and unboxing its values into a <code>BoxedFlagValue</code>. See 
+<a href="/Vexil/guides/defining-flags/">Defining Flags</a>
+
+ for more on creating custom flag value types.</p>
+<p>So when creating your custom source, you don&rsquo;t need to be too concerned with trying to unpack the <code>Value</code> generic in your methods, you just need to work with the much simpler <code>BoxedFlagValue</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">enum</span> <span class="nc">BoxedFlagValue</span><span class="p">:</span> <span class="nb">Equatable</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">array</span><span class="p">([</span><span class="n">BoxedFlagValue</span><span class="p">])</span>
+    <span class="k">case</span> <span class="n">bool</span><span class="p">(</span><span class="nb">Bool</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">dictionary</span><span class="p">([</span><span class="nb">String</span><span class="p">:</span> <span class="n">BoxedFlagValue</span><span class="p">])</span>
+    <span class="k">case</span> <span class="n">data</span><span class="p">(</span><span class="n">Data</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">double</span><span class="p">(</span><span class="nb">Double</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">float</span><span class="p">(</span><span class="nb">Float</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">integer</span><span class="p">(</span><span class="nb">Int</span><span class="p">)</span>
+    <span class="k">case</span> <span class="kr">none</span>
+    <span class="k">case</span> <span class="n">string</span><span class="p">(</span><span class="nb">String</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="unpacking-a-boxed-flag-value">Unpacking a boxed flag value <a href="#unpacking-a-boxed-flag-value" class="permalink">¶</a></h3><p>So in your custom source, you need only provide a translation between the source&rsquo;s storage type and the <code>BoxedFlagValue</code>. Here is the one for <code>UserDefaults</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">extension</span> <span class="nc">BoxedFlagValue</span> <span class="p">{</span>
+
+    <span class="c1">/// Initialises a BoxedFlagValue from an &#34;Any&#34; object.</span>
+    <span class="c1">///</span>
+    <span class="c1">/// It does this by attempting to cast into the specified Swift type,</span>
+    <span class="c1">/// letting the bridging from the Objective-C types do the heavy lifting.</span>
+    <span class="c1">///</span>
+    <span class="c1">/// - Parameters:</span>
+    <span class="c1">///   - object:			The object returned by `UserDefaults.object(forKey:)`.</span>
+    <span class="c1">///   - typeHint:		The generic Value type, because we can cast any `Int` into a `Bool` and sometimes we need a hint</span>
+    <span class="c1">///</span>
+    <span class="kd">init</span><span class="p">?&lt;</span><span class="n">Value</span><span class="p">&gt;</span> <span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="nb">Any</span><span class="p">,</span> <span class="n">typeHint</span><span class="p">:</span> <span class="n">Value</span><span class="p">.</span><span class="kr">Type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">object</span> <span class="p">{</span>
+        
+        <span class="c1">// we only try to cast to Bool if the caller is expecting a Bool</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="nb">Bool</span> <span class="k">where</span> <span class="n">typeHint</span> <span class="p">==</span> <span class="nb">Bool</span><span class="p">.</span><span class="kc">self</span><span class="p">:</span>
+            <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="n">Data</span><span class="p">:</span>             <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="nb">Int</span><span class="p">:</span>              <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">integer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="nb">Float</span><span class="p">:</span>            <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="nb">Double</span><span class="p">:</span>           <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">double</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="nb">String</span><span class="p">:</span>           <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">case</span> <span class="k">is</span> <span class="n">NSNull</span><span class="p">:</span>                     <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="kr">none</span>
+
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="p">[</span><span class="nb">Any</span><span class="p">]:</span>            <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">compactMap</span><span class="p">({</span> <span class="n">BoxedFlagValue</span><span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="nv">$0</span><span class="p">,</span> <span class="n">typeHint</span><span class="p">:</span> <span class="n">typeHint</span><span class="p">)</span> <span class="p">}))</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="nv">value</span> <span class="k">as</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span> <span class="nb">Any</span><span class="p">]:</span>    <span class="kc">self</span> <span class="p">=</span> <span class="p">.</span><span class="n">dictionary</span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">compactMapValues</span><span class="p">({</span> <span class="n">BoxedFlagValue</span><span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="nv">$0</span><span class="p">,</span> <span class="n">typeHint</span><span class="p">:</span> <span class="n">typeHint</span><span class="p">)</span> <span class="p">}))</span>
+
+        <span class="k">default</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">/// Returns the NSObject subclass that `UserDefaults` is expecting for the receiving boxed flag value</span>
+    <span class="c1">///</span>
+    <span class="kd">var</span> <span class="nv">object</span><span class="p">:</span> <span class="n">NSObject</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="kc">self</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>         <span class="k">return</span> <span class="n">value</span><span class="p">.</span><span class="bp">map</span><span class="p">({</span> <span class="nv">$0</span><span class="p">.</span><span class="n">object</span> <span class="p">})</span> <span class="k">as</span> <span class="n">NSArray</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">bool</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>          <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSNumber</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">data</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>          <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSData</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">dictionary</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>    <span class="k">return</span> <span class="n">value</span><span class="p">.</span><span class="n">mapValues</span><span class="p">({</span> <span class="nv">$0</span><span class="p">.</span><span class="n">object</span> <span class="p">})</span> <span class="k">as</span> <span class="n">NSDictionary</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">double</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>        <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSNumber</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>         <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSNumber</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">integer</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>       <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSNumber</span>
+        <span class="k">case</span> <span class="p">.</span><span class="kr">none</span><span class="p">:</span>                     <span class="k">return</span> <span class="n">NSNull</span><span class="p">()</span>
+        <span class="k">case</span> <span class="kd">let</span> <span class="p">.</span><span class="n">string</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>        <span class="k">return</span> <span class="n">value</span> <span class="k">as</span> <span class="n">NSString</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="implementing-flagvaluesource">Implementing FlagValueSource <a href="#implementing-flagvaluesource" class="permalink">¶</a></h3><p>Once we have that translation between a <code>BoxedFlagValue</code> and <code>NSObject</code> done, the rest of implementing <code>FlagValueSource</code> for <code>UserDefaults</code> becomes pretty simple:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">extension</span> <span class="nc">UserDefaults</span><span class="p">:</span> <span class="n">FlagValueSource</span> <span class="p">{</span>
+
+    <span class="kd">public</span> <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s">&#34;UserDefaults</span><span class="si">\(</span><span class="kc">self</span> <span class="p">==</span> <span class="n">UserDefaults</span><span class="p">.</span><span class="n">standard</span> <span class="p">?</span> <span class="s">&#34;.standard&#34;</span> <span class="p">:</span> <span class="s">&#34;&#34;</span><span class="si">)</span><span class="s">&#34;</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+
+        <span class="c1">// get the NSObject for the specified key and translate it into a `BoxedFlagValue`</span>
+        <span class="k">guard</span>
+            <span class="kd">let</span> <span class="nv">object</span> <span class="p">=</span> <span class="kc">self</span><span class="p">.</span><span class="n">object</span><span class="p">(</span><span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">),</span>
+            <span class="kd">let</span> <span class="nv">boxed</span> <span class="p">=</span> <span class="n">BoxedFlagValue</span><span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="n">object</span><span class="p">,</span> <span class="n">typeHint</span><span class="p">:</span> <span class="n">Value</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">nil</span> <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">Value</span><span class="p">(</span><span class="n">boxedFlagValue</span><span class="p">:</span> <span class="n">boxed</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="kd">let</span> <span class="nv">value</span> <span class="p">=</span> <span class="n">value</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="kc">self</span><span class="p">.</span><span class="n">removeObject</span><span class="p">(</span><span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="p">}</span>
+
+        <span class="c1">// get the `NSObject` from the `BoxedFlagValue` and set it in the user defaults</span>
+        <span class="kc">self</span><span class="p">.</span><span class="kr">set</span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">boxedFlagValue</span><span class="p">.</span><span class="n">object</span><span class="p">,</span> <span class="n">forKey</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="kd">var</span> <span class="nv">valuesDidChange</span><span class="p">:</span> <span class="n">AnyPublisher</span><span class="p">&lt;</span><span class="nb">Void</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;?</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">NotificationCenter</span><span class="p">.</span><span class="k">default</span><span class="p">.</span><span class="n">publisher</span><span class="p">(</span><span class="k">for</span><span class="p">:</span> <span class="n">UserDefaults</span><span class="p">.</span><span class="n">didChangeNotification</span><span class="p">)</span>
+            <span class="p">.</span><span class="bp">map</span> <span class="p">{</span> <span class="kc">_</span> <span class="k">in</span> <span class="p">()</span> <span class="p">}</span>
+            <span class="p">.</span><span class="n">eraseToAnyPublisher</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+    <hr />
+
+<h2 id="working-with-generic-sources">Working with generic sources <a href="#working-with-generic-sources" class="permalink">¶</a></h2><p>The <code>BoxedFlagValue</code> alone is all you need if you&rsquo;re wrapping a key-value store that uses a concrete type, or something you can cast in the right types. But that doesn&rsquo;t help us at all if your provider also supports generics as we have no way for the compiler to infer that <code>Value</code>, which must conform to <code>FlagValue</code>, also conforms to <code>MyFlagProviderValue</code>.</p>
+<p>To work around this limitation, Vexil&rsquo;s <code>FlagValue</code> provides an associated type that describes the type stored inside the boxed value: <code>BoxedValueType</code>.</p>
+<p>Let&rsquo;s say we working with Awesome Flag Provider™, and they provided an interface that looked like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">protocol</span> <span class="nc">AwesomeFlagType</span> <span class="p">{}</span>
+<span class="kd">extension</span> <span class="nc">Bool</span><span class="p">:</span> <span class="n">AwesomeFlagType</span> <span class="p">{}</span>		<span class="c1">// plus other types</span>
+
+<span class="kd">class</span> <span class="nc">AwesomeFlagProvider</span> <span class="p">{</span>
+
+    <span class="kd">func</span> <span class="nf">get</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;</span> <span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">AwesomeFlagType</span> <span class="p">{</span>
+        <span class="c1">// some awesome logic</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">set</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;</span> <span class="p">(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">AwesomeFlagType</span> <span class="p">{</span>
+        <span class="c1">// more awesome logic</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div><p>If we were to attempt to use <code>get(key:)</code> directly we&rsquo;d get an error:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">extension</span> <span class="nc">AwesomeFlagProvider</span><span class="p">:</span> <span class="n">FlagValueSource</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span> <span class="p">{</span> <span class="s">&#34;My Awesome Flag Provider&#34;</span> <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">self</span><span class="p">.</span><span class="kr">get</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>		<span class="c1">// ERROR! Instance method &#39;get(key:)&#39; requires that &#39;Value&#39; conform to &#39;AwesomeFlagType&#39;</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>And there is no real way with the current generics implementations for us to make them conform:</p>
+<pre><code>// ERROR! Type 'AwesomeFlagProvider' does not conform to protocol 'FlagValueSource'
+func flagValue&lt;Value&gt;(key: String) -&gt; Value? where Value: FlagValue &amp; AwesomeFlagType {
+    return self.get(key: key)
+}
+</code></pre><p>But since a <code>FlagValue</code> can be anything, you use the <code>FlagValue</code>'s <code>BoxedValueType</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span> <span class="n">FlagValue</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">Value</span><span class="p">.</span><span class="n">BoxedValueType</span><span class="p">.</span><span class="kc">self</span> <span class="p">==</span> <span class="nb">Bool</span><span class="p">.</span><span class="kc">self</span> <span class="o">||</span> <span class="n">Value</span><span class="p">.</span><span class="n">BoxedValueType</span><span class="p">.</span><span class="kc">self</span> <span class="p">==</span> <span class="nb">Bool</span><span class="p">?.</span><span class="kc">self</span> <span class="p">{</span>
+        <span class="kd">let</span> <span class="nv">value</span><span class="p">:</span> <span class="nb">Bool</span><span class="p">?</span> <span class="p">=</span> <span class="kc">self</span><span class="p">.</span><span class="kr">get</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="k">as</span><span class="p">?</span> <span class="n">Value</span>
+    <span class="p">}</span>
+
+    <span class="c1">// support for other types</span>
+
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></div><p>To be honest, this feels quite horrible but seems to be the only way to make the compiler happy. <code>FlagValue.BoxedValueType</code> is provided solely so the possible types you need to check for is more limited than <em>everything</em>.</p>
+
+    </article>
+</main>
+
+                </div>
+                
+                <div class="col-3 sidebar d-none d-md-block">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-simplest-source">The simplest source</a></li>
+    <li><a href="#real-time-flag-value-publishing">Real-time flag value publishing</a></li>
+    <li><a href="#boxing-flag-values">Boxing flag values</a>
+      <ul>
+        <li><a href="#unpacking-a-boxed-flag-value">Unpacking a boxed flag value</a></li>
+        <li><a href="#implementing-flagvaluesource">Implementing FlagValueSource</a></li>
+      </ul>
+    </li>
+    <li><a href="#working-with-generic-sources">Working with generic sources</a></li>
+  </ul>
+</nav>
+                </div>
+                
+            </div>
+            <footer id="footer">
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>
