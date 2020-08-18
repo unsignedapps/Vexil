@@ -1,5 +1,7 @@
 # Flag Keys
 
+<!-- summary: "This guide looks in depth at how Vexil calculates the key for each of its flags, and how you can control that process." -->
+
 Lets be honest, any Feature Flag or Feature Toggle platform is just a glorified Key-Value store, and all Vexil does is map string-based keys into a strongly-typed hierarchy and provide a (hopefully) nice developer experience.
 
 It's very important then when working with different `FlagValueSource`s that you know how Vexil maps the `FlagContainer`, `FlagGroup` and `Flag`s into something that can work with any key-value store.

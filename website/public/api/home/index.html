@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title></title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">Vexil</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                
+                
+                <li class="nav-item active"><a class="nav-link" href="/Vexil/api/" title="Apis">Apis</a></li>
+                
+                <li class="nav-item"><a class="nav-link" href="/Vexil/guides/" title="Guides">Guides</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-9">
+                    
+<main>
+    <article>
+        <h1></h1>
+    
+        <h1 id="types">Types</h1>
+<ul>
+<li><a href="/VexilConfiguration">VexilConfiguration</a>:​
+A configuration struct passed into the <code>FlagPole</code> to configure it.</li>
+<li><a href="/VexilConfiguration_CodingKeyStrategy">VexilConfiguration.CodingKeyStrategy</a>:​
+An enumeration describing how keys should be calculated by <code>Flag</code> and <code>FlagGroup</code>s.</li>
+<li><a href="/FlagGroup_CodingKeyStrategy">FlagGroup.CodingKeyStrategy</a>:​
+An enumeration describing how the key should be calculated for this specific <code>FlagGroup</code>.</li>
+<li><a href="/Flag_CodingKeyStrategy">Flag.CodingKeyStrategy</a>:​
+An enumeration describing how the key should be calculated for this specific <code>Flag</code>.</li>
+<li><a href="/Flag">Flag</a>:​
+A wrapper representing a Feature Flag / Feature Toggle.</li>
+<li><a href="/FlagInfo">FlagInfo</a>:​
+A simple collection of information about a <code>Flag</code> or <code>FlagGroup</code></li>
+<li><a href="/FlagGroup">FlagGroup</a>:​
+A wrapper representing a group of Feature Flags / Feature Toggles.</li>
+<li><a href="/FlagPole">FlagPole</a>:​
+A <code>FlagPole</code> hoists a group of feature flags / feature toggles.</li>
+<li><a href="/MutableFlagGroup">MutableFlagGroup</a>:​
+A <code>MutableFlagGroup</code> is a wrapper type that provides a &ldquo;setter&rdquo; for each contained <code>Flag</code>.</li>
+<li><a href="/Snapshot">Snapshot</a>:​
+A <code>Snapshot</code> serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
+mutable and can be applied / saved to a <code>FlagValueSource</code>.</li>
+<li><a href="/FlagValueDictionary">FlagValueDictionary</a>:​
+A simple dictionary-backed FlagValueSource that can be useful for testing
+and other purposes.</li>
+<li><a href="/BoxedFlagValue">BoxedFlagValue</a>:​
+An intermediate type used to make encoding and decoding of types simpler for <code>FlagValueSource</code>s</li>
+<li><a href="/Vexillographer">Vexillographer</a></li>
+</ul>
+<h1 id="protocols">Protocols</h1>
+<ul>
+<li><a href="/FlagContainer">FlagContainer</a>:​
+A <code>FlagContainer</code> is a type that encapsulates your <code>Flag</code> and <code>FlagGroup</code>
+types. The only requirement of a <code>FlagContainer</code> is that it can be initialised
+with an empty <code>init()</code>.</li>
+<li><a href="/FlagValueSource">FlagValueSource</a>:​
+A simple protocol that describes a source of <code>FlagValue</code>s</li>
+<li><a href="/FlagValue">FlagValue</a>:​
+A type that represents the wrapped value of a <code>Flag</code></li>
+<li><a href="/FlagDisplayValue">FlagDisplayValue</a>:​
+A convenience protocol used by flag editors like Vexillographer.</li>
+</ul>
+<h1 id="global-functions">Global Functions</h1>
+<ul>
+<li><a href="/AssertNoThrow(file:%E2%80%8Bline:%E2%80%8B_:%E2%80%8B)">AssertNoThrow(file:​line:​_:​)</a></li>
+<li><a href="/AssertThrows(error:%E2%80%8Bfile:%E2%80%8Bline:%E2%80%8B_:%E2%80%8B)">AssertThrows(error:​file:​line:​_:​)</a></li>
+<li><a href="/AssertThrows(file:%E2%80%8Bline:%E2%80%8B_:%E2%80%8B)">AssertThrows(file:​line:​_:​)</a></li>
+</ul>
+
+    </article>
+</main>
+
+                </div>
+                <div class="col-3 sidebar">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents"></nav>
+                </div>
+            </div>
+            <footer id="footer">
+    <nav>
+        <ul>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/custom-sources/">Creating Custom Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/readme/">Documentation</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/flag-keys/">Flag Keys</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/snapshots/">Snapshots</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/sources/">Working with Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/defining-flags/">Defining Flags</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/vexillographer/">Vexillographer</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertnothrowfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowserrorfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowsfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/boxedflagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagcontainer/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagdisplayvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaginfo/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagpole/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluedictionary/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluesource/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/home/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/mutableflaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/snapshot/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexillographer/"></a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

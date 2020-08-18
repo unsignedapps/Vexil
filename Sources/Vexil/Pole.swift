@@ -19,16 +19,19 @@ import Foundation
 ///
 /// Each `FlagPole` must be initalised with the type of a `FlagContainer`:
 ///
-///     struct MyFlags: FlagContainer {
-///         // ...
-///     }
+/// ```swift
+/// struct MyFlags: FlagContainer {
+///     // ...
+/// }
 ///
-///     let flagPpole = FlagPole(hoist: MyFlags.self)
+/// let flagPpole = FlagPole(hoist: MyFlags.self)
+/// ```
 ///
 /// You can then interact with the `FlagPole` using dynamic member lookup:
 ///
-///     if flagPole.myFlag == true { ... }
-///
+/// ```swift
+/// if flagPole.myFlag == true { ... }
+/// ```
 ///
 /// - Note: Where possible, properties directly on `FlagPole` have been prefixed with an underscore (`_`)
 ///         so as not to conflict with the dynamic member properties on your `FlagContainer`.
@@ -261,14 +264,16 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// If you created your snapshot using `FlagPole.emptySnapshot()`, no values are included. Only values that
     /// subsequently **changed** using the dynamic member lookup support would then be saved to `source`:
     ///
-    ///     // Create an empty snapshot
-    ///     let snapshot = flagPole.emptySnapshot()
+    /// ```swift
+    /// // Create an empty snapshot
+    /// let snapshot = flagPole.emptySnapshot()
     ///
-    ///     // Change any flags you need to
-    ///     snapshot.subgroup.showMyTestFeature = true
+    /// // Change any flags you need to
+    /// snapshot.subgroup.showMyTestFeature = true
     ///
-    ///     // Save that back to `UserDefaults`. Only `subgroup.show-my-test-feature` will be saved.
-    ///     try flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
+    /// // Save that back to `UserDefaults`. Only `subgroup.show-my-test-feature` will be saved.
+    /// try flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
+    /// ```
     ///
     /// - Parameters:
     ///   - snapshot:           The `Snapshot` to save to the source. Only the values included in the snapshot will be saved.

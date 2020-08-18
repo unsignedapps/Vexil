@@ -1,0 +1,465 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title>Creating Custom Flag Value Sources</title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">Vexil</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                
+                
+                <li class="nav-item"><a class="nav-link" href="/Vexil/api/" title="Apis">Apis</a></li>
+                
+                <li class="nav-item active"><a class="nav-link" href="/Vexil/guides/" title="Guides">Guides</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-9">
+                    
+<main>
+    <article>
+        <h1>Creating Custom Flag Value Sources</h1>
+    
+        <p>This guide will walk through the basics in creating a custom <code>FlagValueSource</code>, using the bundled sources as examples.</p>
+<h2 id="the-simplest-source">The simplest source</h2>
+<p>Because a <code>FlagValueSource</code> is effectively a plain key-value dictionary, the simplest source is exactly that: a <code>Dictionary&lt;String, Any&gt;</code>.</p>
+<p>There are the two methods from the protocol you need to implement: <code>func flagValue&lt;Value&gt; (key: String) -&gt; Value?</code> and <code>func setFlagValue&lt;Value&gt; (_ value: Value?, key: String) throws</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FlagValueDictionary</span>: FlagValueSource {
+
+    <span style="color:#66d9ef">var</span> storage: [String: Any]
+
+    <span style="color:#66d9ef">init</span> (<span style="color:#66d9ef">_</span> dictionary: [String: Any] = [:]) {
+        <span style="color:#66d9ef">self</span>.storage = dictionary
+    }
+
+    <span style="color:#66d9ef">var</span> name: String {
+        <span style="color:#66d9ef">return</span> String(describing: <span style="color:#66d9ef">Self</span>.<span style="color:#66d9ef">self</span>)
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">self</span>.storage[key] <span style="color:#66d9ef">as</span>? Value
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setFlagValue</span>&lt;Value&gt;(<span style="color:#66d9ef">_</span> value: Value?, key: String) <span style="color:#66d9ef">throws</span> <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> value = value {
+            <span style="color:#66d9ef">self</span>.storage.updateValue(value, forKey: key)
+        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#66d9ef">self</span>.storage.removeValue(forKey: key)
+        }
+    }
+}
+</code></pre></div><p>Thats it.</p>
+<h2 id="real-time-flag-value-publishing">Real-time flag value publishing</h2>
+<p>If you&rsquo;re using the <code>Publisher</code>s provided by Vexil though, you&rsquo;ll want to make sure your custom source also notifies the <code>FlagPole</code> when it is changed. To do that there is a simple additional property in the protocol you need to implement: <code>var valuesDidChange: AnyPublisher&lt;Void, Never&gt;</code>.</p>
+<p>(At the time of writing this document, Combine is still not available on Linux, so we take care in our implementation. These conditional compilation steps are omitted from the examples for brevity.)</p>
+<p>Here is a fuller example of the <code>FlagValueDictionary</code> above.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FlagValueDictionary</span>: FlagValueSource {
+
+    <span style="color:#66d9ef">var</span> storage: [String: Any] {
+        <span style="color:#66d9ef">didSet</span> {
+            <span style="color:#66d9ef">self</span>.subject.send()
+        }
+	 }
+
+    <span style="color:#75715e">// we use a subject + didSet instead of `@Published` because `@Published` works more like a `willSet`</span>
+    <span style="color:#75715e">// so the Snapshot ends up not including the new values</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">var</span> subject = PassthroughSubject()
+
+    <span style="color:#66d9ef">init</span> (<span style="color:#66d9ef">_</span> dictionary: [String: Any] = [:]) {
+        <span style="color:#66d9ef">self</span>.storage = dictionary
+    }
+
+    <span style="color:#66d9ef">var</span> name: String {
+        <span style="color:#66d9ef">return</span> String(describing: <span style="color:#66d9ef">Self</span>.<span style="color:#66d9ef">self</span>)
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">self</span>.storage[key] <span style="color:#66d9ef">as</span>? Value
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setFlagValue</span>&lt;Value&gt;(<span style="color:#66d9ef">_</span> value: Value?, key: String) <span style="color:#66d9ef">throws</span> <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> value = value {
+            <span style="color:#66d9ef">self</span>.storage.updateValue(value, forKey: key)
+        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#66d9ef">self</span>.storage.removeValue(forKey: key)
+        }
+    }
+    
+    <span style="color:#66d9ef">var</span> valuesDidChange: AnyPublisher&lt;Void, Never&gt; {
+        <span style="color:#66d9ef">self</span>.subject.eraseToAnyPublisher()
+    }
+}
+</code></pre></div><h2 id="boxing-flag-values">Boxing flag values</h2>
+<p>But not everything can be type-erased into an <code>Any</code> so easily. Sometimes you need to be able to &ldquo;box&rdquo; (encode or serialise) it into a different type. For example, <code>UserDefaults</code> stores all of its values as an <code>NSObject</code> subclass.</p>
+<p>To make this simpler, Vexil provides the <code>BoxedFlagValue</code> type, and each <code>FlagValue</code> type needs to provide an implementation for boxing and unboxing its values into a <code>BoxedFlagValue</code>. See <a href="Defining-Flags.md">Defining Flags</a> for more on creating custom flag value types.</p>
+<p>So when creating your custom source, you don&rsquo;t need to be too concerned with trying to unpack the <code>Value</code> generic in your methods, you just need to work with the much simpler <code>BoxedFlagValue</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">BoxedFlagValue</span>: Equatable {
+    <span style="color:#66d9ef">case</span> array([BoxedFlagValue])
+    <span style="color:#66d9ef">case</span> bool(Bool)
+    <span style="color:#66d9ef">case</span> dictionary([String: BoxedFlagValue])
+    <span style="color:#66d9ef">case</span> data(Data)
+    <span style="color:#66d9ef">case</span> double(Double)
+    <span style="color:#66d9ef">case</span> float(Float)
+    <span style="color:#66d9ef">case</span> integer(Int)
+    <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">none</span>
+    <span style="color:#66d9ef">case</span> string(String)
+}
+</code></pre></div><h3 id="unpacking-a-boxed-flag-value">Unpacking a boxed flag value</h3>
+<p>So in your custom source, you need only provide a translation between the source&rsquo;s storage type and the <code>BoxedFlagValue</code>. Here is the one for <code>UserDefaults</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">extension</span> <span style="color:#a6e22e">BoxedFlagValue</span> {
+
+    <span style="color:#75715e">/// Initialises a BoxedFlagValue from an &#34;Any&#34; object.</span>
+    <span style="color:#75715e">///</span>
+    <span style="color:#75715e">/// It does this by attempting to cast into the specified Swift type,</span>
+    <span style="color:#75715e">/// letting the bridging from the Objective-C types do the heavy lifting.</span>
+    <span style="color:#75715e">///</span>
+    <span style="color:#75715e">/// - Parameters:</span>
+    <span style="color:#75715e">///   - object:			The object returned by `UserDefaults.object(forKey:)`.</span>
+    <span style="color:#75715e">///   - typeHint:		The generic Value type, because we can cast any `Int` into a `Bool` and sometimes we need a hint</span>
+    <span style="color:#75715e">///</span>
+    <span style="color:#66d9ef">init</span>?&lt;Value&gt; (object: Any, typeHint: Value.<span style="color:#66d9ef">Type</span>) {
+        <span style="color:#66d9ef">switch</span> object {
+        
+        <span style="color:#75715e">// we only try to cast to Bool if the caller is expecting a Bool</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> Bool <span style="color:#66d9ef">where</span> typeHint == Bool.<span style="color:#66d9ef">self</span>:
+            <span style="color:#66d9ef">self</span> = .bool(value)
+
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> Data:             <span style="color:#66d9ef">self</span> = .data(value)
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> Int:              <span style="color:#66d9ef">self</span> = .integer(value)
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> Float:            <span style="color:#66d9ef">self</span> = .float(value)
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> Double:           <span style="color:#66d9ef">self</span> = .double(value)
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> String:           <span style="color:#66d9ef">self</span> = .string(value)
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">is</span> NSNull:                     <span style="color:#66d9ef">self</span> = .<span style="color:#66d9ef">none</span>
+
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> [Any]:            <span style="color:#66d9ef">self</span> = .array(value.compactMap({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> value <span style="color:#66d9ef">as</span> [String: Any]:    <span style="color:#66d9ef">self</span> = .dictionary(value.compactMapValues({ BoxedFlagValue(object: $0, typeHint: typeHint) }))
+
+        <span style="color:#66d9ef">default</span>:
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+        }
+    }
+
+    <span style="color:#75715e">/// Returns the NSObject subclass that `UserDefaults` is expecting for the receiving boxed flag value</span>
+    <span style="color:#75715e">///</span>
+    <span style="color:#66d9ef">var</span> object: NSObject {
+        <span style="color:#66d9ef">switch</span> <span style="color:#66d9ef">self</span> {
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .array(value):         <span style="color:#66d9ef">return</span> value.map({ $0.object }) <span style="color:#66d9ef">as</span> NSArray
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .bool(value):          <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSNumber
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .data(value):          <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSData
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .dictionary(value):    <span style="color:#66d9ef">return</span> value.mapValues({ $0.object }) <span style="color:#66d9ef">as</span> NSDictionary
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .double(value):        <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSNumber
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .float(value):         <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSNumber
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .integer(value):       <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSNumber
+        <span style="color:#66d9ef">case</span> .<span style="color:#66d9ef">none</span>:                     <span style="color:#66d9ef">return</span> NSNull()
+        <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> .string(value):        <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span> NSString
+        }
+    }
+}
+</code></pre></div><h3 id="implementing-flagvaluesource">Implementing FlagValueSource</h3>
+<p>Once we have that translation between a <code>BoxedFlagValue</code> and <code>NSObject</code> done, the rest of implementing <code>FlagValueSource</code> for <code>UserDefaults</code> becomes pretty simple:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">extension</span> <span style="color:#a6e22e">UserDefaults</span>: FlagValueSource {
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">var</span> name: String {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;UserDefaults</span><span style="color:#e6db74">\(</span><span style="color:#66d9ef">self</span> == UserDefaults.standard ? <span style="color:#e6db74">&#34;.standard&#34;</span> : <span style="color:#e6db74">&#34;&#34;</span><span style="color:#e6db74">)</span><span style="color:#e6db74">&#34;</span>
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: FlagValue {
+
+        <span style="color:#75715e">// get the NSObject for the specified key and translate it into a `BoxedFlagValue`</span>
+        <span style="color:#66d9ef">guard</span>
+            <span style="color:#66d9ef">let</span> object = <span style="color:#66d9ef">self</span>.object(forKey: key),
+            <span style="color:#66d9ef">let</span> boxed = BoxedFlagValue(object: object, typeHint: Value.<span style="color:#66d9ef">self</span>)
+        <span style="color:#66d9ef">else</span> { <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span> }
+
+        <span style="color:#66d9ef">return</span> Value(boxedFlagValue: boxed)
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setFlagValue</span>&lt;Value&gt;(<span style="color:#66d9ef">_</span> value: Value?, key: String) <span style="color:#66d9ef">throws</span> <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">guard</span> <span style="color:#66d9ef">let</span> value = value <span style="color:#66d9ef">else</span> {
+            <span style="color:#66d9ef">self</span>.removeObject(forKey: key)
+            <span style="color:#66d9ef">return</span>
+        }
+
+        <span style="color:#75715e">// get the `NSObject` from the `BoxedFlagValue` and set it in the user defaults</span>
+        <span style="color:#66d9ef">self</span>.<span style="color:#66d9ef">set</span>(value.boxedFlagValue.object, forKey: key)
+
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">var</span> valuesDidChange: AnyPublisher&lt;Void, Never&gt;? {
+        <span style="color:#66d9ef">return</span> NotificationCenter.<span style="color:#66d9ef">default</span>.publisher(<span style="color:#66d9ef">for</span>: UserDefaults.didChangeNotification)
+            .map { <span style="color:#66d9ef">_</span> <span style="color:#66d9ef">in</span> () }
+            .eraseToAnyPublisher()
+    }
+}
+</code></pre></div><h2 id="working-with-generic-sources">Working with generic sources</h2>
+<p>The <code>BoxedFlagValue</code> alone is all you need if you&rsquo;re wrapping a key-value store that uses a concrete type, or something you can cast in the right types. But that doesn&rsquo;t help us at all if your provider also supports generics as we have no way for the compiler to infer that <code>Value</code>, which must conform to <code>FlagValue</code>, also conforms to <code>MyFlagProviderValue</code>.</p>
+<p>To work around this limitation, Vexil&rsquo;s <code>FlagValue</code> provides an associated type that describes the type stored inside the boxed value: <code>BoxedValueType</code>.</p>
+<p>Let&rsquo;s say we working with Awesome Flag Provider™, and they provided an interface that looked like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">protocol</span> <span style="color:#a6e22e">AwesomeFlagType</span> {}
+<span style="color:#66d9ef">extension</span> <span style="color:#a6e22e">Bool</span>: AwesomeFlagType {}		<span style="color:#75715e">// plus other types</span>
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AwesomeFlagProvider</span> {
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">get</span>&lt;Value&gt; (key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: AwesomeFlagType {
+        <span style="color:#75715e">// some awesome logic</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">set</span>&lt;Value&gt; (<span style="color:#66d9ef">_</span> value: Value, key: String) <span style="color:#66d9ef">where</span> Value: AwesomeFlagType {
+        <span style="color:#75715e">// more awesome logic</span>
+    }
+
+}
+</code></pre></div><p>If we were to attempt to use <code>get(key:)</code> directly we&rsquo;d get an error:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">extension</span> <span style="color:#a6e22e">AwesomeFlagProvider</span>: FlagValueSource {
+    <span style="color:#66d9ef">var</span> name: String { <span style="color:#e6db74">&#34;My Awesome Flag Provider&#34;</span> }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: FlagValue {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">self</span>.<span style="color:#66d9ef">get</span>(key: key)		<span style="color:#75715e">// ERROR! Instance method &#39;get(key:)&#39; requires that &#39;Value&#39; conform to &#39;AwesomeFlagType&#39;</span>
+    }
+
+    <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setFlagValue</span>&lt;Value&gt;(<span style="color:#66d9ef">_</span> value: Value?, key: String) <span style="color:#66d9ef">throws</span> <span style="color:#66d9ef">where</span> Value: FlagValue {
+    }
+}
+</code></pre></div><p>And there is no real way with the current generics implementations for us to make them conform:</p>
+<pre><code>// ERROR! Type 'AwesomeFlagProvider' does not conform to protocol 'FlagValueSource'
+func flagValue&lt;Value&gt;(key: String) -&gt; Value? where Value: FlagValue &amp; AwesomeFlagType {
+    return self.get(key: key)
+}
+</code></pre><p>But since a <code>FlagValue</code> can be anything, you use the <code>FlagValue</code>'s <code>BoxedValueType</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key: String) -&gt; Value? <span style="color:#66d9ef">where</span> Value: FlagValue {
+    <span style="color:#66d9ef">if</span> Value.BoxedValueType.<span style="color:#66d9ef">self</span> == Bool.<span style="color:#66d9ef">self</span> <span style="color:#f92672">||</span> Value.BoxedValueType.<span style="color:#66d9ef">self</span> == Bool?.<span style="color:#66d9ef">self</span> {
+        <span style="color:#66d9ef">let</span> value: Bool? = <span style="color:#66d9ef">self</span>.<span style="color:#66d9ef">get</span>(key: key)
+        <span style="color:#66d9ef">return</span> value <span style="color:#66d9ef">as</span>? Value
+    }
+
+    <span style="color:#75715e">// support for other types</span>
+
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+</code></pre></div><p>To be honest, this feels quite horrible but seems to be the only way to make the compiler happy. <code>FlagValue.BoxedValueType</code> is provided solely so the possible types you need to check for is more limited than <em>everything</em>.</p>
+
+    </article>
+</main>
+
+                </div>
+                <div class="col-3 sidebar">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-simplest-source">The simplest source</a></li>
+    <li><a href="#real-time-flag-value-publishing">Real-time flag value publishing</a></li>
+    <li><a href="#boxing-flag-values">Boxing flag values</a>
+      <ul>
+        <li><a href="#unpacking-a-boxed-flag-value">Unpacking a boxed flag value</a></li>
+        <li><a href="#implementing-flagvaluesource">Implementing FlagValueSource</a></li>
+      </ul>
+    </li>
+    <li><a href="#working-with-generic-sources">Working with generic sources</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <footer id="footer">
+    <nav>
+        <ul>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/custom-sources/">Creating Custom Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/readme/">Documentation</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/flag-keys/">Flag Keys</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/snapshots/">Snapshots</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/sources/">Working with Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/defining-flags/">Defining Flags</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/vexillographer/">Vexillographer</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertnothrowfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowserrorfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowsfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/boxedflagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagcontainer/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagdisplayvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaginfo/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagpole/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluedictionary/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluesource/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/home/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/mutableflaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/snapshot/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexillographer/"></a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

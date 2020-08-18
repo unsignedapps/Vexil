@@ -1,10 +1,12 @@
 # Snapshots
 
-Snapshots are one of the most verisitile features of Vexil. They are used to support real-time flag monitoring using [Combine][combine] and provide the primary source of mutability to a `FlagPole`.
+<!-- summary: "This guide takes you through Snapshots, which are one of the most versatile features of Vexil." -->
+
+Snapshots are one of the most versatile features of Vexil. They are used to support real-time flag monitoring using [Combine][combine] and provide the primary source of mutability to a `FlagPole`.
 
 ## Subscribing to flag changes
 
-A key part of declerative programming is the ability to react to changes over time. Vexil supports this by declaring a `Publisher` that will deliver a `Snapshot` of the `FlagPole` any time one of its values changes.
+A key part of declarative programming is the ability to react to changes over time. Vexil supports this by declaring a `Publisher` that will deliver a `Snapshot` of the `FlagPole` any time one of its values changes.
 
 This could be the addition or removal of a `FlagValueSource` or one of those sources reporting the change. Either way, a new `Snapshot` will be delivered that you can subscribe to.
 
@@ -49,7 +51,7 @@ flagPole.subgroup.$myBooleanFlag.publisher
 
 Having the `FlagPole` be immutable directly was a deliberate design decision. It prevents a category of programming mistakes (eg. `flagPole.myFlag = true`), but it also keeps the API simple and easy to reason about.
 
-That said - mutating the `FlagPole` is stil very straight forward as each `Snapshot` also conforms to `FlagValueSource` - that means it can be added into your `FlagPole`'s source hierarchy in any position:
+That said - mutating the `FlagPole` is still very straight forward as each `Snapshot` also conforms to `FlagValueSource` - that means it can be added into your `FlagPole`'s source hierarchy in any position:
 
 ```swift
 let flagPole = FlagPole(hoist: MyFlags.self)
@@ -59,7 +61,7 @@ let snapshot = flagPole.emptySnapshot()
 snapshot.subgroup.myBooleanFlag = true
 
 // insert that snapshot at the top of the hierarchy so it overrides all the rest
-flagPole.insert(snapshot: snaphost, at: 0)
+flagPole.insert(snapshot: snapshot, at: 0)
 ```
 
 The source hierarchy is also accessible via `FlagPole._sources` if you want to manipulate it directly.
@@ -93,7 +95,7 @@ There are two ways to create a `Snapshot`, empty or full.
 
 When taking an empty snapshot, its internal dictionary is also empty, and the request for the Flag's value (when used as a `FlagValueSource`) will be `nil`. If you access the `Flag.wrappedValue` property directly (eg. `flagPole.subgroup.myBooleanFlag`) it will return the flag's **default value**.
 
-Empty snaptshots are typically used for mutating the `FlagPole` or a `FlagValueSource`.
+Empty snapshots are typically used for mutating the `FlagPole` or a `FlagValueSource`.
 
 ```swift
 let flagPole = FlagPole(hoist: MyFlags.self)

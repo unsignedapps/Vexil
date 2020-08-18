@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Guides on Vexil</title>
+    <link>http://unsignedapps.github.io/Vexil/guides/</link>
+    <description>Recent content in Guides on Vexil</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 18 Aug 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://unsignedapps.github.io/Vexil/guides/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Creating Custom Flag Value Sources</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/custom-sources/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/custom-sources/</guid>
+      <description>This guide walks you through the basics in creating a custom FlagValueSource using the bundled sources as examples.</description>
+    </item>
+    
+    <item>
+      <title>Defining Flags</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/defining-flags/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/defining-flags/</guid>
+      <description>Defining Flags is the cornerstone of Vexil. Learn how to structure your FlagContainer, use FlagGroups and Flags of various types.</description>
+    </item>
+    
+    <item>
+      <title>Flag Keys</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/flag-keys/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/flag-keys/</guid>
+      <description>This guide looks in depth at how Vexil calculates the key for each of its flags, and how you can control that process.</description>
+    </item>
+    
+    <item>
+      <title>Snapshots</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/snapshots/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/snapshots/</guid>
+      <description>This guide takes you through Snapshots, which are one of the most versatile features of Vexil.</description>
+    </item>
+    
+    <item>
+      <title>Vexillographer</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/vexillographer/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/vexillographer/</guid>
+      <description>How why and where to use Vexillographer, Vexil&amp;rsquo;s SwiftUI-based flag editing UI</description>
+    </item>
+    
+    <item>
+      <title>Working with Flag Value Sources</title>
+      <link>http://unsignedapps.github.io/Vexil/guides/sources/</link>
+      <pubDate>Tue, 18 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://unsignedapps.github.io/Vexil/guides/sources/</guid>
+      <description>The Vexil FlagPole supports multiple backend flag sources. This guide walks through the built-in sources, how a FlagPole determines the source hierarchy and how to manipulate it.</description>
+    </item>
+    
+  </channel>
+</rss>

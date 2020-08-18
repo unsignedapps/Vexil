@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<title></title>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//bootstrap.min.css">
+<link rel="stylesheet" href="http://unsignedapps.github.io/Vexil//style.css">
+
+    </head>
+    <body>
+        <div class="container">
+            <header id="header">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a href="http://unsignedapps.github.io/Vexil/" class="navbar-brand">Vexil</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                
+                
+                <li class="nav-item active"><a class="nav-link" href="/Vexil/api/" title="Apis">Apis</a></li>
+                
+                <li class="nav-item"><a class="nav-link" href="/Vexil/guides/" title="Guides">Guides</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+</header>
+            <div class="row">
+                <div class="col-9">
+                    
+<main>
+    <article>
+        <h1></h1>
+    
+        <h1 id="snapshot">Snapshot</h1>
+<p>A <code>Snapshot</code> serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
+mutable and can be applied / saved to a <code>FlagValueSource</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift">@dynamicMemberLookup <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Snapshot</span>&lt;RootGroup&gt;:<span style="color:#960050;background-color:#1e0010">​</span> FlagValueSource <span style="color:#66d9ef">where</span> RootGroup:<span style="color:#960050;background-color:#1e0010">​</span> FlagContainer
+</code></pre></div><p><code>Snapshot</code>s are themselves a <code>FlagValueSource</code>, which means you can insert in into a <code>FlagPole</code>s
+source hierarchy as required.,</p>
+<p>You create snapshots using a <code>FlagPole</code>:​</p>
+<pre><code>// Create an empty Snapshot. It contains no values itself so any flags
+// accessed in it will use their `defaultValue`.
+let empty = flagPole.emptySnapshot()
+
+// Create a full Snapshot. The current value of *all* flags in the `FlagPole`
+// will be copied into it.
+let snapshot = flagPole.snapshot()
+</code></pre><p>Snapshots can be manipulated:​</p>
+<pre><code>snapshot.subgroup.myAmazingFlag = &quot;somevalue&quot;
+</code></pre><p>Snapshots can be saved or applied to a <code>FlagValueSource</code>:​</p>
+<pre><code>try flagPole.save(snapshot:​ snapshot, to:​ UserDefaults.standard)
+</code></pre><p>Snapshots can be inserted into the <code>FlagPole</code>s source hierarchy:​</p>
+<pre><code>flagPole.insert(snapshot:​ snapshot, at:​ 0)
+</code></pre><p>And Snapshots are emitted from a <code>FlagPole</code> when you subscribe to real-time flag updates:​</p>
+<pre><code>flagPole.publisher
+    .sink { snapshot in
+        // ...
+    }
+</code></pre><h2 id="inheritance">Inheritance</h2>
+<p><code>Equatable</code>, <a href="/FlagValueSource"><code>FlagValueSource</code></a></p>
+<h2 id="properties">Properties</h2>
+<h3 id="id"><code>id</code></h3>
+<p>All <code>Snapshot</code>s are <code>Identifiable</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">let</span> id
+</code></pre></div><h3 id="displayname"><code>displayName</code></h3>
+<p>An optional display name to use in flag editors like Vexillographer.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> displayName:<span style="color:#960050;background-color:#1e0010">​</span> String?
+</code></pre></div><h3 id="name"><code>name</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">var</span> name:<span style="color:#960050;background-color:#1e0010">​</span> String
+</code></pre></div><h2 id="methods">Methods</h2>
+<h3 id="flagvaluekey"><code>flagValue(key:​)</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">flagValue</span>&lt;Value&gt;(key:<span style="color:#960050;background-color:#1e0010">​</span> String) -&gt; Value? <span style="color:#66d9ef">where</span> Value:<span style="color:#960050;background-color:#1e0010">​</span> FlagValue
+</code></pre></div><h3 id="setflagvalue_key"><code>setFlagValue(_:​key:​)</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">func</span> <span style="color:#a6e22e">setFlagValue</span>&lt;Value&gt;(<span style="color:#66d9ef">_</span> value:<span style="color:#960050;background-color:#1e0010">​</span> Value?, key:<span style="color:#960050;background-color:#1e0010">​</span> String) <span style="color:#66d9ef">throws</span> <span style="color:#66d9ef">where</span> Value:<span style="color:#960050;background-color:#1e0010">​</span> FlagValue
+</code></pre></div><h3 id="lhsrhs"><code>==(lhs:​rhs:​)</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-swift" data-lang="swift"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">func</span> ==(lhs:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot, rhs:<span style="color:#960050;background-color:#1e0010">​</span> Snapshot) -&gt; Bool
+</code></pre></div>
+    </article>
+</main>
+
+                </div>
+                <div class="col-3 sidebar">
+                    <h2>On This Page</h2>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#inheritance">Inheritance</a></li>
+    <li><a href="#properties">Properties</a>
+      <ul>
+        <li><a href="#id"><code>id</code></a></li>
+        <li><a href="#displayname"><code>displayName</code></a></li>
+        <li><a href="#name"><code>name</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#methods">Methods</a>
+      <ul>
+        <li><a href="#flagvaluekey"><code>flagValue(key:​)</code></a></li>
+        <li><a href="#setflagvalue_key"><code>setFlagValue(_:​key:​)</code></a></li>
+        <li><a href="#lhsrhs"><code>==(lhs:​rhs:​)</code></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <footer id="footer">
+    <nav>
+        <ul>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/custom-sources/">Creating Custom Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/readme/">Documentation</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/flag-keys/">Flag Keys</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/snapshots/">Snapshots</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/sources/">Working with Flag Value Sources</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/defining-flags/">Defining Flags</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/guides/vexillographer/">Vexillographer</a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertnothrowfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowserrorfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/assertthrowsfileline_/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/boxedflagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagcontainer/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagdisplayvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flaginfo/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagpole/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvalue/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluedictionary/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/flagvaluesource/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/home/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/mutableflaggroup/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/snapshot/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/"></a>
+                
+            </li>
+            
+            <li>
+                
+                <a href="http://unsignedapps.github.io/Vexil/api/vexillographer/"></a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="copyright">
+        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small>
+    </div>
+</footer>
+        </div>
+    </body>
+</html>

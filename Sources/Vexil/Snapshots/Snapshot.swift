@@ -19,32 +19,42 @@ import Foundation
 ///
 /// You create snapshots using a `FlagPole`:
 ///
-///     // Create an empty Snapshot. It contains no values itself so any flags
-///     // accessed in it will use their `defaultValue`.
-///     let empty = flagPole.emptySnapshot()
+/// ```swift
+/// // Create an empty Snapshot. It contains no values itself so any flags
+/// // accessed in it will use their `defaultValue`.
+/// let empty = flagPole.emptySnapshot()
 ///
-///     // Create a full Snapshot. The current value of *all* flags in the `FlagPole`
-///     // will be copied into it.
-///     let snapshot = flagPole.snapshot()
+/// // Create a full Snapshot. The current value of *all* flags in the `FlagPole`
+/// // will be copied into it.
+/// let snapshot = flagPole.snapshot()
+/// ```
 ///
 /// Snapshots can be manipulated:
 ///
-///     snapshot.subgroup.myAmazingFlag = "somevalue"
+/// ```swift
+/// snapshot.subgroup.myAmazingFlag = "somevalue"
+/// ````
 ///
 /// Snapshots can be saved or applied to a `FlagValueSource`:
 ///
-///     try flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
+/// ```swift
+/// try flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
+/// ```
 ///
 /// Snapshots can be inserted into the `FlagPole`s source hierarchy:
 ///
-///     flagPole.insert(snapshot: snapshot, at: 0)
+/// ```swift
+/// flagPole.insert(snapshot: snapshot, at: 0)
+/// ```
 ///
 /// And Snapshots are emitted from a `FlagPole` when you subscribe to real-time flag updates:
 ///
-///     flagPole.publisher
-///         .sink { snapshot in
-///             // ...
-///         }
+/// ```swift
+/// flagPole.publisher
+///     .sink { snapshot in
+///         // ...
+///     }
+/// ```
 ///
 @dynamicMemberLookup
 public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer {

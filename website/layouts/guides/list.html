@@ -1,0 +1,12 @@
+{{ define "main" }}
+<main>
+    <h1>{{ .Title }}</h1>
+    <p class="lead">The guides below provide long-form documentation on how Vexil works under the hood.</p>
+
+    <div class="row row-cols-1 row-cols-md-2">
+        {{ range .Pages.ByTitle }}
+            {{ .Render "summary" }}
+        {{ end }}
+    </div>
+</main>
+{{ end }}

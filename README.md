@@ -19,8 +19,8 @@
 
 In addition to this README, which covers basic usage and installation, you can find more documentation:
 
+- On our documentation website: [https://unsignedapps.github.io/Vexil/](https://unsignedapps.github.io/Vexil/)
 - Detailed documentation and guides in the [Documentation](Documentation) subdirectory
-- Generated API documentation at [https://unsignedapps.github.io/Vexil/](https://unsignedapps.github.io/Vexil/)
 
 ## Usage
 
@@ -158,14 +158,14 @@ targets: [
 
 To use Vexil in Xcode 11 or higher, navigate to the _File_ menu and choose _Swift Packages_ -> _Add Package Dependency..._, then enter the repository URL and version details for the release as desired.
 
-# Vexillographer: A SwiftUI Flag Manipulation Tool
+## Vexillographer: A SwiftUI Flag Manipulation Tool
 
 The second library product of Vexil is Vexillographer, a small SwiftUI tool for displaying and manipulating flags.
 
 <div>
-    <img src="Documentation/Images/Vexillographer-1.png" />
-    <img src="Documentation/Images/Vexillographer-2.png" />
-    <img src="Documentation/Images/Vexillographer-3.png" />
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-1.png" />
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-2.png" />
+    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-3.png" />
 </div>
 
 Read more about [Vexillographer][vexillographer].

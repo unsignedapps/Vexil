@@ -1,0 +1,10 @@
+{{ if strings.HasPrefix .Destination "http" }}
+<a href="{{ .Destination | safeURL }}"{{ with .Title}} title="{{ . }}" target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
+{{ else if strings.HasPrefix .Destination "Documentation" }}
+<a href="{{ .Destination | replaceRE "^Documentation((/.*?)\\.md|)" "guides$2" | lower }}"{{ with .Title}} title="{{ . }}" target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
+{{ else if or (eq .Destination "LICENSE") (eq .Destination "CONTRIBUTING.md") }}
+<a href="https://github.com/unsignedapps/Vexil/blob/main/{{ .Destination }}
+"{{ with .Title}} title="{{ . }}" target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
+{{ else }}
+<a href="{{ relref .Page .Destination }}"{{ with .Title}} title="{{ . }}" target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>
+{{ end }}
