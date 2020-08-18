@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 
-<title>{{ .Title }}</title>
+<title>{{ if eq .Title "" }}{{ .Site.Title }}{{ else if ne .Title .Site.Title }}{{ .Site.Title }} - {{ end }}{{ .Title }}</title>
 
 <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 <meta name="author" content="{{ .Site.Params.Author }}">
