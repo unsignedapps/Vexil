@@ -1,4 +1,4 @@
-baseURL = "http://unsignedapps.github.io/Vexil/"
+baseURL = "https://unsignedapps.github.io/Vexil"
 languageCode = "en-us"
 title = "Vexil"
 sectionPagesMenu = "main"
