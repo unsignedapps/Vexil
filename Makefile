@@ -24,3 +24,4 @@ docs:
 	cd website && hugo
 	rm -f website/content/guides/*.md
 	rm -f website/content/api/*.md
+	rm -f website/content/_index.md
