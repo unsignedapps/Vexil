@@ -5,7 +5,7 @@
 <p align="center">
 	<img src="https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg">
 	<a href="https://sonarcloud.io/dashboard?id=unsignedapps_Vexil"><img src="https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status"></a>
-	<img src="https://github.com/unsignedapps/Vexil/workflows/90%25%20Documented/badge.svg">
+	<img src="https://github.com/unsignedapps/Vexil/workflows/%3E90%25%20Documented/badge.svg">
 </p>
 
 ## Features

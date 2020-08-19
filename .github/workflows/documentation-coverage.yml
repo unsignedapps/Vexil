@@ -1,4 +1,4 @@
-name: 90% Documented
+name: ">90% Documented"
 
 on:
   push:
