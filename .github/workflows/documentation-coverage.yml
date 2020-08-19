@@ -7,6 +7,9 @@ on:
       - '.github/workflows/documentation-coverage.yml'
       - '**/*.swift'
 
+env:
+  SWIFT_DOC_VERSION: 1.0.0-beta.4
+
 jobs:
   CheckDocumentation:
     name: Check Documentation Coverage
@@ -17,9 +20,17 @@ jobs:
 
       - name: 🧱 Install dependencies
         run: sudo apt-get install -y jq
+
+      - name: 💾 Cache swift-doc
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: bin
+          key: ${{ runner.os }}-${{ env.SWIFT_DOC_VERSION }}
         
       - name: 🔨 Build swift-doc 
-        run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install prefix=..
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && git switch --detach ${{ env.SWIFT_DOC_VERSION }} && make install prefix=..
 
       # We remove the Value.swift and UserDefaults+FlagValueSource.swift because they're implementations
       # of a protocol and therefore don't need to be meaningfully documented.
@@ -30,4 +41,4 @@ jobs:
         run: bin/swift-doc coverage Sources/Vexil --output coverage.json
       
       - name: 🎯 Check coverage target
-        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 90'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 90%: `cat coverage.json | jq '.data.totals.percent'`%\"; fi"
+        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 99'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 99%: `cat coverage.json | jq '.data.totals.percent'`%\"; fi"
