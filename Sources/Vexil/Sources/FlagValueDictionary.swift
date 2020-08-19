@@ -18,8 +18,10 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
 
     // MARK: - Properties
 
+    /// A Unique Identifier for this FlagValueDictionary
     public let id = UUID()
 
+    /// Our internal dictionary type
     public typealias DictionaryType = [String: Any]
 
     internal var storage: DictionaryType {
@@ -31,7 +33,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
     }
 
     #if !os(Linux)
-    private var valueDidChange = PassthroughSubject<Void, Never>()
+    private(set) internal var valueDidChange = PassthroughSubject<Void, Never>()
     #endif
 
 
@@ -43,75 +45,12 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
         self.storage = dictionary
     }
 
+    /// Initialises a `FlagValueDictionary` using a dictionary literal
+    ///
     public required init(dictionaryLiteral elements: (String, Any)...) {
         self.storage = elements.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.1, forKey: pair.0)
         }
-    }
-
-}
-
-
-// MARK: - Flag Value Source
-
-extension FlagValueDictionary: FlagValueSource {
-    public var name: String {
-        return "\(String(describing: Self.self)): \(self.id.uuidString)"
-    }
-
-    public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return self.storage[key] as? Value
-    }
-
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        if let value = value {
-            self.storage.updateValue(value, forKey: key)
-        } else {
-            self.storage.removeValue(forKey: key)
-        }
-    }
-
-    #if !os(Linux)
-
-    /// If you're running on a platform that supports Combine you can optionally support real-time
-    /// flag updates
-    ///
-    public var valuesDidChange: AnyPublisher<Void, Never>? {
-        self.valueDidChange
-            .eraseToAnyPublisher()
-    }
-
-    #endif
-}
-
-
-// MARK: - Collection
-
-extension FlagValueDictionary: Collection {
-
-    public typealias Index = DictionaryType.Index
-    public typealias Element = DictionaryType.Element
-
-    public var startIndex: Index { return self.storage.startIndex }
-    public var endIndex: Index { return self.storage.endIndex }
-
-    public subscript(index: Index) -> Iterator.Element {
-        return self.storage[index]
-    }
-
-    public subscript(key: Key) -> Value? {
-        get { return self.storage[key] }
-        set {
-            if let value = newValue {
-                self.storage.updateValue(value, forKey: key)
-            } else {
-                self.storage.removeValue(forKey: key)
-            }
-        }
-    }
-
-    public func index(after i: Index) -> Index {
-        return self.storage.index(after: i)
     }
 
 }

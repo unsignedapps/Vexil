@@ -20,11 +20,29 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
     // MARK: - Dynamic Member Lookup
 
+    /// A @dynamicMemberLookup implementation for subgroups
+    ///
+    /// Returns a `MutableFlagGroup` for the Subgroup at the specified KeyPath.
+    ///
+    /// ```swift
+    /// flagPole.mySubgroup.mySecondSubgroup    // -> FlagGroup<MySecondSubgroup>
+    /// snapshot.mySubgroup.mySecondSubgroup    // -> MutableFlagGroup<MySecondSubgroup>
+    /// ```
+    ///
     public subscript<Subgroup> (dynamicMember dynamicMember: KeyPath<Group, Subgroup>) -> MutableFlagGroup<Subgroup, Root> where Subgroup: FlagContainer {
         let group = self.group[keyPath: dynamicMember]
         return MutableFlagGroup<Subgroup, Root>(group: group, snapshot: self.snapshot)
     }
 
+    /// A @dynamicMemberLookup implementation for FlagValues used solely to provide a `setter`.
+    ///
+    /// Takes a lock on the Snapshot to read and write values to it.
+    ///
+    /// ```swift
+    /// flagPole.mySubgroup.myFlag = true       // Error: FlagPole is not mutable
+    /// snapshot.mySubgroup.myFlag = true       // 👍
+    /// ```
+    ///
     public subscript<Value> (dynamicMember dynamicMember: KeyPath<Group, Value>) -> Value where Value: FlagValue {
         get {
             guard let snapshot = self.snapshot else { return self.group[keyPath: dynamicMember] }
@@ -45,6 +63,8 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
         }
     }
 
+    /// Internal initialiser used to create MutableFlagGroups for a given subgroup and snapshot
+    ///
     init (group: Group, snapshot: Snapshot<Root>?) {
         self.group = group
         self.snapshot = snapshot

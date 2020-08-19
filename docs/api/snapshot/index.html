@@ -39,7 +39,7 @@
     
         <p>A <code>Snapshot</code> serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
 mutable and can be applied / saved to a <code>FlagValueSource</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="p">@</span><span class="n">dynamicMemberLookup</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Snapshot</span><span class="p">&lt;</span><span class="n">RootGroup</span><span class="p">&gt;:</span><span class="err">​</span> <span class="n">FlagValueSource</span> <span class="k">where</span> <span class="n">RootGroup</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagContainer</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="p">@</span><span class="n">dynamicMemberLookup</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Snapshot</span><span class="p">&lt;</span><span class="n">RootGroup</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">RootGroup</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagContainer</span>
 </code></pre></div><p><code>Snapshot</code>s are themselves a <code>FlagValueSource</code>, which means you can insert in into a <code>FlagPole</code>s
 source hierarchy as required.,</p>
 <p>You create snapshots using a <code>FlagPole</code>:​</p>
@@ -72,22 +72,22 @@ source hierarchy as required.,</p>
     <hr />
 
 <h2 id="properties">Properties <a href="#properties" class="permalink">¶</a></h2>
+<h3 id="name"><code>name</code> <a href="#name" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span>
+</code></pre></div>
 <h3 id="id"><code>id</code> <a href="#id" class="permalink">¶</a></h3><p>All <code>Snapshot</code>s are <code>Identifiable</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">let</span> <span class="nv">id</span>
 </code></pre></div>
 <h3 id="displayname"><code>displayName</code> <a href="#displayname" class="permalink">¶</a></h3><p>An optional display name to use in flag editors like Vexillographer.</p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">displayName</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">?</span>
 </code></pre></div>
-<h3 id="name"><code>name</code> <a href="#name" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span>
-</code></pre></div>
     <hr />
 
 <h2 id="methods">Methods <a href="#methods" class="permalink">¶</a></h2>
+<h3 id="lhsrhs"><code>==(lhs:​rhs:​)</code> <a href="#lhsrhs" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="p">==(</span><span class="n">lhs</span><span class="p">:</span><span class="err">​</span> <span class="n">Snapshot</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span><span class="err">​</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
+</code></pre></div>
 <h3 id="flagvaluekey"><code>flagValue(key:​)</code> <a href="#flagvaluekey" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagValue</span>
 </code></pre></div>
 <h3 id="setflagvalue_key"><code>setFlagValue(_:​key:​)</code> <a href="#setflagvalue_key" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span><span class="err">​</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagValue</span>
-</code></pre></div>
-<h3 id="lhsrhs"><code>==(lhs:​rhs:​)</code> <a href="#lhsrhs" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="p">==(</span><span class="n">lhs</span><span class="p">:</span><span class="err">​</span> <span class="n">Snapshot</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span><span class="err">​</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nb">Bool</span>
 </code></pre></div>
     </article>
 </main>
@@ -101,16 +101,16 @@ source hierarchy as required.,</p>
     <li><a href="#inheritance">Inheritance</a></li>
     <li><a href="#properties">Properties</a>
       <ul>
+        <li><a href="#name"><code>name</code></a></li>
         <li><a href="#id"><code>id</code></a></li>
         <li><a href="#displayname"><code>displayName</code></a></li>
-        <li><a href="#name"><code>name</code></a></li>
       </ul>
     </li>
     <li><a href="#methods">Methods</a>
       <ul>
+        <li><a href="#lhsrhs"><code>==(lhs:​rhs:​)</code></a></li>
         <li><a href="#flagvaluekey"><code>flagValue(key:​)</code></a></li>
         <li><a href="#setflagvalue_key"><code>setFlagValue(_:​key:​)</code></a></li>
-        <li><a href="#lhsrhs"><code>==(lhs:​rhs:​)</code></a></li>
       </ul>
     </li>
   </ul>

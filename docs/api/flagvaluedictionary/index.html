@@ -51,11 +51,12 @@ and other purposes.</p>
     <hr />
 
 <h2 id="nested-type-aliases">Nested Type Aliases <a href="#nested-type-aliases" class="permalink">¶</a></h2>
-<h3 id="dictionarytype"><code>DictionaryType</code> <a href="#dictionarytype" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">DictionaryType</span> <span class="p">=</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span><span class="err">​</span> <span class="nb">Any</span><span class="p">]</span>
-</code></pre></div>
 <h3 id="index"><code>Index</code> <a href="#index" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">Index</span> <span class="p">=</span> <span class="n">DictionaryType</span><span class="p">.</span><span class="n">Index</span>
 </code></pre></div>
 <h3 id="element"><code>Element</code> <a href="#element" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">Element</span> <span class="p">=</span> <span class="n">DictionaryType</span><span class="p">.</span><span class="n">Element</span>
+</code></pre></div>
+<h3 id="dictionarytype"><code>DictionaryType</code> <a href="#dictionarytype" class="permalink">¶</a></h3><p>Our internal dictionary type</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">DictionaryType</span> <span class="p">=</span> <span class="p">[</span><span class="nb">String</span><span class="p">:</span><span class="err">​</span> <span class="nb">Any</span><span class="p">]</span>
 </code></pre></div>
     <hr />
 
@@ -63,36 +64,36 @@ and other purposes.</p>
 <h3 id="init_"><code>init(_:​)</code> <a href="#init_" class="permalink">¶</a></h3><p>Initialises a <code>FlagValueDictionary</code> with the specified dictionary</p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="kc">_</span> <span class="n">dictionary</span><span class="p">:</span><span class="err">​</span> <span class="n">DictionaryType</span> <span class="p">=</span> <span class="p">[:</span><span class="err">​</span><span class="p">])</span>
 </code></pre></div>
-<h3 id="initdictionaryliteral"><code>init(dictionaryLiteral:​)</code> <a href="#initdictionaryliteral" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kr">required</span> <span class="kd">init</span><span class="p">(</span><span class="n">dictionaryLiteral</span> <span class="n">elements</span><span class="p">:</span><span class="err">​</span> <span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="nb">Any</span><span class="p">))</span>
+<h3 id="initdictionaryliteral"><code>init(dictionaryLiteral:​)</code> <a href="#initdictionaryliteral" class="permalink">¶</a></h3><p>Initialises a <code>FlagValueDictionary</code> using a dictionary literal</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kr">required</span> <span class="kd">init</span><span class="p">(</span><span class="n">dictionaryLiteral</span> <span class="n">elements</span><span class="p">:</span><span class="err">​</span> <span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="nb">Any</span><span class="p">))</span>
 </code></pre></div>
     <hr />
 
 <h2 id="properties">Properties <a href="#properties" class="permalink">¶</a></h2>
-<h3 id="id"><code>id</code> <a href="#id" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">let</span> <span class="nv">id</span>
+<h3 id="startindex"><code>startIndex</code> <a href="#startindex" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">startIndex</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span>
+</code></pre></div>
+<h3 id="endindex"><code>endIndex</code> <a href="#endindex" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">endIndex</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span>
 </code></pre></div>
 <h3 id="name"><code>name</code> <a href="#name" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span>
 </code></pre></div>
 <h3 id="valuesdidchange"><code>valuesDidChange</code> <a href="#valuesdidchange" class="permalink">¶</a></h3><dl>
 <dt><code>!os(Linux)</code></dt>
 <dd>
-<p>If you&rsquo;re running on a platform that supports Combine you can optionally support real-time
-flag updates</p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">valuesDidChange</span><span class="p">:</span><span class="err">​</span> <span class="n">AnyPublisher</span><span class="p">&lt;</span><span class="nb">Void</span><span class="p">,</span> <span class="n">Never</span><span class="p">&gt;?</span>
 </code></pre></div></dd>
 </dl>
 
-<h3 id="startindex"><code>startIndex</code> <a href="#startindex" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">startIndex</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span>
-</code></pre></div>
-<h3 id="endindex"><code>endIndex</code> <a href="#endindex" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">endIndex</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span>
+<h3 id="id"><code>id</code> <a href="#id" class="permalink">¶</a></h3><p>A Unique Identifier for this FlagValueDictionary</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">let</span> <span class="nv">id</span>
 </code></pre></div>
     <hr />
 
 <h2 id="methods">Methods <a href="#methods" class="permalink">¶</a></h2>
+<h3 id="indexafter"><code>index(after:​)</code> <a href="#indexafter" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">index</span><span class="p">(</span><span class="n">after</span> <span class="n">i</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Index</span>
+</code></pre></div>
 <h3 id="flagvaluekey"><code>flagValue(key:​)</code> <a href="#flagvaluekey" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">flagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="n">key</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Value</span><span class="p">?</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagValue</span>
 </code></pre></div>
 <h3 id="setflagvalue_key"><code>setFlagValue(_:​key:​)</code> <a href="#setflagvalue_key" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setFlagValue</span><span class="p">&lt;</span><span class="n">Value</span><span class="p">&gt;(</span><span class="kc">_</span> <span class="n">value</span><span class="p">:</span><span class="err">​</span> <span class="n">Value</span><span class="p">?,</span> <span class="n">key</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span> <span class="kr">throws</span> <span class="k">where</span> <span class="n">Value</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagValue</span>
-</code></pre></div>
-<h3 id="indexafter"><code>index(after:​)</code> <a href="#indexafter" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">index</span><span class="p">(</span><span class="n">after</span> <span class="n">i</span><span class="p">:</span><span class="err">​</span> <span class="n">Index</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Index</span>
 </code></pre></div>
     </article>
 </main>
@@ -106,9 +107,9 @@ flag updates</p>
     <li><a href="#inheritance">Inheritance</a></li>
     <li><a href="#nested-type-aliases">Nested Type Aliases</a>
       <ul>
-        <li><a href="#dictionarytype"><code>DictionaryType</code></a></li>
         <li><a href="#index"><code>Index</code></a></li>
         <li><a href="#element"><code>Element</code></a></li>
+        <li><a href="#dictionarytype"><code>DictionaryType</code></a></li>
       </ul>
     </li>
     <li><a href="#initializers">Initializers</a>
@@ -119,18 +120,18 @@ flag updates</p>
     </li>
     <li><a href="#properties">Properties</a>
       <ul>
-        <li><a href="#id"><code>id</code></a></li>
-        <li><a href="#name"><code>name</code></a></li>
-        <li><a href="#valuesdidchange"><code>valuesDidChange</code></a></li>
         <li><a href="#startindex"><code>startIndex</code></a></li>
         <li><a href="#endindex"><code>endIndex</code></a></li>
+        <li><a href="#name"><code>name</code></a></li>
+        <li><a href="#valuesdidchange"><code>valuesDidChange</code></a></li>
+        <li><a href="#id"><code>id</code></a></li>
       </ul>
     </li>
     <li><a href="#methods">Methods</a>
       <ul>
+        <li><a href="#indexafter"><code>index(after:​)</code></a></li>
         <li><a href="#flagvaluekey"><code>flagValue(key:​)</code></a></li>
         <li><a href="#setflagvalue_key"><code>setFlagValue(_:​key:​)</code></a></li>
-        <li><a href="#indexafter"><code>index(after:​)</code></a></li>
       </ul>
     </li>
   </ul>
