@@ -17,3 +17,11 @@ jobs:
         
       - name: 🔨 Build swift-doc 
         run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install prefix=..
+
+      # We remove the Value.swift and UserDefaults+FlagValueSource.swift because they're implementations
+      # of a protocol and therefore don't need to be meaningfully documented.
+      - name: 🧹 Clean irrelevant files
+        run: rm Sources/Vexil/Value.swift Sources/Vexil/Sources/UserDefaults+FlagValueSource.swift Sources/Vexil/Snapshots/Snapshot+*.swift Sources/Vexil/Sources/FlagValueDictionary+*.swift
+      
+      - name: 📊 Check documentation coverage
+        run: bin/swift-doc coverage Sources/Vexil
