@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: 🛒 Checkout
         uses: actions/checkout@v2
+
+      - name: 🧱 Install dependencies
+        run: sudo apt-get install -y jq
         
       - name: 🔨 Build swift-doc 
         run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install prefix=..
@@ -23,5 +26,8 @@ jobs:
       - name: 🧹 Clean irrelevant files
         run: rm Sources/Vexil/Value.swift Sources/Vexil/Sources/UserDefaults+FlagValueSource.swift Sources/Vexil/Snapshots/Snapshot+*.swift Sources/Vexil/Sources/FlagValueDictionary+*.swift
       
-      - name: 📊 Check documentation coverage
-        run: bin/swift-doc coverage Sources/Vexil
+      - name: 📊 Generate documentation coverage
+        run: bin/swift-doc coverage Sources/Vexil --output coverage.json
+      
+      - name: 🎯 Check coverage target
+        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 90'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 90%: `cat coverage.json | jq '.data.totals.percent'`%\"; fi"
