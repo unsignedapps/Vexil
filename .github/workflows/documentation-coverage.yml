@@ -41,4 +41,4 @@ jobs:
         run: bin/swift-doc coverage Sources/Vexil --output coverage.json
       
       - name: 🎯 Check coverage target
-        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 99'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 99%: `cat coverage.json | jq '.data.totals.percent'`%\"; fi"
+        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 99'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 99%: `cat coverage.json | jq '.data.totals.percent'`%\"; exit 10; fi"
