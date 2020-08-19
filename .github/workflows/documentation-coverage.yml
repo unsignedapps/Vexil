@@ -16,4 +16,4 @@ jobs:
         uses: actions/checkout@v2
         
       - name: 🔨 Build swift-doc 
-        run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install
+        run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install prefix=..
