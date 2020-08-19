@@ -2,7 +2,12 @@ name: 90% Documented
 
 on:
   push:
-    branches: [ doc-coverage-workflow ]
+    branches: [ main ]
+    paths:
+      - '.github/workflows/documentation-coverage.yml'
+      - '**/*.swift'
+  pull_request:
+    branches: [ main ]
     paths:
       - '.github/workflows/documentation-coverage.yml'
       - '**/*.swift'
@@ -41,4 +46,4 @@ jobs:
         run: bin/swift-doc coverage Sources/Vexil --output coverage.json
       
       - name: 🎯 Check coverage target
-        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 99'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 99%: `cat coverage.json | jq '.data.totals.percent'`%\"; exit 10; fi"
+        run: "if [[ \"`cat coverage.json | jq '.data.totals.percent > 90'`\" == \"true\" ]]; then echo \"OK\"; else echo \"::error::Documentation coverage is less than 90%: `cat coverage.json | jq '.data.totals.percent'`%\"; exit 10; fi"
