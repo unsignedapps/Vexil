@@ -57,7 +57,7 @@ import Foundation
 /// ```
 ///
 @dynamicMemberLookup
-public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer {
+public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Properties
 
@@ -72,7 +72,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
 
     private var _rootGroup: RootGroup
 
-    private var values: [String: Any] = [:]
+    private(set) internal var values: [String: Any] = [:]
 
     internal var lock = Lock()
 
@@ -175,21 +175,6 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
             .filter { changed.contains($0.key) }
     }
 
-
-    // MARK: - FlagValueSource Conformance
-
-    public var name: String {
-        return self.displayName ?? "Snapshot \(self.id.uuidString)"
-    }
-
-    public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return self.values[key] as? Value
-    }
-
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        self.set(value, key: key)
-    }
-
     internal func set (_ value: Any?, key: String) {
         if let value = value {
             self.values[key] = value
@@ -203,7 +188,7 @@ public class Snapshot<RootGroup>: FlagValueSource where RootGroup: FlagContainer
 
     // MARK: - Real Time Flag Changes
 
-    private var valuesDidChange = SnapshotValueChanged()
+    private(set) internal var valuesDidChange = SnapshotValueChanged()
 
 
     // MARK: - Errors
@@ -227,36 +212,3 @@ struct NotificationSink {
 }
 
 #endif
-
-
-// MARK: - Identifiable and Equatable Conformance
-
-extension Snapshot: Identifiable {}
-
-extension Snapshot: Equatable {
-    public static func == (lhs: Snapshot, rhs: Snapshot) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-
-
-// MARK: - Snapshot Lookup
-
-extension Snapshot: Lookup {
-    func lookup<Value>(key: String) -> Value? where Value: FlagValue {
-        self.lastAccessedKey = key
-        return self.values[key] as? Value
-    }
-
-    #if !os(Linux)
-
-    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-        self.valuesDidChange
-            .compactMap { [weak self] _ in
-                self?.values[key] as? Value
-            }
-            .eraseToAnyPublisher()
-    }
-
-    #endif
-}
