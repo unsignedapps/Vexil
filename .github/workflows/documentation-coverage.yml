@@ -1,0 +1,19 @@
+name: 90% Documented
+
+on:
+  push:
+    branches: [ doc-coverage-workflow ]
+    paths:
+      - '.github/workflows/documentation-coverage.yml'
+      - '**/*.swift'
+
+jobs:
+  CheckDocumentation:
+    name: Check Documentation Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v2
+        
+      - name: 🔨 Build swift-doc 
+        run: git clone https://github.com/SwiftDocOrg/swift-doc && cd swift-doc && make install
