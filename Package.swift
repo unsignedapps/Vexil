@@ -14,8 +14,17 @@ let package = Package(
     ],
 
     products: [
+        // Automatic
         .library(name: "Vexil", targets: [ "Vexil" ]),
         .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
+
+        // Static
+        .library(name: "Vexil-static", type: .static, targets: [ "Vexil" ]),
+        .library(name: "Vexillographer-static", type: .static, targets: [ "Vexil", "Vexillographer" ]),
+
+        // Dynamic
+        .library(name: "Vexil-dynamic", type: .dynamic, targets: [ "Vexil" ]),
+        .library(name: "Vexillographer-dynamic", type: .dynamic, targets: [ "Vexillographer" ]),
     ],
 
     dependencies: [
