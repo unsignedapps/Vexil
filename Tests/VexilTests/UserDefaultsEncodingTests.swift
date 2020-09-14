@@ -279,9 +279,15 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     func testEncodeCodable () {
         struct MyStruct: FlagValue, Codable, Equatable {
-            let property1 = "value1"
-            let property2 = 123
-            let property3 = "🤯"
+            let property1: String
+            let property2: Int
+            let property3: String
+
+            init () {
+                self.property1 = "value1"
+                self.property2 = 123
+                self.property3 = "🤯"
+            }
         }
 
         let input = MyStruct()
