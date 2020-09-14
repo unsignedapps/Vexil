@@ -187,9 +187,15 @@ final class FlagValueCompilationTests: XCTestCase {
         XCTAssertEqual(pole.flag, value)
 
         struct TestStruct: Codable, FlagValue, Equatable {
-            let property1 = 123
-            let property2 = "456"
-            let property3 = 789.0
+            let property1: Int
+            let property2: String
+            let property3: Double
+
+            init () {
+                self.property1 = 123
+                self.property2 = "456"
+                self.property3 = 789.0
+            }
         }
     }
 
