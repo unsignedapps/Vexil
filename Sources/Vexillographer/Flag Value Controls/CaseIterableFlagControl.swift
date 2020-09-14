@@ -25,14 +25,50 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     var body: some View {
         VStack {
             HStack {
-                Picker(self.label, selection: self.$flagValue) {
-                    ForEach(Value.allCases, id: \.self) { value in
-                        FlagDisplayValueView(value: value)
+                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                    HStack {
+                        Text(self.label).font(.headline)
+                        Spacer()
+                        FlagDisplayValueView(value: self.flagValue)
                     }
                 }
                 DetailButton(showDetail: self.$showDetail)
             }
         }
+    }
+
+    #if os(iOS)
+
+    var selector: some View {
+        return self.selectorList
+            .navigationBarTitle(Text(self.label), displayMode: .inline)
+    }
+
+    #else
+
+    var selector: some View {
+        return self.selectorList
+    }
+
+    #endif
+
+    var selectorList: some View {
+        List(Value.allCases, id: \.self, selection: Binding(self.$flagValue)) { value in
+            HStack {
+                FlagDisplayValueView(value: value)
+                Spacer()
+
+                if value == self.flagValue {
+                    Image(systemName: "checkmark")
+                }
+            }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    self.flagValue = value
+                    self.showPicker = false
+                }
+        }
+            .listStyle(GroupedListStyle())
     }
 
 }
