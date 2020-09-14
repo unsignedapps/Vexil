@@ -67,7 +67,7 @@ extension UserDefaults: FlagValueSource {
 
 // MARK: - Application Active Notifications
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 import UIKit
 
