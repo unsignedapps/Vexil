@@ -42,7 +42,7 @@ extension UserDefaults: FlagValueSource {
 
     }
 
-    #if !os(Linux)
+    #if os(watchOS)
 
     /// A Publisher that emits events when the flag values it manages changes
     public var valuesDidChange: AnyPublisher<Void, Never>? {
@@ -51,5 +51,32 @@ extension UserDefaults: FlagValueSource {
             .eraseToAnyPublisher()
     }
 
+    #elseif !os(Linux)
+
+    public var valuesDidChange: AnyPublisher<Void, Never>? {
+        return Publishers.Merge (
+            NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification).map { _ in () },
+            NotificationCenter.default.publisher(for: ApplicationDidBecomeActive).map { _ in () }
+        )
+            .eraseToAnyPublisher()
+    }
+
     #endif
 }
+
+
+// MARK: - Application Active Notifications
+
+#if canImport(UIKit)
+
+import UIKit
+
+private let ApplicationDidBecomeActive = UIApplication.didBecomeActiveNotification
+
+#elseif canImport(Cocoa)
+
+import Cocoa
+
+private let ApplicationDidBecomeActive = NSApplication.didBecomeActiveNotification
+
+#endif
