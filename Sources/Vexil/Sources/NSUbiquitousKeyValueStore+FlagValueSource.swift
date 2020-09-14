@@ -5,10 +5,9 @@
 //  Created by Rob Amos on 9/9/20.
 //
 
-#if !os(Linux)
-import Combine
-#endif
+#if !os(Linux) && !os(watchOS)
 
+import Combine
 import Foundation
 
 /// Provides support for using `NSUbiquitousKeyValueStore` as a `FlagValueSource`
@@ -44,8 +43,6 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
 
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
 
-    #if !os(Linux)
-
     public var valuesDidChange: AnyPublisher<Void, Never>? {
         return Publishers.Merge(
                 NotificationCenter.default.publisher(for: Self.didChangeExternallyNotification, object: self).map { _ in () },
@@ -58,7 +55,6 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
             .eraseToAnyPublisher()
     }
 
-    #endif
 }
 
 
@@ -99,3 +95,5 @@ private extension BoxedFlagValue {
         }
     }
 }
+
+#endif
