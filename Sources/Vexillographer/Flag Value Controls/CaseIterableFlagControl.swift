@@ -41,6 +41,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     var selector: some View {
         return self.selectorList
+            .listStyle(GroupedListStyle())
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
@@ -59,7 +60,11 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                 Spacer()
 
                 if value == self.flagValue {
-                    Image(systemName: "checkmark")
+                    if #available(OSX 11.0, *) {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Text("✓")
+                    }
                 }
             }
                 .contentShape(Rectangle())
@@ -68,7 +73,6 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                     self.showPicker = false
                 }
         }
-            .listStyle(GroupedListStyle())
     }
 
 }
