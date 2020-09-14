@@ -60,11 +60,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                 Spacer()
 
                 if value == self.flagValue {
-                    if #available(OSX 11.0, *) {
-                        Image(systemName: "checkmark")
-                    } else {
-                        Text("✓")
-                    }
+                    self.checkmark
                 }
             }
                 .contentShape(Rectangle())
@@ -74,6 +70,30 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                 }
         }
     }
+
+    #if swift(>=5.3)
+
+    var checkmark: some View {
+        if #available(OSX 11.0, *) {
+            return Image(systemName: "checkmark").eraseToAnyView()
+        } else {
+            return Text("✓").eraseToAnyView()
+        }
+    }
+
+    #else
+
+    #if os(macOS)
+    var checkmark: some View {
+        return Text("✓")
+    }
+    #else
+    var checkmark: some View {
+        return Image(systemName: "checkmark")
+    }
+    #endif
+
+    #endif
 
 }
 
