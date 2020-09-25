@@ -16,6 +16,7 @@ protocol UnfurledFlagItem {
     var info: UnfurledFlagInfo { get }
     var hasChildren: Bool { get }
     var unfurledView: AnyView { get }
+    var isEditable: Bool { get }
 }
 
 #endif

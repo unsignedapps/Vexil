@@ -25,7 +25,8 @@ extension Flag: Unfurlable where Value: FlagValue {
     ///
     func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
         guard self.info.shouldDisplay == true else { return nil }
-        return UnfurledFlag(name: self.info.name ?? label.localizedDisplayName, flag: self, manager: manager)
+        let unfurled = UnfurledFlag(name: self.info.name ?? label.localizedDisplayName, flag: self, manager: manager)
+        return unfurled.isEditable ? unfurled : nil
     }
 }
 
@@ -35,7 +36,8 @@ extension FlagGroup: Unfurlable {
     ///
     func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
         guard self.info.shouldDisplay == true else { return nil }
-        return UnfurledFlagGroup(name: self.info.name ?? label.localizedDisplayName, group: self, manager: manager)
+        let unfurled = UnfurledFlagGroup(name: self.info.name ?? label.localizedDisplayName, group: self, manager: manager)
+        return unfurled.isEditable ? unfurled : nil
     }
 }
 
