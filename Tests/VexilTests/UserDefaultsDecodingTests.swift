@@ -216,7 +216,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
     func testOptionalNone () {
         let value: String?? = nil
 
-        self.defaults.set(nil, forKey: #function)
+        self.defaults.removeObject(forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
