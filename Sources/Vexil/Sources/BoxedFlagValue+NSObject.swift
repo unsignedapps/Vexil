@@ -8,9 +8,9 @@
 import Foundation
 
 internal extension BoxedFlagValue {
-    init?<Value> (object: Any, typeHint: Value.Type) {
+    init?<Value> (object: Any, typeHint: Value.Type) where Value: FlagValue {
         switch object {
-        case let value as Bool where typeHint == Bool.self:
+        case let value as Bool where typeHint.BoxedValueType == Bool.self || typeHint.BoxedValueType == Optional<Bool>.self:
             self = .bool(value)
 
         case let value as Data:             self = .data(value)
