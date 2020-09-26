@@ -6,6 +6,8 @@
 	<img src="https://github.com/unsignedapps/Vexil/workflows/Tests/badge.svg">
 	<a href="https://sonarcloud.io/dashboard?id=unsignedapps_Vexil"><img src="https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status"></a>
 	<img src="https://github.com/unsignedapps/Vexil/workflows/%3E90%25%20Documented/badge.svg">
+	<br />
+	<a href="https://swiftpackageindex.com/unsignedapps/Vexil"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Funsignedapps%2FVexil%2Fbadge%3Ftype%3Dplatforms"></a>
 </p>
 
 ## Features
