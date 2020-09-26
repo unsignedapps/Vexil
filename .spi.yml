@@ -2,4 +2,4 @@ version: 1
 builder:
   configs:
   - platform: watchos
-    scheme: Vexil Vexillographer
+    scheme: Vexil
