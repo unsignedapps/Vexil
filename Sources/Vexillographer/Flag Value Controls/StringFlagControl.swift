@@ -10,17 +10,17 @@
 import SwiftUI
 import Vexil
 
+// String Flag Values
+//
+// String flag values are ones whose flag value conforms to `LosslessStringConvertible`
+
 struct StringFlagControl: View {
 
     // MARK: - Properties
 
     let label: String
-    @Binding var flagValue: String
+    @Binding var value: String
     @Binding var showDetail: Bool
-
-    #if os(iOS)
-    let keyboardType: UIKeyboardType
-    #endif
 
 
     // MARK: - Views
@@ -29,59 +29,81 @@ struct StringFlagControl: View {
         HStack {
             Text(self.label)
             Spacer()
-            self.textField
+            TextField("", text: self.$value)
+                .multilineTextAlignment(.trailing)
             DetailButton(showDetail: self.$showDetail)
         }
     }
-
-
-    #if os(iOS)
-
-    var textField: some View {
-        TextField("", text: self.$flagValue)
-            .multilineTextAlignment(.trailing)
-            .keyboardType(self.keyboardType)
-    }
-
-    #elseif os(macOS)
-
-    var textField: some View {
-        TextField("", text: self.$flagValue)
-            .multilineTextAlignment(.trailing)
-    }
-
-    #endif
 }
 
 
-// MARK: - Flag Control
+// MARK: - Lossless String Convertible Flags
 
 protocol StringEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> StringFlagControl where RootGroup: FlagContainer
+    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
-#if os(macOS)
+extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessStringConvertible {
 
-extension UnfurledFlag: StringEditableFlag where Value: LosslessStringConvertible {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> StringFlagControl where RootGroup: FlagContainer {
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         return StringFlagControl (
             label: label,
-            flagValue: Binding(key: self.flag.key, manager: manager, defaultValue: self.flag.defaultValue, transformer: LosslessStringTransformer<Value>.self),
+            value: Binding (
+                key: self.flag.key,
+                manager: manager,
+                defaultValue: self.flag.defaultValue,
+                transformer: LosslessStringTransformer<Value.BoxedValueType>.self
+            ),
             showDetail: showDetail
         )
+            .flagValueKeyboard(type: Value.self)
+            .eraseToAnyView()
+    }
+
+}
+
+
+// MARK: - Optional Lossless String Convertible Flags
+
+protocol OptionalStringEditableFlag {
+    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+}
+
+extension UnfurledFlag: OptionalStringEditableFlag
+        where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue: LosslessStringConvertible {
+
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
+        return StringFlagControl (
+            label: label,
+            value: Binding (
+                key: self.flag.key,
+                manager: manager,
+                defaultValue: self.flag.defaultValue,
+                transformer: OptionalTransformer<Value.BoxedValueType, String, LosslessStringTransformer<Value.BoxedValueType.WrappedFlagValue>>.self
+            ),
+            showDetail: showDetail
+        )
+            .flagValueKeyboard(type: Value.self)
+            .eraseToAnyView()
+    }
+
+}
+
+extension String: OptionalDefaultValue {
+    var unwrapped: String? {
+        self
+    }
+
+    static var defaultValue: String {
+        return ""
     }
 }
 
-#elseif os(iOS)
+#if os(iOS)
 
-extension UnfurledFlag: StringEditableFlag where Value: LosslessStringConvertible {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> StringFlagControl where RootGroup: FlagContainer {
-        return StringFlagControl (
-            label: label,
-            flagValue: Binding(key: self.flag.key, manager: manager, defaultValue: self.flag.defaultValue, transformer: LosslessStringTransformer<Value>.self),
-            showDetail: showDetail,
-            keyboardType: Value.keyboardType
-        )
+private extension View {
+    func flagValueKeyboard<Value> (type: Value.Type) -> some View where Value: FlagValue {
+        return self.keyboardType(Value.keyboardType)
     }
 }
 
@@ -101,6 +123,14 @@ private extension FlagValue {
         }
 
         return .default
+    }
+}
+
+#else
+
+private extension View {
+    func flagValueKeyboard<Value> (type: Value.Type) -> some View where Value: FlagValue {
+        return self
     }
 }
 
