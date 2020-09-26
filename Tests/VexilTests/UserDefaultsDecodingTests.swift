@@ -175,7 +175,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentable () {
+    func testRawRepresentableString () {
         let value = TestStruct(rawValue: "Test Value")
 
         self.defaults.set(value.rawValue, forKey: #function)
@@ -186,17 +186,37 @@ final class UserDefaultsDecodingTests: XCTestCase {
         }
     }
 
-    func testOptionalSome () {
-        let value: String? = "Test Value"
+    func testRawRepresentableBool () {
+        let value = TestStruct(rawValue: true)
 
-        self.defaults.set(value, forKey: #function)
+        self.defaults.set(value.rawValue, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), value)
+
+        struct TestStruct: RawRepresentable, FlagValue, Equatable {
+            var rawValue: Bool
+        }
+    }
+
+    // double optionals here because flagValue(key:) returns an optional, so Value is inferred as "String?" or "Bool?"
+
+    func testOptionalBool () {
+        let value: Bool?? = true
+
+        self.defaults.set(true, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), value)
+    }
+
+    func testOptionalString () {
+        let value: String?? = "Test Value"
+
+        self.defaults.set(value!, forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
     func testOptionalNone () {
-        let value: String? = nil
+        let value: String?? = nil
 
-        self.defaults.set(value, forKey: #function)
+        self.defaults.removeObject(forKey: #function)
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
