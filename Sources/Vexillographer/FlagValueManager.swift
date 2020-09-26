@@ -39,6 +39,10 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
 
     // MARK: - Flag Values
 
+    func rawValue<Value> (key: String) -> Value? where Value: FlagValue {
+        return self.source.flagValue(key: key)
+    }
+
     func flagValue<Value> (key: String) -> Value? where Value: FlagValue {
         let snapshot = self.flagPole.snapshot()
         return snapshot.flagValue(key: key)
@@ -48,6 +52,19 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
         let snapshot = self.flagPole.emptySnapshot()
         try snapshot.setFlagValue(value, key: key)
         try self.flagPole.save(snapshot: snapshot, to: self.source)
+    }
+
+
+    // MARK: - Boxed Values
+
+    func boxedValue<Value> (key: String, type: Value.Type) -> Value.BoxedValueType? where Value: FlagValue {
+        guard let value: Value = self.flagValue(key: key) else { return nil }
+        return value.unwrappedBoxedValue()
+    }
+
+    func setBoxedValue<Value> (_ value: Value.BoxedValueType?, type: Value.Type, key: String) throws where Value: FlagValue {
+        let unboxed = value.flatMap(Value.init(unwrapped:))
+        try self.setFlagValue(unboxed, key: key)
     }
 
 

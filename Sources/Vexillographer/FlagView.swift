@@ -44,27 +44,22 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     var content: some View {
 
         if let flag = self.flag as? BooleanEditableFlag {
-            return flag.control (
-                label: self.flag.info.name,
-                manager: self.manager,
-                showDetail: self.$showDetail
-            )
-                .eraseToAnyView()
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+
+        } else if let flag = self.flag as? OptionalBooleanEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
 
         } else if let flag = self.flag as? CaseIterableEditableFlag {
-            return flag.control (
-                label: self.flag.info.name,
-                manager: self.manager,
-                showDetail: self.$showDetail
-            )
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+
+        } else if let flag = self.flag as? OptionalCaseIterableEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
 
         } else if let flag = self.flag as? StringEditableFlag {
-            return flag.control (
-                label: self.flag.info.name,
-                manager: self.manager,
-                showDetail: self.$showDetail
-            )
-                .eraseToAnyView()
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+
+        } else if let flag = self.flag as? OptionalStringEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
         }
 
         return EmptyView().eraseToAnyView()
