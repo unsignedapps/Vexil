@@ -25,6 +25,10 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
         return self.flag.id
     }
 
+    var isEditable: Bool {
+        return self is BooleanEditableFlag || self is CaseIterableEditableFlag || self is StringEditableFlag
+    }
+
 
     // MARK: - Initialisation
 

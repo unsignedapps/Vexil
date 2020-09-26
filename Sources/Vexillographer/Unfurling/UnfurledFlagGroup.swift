@@ -25,6 +25,11 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
         return self.group.id
     }
 
+    var isEditable: Bool {
+        return self.allItems()
+            .isEmpty == false
+    }
+
 
     // MARK: - Initialisation
 
@@ -42,7 +47,8 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
             .children
             .compactMap { child -> UnfurledFlagItem? in
                 guard let label = child.label, let unfurlable = child.value as? Unfurlable else { return nil }
-                return unfurlable.unfurl(label: label, manager: self.manager)
+                guard let unfurled = unfurlable.unfurl(label: label, manager: self.manager) else { return nil }
+                return unfurled.isEditable ? unfurled : nil
             }
     }
 
@@ -54,12 +60,6 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
             }
         }
             .eraseToAnyView()
-    }
-}
-
-struct UnfurledFlagGroup_Previews: PreviewProvider {
-    static var previews: some View {
-        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
     }
 }
 
