@@ -23,6 +23,8 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
     let label: String
     @Binding var value: Value
+
+    let hasChanges: Bool
     @Binding var showDetail: Bool
 
     @State private var showPicker = false
@@ -39,7 +41,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
                         FlagDisplayValueView(value: self.value.wrapped)
                     }
                 }
-                DetailButton(showDetail: self.$showDetail)
+                DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
             }
         }
     }
@@ -139,6 +141,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                     }
                 }
             ),
+            hasChanges: manager.hasValueInSource(flag: self.flag),
             showDetail: showDetail
         )
             .eraseToAnyView()

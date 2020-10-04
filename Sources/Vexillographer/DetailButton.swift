@@ -13,6 +13,7 @@ struct DetailButton: View {
 
     // MARK: - Properties
 
+    let hasChanges: Bool
     @Binding var showDetail: Bool
 
 
@@ -23,7 +24,7 @@ struct DetailButton: View {
     var body: some View {
         Button (
             action: {},
-            label: { Image(systemName: "info.circle") }
+            label: { Image(systemName: self.hasChanges ? "info.circle.fill" : "info.circle") }
         )
             .onTapGesture { self.showDetail.toggle() }
     }

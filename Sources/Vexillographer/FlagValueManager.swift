@@ -54,6 +54,15 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
         try self.flagPole.save(snapshot: snapshot, to: self.source)
     }
 
+    func hasValueInSource<Value> (flag: Flag<Value>) -> Bool {
+        if let _: Value = self.source.flagValue(key: flag.key) {
+            return true
+
+        } else {
+            return false
+        }
+    }
+
 
     // MARK: - Boxed Values
 

@@ -20,6 +20,8 @@ struct StringFlagControl: View {
 
     let label: String
     @Binding var value: String
+
+    let hasChanges: Bool
     @Binding var showDetail: Bool
 
 
@@ -31,7 +33,7 @@ struct StringFlagControl: View {
             Spacer()
             TextField("", text: self.$value)
                 .multilineTextAlignment(.trailing)
-            DetailButton(showDetail: self.$showDetail)
+            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
 }
@@ -54,6 +56,7 @@ extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessS
                 defaultValue: self.flag.defaultValue,
                 transformer: LosslessStringTransformer<Value.BoxedValueType>.self
             ),
+            hasChanges: manager.hasValueInSource(flag: self.flag),
             showDetail: showDetail
         )
             .flagValueKeyboard(type: Value.self)
@@ -81,6 +84,7 @@ extension UnfurledFlag: OptionalStringEditableFlag
                 defaultValue: self.flag.defaultValue,
                 transformer: OptionalTransformer<Value.BoxedValueType, String, LosslessStringTransformer<Value.BoxedValueType.WrappedFlagValue>>.self
             ),
+            hasChanges: manager.hasValueInSource(flag: self.flag),
             showDetail: showDetail
         )
             .flagValueKeyboard(type: Value.self)
