@@ -53,13 +53,20 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     }
 
     var unfurledView: AnyView {
-        return NavigationLink(destination: UnfurledFlagGroupView(group: self, manager: self.manager)) {
-            HStack {
-                Text(self.info.name)
-                    .font(.headline)
+        switch self.group.display {
+        case .navigation:
+            return NavigationLink(destination: UnfurledFlagGroupView(group: self, manager: self.manager)) {
+                HStack {
+                    Text(self.info.name)
+                        .font(.headline)
+                }
             }
+                .eraseToAnyView()
+
+        case .section:
+            return UnfurledFlagSectionView(group: self, manager: self.manager)
+                .eraseToAnyView()
         }
-            .eraseToAnyView()
     }
 }
 

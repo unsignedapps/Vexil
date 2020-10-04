@@ -26,6 +26,9 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     /// The `FlagContainer` being wrapped.
     public var wrappedValue: Group
 
+    /// How we should display this group in Vexillographer
+    public let display: Display
+
 
     // MARK: - Initialisation
 
@@ -42,10 +45,12 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     ///   - codingKeyStragey:   An optional strategy to use when calculating the key name for this group. The default is to use the `FlagPole`s strategy.
     ///   - description:        A description of this flag group. Used in flag editors like Vexillographer and also for future developer context.
     ///                         You can also specify `.hidden` to hide this flag group from Vexillographer.
+    ///   - display:            Whether we should display this FlagGroup as using a `NavigationLink` or as a `Section` in Vexillographer
     ///
-    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
+    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {
         self.codingKeyStrategy = codingKeyStrategy
         self.wrappedValue = Group()
+        self.display = display
 
         var info = description
         info.name = name
@@ -95,4 +100,31 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
                 $0.value.decorate(lookup: lookup, label: $0.label, codingPath: codingPath, config: config)
             }
     }
+}
+
+
+// MARK: - Group Display
+
+public extension FlagGroup {
+
+    /// How to display this group in Vexillographer
+    ///
+    enum Display {
+
+        /// Displays this group using a `NavigationLink`. This is the default.
+        ///
+        /// In the navigated view the `name` is the cell's display name and the navigated view's
+        /// title, and the `description` is displayed at the top of the navigated view.
+        ///
+        case navigation
+
+        /// Displays this group using a `Section`
+        ///
+        /// The `name` of this FlagGroup is used as the Section's header, and the `description`
+        /// as the Section's footer.
+        ///
+        case section
+
+    }
+
 }
