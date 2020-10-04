@@ -4,93 +4,98 @@
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/boxedflagvalue/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flag/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagcontainer/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagdisplayvalue/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flaggroup/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://unsignedapps.github.io/Vexil/api/flaggroup_display/</loc>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flaginfo/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagpole/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagvalue/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagvaluedictionary/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/flagvaluesource/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/mutableflaggroup/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/snapshot/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/vexilconfiguration/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/</loc>
-    <lastmod>2020-08-19T00:00:00+00:00</lastmod>
+    <lastmod>2020-10-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>

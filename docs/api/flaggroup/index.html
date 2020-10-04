@@ -50,8 +50,8 @@ as you need to and can split them across multiple files for maintainability.</p>
     <hr />
 
 <h2 id="initializers">Initializers <a href="#initializers" class="permalink">¶</a></h2>
-<h3 id="initnamecodingkeystrategydescription"><code>init(name:​codingKeyStrategy:​description:​)</code> <a href="#initnamecodingkeystrategydescription" class="permalink">¶</a></h3><p>Initialises a new <code>FlagGroup</code> with the supplied info</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">codingKeyStrategy</span><span class="p">:</span><span class="err">​</span> <span class="n">CodingKeyStrategy</span> <span class="p">=</span> <span class="p">.</span><span class="k">default</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagInfo</span><span class="p">)</span>
+<h3 id="initnamecodingkeystrategydescriptiondisplay"><code>init(name:​codingKeyStrategy:​description:​display:​)</code> <a href="#initnamecodingkeystrategydescriptiondisplay" class="permalink">¶</a></h3><p>Initialises a new <code>FlagGroup</code> with the supplied info</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">codingKeyStrategy</span><span class="p">:</span><span class="err">​</span> <span class="n">CodingKeyStrategy</span> <span class="p">=</span> <span class="p">.</span><span class="k">default</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagInfo</span><span class="p">,</span> <span class="n">display</span><span class="p">:</span><span class="err">​</span> <span class="n">Display</span> <span class="p">=</span> <span class="p">.</span><span class="n">navigation</span><span class="p">)</span>
 </code></pre></div><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="p">@</span><span class="n">FlagGroup</span><span class="p">(</span><span class="n">description</span><span class="p">:</span><span class="err">​</span> <span class="s">&#34;This is a test flag group. Isn&#39;t it grand?&#34;</span>
 <span class="kd">var</span> <span class="nv">myFlagGroup</span><span class="p">:</span><span class="err">​</span> <span class="n">MyFlags</span>
 </code></pre></div>
@@ -59,6 +59,7 @@ as you need to and can split them across multiple files for maintainability.</p>
 <li>name:​ - name:​ An optional display name to give the group. Only visible in flag editors like Vexillographer. Default is to calculate one based on the property name.</li>
 <li>codingKeyStragey:​ - codingKeyStragey:​ An optional strategy to use when calculating the key name for this group. The default is to use the <code>FlagPole</code>s strategy.</li>
 <li>description:​ - description:​ A description of this flag group. Used in flag editors like Vexillographer and also for future developer context. You can also specify <code>.hidden</code> to hide this flag group from Vexillographer.</li>
+<li>display:​ - display:​ Whether we should display this FlagGroup as using a <code>NavigationLink</code> or as a <code>Section</code> in Vexillographer</li>
 </ul>
 
     <hr />
@@ -73,6 +74,9 @@ as you need to and can split them across multiple files for maintainability.</p>
 <h3 id="wrappedvalue"><code>wrappedValue</code> <a href="#wrappedvalue" class="permalink">¶</a></h3><p>The <code>FlagContainer</code> being wrapped.</p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">wrappedValue</span><span class="p">:</span><span class="err">​</span> <span class="n">Group</span>
 </code></pre></div>
+<h3 id="display"><code>display</code> <a href="#display" class="permalink">¶</a></h3><p>How we should display this group in Vexillographer</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">let</span> <span class="nv">display</span><span class="p">:</span><span class="err">​</span> <span class="n">Display</span>
+</code></pre></div>
     </article>
 </main>
 
@@ -85,7 +89,7 @@ as you need to and can split them across multiple files for maintainability.</p>
     <li><a href="#inheritance">Inheritance</a></li>
     <li><a href="#initializers">Initializers</a>
       <ul>
-        <li><a href="#initnamecodingkeystrategydescription"><code>init(name:​codingKeyStrategy:​description:​)</code></a></li>
+        <li><a href="#initnamecodingkeystrategydescriptiondisplay"><code>init(name:​codingKeyStrategy:​description:​display:​)</code></a></li>
       </ul>
     </li>
     <li><a href="#properties">Properties</a>
@@ -93,6 +97,7 @@ as you need to and can split them across multiple files for maintainability.</p>
         <li><a href="#id"><code>id</code></a></li>
         <li><a href="#info"><code>info</code></a></li>
         <li><a href="#wrappedvalue"><code>wrappedValue</code></a></li>
+        <li><a href="#display"><code>display</code></a></li>
       </ul>
     </li>
   </ul>
