@@ -20,6 +20,8 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     let label: String
     @Binding var value: Value
+
+    let hasChanges: Bool
     @Binding var showDetail: Bool
 
     @State private var showPicker = false
@@ -36,7 +38,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                         FlagDisplayValueView(value: self.value)
                     }
                 }
-                DetailButton(showDetail: self.$showDetail)
+                DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
             }
         }
     }
@@ -110,6 +112,7 @@ extension UnfurledFlag: CaseIterableEditableFlag
                 defaultValue: self.flag.defaultValue,
                 transformer: PassthroughTransformer<Value>.self
             ),
+            hasChanges: manager.hasValueInSource(flag: self.flag),
             showDetail: showDetail
         )
             .eraseToAnyView()
