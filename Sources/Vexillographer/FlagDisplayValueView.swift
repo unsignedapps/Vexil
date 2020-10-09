@@ -10,6 +10,7 @@
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct FlagDisplayValueView<Value>: View where Value: FlagValue {
 
     // MARK: - Properties

@@ -10,6 +10,7 @@
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Properties
@@ -26,12 +27,25 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Body
 
+    #if os(macOS)
+
+    public var body: some View {
+        List(self.manager.allItems(), id: \.id, children: \.children) { item in
+            item.unfurledView
+        }
+            .listStyle(SidebarListStyle())
+    }
+
+    #else
+
     public var body: some View {
         ForEach(self.manager.allItems(), id: \.id) { item in
             item.unfurledView
         }
             .environmentObject(self.manager)
     }
+
+    #endif
 }
 
 #endif

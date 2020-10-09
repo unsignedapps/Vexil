@@ -12,6 +12,7 @@
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root: FlagContainer {
 
     // MARK: - Properties
@@ -35,6 +36,14 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     var body: some View {
         self.content
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
+    }
+
+    #elseif os(macOS)
+
+    var body: some View {
+        self.content
+            .padding()
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
     }
 
     #else
