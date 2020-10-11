@@ -21,7 +21,6 @@ struct DetailButton: View {
 
     @State private var isDraggingInside = false
 
-
     // MARK: - View
 
 #if os(iOS)
