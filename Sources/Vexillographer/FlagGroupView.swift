@@ -51,7 +51,8 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             self.description
                 .padding(.bottom, 8)
             Divider()
-        }.padding()
+        }
+            .padding()
 
         Form {
             Section {
@@ -82,8 +83,12 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             Text(self.group.info.description)
         }
             .contextMenu {
-                Button(action: { self.group.info.description.copyToPasteboard() }) {
-                    Label("Copy", systemImage: "doc.on.doc")
+                Button(action: self.group.info.description.copyToPasteboard) {
+                    if #available(iOS 14, watchOS 7, tvOS 14, *) {
+                        Label("Copy", systemImage: "doc.on.doc")
+                    } else {
+                        Text("Copy")
+                    }
                 }
             }
     }
