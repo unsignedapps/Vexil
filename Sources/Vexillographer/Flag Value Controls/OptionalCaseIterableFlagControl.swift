@@ -14,7 +14,7 @@ import Vexil
 //
 // For those whose flag value is optional and conform to `CaseIterable`
 
-
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct OptionalCaseIterableFlagControl<Value>: View
             where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
                   Value.WrappedFlagValue: Hashable, Value.WrappedFlagValue.AllCases: RandomAccessCollection {
@@ -117,10 +117,12 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
 // MARK: - Creating CaseIterableFlagControls
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalCaseIterableEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalCaseIterableEditableFlag
                 where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
                       Value.WrappedFlagValue.AllCases: RandomAccessCollection, Value.WrappedFlagValue: RawRepresentable,

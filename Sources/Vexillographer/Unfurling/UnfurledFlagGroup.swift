@@ -11,6 +11,7 @@ import Foundation
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Group: FlagContainer, Root: FlagContainer {
 
     // MARK: - Properties
@@ -30,6 +31,10 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
             .isEmpty == false
     }
 
+    var children: [UnfurledFlagItem]? {
+        let children = self.allItems().filter { $0.hasChildren == true }
+        return children.isEmpty == false ? children : nil
+    }
 
     // MARK: - Initialisation
 

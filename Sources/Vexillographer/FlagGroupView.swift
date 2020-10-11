@@ -5,13 +5,12 @@
 //  Created by Rob Amos on 16/6/20.
 //
 
-// swiftlint:disable multiple_closures_with_trailing_closure
-
 #if os(iOS) || os(macOS)
 
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root: FlagContainer {
 
     // MARK: - Properties
@@ -33,36 +32,73 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     #if os(iOS)
 
     var body: some View {
-        self.content
+        Form {
+            self.description
+                .padding([.top, .bottom], 4)
+            Section(header: Text("Flags")) {
+                self.flags
+            }
+        }
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
+    }
+
+    #elseif os(macOS) && compiler(>=5.3)
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            self.description
+                .padding(.bottom, 8)
+            Divider()
+        }
+            .padding()
+
+        Form {
+            Section {
+                self.flags
+            }
+        }
+            .padding([.leading, .trailing, .bottom], 30)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+            .navigationTitle(self.group.info.name)
     }
 
     #else
 
     var body: some View {
-        self.content
+        Form {
+            self.description
+            Section {
+                self.flags
+            }
+        }
     }
 
     #endif
 
-    var content: some View {
-        Form {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Description").font(.headline)
-                Text(self.group.info.description)
-            }
-                .contextMenu {
-                    Button(action: { self.group.info.description.copyToPasteboard() }) {
-                        Text("Copy description to clipboard")
+    var description: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Description").font(.headline)
+            Text(self.group.info.description)
+        }
+            .contextMenu {
+                Button(action: self.group.info.description.copyToPasteboard) { () -> AnyView in
+                    #if compiler(>=5.3)
+                    if #available(iOS 14, watchOS 7, tvOS 14, *) {
+                        return Label("Copy", systemImage: "doc.on.doc").eraseToAnyView()
                     }
-                }
-            Section(header: Text("Flags")) {
-                ForEach(self.group.allItems(), id: \.id) { item in
-                    item.unfurledView
+                    #endif
+
+                    return Text("Copy").eraseToAnyView()
                 }
             }
+    }
+
+    var flags: some View {
+        ForEach(self.group.allItems(), id: \.id) { item in
+            item.unfurledView
         }
     }
+
 }
 
 #endif
