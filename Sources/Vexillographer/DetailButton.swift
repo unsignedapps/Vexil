@@ -46,7 +46,7 @@ struct DetailButton: View {
     private var selectionGesture: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { data in
-                self.isDraggingInside = CGRect(origin: .zero, size: size)
+                self.isDraggingInside = CGRect(origin: .zero, size: self.size)
                     .insetBy(dx: -10, dy: -10)
                     .contains(data.location)
             }
