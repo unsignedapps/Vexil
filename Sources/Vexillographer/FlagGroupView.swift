@@ -34,44 +34,66 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     #if os(iOS)
 
     var body: some View {
-        self.content
+        Form {
+            self.description
+                .padding([.top, .bottom], 4)
+            Section(header: Text("Flags")) {
+                self.flags
+            }
+        }
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
 
     #elseif os(macOS)
 
     var body: some View {
-        self.content
-            .padding()
+        VStack(alignment: .leading) {
+            self.description
+                .padding(.bottom, 8)
+            Divider()
+        }.padding()
+        
+        Form {
+            Section {
+                self.flags
+            }
+        }
+            .padding([.leading, .trailing, .bottom], 30)
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+            .navigationTitle(self.group.info.name)
     }
 
     #else
 
     var body: some View {
-        self.content
+        Form {
+            self.description
+            Section {
+                self.flags
+            }
+        }
     }
 
     #endif
 
-    var content: some View {
-        Form {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Description").font(.headline)
-                Text(self.group.info.description)
-            }
-                .contextMenu {
-                    Button(action: { self.group.info.description.copyToPasteboard() }) {
-                        Text("Copy description to clipboard")
-                    }
-                }
-            Section(header: Text("Flags")) {
-                ForEach(self.group.allItems(), id: \.id) { item in
-                    item.unfurledView
+    var description: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Description").font(.headline)
+            Text(self.group.info.description)
+        }
+            .contextMenu {
+                Button(action: { self.group.info.description.copyToPasteboard() }) {
+                    Label("Copy", systemImage: "doc.on.doc")
                 }
             }
+    }
+    
+    var flags: some View {
+        ForEach(self.group.allItems(), id: \.id) { item in
+            item.unfurledView
         }
     }
+
 }
 
 #endif
