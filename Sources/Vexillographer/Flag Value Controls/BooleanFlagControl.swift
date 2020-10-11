@@ -19,6 +19,7 @@ import Vexil
 //
 // Plus any custom types that are boxed to a Bool.
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct BooleanFlagControl: View {
 
     // MARK: - Properties
@@ -45,10 +46,12 @@ struct BooleanFlagControl: View {
 
 /// Support for `UnfurledFlag` when `FlagValue.BoxedValueType == Bool`
 ///
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol BooleanEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         return BooleanFlagControl (
@@ -70,10 +73,12 @@ extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
 
 /// Support for `UnfurledFlag` when `FlagValue.BoxedFlagValue == Bool?`
 ///
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalBooleanEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalBooleanEditableFlag where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue == Bool {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         return BooleanFlagControl (

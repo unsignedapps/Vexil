@@ -14,6 +14,7 @@ import Vexil
 //
 // Case Iterable flags are those those whose flag value conforms to `CaseIterable`
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseIterable, Value: Hashable, Value.AllCases: RandomAccessCollection {
 
     // MARK: - Properties
@@ -27,6 +28,8 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     @State private var showPicker = false
 
     // MARK: - View Body
+
+    #if os(iOS)
 
     var body: some View {
         VStack {
@@ -43,18 +46,35 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
         }
     }
 
-    #if os(iOS)
-
     var selector: some View {
         return self.selectorList
             .listStyle(GroupedListStyle())
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
-    #else
+    #elseif os(macOS)
 
-    var selector: some View {
-        return self.selectorList
+    var body: some View {
+        let picker = Picker (
+            selection: self.$value,
+            label: Text(self.label),
+            content: {
+                ForEach(Value.allCases, id: \.self) { value in
+                    FlagDisplayValueView(value: value)
+                }
+            }
+        )
+
+        #if compiler(>=5.3)
+
+        return picker
+            .pickerStyle(MenuPickerStyle())
+
+        #else
+
+        return picker
+
+        #endif
     }
 
     #endif
@@ -96,10 +116,12 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
 // MARK: - Creating CaseIterableFlagControls
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol CaseIterableEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: CaseIterableEditableFlag
             where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
                   Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable {
