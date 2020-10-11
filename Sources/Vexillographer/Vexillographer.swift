@@ -30,21 +30,28 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     #if os(macOS)
 
     public var body: some View {
-        List(self.manager.allItems(), id: \.id, children: \.children) { item in
+        let list = List(self.manager.allItems(), id: \.id, children: \.children) { item in
             item.unfurledView
         }
             .listStyle(SidebarListStyle())
-            .toolbar {
-                #if compiler(>=5.3)
 
+
+        #if compiler(>=5.3)
+
+        return list
+            .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button(action: NSApp.toggleKeyWindowSidebar) {
                         Image(systemName: "sidebar.left")
                     }
                 }
-                
-                #endif
             }
+
+        #else
+
+        return list
+
+        #endif
     }
 
     #else
