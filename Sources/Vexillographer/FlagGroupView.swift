@@ -47,21 +47,16 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     #elseif os(macOS)
 
     var body: some View {
-        VStack(alignment: .leading) {
-            self.description
-                .padding(.bottom, 8)
-            Divider()
-        }
-            .padding()
+        #if compiler(>=5.3)
 
-        Form {
-            Section {
-                self.flags
-            }
-        }
-            .padding([.leading, .trailing, .bottom], 30)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+        self.macBody
             .navigationTitle(self.group.info.name)
+
+        #else
+
+        self.macBody
+
+        #endif
     }
 
     #else
@@ -83,12 +78,14 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             Text(self.group.info.description)
         }
             .contextMenu {
-                Button(action: self.group.info.description.copyToPasteboard) {
+                Button(action: self.group.info.description.copyToPasteboard) { () -> AnyView in
+                    #if compiler(>=5.3)
                     if #available(iOS 14, watchOS 7, tvOS 14, *) {
-                        Label("Copy", systemImage: "doc.on.doc")
-                    } else {
-                        Text("Copy")
+                        return Label("Copy", systemImage: "doc.on.doc").eraseToAnyView()
                     }
+                    #endif
+
+                    return Text("Copy").eraseToAnyView()
                 }
             }
     }
@@ -97,6 +94,23 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         ForEach(self.group.allItems(), id: \.id) { item in
             item.unfurledView
         }
+    }
+
+    @ViewBuilder var macBody: some View {
+        VStack(alignment: .leading) {
+            self.description
+                .padding(.bottom, 8)
+            Divider()
+        }
+            .padding()
+
+        Form {
+            Section {
+                self.flags
+            }
+        }
+            .padding([.leading, .trailing, .bottom], 30)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
     }
 
 }

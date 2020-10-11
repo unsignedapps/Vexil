@@ -35,11 +35,15 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
         }
             .listStyle(SidebarListStyle())
             .toolbar {
+                #if compiler(>=5.3)
+
                 ToolbarItem(placement: .navigation) {
                     Button(action: NSApp.toggleKeyWindowSidebar) {
                         Image(systemName: "sidebar.left")
                     }
                 }
+                
+                #endif
             }
     }
 
