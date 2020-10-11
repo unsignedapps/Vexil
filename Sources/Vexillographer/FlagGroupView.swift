@@ -42,19 +42,24 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
 
-    #elseif os(macOS)
+    #elseif os(macOS) && compiler(>=5.3)
 
     var body: some View {
-        #if compiler(>=5.3)
+        VStack(alignment: .leading) {
+            self.description
+                .padding(.bottom, 8)
+            Divider()
+        }
+            .padding()
 
-        return self.macBody
+        Form {
+            Section {
+                self.flags
+            }
+        }
+            .padding([.leading, .trailing, .bottom], 30)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
             .navigationTitle(self.group.info.name)
-
-        #else
-
-        return self.macBody
-
-        #endif
     }
 
     #else
@@ -92,23 +97,6 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         ForEach(self.group.allItems(), id: \.id) { item in
             item.unfurledView
         }
-    }
-
-    @ViewBuilder var macBody: some View {
-        VStack(alignment: .leading) {
-            self.description
-                .padding(.bottom, 8)
-            Divider()
-        }
-            .padding()
-
-        Form {
-            Section {
-                self.flags
-            }
-        }
-            .padding([.leading, .trailing, .bottom], 30)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
     }
 
 }
