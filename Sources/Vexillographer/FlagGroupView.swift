@@ -52,7 +52,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                 .padding(.bottom, 8)
             Divider()
         }.padding()
-        
+
         Form {
             Section {
                 self.flags
@@ -87,7 +87,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                 }
             }
     }
-    
+
     var flags: some View {
         ForEach(self.group.allItems(), id: \.id) { item in
             item.unfurledView
