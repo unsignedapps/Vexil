@@ -49,12 +49,12 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     var body: some View {
         #if compiler(>=5.3)
 
-        self.macBody
+        return self.macBody
             .navigationTitle(self.group.info.name)
 
         #else
 
-        self.macBody
+        return self.macBody
 
         #endif
     }

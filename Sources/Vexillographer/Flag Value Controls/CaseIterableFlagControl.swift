@@ -55,18 +55,26 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     #elseif os(macOS)
 
     var body: some View {
-        HStack {
-            Picker (
-                selection: self.$value,
-                label: Text(self.label),
-                content: {
-                    ForEach(Value.allCases, id: \.self) { value in
-                        FlagDisplayValueView(value: value)
-                    }
+        let picker = Picker (
+            selection: self.$value,
+            label: Text(self.label),
+            content: {
+                ForEach(Value.allCases, id: \.self) { value in
+                    FlagDisplayValueView(value: value)
                 }
-            )
-                .pickerStyle(MenuPickerStyle())
-        }
+            }
+        )
+
+        #if compiler(>=5.3)
+
+        return picker
+            .pickerStyle(MenuPickerStyle())
+
+        #else
+
+        return picker
+
+        #endif
     }
 
     #endif
