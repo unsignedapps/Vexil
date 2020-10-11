@@ -68,8 +68,6 @@ struct DetailButton: View {
 
 }
 
-#endif
-
 private struct SizePreferenceKey: PreferenceKey {
     typealias Value = CGSize
     static var defaultValue: Value = .zero
@@ -78,3 +76,6 @@ private struct SizePreferenceKey: PreferenceKey {
         value = nextValue()
     }
 }
+
+#endif
+
