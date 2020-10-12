@@ -42,7 +42,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
 
-    #elseif os(macOS) && compiler(>=5.3)
+    #elseif os(macOS) && compiler(>=5.3.1)
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -82,7 +82,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         }
             .contextMenu {
                 Button(action: self.group.info.description.copyToPasteboard) { () -> AnyView in
-                    #if compiler(>=5.3)
+                    #if compiler(>=5.3.1)
                     if #available(iOS 14, watchOS 7, tvOS 14, *) {
                         return Label("Copy", systemImage: "doc.on.doc").eraseToAnyView()
                     }
