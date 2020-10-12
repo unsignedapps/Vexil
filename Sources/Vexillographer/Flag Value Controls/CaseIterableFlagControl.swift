@@ -65,7 +65,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
             }
         )
 
-        #if compiler(>=5.3)
+        #if compiler(>=5.3.1)
 
         return picker
             .pickerStyle(MenuPickerStyle())

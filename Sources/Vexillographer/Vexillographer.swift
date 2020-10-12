@@ -27,7 +27,7 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Body
 
-    #if os(macOS) && compiler(>=5.3)
+    #if os(macOS) && compiler(>=5.3.1)
 
     public var body: some View {
         List(self.manager.allItems(), id: \.id, children: \.children) { item in
