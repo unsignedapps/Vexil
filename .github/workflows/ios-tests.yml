@@ -13,7 +13,7 @@ on:
       - '**/*.swift'
     
 jobs:
-  test-ios-xcode-12.2:
+  test-ios-xcode-12_2:
     name: iOS Tests - Xcode 12.2
     runs-on: macOS-latest
     env:

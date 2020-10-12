@@ -16,7 +16,7 @@ jobs:
 
   # Swift 5.3
 
-  test-5.3-amazon-linux:
+  test-5_3-amazon-linux:
     name: Linux Tests - Swift 5.3 - Amazon Linux 2
     runs-on: ubuntu-latest
 
@@ -29,7 +29,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.3-bionic:
+  test-5_3-bionic:
     name: Linux Tests - Swift 5.3 - Ubuntu 18.04
     runs-on: ubuntu-latest
 
@@ -42,7 +42,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.3-centos7:
+  test-5_3-centos7:
     name: Linux Tests - Swift 5.3 - CentOS 7
     runs-on: ubuntu-latest
 
@@ -55,7 +55,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.3-centos8:
+  test-5_3-centos8:
     name: Linux Tests - Swift 5.3 - CentOS 8
     runs-on: ubuntu-latest
 
@@ -68,7 +68,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.3-focal:
+  test-5_3-focal:
     name: Linux Tests - Swift 5.3 - Ubuntu 20.04
     runs-on: ubuntu-latest
 
@@ -81,7 +81,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.3-xenial:
+  test-5_3-xenial:
     name: Linux Tests - Swift 5.3 - Ubuntu 16.04
     runs-on: ubuntu-latest
 
@@ -96,7 +96,7 @@ jobs:
 
   # Swift 5.2
 
-  test-5.2-amazon-linux:
+  test-5_2-amazon-linux:
     name: Linux Tests - Swift 5.2 - Amazon Linux 2
     runs-on: ubuntu-latest
 
@@ -109,7 +109,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.2-bionic:
+  test-5_2-bionic:
     name: Linux Tests - Swift 5.2 - Ubuntu 18.04
     runs-on: ubuntu-latest
 
@@ -122,7 +122,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.2-centos7:
+  test-5_2-centos7:
     name: Linux Tests - Swift 5.2 - CentOS 7
     runs-on: ubuntu-latest
 
@@ -135,7 +135,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.2-centos8:
+  test-5_2-centos8:
     name: Linux Tests - Swift 5.2 - CentOS 8
     runs-on: ubuntu-latest
 
@@ -148,7 +148,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.2-focal:
+  test-5_2-focal:
     name: Linux Tests - Swift 5.2 - Ubuntu 20.04
     runs-on: ubuntu-latest
 
@@ -161,7 +161,7 @@ jobs:
       - name: Build and Test
         run: swift test --enable-test-discovery
 
-  test-5.2-xenial:
+  test-5_2-xenial:
     name: Linux Tests - Swift 5.2 - Ubuntu 16.04
     runs-on: ubuntu-latest
 
