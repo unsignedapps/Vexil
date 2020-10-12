@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '.github/workflows/tests.yml'
+      - '.github/workflows/watchos-tests.yml'
       - '**/*.swift'
   pull_request:
     branches: [ main ]
     paths:
-      - '.github/workflows/tests.yml'
+      - '.github/workflows/watchos-tests.yml'
       - '**/*.swift'
     
 jobs:
