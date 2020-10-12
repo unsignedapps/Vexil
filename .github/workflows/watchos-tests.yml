@@ -1,0 +1,50 @@
+name: watchOS Build Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/tests.yml'
+      - '**/*.swift'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/tests.yml'
+      - '**/*.swift'
+    
+jobs:
+  build-watchos-xcode-12.2:
+    name: watchOS Build - Xcode 12.2
+    runs-on: macOS-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-xcode-12:
+    name: watchOS Build - Xcode 12
+    runs-on: macOS-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-xcode-11:
+    name: watchOS Build - Xcode 11
+    runs-on: macOS-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
