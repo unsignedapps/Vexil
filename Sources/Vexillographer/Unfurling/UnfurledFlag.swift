@@ -11,6 +11,7 @@ import Foundation
 import SwiftUI
 import Vexil
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Value: FlagValue, RootGroup: FlagContainer {
 
     // MARK: - Properties
@@ -32,6 +33,10 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
             || self is OptionalBooleanEditableFlag
             || self is OptionalCaseIterableEditableFlag
             || self is OptionalStringEditableFlag
+    }
+
+    var children: [UnfurledFlagItem]? {
+        return nil
     }
 
 

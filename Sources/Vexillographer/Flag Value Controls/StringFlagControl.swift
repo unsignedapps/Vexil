@@ -14,6 +14,7 @@ import Vexil
 //
 // String flag values are ones whose flag value conforms to `LosslessStringConvertible`
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct StringFlagControl: View {
 
     // MARK: - Properties
@@ -41,10 +42,12 @@ struct StringFlagControl: View {
 
 // MARK: - Lossless String Convertible Flags
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol StringEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessStringConvertible {
 
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
@@ -68,10 +71,12 @@ extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessS
 
 // MARK: - Optional Lossless String Convertible Flags
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalStringEditableFlag {
     func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalStringEditableFlag
         where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue: LosslessStringConvertible {
 
