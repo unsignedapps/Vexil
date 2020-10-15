@@ -54,7 +54,11 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
         Form {
             Section {
-                self.flags
+                // Filter out all items that have children. They'll have navigation
+                // links that won't work on the mac flag group view.
+                ForEach(self.group.allItems().filter({ $0.hasChildren == false }), id: \.id) { item in
+                    item.unfurledView
+                }
             }
         }
             .padding([.leading, .trailing, .bottom], 30)
