@@ -80,15 +80,15 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                     Spacer()
                     self.description(source: self.manager.source)
                 }
-                if self.flagValue(source: self.manager.source) != nil {
-                    HStack {
-                        Button(action: self.clearValue) {
-                            Text("Clear Flag Value in Current Source")
-                                .foregroundColor(.red)
-                        }
-                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    }
+
+                Button(action: self.clearValue) {
+                    Text("Clear Flag Value in Current Source")
                 }
+                    .foregroundColor(.red)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    .buttonStyle(PlainButtonStyle())
+                    .disabled(self.isCurrentSourceSet == false)
+                    .animation(.easeInOut, value: self.isCurrentSourceSet)
             }
 
             Section(header: Text("FlagPole Source Hierarchy")) {
@@ -128,6 +128,11 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     func clearValue () {
         try? self.manager.source.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
     }
+
+    var isCurrentSourceSet: Bool {
+        self.flagValue(source: self.manager.source) != nil
+    }
+
 }
 
 #endif
