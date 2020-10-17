@@ -85,8 +85,8 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                     Text("Clear Flag Value in Current Source")
                 }
                     .foregroundColor(.red)
+                    .opacity(self.isCurrentSourceSet ? 1 : 0.3)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    .buttonStyle(PlainButtonStyle())
                     .disabled(self.isCurrentSourceSet == false)
                     .animation(.easeInOut, value: self.isCurrentSourceSet)
             }
