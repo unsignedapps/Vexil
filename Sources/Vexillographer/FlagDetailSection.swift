@@ -1,0 +1,43 @@
+//
+//  FlagDetailSection.swift
+//  Vexil: Vexilographer
+//
+//  Created by Rod Brown on 15/11/20.
+//
+
+import SwiftUI
+
+struct FlagDetailSection<Header, Content>: View where Header: View, Content: View {
+
+    private let header: Header
+
+    private let content: Content
+
+    init(header: Header, @ViewBuilder content: () -> Content) {
+        self.header = header
+        self.content = content()
+    }
+
+    #if os(macOS)
+
+    var body: some View {
+        GroupBox(label: self.header) {
+            VStack(alignment: .leading, spacing: 12) {
+                self.content
+            }
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    #else
+
+    var body: some View {
+        Section(header: self.header) {
+            self.content
+        }
+    }
+
+    #endif
+
+}
