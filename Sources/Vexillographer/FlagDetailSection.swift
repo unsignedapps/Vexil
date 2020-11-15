@@ -22,12 +22,12 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
 
     var body: some View {
         GroupBox(label: self.header) {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
                 self.content
             }
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
                 .frame(maxWidth: .infinity, alignment: .leading)
-        }
+        }.padding(.bottom, 8)
     }
 
     #else
