@@ -94,10 +94,9 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     #endif
 
     var detailDoneButton: some View {
-        Button (
-            action: { self.showDetail = false },
-            label: { Text("Close").font(.headline) }
-        )
+        Button("Close") {
+            self.showDetail = false
+        }
     }
 
 }
