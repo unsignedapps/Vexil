@@ -5,8 +5,6 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
-// swiftlint:disable multiple_closures_with_trailing_closure
-
 #if os(iOS) || os(macOS)
 
 import SwiftUI
@@ -39,6 +37,15 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             .navigationBarTitle(Text(self.flag.info.name), displayMode: .inline)
     }
 
+    #elseif os(macOS)
+
+    var body: some View {
+        ScrollView {
+            self.content
+        }
+        .frame(minWidth: 300)
+    }
+
     #else
 
     var body: some View {
@@ -50,30 +57,22 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     var content: some View {
         Form {
-            Section(header: Text("Flag Details")) {
-                HStack {
-                    Text("Key").font(.headline)
-                    Spacer()
-                    Text(self.flag.info.key)
-                }
+            FlagDetailSection(header: Text("Flag Details")) {
+                self.flagKeyView
                     .contextMenu {
-                        Button(action: { self.flag.info.key.copyToPasteboard() }) {
-                            Text("Copy key to clipboard")
-                        }
+                        CopyButton(action: self.flag.info.key.copyToPasteboard)
                     }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Description").font(.headline)
+                VStack(alignment: .leading) {
+                    Text("Description:").font(.headline)
                     Text(self.flag.info.description)
                 }
-                    .contextMenu {
-                        Button(action: { self.flag.info.description.copyToPasteboard() }) {
-                            Text("Copy description to clipboard")
-                        }
-                    }
+                .contextMenu {
+                    CopyButton(action: self.flag.info.description.copyToPasteboard)
+                }
             }
 
-            Section(header: Text("Current Source")) {
+            FlagDetailSection(header: Text("Current Source")) {
                 HStack {
                     Text(self.manager.source.name)
                         .font(.headline)
@@ -84,14 +83,14 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 Button(action: self.clearValue) {
                     Text("Clear Flag Value in Current Source")
                 }
-                    .foregroundColor(.red)
-                    .opacity(self.isCurrentSourceSet ? 1 : 0.3)
-                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    .disabled(self.isCurrentSourceSet == false)
-                    .animation(.easeInOut, value: self.isCurrentSourceSet)
+                .foregroundColor(.red)
+                .opacity(self.isCurrentSourceSet ? 1 : 0.3)
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                .disabled(self.isCurrentSourceSet == false)
+                .animation(.easeInOut, value: self.isCurrentSourceSet)
             }
 
-            Section(header: Text("FlagPole Source Hierarchy")) {
+            FlagDetailSection(header: Text("FlagPole Source Hierarchy")) {
                 ForEach(self.manager.flagPole._sources, id: \.name) { source in
                     HStack {
                         if (source as AnyObject) === (self.manager.source as AnyObject) {
@@ -131,6 +130,25 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     var isCurrentSourceSet: Bool {
         self.flagValue(source: self.manager.source) != nil
+    }
+
+    private var flagKeyView: some View {
+        #if os(macOS)
+
+        return VStack(alignment: .leading) {
+            Text("Key").font(.headline)
+            Text(self.flag.info.key)
+        }
+
+        #else
+
+        return HStack {
+            Text("Key").font(.headline)
+            Spacer()
+            Text(self.flag.info.key)
+        }
+
+        #endif
     }
 
 }

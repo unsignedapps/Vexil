@@ -34,6 +34,9 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     var body: some View {
         self.content
+            .contextMenu {
+                Button("Show Details") { self.showDetail = true }
+            }
             .sheet (
                 isPresented: self.$showDetail,
                 content: {
@@ -78,18 +81,22 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     #elseif os(macOS)
 
     var detailView: some View {
-        NavigationView {
+        VStack {
             FlagDetailView(flag: self.flag, manager: self.manager)
+            HStack {
+                Spacer()
+                self.detailDoneButton
+            }
         }
+        .padding()
     }
 
     #endif
 
     var detailDoneButton: some View {
-        Button (
-            action: { self.showDetail = false },
-            label: { Text("Close").font(.headline) }
-        )
+        Button("Close") {
+            self.showDetail = false
+        }
     }
 
 }

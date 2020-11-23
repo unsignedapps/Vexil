@@ -85,15 +85,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             Text(self.group.info.description)
         }
             .contextMenu {
-                Button(action: self.group.info.description.copyToPasteboard) { () -> AnyView in
-                    #if compiler(>=5.3.1)
-                    if #available(iOS 14, watchOS 7, tvOS 14, *) {
-                        return Label("Copy", systemImage: "doc.on.doc").eraseToAnyView()
-                    }
-                    #endif
-
-                    return Text("Copy").eraseToAnyView()
-                }
+                CopyButton(action: self.group.info.description.copyToPasteboard)
             }
     }
 
