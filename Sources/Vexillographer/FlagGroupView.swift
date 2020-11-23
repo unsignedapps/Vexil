@@ -35,9 +35,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         Form {
             self.description
                 .padding([.top, .bottom], 4)
-            Section(header: Text("Flags")) {
-                self.flags
-            }
+            self.flags
         }
             .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
