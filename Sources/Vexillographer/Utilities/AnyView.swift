@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
+#if os(iOS) || os(macOS)
+
 import SwiftUI
 
 extension View {
@@ -12,3 +14,5 @@ extension View {
         return AnyView(self)
     }
 }
+
+#endif

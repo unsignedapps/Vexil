@@ -5,6 +5,8 @@
 //  Created by Rod Brown on 15/11/20.
 //
 
+#if os(iOS) || os(macOS)
+
 import SwiftUI
 
 struct FlagDetailSection<Header, Content>: View where Header: View, Content: View {
@@ -41,3 +43,5 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
     #endif
 
 }
+
+#endif

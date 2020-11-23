@@ -5,8 +5,6 @@
 //  Created by Rob Amos on 29/6/20.
 //
 
-// swiftlint:disable multiple_closures_with_trailing_closure
-
 #if os(iOS) || os(macOS)
 
 import SwiftUI

@@ -5,6 +5,8 @@
 //  Created by Rod Brown on 15/11/20.
 //
 
+#if os(iOS) || os(macOS)
+
 import SwiftUI
 
 struct CopyButton: View {
@@ -28,3 +30,5 @@ struct CopyButton: View {
     }
 
 }
+
+#endif
