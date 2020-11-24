@@ -30,7 +30,7 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     #if os(macOS) && compiler(>=5.3.1)
 
     public var body: some View {
-        List(self.manager.allItems(), id: \.id, children: \.children) { item in
+        List(self.manager.allItems(), id: \.id, children: \.childLinks) { item in
             item.unfurledView
         }
             .listStyle(SidebarListStyle())

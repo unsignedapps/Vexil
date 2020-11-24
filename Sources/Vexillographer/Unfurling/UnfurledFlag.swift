@@ -35,10 +35,13 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
             || self is OptionalStringEditableFlag
     }
 
-    var children: [UnfurledFlagItem]? {
+    var childLinks: [UnfurledFlagItem]? {
         return nil
     }
 
+    var isLink: Bool {
+        return false
+    }
 
     // MARK: - Initialisation
 
