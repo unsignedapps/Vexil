@@ -81,7 +81,7 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
             .navigationBarTitle(Text(self.info.name), displayMode: .inline)
             .eraseToAnyView()
 
-        #else
+        #elseif compiler(>=5.3.1)
 
         destination = destination
             .navigationTitle(self.info.name)
