@@ -33,34 +33,36 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     var body: some View {
         Form {
-            self.description
+            Section {
+                self.description
+            }
                 .padding([.top, .bottom], 4)
             self.flags
         }
-            .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
     }
 
     #elseif os(macOS) && compiler(>=5.3.1)
 
     var body: some View {
-        VStack(alignment: .leading) {
-            self.description
-                .padding(.bottom, 8)
-            Divider()
-        }
-            .padding()
+        ScrollView {
+            VStack(alignment: .leading) {
+                self.description
+                    .padding(.bottom, 8)
+                Divider()
+            }
+                .padding()
 
-        Form {
-            Section {
-                // Filter out all items that have children. They'll have navigation
-                // links that won't work on the mac flag group view.
-                ForEach(self.group.allItems().filter({ $0.hasChildren == false }), id: \.id) { item in
-                    item.unfurledView
+            Form {
+                Section {
+                    // Filter out all links. They won't work on the mac flag group view.
+                    ForEach(self.group.allItems().filter({ $0.isLink == false }), id: \.id) { item in
+                        item.unfurledView
+                    }
                 }
             }
+                .padding([.leading, .trailing, .bottom], 30)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }
-            .padding([.leading, .trailing, .bottom], 30)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
             .navigationTitle(self.group.info.name)
     }
 

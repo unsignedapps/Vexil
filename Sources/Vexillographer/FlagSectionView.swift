@@ -29,32 +29,42 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 
     // MARK: - View Body
 
-    #if os(iOS)
+    #if os(macOS)
 
     var body: some View {
-        self.content
-            .navigationBarTitle(Text(self.group.info.name), displayMode: .inline)
+        GroupBox(
+            label: Text(self.group.info.name),
+            content: {
+                VStack(alignment: .leading) {
+                    Text(self.group.info.description)
+                    Divider()
+                    self.content
+                }.padding(4)
+            }
+        )
+        .padding([.top, .bottom])
     }
 
     #else
 
     var body: some View {
-        self.content
-    }
-
-    #endif
-
-    var content: some View {
         Section (
             header: Text(self.group.info.name),
             footer: Text(self.group.info.description),
             content: {
-                ForEach(self.group.allItems(), id: \.id) { item in
-                    item.unfurledView
-                }
+                self.content
             }
         )
     }
+
+    #endif
+
+    private var content: some View {
+        ForEach(self.group.allItems(), id: \.id) { item in
+            item.unfurledView
+        }
+    }
+
 }
 
 #endif

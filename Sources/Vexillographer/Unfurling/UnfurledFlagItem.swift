@@ -16,9 +16,10 @@ protocol UnfurledFlagItem {
     var id: UUID { get }
     var info: UnfurledFlagInfo { get }
     var hasChildren: Bool { get }
-    var children: [UnfurledFlagItem]? { get }
+    var childLinks: [UnfurledFlagItem]? { get }
     var unfurledView: AnyView { get }
     var isEditable: Bool { get }
+    var isLink: Bool { get }
 }
 
 #endif

@@ -31,8 +31,12 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
             .isEmpty == false
     }
 
-    var children: [UnfurledFlagItem]? {
-        let children = self.allItems().filter { $0.hasChildren == true }
+    var isLink: Bool {
+        return self.group.display == .navigation
+    }
+
+    var childLinks: [UnfurledFlagItem]? {
+        let children = self.allItems().filter { $0.hasChildren == true && $0.isLink }
         return children.isEmpty == false ? children : nil
     }
 
@@ -60,19 +64,39 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     var unfurledView: AnyView {
         switch self.group.display {
         case .navigation:
-            return NavigationLink(destination: UnfurledFlagGroupView(group: self, manager: self.manager)) {
-                HStack {
-                    Text(self.info.name)
-                        .font(.headline)
-                }
-            }
-                .eraseToAnyView()
+            return self.unfurledNavigationLink
 
         case .section:
             return UnfurledFlagSectionView(group: self, manager: self.manager)
                 .eraseToAnyView()
         }
     }
+
+    private var unfurledNavigationLink: AnyView {
+        var destination = UnfurledFlagGroupView(group: self, manager: self.manager).eraseToAnyView()
+
+        #if os(iOS)
+
+        destination = destination
+            .navigationBarTitle(Text(self.info.name), displayMode: .inline)
+            .eraseToAnyView()
+
+        #elseif compiler(>=5.3.1)
+
+        destination = destination
+            .navigationTitle(self.info.name)
+            .eraseToAnyView()
+
+        #endif
+
+        return NavigationLink(destination: destination) {
+            HStack {
+                Text(self.info.name)
+                    .font(.headline)
+            }
+        }.eraseToAnyView()
+    }
+
 }
 
 #endif
