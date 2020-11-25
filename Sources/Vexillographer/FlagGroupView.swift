@@ -50,7 +50,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                     .padding(.bottom, 8)
                 Divider()
             }
-            .padding()
+                .padding()
 
             Form {
                 Section {
@@ -60,10 +60,10 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                     }
                 }
             }
-            .padding([.leading, .trailing, .bottom], 30)
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                .padding([.leading, .trailing, .bottom], 30)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }
-        .navigationTitle(self.group.info.name)
+            .navigationTitle(self.group.info.name)
     }
 
     #else
