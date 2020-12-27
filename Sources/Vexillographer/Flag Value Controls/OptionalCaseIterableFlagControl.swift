@@ -62,26 +62,36 @@ struct OptionalCaseIterableFlagControl<Value>: View
     var selectorList: some View {
         Form {
             Section {
-                Button(action: { self.valueSelected(nil) }) {
-                    Text("None")
-                        .foregroundColor(.primary)
-                    Spacer()
+                Button(
+                    action: {
+                        self.valueSelected(nil)
+                    },
+                    label: {
+                        Text("None")
+                            .foregroundColor(.primary)
+                        Spacer()
 
-                    if self.value.wrapped == nil {
-                        self.checkmark
+                        if self.value.wrapped == nil {
+                            self.checkmark
+                        }
                     }
-                }
+                )
             }
 
             ForEach(Value.WrappedFlagValue.allCases, id: \.self) { value in
-                Button(action: { self.valueSelected(value) }) {
-                    FlagDisplayValueView(value: value)
-                    Spacer()
+                Button(
+                    action: {
+                        self.valueSelected(value)
+                    },
+                    label: {
+                        FlagDisplayValueView(value: value)
+                        Spacer()
 
-                    if value == self.value.wrapped {
-                        self.checkmark
+                        if value == self.value.wrapped {
+                            self.checkmark
+                        }
                     }
-                }
+                )
             }
         }
     }
