@@ -32,17 +32,15 @@ struct OptionalCaseIterableFlagControl<Value>: View
     // MARK: - View Body
 
     var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                    HStack {
-                        Text(self.label).font(.headline)
-                        Spacer()
-                        FlagDisplayValueView(value: self.value.wrapped)
-                    }
+        HStack {
+            NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                HStack {
+                    Text(self.label).font(.headline)
+                    Spacer()
+                    FlagDisplayValueView(value: self.value.wrapped)
                 }
-                DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
             }
+            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
 
@@ -50,7 +48,6 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
     var selector: some View {
         return self.selectorList
-            .listStyle(GroupedListStyle())
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 

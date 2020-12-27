@@ -32,24 +32,21 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     #if os(iOS)
 
     var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                    HStack {
-                        Text(self.label).font(.headline)
-                        Spacer()
-                        FlagDisplayValueView(value: self.value)
-                    }
+        HStack {
+            NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                HStack {
+                    Text(self.label).font(.headline)
+                    Spacer()
+                    FlagDisplayValueView(value: self.value)
                 }
-                DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
             }
+            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
 
     var selector: some View {
         return self.selectorList
             .navigationBarTitle(Text(self.label), displayMode: .inline)
-            .eraseToAnyView()
     }
 
     #elseif os(macOS)
