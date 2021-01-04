@@ -27,22 +27,20 @@ struct OptionalCaseIterableFlagControl<Value>: View
     let hasChanges: Bool
     @Binding var showDetail: Bool
 
-    @State private var showPicker = false
+    @Binding var showPicker: Bool
 
     // MARK: - View Body
 
     var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                    HStack {
-                        Text(self.label).font(.headline)
-                        Spacer()
-                        FlagDisplayValueView(value: self.value.wrapped)
-                    }
+        HStack {
+            NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                HStack {
+                    Text(self.label).font(.headline)
+                    Spacer()
+                    FlagDisplayValueView(value: self.value.wrapped)
                 }
-                DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
             }
+            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
 
@@ -50,7 +48,6 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
     var selector: some View {
         return self.selectorList
-            .listStyle(GroupedListStyle())
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
@@ -63,37 +60,38 @@ struct OptionalCaseIterableFlagControl<Value>: View
     #endif
 
     var selectorList: some View {
-        List {
+        Form {
             Section {
-                HStack {
-                    Text("None")
-                    Spacer()
+                Button(
+                    action: {
+                        self.valueSelected(nil)
+                    },
+                    label: {
+                        Text("None")
+                            .foregroundColor(.primary)
+                        Spacer()
 
-                    if self.value.wrapped == nil {
-                        self.checkmark
+                        if self.value.wrapped == nil {
+                            self.checkmark
+                        }
                     }
-                }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        self.value.wrapped = nil
-                        self.showPicker = false
-                    }
+                )
             }
 
             ForEach(Value.WrappedFlagValue.allCases, id: \.self) { value in
-                HStack {
-                    FlagDisplayValueView(value: value)
-                    Spacer()
+                Button(
+                    action: {
+                        self.valueSelected(value)
+                    },
+                    label: {
+                        FlagDisplayValueView(value: value)
+                        Spacer()
 
-                    if value == self.value.wrapped {
-                        self.checkmark
+                        if value == self.value.wrapped {
+                            self.checkmark
+                        }
                     }
-                }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        self.value.wrapped = value
-                        self.showPicker = false
-                    }
+                )
             }
         }
     }
@@ -112,6 +110,11 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
     #endif
 
+    func valueSelected(_ value: Value.WrappedFlagValue?) {
+        self.value.wrapped = value
+        self.showPicker = false
+    }
+
 }
 
 
@@ -119,7 +122,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalCaseIterableEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
@@ -127,7 +130,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                 where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
                       Value.WrappedFlagValue.AllCases: RandomAccessCollection, Value.WrappedFlagValue: RawRepresentable,
                       Value.WrappedFlagValue.RawValue: FlagValue, Value.WrappedFlagValue: Hashable {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         let key = self.info.key
 
         return OptionalCaseIterableFlagControl<Value> (
@@ -144,7 +147,8 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                 }
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
-            showDetail: showDetail
+            showDetail: showDetail,
+            showPicker: showPicker
         )
             .eraseToAnyView()
     }

@@ -21,6 +21,8 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     @State private var showDetail = false
 
+    @State private var showPicker = false
+
 
     // MARK: - Initialisation
 
@@ -54,10 +56,10 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
             return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
 
         } else if let flag = self.flag as? CaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail, showPicker: self.$showPicker)
 
         } else if let flag = self.flag as? OptionalCaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail, showPicker: self.$showPicker)
 
         } else if let flag = self.flag as? StringEditableFlag {
             return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
