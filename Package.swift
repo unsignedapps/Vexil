@@ -15,8 +15,11 @@ let package = Package(
 
     products: [
         // Automatic
-        .library(name: "Vexil", targets: [ "Vexil" ]),
-        .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
+       .library(name: "Vexil", targets: [ "Vexil" ]),
+       .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
+
+        // Static
+        // .library(name: "Vexil", type: .static, targets: [ "Vexil", "Vexillographer" ]),
     ],
 
     dependencies: [

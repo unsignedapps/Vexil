@@ -14,7 +14,31 @@ on:
     
 jobs:
   build-watchos-xcode-12_3:
-    name: watchOS Build - Xcode 12.3 (beta)
+    name: watchOS Build - Xcode 12.5
+    runs-on: macos-11.0
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.5.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-xcode-12_4:
+    name: watchOS Build - Xcode 12.4
+    runs-on: macos-11.0
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-xcode-12_3:
+    name: watchOS Build - Xcode 12.3
     runs-on: macOS-latest
     env:
       DEVELOPER_DIR: /Applications/Xcode_12.3.app/Contents/Developer
