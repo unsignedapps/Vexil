@@ -13,11 +13,14 @@ on:
       - '**/*.swift'
     
 jobs:
-  test-macos-xcode-12_5:
-    name: macOS Tests - Xcode 12.5 (beta)
+  build-macos-beta:
+    name: macOS Tests - Xcode Betas
     runs-on: macos-11.0
+    matrix:
+      xcode: [ 12.5 ]
+
     env:
-      DEVELOPER_DIR: /Applications/Xcode_12.5.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
       - name: Checkout
@@ -25,11 +28,14 @@ jobs:
       - name: Build and Test
         run: swift test
 
-  test-macos-xcode-12_4:
-    name: macOS Tests - Xcode 12.4
+  build-macos-macos-11:
+    name: nacOS Tests - macOS 11
     runs-on: macos-11.0
+    matrix:
+      xcode: [ 11.7, 12.2, 12.3, 12.4 ]
+
     env:
-      DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
       - name: Checkout
@@ -37,95 +43,14 @@ jobs:
       - name: Build and Test
         run: swift test
 
-  test-macos-xcode-12_3:
-    name: macOS Tests - Xcode 12.3
-    runs-on: macOS-latest
+  build-tvos-macos-10_15:
+    name: macOS Tests - macOS 10.15
+    runs-on: macos-10.15
+    matrix:
+      xcode: [ 11.7, 12, 12.1, 12.2, 12.3, 12.4 ]
+
     env:
-      DEVELOPER_DIR: /Applications/Xcode_12.3.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-xcode-12_2:
-    name: macOS Tests - Xcode 12.2
-    runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-xcode-12_1:
-    name: macOS Tests - Xcode 12.1.1
-    runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.1.1.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-  
-  test-macos-xcode-12:
-    name: macOS Tests - Xcode 12
-    runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-xcode-11:
-    name: macOS Tests - Xcode 11
-    runs-on: macOS-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-11-xcode-12_3:
-    name: macOS 11 Tests - Xcode 12.3 (beta)
-    runs-on: macos-11.0
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.3.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-11-xcode-12_2:
-    name: macOS 11 Tests - Xcode 12.2
-    runs-on: macos-11.0
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
-
-  test-macos-11-xcode-11:
-    name: macOS Tests - Xcode 11
-    runs-on: macos-11.0
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
       - name: Checkout
