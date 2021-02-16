@@ -13,7 +13,7 @@ on:
       - '**/*.swift'
     
 jobs:
-  build-watchos-xcode-12_3:
+  build-watchos-xcode-12_5:
     name: watchOS Build - Xcode 12.5
     runs-on: macos-11.0
     env:
