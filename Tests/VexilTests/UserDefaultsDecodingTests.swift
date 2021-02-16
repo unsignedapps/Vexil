@@ -61,21 +61,21 @@ final class UserDefaultsDecodingTests: XCTestCase {
         let value = 1
 
         self.defaults.set(value, forKey: #function)
-        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)       // swiftlint:disable:this xct_specific_matcher
     }
 
     func testDecodeBooleanDouble () {
         let value = 1.0
 
         self.defaults.set(value, forKey: #function)
-        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)       // swiftlint:disable:this xct_specific_matcher
     }
 
     func testDecodeBooleanString () {
         let value = "t"
 
         self.defaults.set(value, forKey: #function)
-        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)       // swiftlint:disable:this xct_specific_matcher
     }
 
 
