@@ -80,8 +80,14 @@ extension Bool: FlagValue {
     public typealias BoxedValueType = Bool
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .bool(let value) = boxedFlagValue else { return nil }
-        self = value
+        switch boxedFlagValue {
+        case let .bool(value):          self = value
+        case let .integer(value):       self = value != 0
+        case let .float(value):         self = value != 0.0
+        case let .double(value):        self = value != 0.0
+        case let .string(value):        self = (value as NSString).boolValue
+        default:                        return nil
+        }
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -150,8 +156,13 @@ extension Double: FlagValue {
     public typealias BoxedValueType = Double
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .double(let value) = boxedFlagValue else { return nil }
-        self = value
+        switch boxedFlagValue {
+        case let .double(value):            self = value
+        case let .float(value):             self = Double(value)
+        case let .integer(value):           self = Double(value)
+        case let .string(value):            self = (value as NSString).doubleValue
+        default:                            return nil
+        }
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -164,9 +175,11 @@ extension Float: FlagValue {
 
     public init? (boxedFlagValue: BoxedFlagValue) {
         switch boxedFlagValue {
-        case let .float(value):         self = value
-        case let .double(value):        self = Float(value)
-        default:                        return nil
+        case let .float(value):             self = value
+        case let .double(value):            self = Float(value)
+        case let .integer(value):           self = Float(value)
+        case let .string(value):            self = (value as NSString).floatValue
+        default:                            return nil
         }
     }
 
@@ -179,8 +192,11 @@ extension Int: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
-        self = value
+        switch boxedFlagValue {
+        case let .integer(value):           self = value
+        case let .string(value):            self = (value as NSString).integerValue
+        default:                            return nil
+        }
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -192,7 +208,7 @@ extension Int8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = Int8(value)
     }
 
@@ -205,7 +221,7 @@ extension Int16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = Int16(value)
     }
 
@@ -218,7 +234,7 @@ extension Int32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = Int32(value)
     }
 
@@ -231,7 +247,7 @@ extension Int64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = Int64(value)
     }
 
@@ -244,7 +260,7 @@ extension UInt: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = UInt(value)
     }
 
@@ -257,7 +273,7 @@ extension UInt8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = UInt8(value)
     }
 
@@ -270,7 +286,7 @@ extension UInt16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = UInt16(value)
     }
 
@@ -283,7 +299,7 @@ extension UInt32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = UInt32(value)
     }
 
@@ -296,7 +312,7 @@ extension UInt64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .integer(let value) = boxedFlagValue else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
         self = UInt64(value)
     }
 

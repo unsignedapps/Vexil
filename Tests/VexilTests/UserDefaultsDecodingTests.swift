@@ -57,6 +57,27 @@ final class UserDefaultsDecodingTests: XCTestCase {
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
+    func testDecodeBooleanInt () {
+        let value = 1
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+    }
+
+    func testDecodeBooleanDouble () {
+        let value = 1.0
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+    }
+
+    func testDecodeBooleanString () {
+        let value = "t"
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), true)
+    }
+
 
     // MARK: - Decoding String Types
 
@@ -96,6 +117,28 @@ final class UserDefaultsDecodingTests: XCTestCase {
         XCTAssertNotNil(result)
         if let result = result {
             XCTAssertEqual(result, value, accuracy: 0.000001)
+        }
+    }
+
+    func testDecodeDoubleInt () {
+        let value = 1
+
+        self.defaults.set(value, forKey: #function)
+        let result: Double? = self.defaults.flagValue(key: #function)
+        XCTAssertNotNil(result)
+        if let result = result {
+            XCTAssertEqual(result, 1.0, accuracy: 0.000001)
+        }
+    }
+
+    func testDecodeDoubleString () {
+        let value = "1.23456789"
+
+        self.defaults.set(value, forKey: #function)
+        let result: Double? = self.defaults.flagValue(key: #function)
+        XCTAssertNotNil(result)
+        if let result = result {
+            XCTAssertEqual(result, 1.23456789, accuracy: 0.000001)
         }
     }
 
@@ -172,6 +215,20 @@ final class UserDefaultsDecodingTests: XCTestCase {
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
+    func testDecodeIntString () {
+        let value = "1234"
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), 1234)
+    }
+
+    func testDecodeUIntString () {
+        let value = "1234"
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), UInt(1234))
+    }
+
 
     // MARK: - Wrapping Types
 
@@ -220,6 +277,13 @@ final class UserDefaultsDecodingTests: XCTestCase {
         XCTAssertEqual(self.defaults.flagValue(key: #function), value)
     }
 
+    func testOptionalBoolString () {
+        let value = "t"
+        let expected: Bool?? = true
+
+        self.defaults.set(value, forKey: #function)
+        XCTAssertEqual(self.defaults.flagValue(key: #function), expected)
+    }
 
     // MARK: - Array Tests
 
