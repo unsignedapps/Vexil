@@ -14,12 +14,12 @@ on:
 
 jobs:
   SonarCloud:
-    runs-on: macos-11.0
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Generate Test Coverage
-        run: swift test --enable-code-coverage
+        run: swift test --enable-test-discovery --enable-code-coverage
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
