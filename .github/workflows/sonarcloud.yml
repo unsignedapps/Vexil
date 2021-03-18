@@ -25,7 +25,7 @@ jobs:
       - name: Generate Test Coverage
         run: swift test --enable-test-discovery --enable-code-coverage
       - name: Convert to llvm-cov format
-        run: llvm-cov show .build/debug/VexilPackageTests.xctest/Contents/MacOS/VexilPackageTests --instr-profile .build/debug/codecov/default.profdata > .build/debug/codecov/coverage.txt
+        run: llvm-cov show .build/debug/VexilPackageTests.xctest --instr-profile .build/debug/codecov/default.profdata > .build/debug/codecov/coverage.txt
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
