@@ -250,7 +250,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
     ///
     public func remove (snapshot: Snapshot<RootGroup>) {
-        self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>) == snapshot })
+        self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
     }
 
 

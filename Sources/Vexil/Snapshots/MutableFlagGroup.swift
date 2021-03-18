@@ -71,3 +71,18 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
     }
 
 }
+
+
+// MARK: - Equatable and Hashable Support
+
+extension MutableFlagGroup: Equatable where Group: Equatable {
+    public static func == (lhs: MutableFlagGroup, rhs: MutableFlagGroup) -> Bool {
+        return lhs.group == rhs.group
+    }
+}
+
+extension MutableFlagGroup: Hashable where Group: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.group)
+    }
+}
