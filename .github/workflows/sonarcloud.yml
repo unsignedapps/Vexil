@@ -17,6 +17,8 @@ on:
 jobs:
   SonarCloud:
     runs-on: ubuntu-latest
+    container:
+      image: swift:5.3.3-xenial
     steps:
       - name: Checkout
         uses: actions/checkout@v2
