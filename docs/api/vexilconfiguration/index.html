@@ -43,20 +43,20 @@
     <hr />
 
 <h2 id="initializers">Initializers <a href="#initializers" class="permalink">¶</a></h2>
-<h3 id="initcodingpathstrategyprefixseparator"><code>init(codingPathStrategy:​prefix:​separator:​)</code> <a href="#initcodingpathstrategyprefixseparator" class="permalink">¶</a></h3><p>Initialises a new <code>VexilConfiguration</code> struct with the supplied info.</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">codingPathStrategy</span><span class="p">:</span><span class="err">​</span> <span class="n">VexilConfiguration</span><span class="p">.</span><span class="n">CodingKeyStrategy</span> <span class="p">=</span> <span class="p">.</span><span class="k">default</span><span class="p">,</span> <span class="kr">prefix</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&#34;.&#34;</span><span class="p">)</span>
+<h3 id="initcodingpathstrategyprefixseparator"><code>init(codingPathStrategy:prefix:separator:)</code> <a href="#initcodingpathstrategyprefixseparator" class="permalink">¶</a></h3><p>Initialises a new <code>VexilConfiguration</code> struct with the supplied info.</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">codingPathStrategy</span><span class="p">:</span> <span class="n">VexilConfiguration</span><span class="p">.</span><span class="n">CodingKeyStrategy</span> <span class="p">=</span> <span class="p">.</span><span class="k">default</span><span class="p">,</span> <span class="kr">prefix</span><span class="p">:</span> <span class="nb">String</span><span class="p">?</span> <span class="p">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span> <span class="nb">String</span> <span class="p">=</span> <span class="s">&#34;.&#34;</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="parameters">Parameters <a href="#parameters" class="permalink">¶</a></h4><ul>
-<li>codingPathStrategy:​ - codingPathStrategy:​ How to calculate each <code>Flag</code>s &ldquo;key&rdquo;. Defaults to <code>CodingKeyStrategy.default</code> (aka <code>.kebabcase</code>)</li>
-<li>prefix:​ - prefix:​ An optional prefix to apply to each calculated key,. This is treated as a separate &ldquo;level&rdquo; of the tree. So if your prefix is &ldquo;magic&rdquo;, your flag keys would be <code>magic.abc-flag</code></li>
-<li>separator:​ - separator:​ A separator to use by <code>joined()</code> to combine different levels of the flag tree together.</li>
+<li>codingPathStrategy: How to calculate each <code>Flag</code>s &ldquo;key&rdquo;. Defaults to <code>CodingKeyStrategy.default</code> (aka <code>.kebabcase</code>)</li>
+<li>prefix: An optional prefix to apply to each calculated key,. This is treated as a separate &ldquo;level&rdquo; of the tree. So if your prefix is &ldquo;magic&rdquo;, your flag keys would be <code>magic.abc-flag</code></li>
+<li>separator: A separator to use by <code>joined()</code> to combine different levels of the flag tree together.</li>
 </ul>
 
     <hr />
 
 <h2 id="properties">Properties <a href="#properties" class="permalink">¶</a></h2>
 <h3 id="-default-"><code>`default`</code> <a href="#-default-" class="permalink">¶</a></h3><p>The &ldquo;default&rdquo; <code>VexilConfiguration</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="p">`</span><span class="k">default</span><span class="p">`:</span><span class="err">​</span> <span class="n">VexilConfiguration</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="p">`</span><span class="k">default</span><span class="p">`:</span> <span class="n">VexilConfiguration</span>
 </code></pre></div>
     </article>
 </main>
@@ -69,7 +69,7 @@
   <ul>
     <li><a href="#initializers">Initializers</a>
       <ul>
-        <li><a href="#initcodingpathstrategyprefixseparator"><code>init(codingPathStrategy:​prefix:​separator:​)</code></a></li>
+        <li><a href="#initcodingpathstrategyprefixseparator"><code>init(codingPathStrategy:prefix:separator:)</code></a></li>
       </ul>
     </li>
     <li><a href="#properties">Properties</a>
@@ -84,7 +84,7 @@
             </div>
             <footer id="footer">
     <div class="copyright">
-        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>Copyright © 2021 Unsigned Apps Pty Ltd.</small><br />
         <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
     </div>
 </footer>

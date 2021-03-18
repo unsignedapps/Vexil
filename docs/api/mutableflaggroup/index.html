@@ -38,8 +38,12 @@
         <h1>MutableFlagGroup</h1>
     
         <p>A <code>MutableFlagGroup</code> is a wrapper type that provides a &ldquo;setter&rdquo; for each contained <code>Flag</code>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="p">@</span><span class="n">dynamicMemberLookup</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MutableFlagGroup</span><span class="p">&lt;</span><span class="n">Group</span><span class="p">,</span> <span class="n">Root</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">Group</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagContainer</span><span class="p">,</span> <span class="n">Root</span><span class="p">:</span><span class="err">​</span> <span class="n">FlagContainer</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="p">@</span><span class="n">dynamicMemberLookup</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MutableFlagGroup</span><span class="p">&lt;</span><span class="n">Group</span><span class="p">,</span> <span class="n">Root</span><span class="p">&gt;</span> <span class="k">where</span> <span class="n">Group</span><span class="p">:</span> <span class="n">FlagContainer</span><span class="p">,</span> <span class="n">Root</span><span class="p">:</span> <span class="n">FlagContainer</span>
 </code></pre></div>
+    <hr />
+
+<h2 id="inheritance">Inheritance <a href="#inheritance" class="permalink">¶</a></h2><p><code>Equatable</code>, <code>Hashable</code></p>
+
     </article>
 </main>
 
@@ -47,13 +51,17 @@
                 
                 <div class="col-3 sidebar d-none d-md-block">
                     <h2>On This Page</h2>
-                    <nav id="TableOfContents"></nav>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#inheritance">Inheritance</a></li>
+  </ul>
+</nav>
                 </div>
                 
             </div>
             <footer id="footer">
     <div class="copyright">
-        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>Copyright © 2021 Unsigned Apps Pty Ltd.</small><br />
         <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
     </div>
 </footer>

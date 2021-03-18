@@ -6,7 +6,7 @@
     <description>Recent content on Vexil</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 18 Mar 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://unsignedapps.github.io/Vexil/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,30 +14,30 @@
     <item>
       <title>BoxedFlagValue</title>
       <link>https://unsignedapps.github.io/Vexil/api/boxedflagvalue/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/boxedflagvalue/</guid>
       <description>An intermediate type used to make encoding and decoding of types simpler for FlagValueSources
 public enum BoxedFlagValue Any custom type you conform to FlagValue must be able to be represented using one of these types
 Inheritance ¶Equatable
-Enumeration Cases ¶ array ¶case array(:​ [BoxedFlagValue])  bool ¶case bool(:​ Bool)  dictionary ¶case dictionary(:​ [String:​ BoxedFlagValue])  data ¶case data(:​ Data)  double ¶case double(:​ Double)  float ¶case float(:​ Float)  integer ¶case integer(:​ Int)  none ¶case none  string ¶case string(:​ String) </description>
+Enumeration Cases ¶ array ¶case array(: [BoxedFlagValue])  bool ¶case bool(: Bool)  dictionary ¶case dictionary(: [String: BoxedFlagValue])  data ¶case data(: Data)  double ¶case double(: Double)  float ¶case float(: Float)  integer ¶case integer(: Int)  none ¶case none  string ¶case string(: String) </description>
     </item>
     
     <item>
       <title>Flag</title>
       <link>https://unsignedapps.github.io/Vexil/api/flag/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flag/</guid>
       <description>A wrapper representing a Feature Flag / Feature Toggle.
-@propertyWrapper public struct Flag&amp;lt;Value&amp;gt;:​ Decorated, Identifiable where Value:​ FlagValue All Flags must be initialised with a default value and a description. The default value is used when none of the sources on the FlagPole have a value specified for this flag. The description is used for future developer reference and in Vexlliographer to describe the flag.
+@propertyWrapper public struct Flag&amp;lt;Value&amp;gt;: Decorated, Identifiable where Value: FlagValue All Flags must be initialised with a default value and a description. The default value is used when none of the sources on the FlagPole have a value specified for this flag. The description is used for future developer reference and in Vexlliographer to describe the flag.
 The type that you wrap with @Flag must conform to FlagValue.</description>
     </item>
     
     <item>
       <title>Flag.CodingKeyStrategy</title>
       <link>https://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flag_codingkeystrategy/</guid>
       <description>An enumeration describing how the key should be calculated for this specific Flag.
@@ -50,7 +50,7 @@ case snakecase  customKey ¶Manually specifies the key name for this Flag.</desc
     <item>
       <title>FlagContainer</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagcontainer/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagcontainer/</guid>
       <description>A FlagContainer is a type that encapsulates your Flag and FlagGroup types. The only requirement of a FlagContainer is that it can be initialised with an empty init().
@@ -60,32 +60,32 @@ public protocol FlagContainer </description>
     <item>
       <title>FlagDisplayValue</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagdisplayvalue/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagdisplayvalue/</guid>
       <description>A convenience protocol used by flag editors like Vexillographer.
 public protocol FlagDisplayValue Use this with your CaseIterable types when you want to customise the value displayed in the UI.
   Requirements ¶ flagDisplayValue ¶The value to display in the Picker for a given flag value
-var flagDisplayValue:​ String </description>
+var flagDisplayValue: String </description>
     </item>
     
     <item>
       <title>FlagGroup</title>
       <link>https://unsignedapps.github.io/Vexil/api/flaggroup/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flaggroup/</guid>
       <description>A wrapper representing a group of Feature Flags / Feature Toggles.
-@propertyWrapper public struct FlagGroup&amp;lt;Group&amp;gt;:​ Decorated, Identifiable where Group:​ FlagContainer Use this to structure your flags into a tree. You can nest FlagGroups as deep as you need to and can split them across multiple files for maintainability.
+@propertyWrapper public struct FlagGroup&amp;lt;Group&amp;gt;: Decorated, Identifiable where Group: FlagContainer Use this to structure your flags into a tree. You can nest FlagGroups as deep as you need to and can split them across multiple files for maintainability.
 The type that you wrap with FlagGroup must conform to FlagContainer.
-Inheritance ¶Decorated, Identifiable
-Initializers ¶ init(name:​codingKeyStrategy:​description:​display:​) ¶Initialises a new FlagGroup with the supplied info</description>
+Inheritance ¶Decorated, Equatable, Hashable, Identifiable
+Initializers ¶ init(name:codingKeyStrategy:description:display:) ¶Initialises a new FlagGroup with the supplied info</description>
     </item>
     
     <item>
       <title>FlagGroup.CodingKeyStrategy</title>
       <link>https://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flaggroup_codingkeystrategy/</guid>
       <description>An enumeration describing how the key should be calculated for this specific FlagGroup.
@@ -98,7 +98,7 @@ case snakecase  skip ¶Skips this FlagGroup from the key generation</description
     <item>
       <title>FlagGroup.Display</title>
       <link>https://unsignedapps.github.io/Vexil/api/flaggroup_display/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flaggroup_display/</guid>
       <description>How to display this group in Vexillographer
@@ -111,32 +111,32 @@ case section The name of this FlagGroup is used as the Section&amp;rsquo;s heade
     <item>
       <title>FlagInfo</title>
       <link>https://unsignedapps.github.io/Vexil/api/flaginfo/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flaginfo/</guid>
       <description>A simple collection of information about a Flag or FlagGroup
 public struct FlagInfo This is mostly used by flag editors like Vexillographer.
 Inheritance ¶ExpressibleByStringLiteral
-Initializers ¶ init(description:​) ¶Allows a FlagInfo to be initialised directly when required
-public init(description:​ String)  Parameters ¶ description:​ - description:​ A brief description of the Flag or FlagGroups purpose.  init(stringLiteral:​) ¶public init(stringLiteral value:​ String)  Properties ¶ name ¶The name of the flag or flag group, if nil it is calculated from the containing property name</description>
+Initializers ¶ init(description:) ¶Allows a FlagInfo to be initialised directly when required
+public init(description: String)  Parameters ¶ description: A brief description of the Flag or FlagGroups purpose.  init(stringLiteral:) ¶public init(stringLiteral value: String)  Properties ¶ name ¶The name of the flag or flag group, if nil it is calculated from the containing property name</description>
     </item>
     
     <item>
       <title>FlagPole</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagpole/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagpole/</guid>
       <description>A FlagPole hoists a group of feature flags / feature toggles.
-@dynamicMemberLookup public class FlagPole&amp;lt;RootGroup&amp;gt; where RootGroup:​ FlagContainer It provides the primary mechanism for dynamically accessing Flags, looking them up from multiple sources. It also provides methods for taking and interaction with Snapshots of flags.
-Each FlagPole must be initalised with the type of a FlagContainer:​
-struct MyFlags:​ FlagContainer { // ... } let flagPpole = FlagPole(hoist:​ MyFlags.self) You can then interact with the FlagPole using dynamic member lookup:​</description>
+@dynamicMemberLookup public class FlagPole&amp;lt;RootGroup&amp;gt; where RootGroup: FlagContainer It provides the primary mechanism for dynamically accessing Flags, looking them up from multiple sources. It also provides methods for taking and interaction with Snapshots of flags.
+Each FlagPole must be initalised with the type of a FlagContainer:
+struct MyFlags: FlagContainer { // ... } let flagPpole = FlagPole(hoist: MyFlags.self) You can then interact with the FlagPole using dynamic member lookup:</description>
     </item>
     
     <item>
       <title>FlagValue</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagvalue/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagvalue/</guid>
       <description>A type that represents the wrapped value of a Flag
@@ -148,66 +148,66 @@ Requirements ¶ boxedFlagValue ¶Your conforming type must return an instance of
     <item>
       <title>FlagValueDictionary</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagvaluedictionary/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagvaluedictionary/</guid>
       <description>A simple dictionary-backed FlagValueSource that can be useful for testing and other purposes.
-open class FlagValueDictionary:​ Identifiable, ExpressibleByDictionaryLiteral  Inheritance ¶Collection, ExpressibleByDictionaryLiteral, FlagValueSource , Identifiable
+open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral  Inheritance ¶Collection, ExpressibleByDictionaryLiteral, FlagValueSource , Identifiable
 Nested Type Aliases ¶ Index ¶public typealias Index = DictionaryType.Index  Element ¶public typealias Element = DictionaryType.Element  DictionaryType ¶Our internal dictionary type
-public typealias DictionaryType = [String:​ Any]  Initializers ¶ init(_:​) ¶Initialises a FlagValueDictionary with the specified dictionary
-public init(_ dictionary:​ DictionaryType = [:​])  init(dictionaryLiteral:​) ¶Initialises a FlagValueDictionary using a dictionary literal</description>
+public typealias DictionaryType = [String: Any]  Initializers ¶ init(_:) ¶Initialises a FlagValueDictionary with the specified dictionary
+public init(_ dictionary: DictionaryType = [:])  init(dictionaryLiteral:) ¶Initialises a FlagValueDictionary using a dictionary literal</description>
     </item>
     
     <item>
       <title>FlagValueSource</title>
       <link>https://unsignedapps.github.io/Vexil/api/flagvaluesource/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/flagvaluesource/</guid>
       <description>A simple protocol that describes a source of FlagValues
 public protocol FlagValueSource For more information and examples on creating custom FlagValueSources please see the full documentation.
 Requirements ¶ name ¶The name of the source. Used by flag editors like Vexillographer
-var name:​ String  flagValue(key:​) ¶Provide a way to fetch values
-func flagValue&amp;lt;Value&amp;gt;(key:​ String) -&amp;gt; Value? where Value:​ FlagValue  setFlagValue(_:​key:​) ¶And to save values – if your source does not support saving just do nothing</description>
+var name: String  flagValue(key:​) ¶Provide a way to fetch values
+func flagValue&amp;lt;Value&amp;gt;(key: String) -&amp;gt; Value? where Value: FlagValue  setFlagValue(_:​key:​) ¶And to save values – if your source does not support saving just do nothing</description>
     </item>
     
     <item>
       <title>MutableFlagGroup</title>
       <link>https://unsignedapps.github.io/Vexil/api/mutableflaggroup/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/mutableflaggroup/</guid>
       <description>A MutableFlagGroup is a wrapper type that provides a &amp;ldquo;setter&amp;rdquo; for each contained Flag.
-@dynamicMemberLookup public class MutableFlagGroup&amp;lt;Group, Root&amp;gt; where Group:​ FlagContainer, Root:​ FlagContainer </description>
+@dynamicMemberLookup public class MutableFlagGroup&amp;lt;Group, Root&amp;gt; where Group: FlagContainer, Root: FlagContainer  Inheritance ¶Equatable, Hashable</description>
     </item>
     
     <item>
       <title>Snapshot</title>
       <link>https://unsignedapps.github.io/Vexil/api/snapshot/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/snapshot/</guid>
       <description>A Snapshot serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also mutable and can be applied / saved to a FlagValueSource.
-@dynamicMemberLookup public class Snapshot&amp;lt;RootGroup&amp;gt; where RootGroup:​ FlagContainer Snapshots are themselves a FlagValueSource, which means you can insert in into a FlagPoles source hierarchy as required.,
-You create snapshots using a FlagPole:​
+@dynamicMemberLookup public class Snapshot&amp;lt;RootGroup&amp;gt; where RootGroup: FlagContainer Snapshots are themselves a FlagValueSource, which means you can insert in into a FlagPoles source hierarchy as required.,
+You create snapshots using a FlagPole:
 // Create an empty Snapshot. It contains no values itself so any flags // accessed in it will use their `defaultValue`.</description>
     </item>
     
     <item>
       <title>VexilConfiguration</title>
       <link>https://unsignedapps.github.io/Vexil/api/vexilconfiguration/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/vexilconfiguration/</guid>
       <description>A configuration struct passed into the FlagPole to configure it.
-public struct VexilConfiguration  Initializers ¶ init(codingPathStrategy:​prefix:​separator:​) ¶Initialises a new VexilConfiguration struct with the supplied info.
-public init(codingPathStrategy:​ VexilConfiguration.CodingKeyStrategy = .default, prefix:​ String? = nil, separator:​ String = &amp;#34;.&amp;#34;)  Parameters ¶ codingPathStrategy:​ - codingPathStrategy:​ How to calculate each Flags &amp;ldquo;key&amp;rdquo;. Defaults to CodingKeyStrategy.default (aka .kebabcase) prefix:​ - prefix:​ An optional prefix to apply to each calculated key,. This is treated as a separate &amp;ldquo;level&amp;rdquo; of the tree.</description>
+public struct VexilConfiguration  Initializers ¶ init(codingPathStrategy:prefix:separator:) ¶Initialises a new VexilConfiguration struct with the supplied info.
+public init(codingPathStrategy: VexilConfiguration.CodingKeyStrategy = .default, prefix: String? = nil, separator: String = &amp;#34;.&amp;#34;)  Parameters ¶ codingPathStrategy: How to calculate each Flags &amp;ldquo;key&amp;rdquo;. Defaults to CodingKeyStrategy.default (aka .kebabcase) prefix: An optional prefix to apply to each calculated key,. This is treated as a separate &amp;ldquo;level&amp;rdquo; of the tree.</description>
     </item>
     
     <item>
       <title>VexilConfiguration.CodingKeyStrategy</title>
       <link>https://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/</link>
-      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 18 Mar 2021 00:00:00 +0000</pubDate>
       
       <guid>https://unsignedapps.github.io/Vexil/api/vexilconfiguration_codingkeystrategy/</guid>
       <description>An enumeration describing how keys should be calculated by Flag and FlagGroups.
