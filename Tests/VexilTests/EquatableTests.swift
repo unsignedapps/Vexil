@@ -5,7 +5,9 @@
 //  Created by Rob Amos on 18/3/21.
 //
 
-@testable import Vexil
+// swiftlint:disable let_var_whitespace
+
+import Vexil
 import XCTest
 
 final class EquatableTests: XCTestCase {
@@ -89,4 +91,3 @@ private struct DoubleSubgroupFlags: FlagContainer, Equatable {
     var thirdLevelFlag: Bool
 
 }
-
