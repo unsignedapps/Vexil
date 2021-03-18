@@ -125,6 +125,22 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 }
 
 
+// MARK: - Equatable and Hashable Support
+
+extension Flag: Equatable where Value: Equatable {
+    public static func == (lhs: Flag, rhs: Flag) -> Bool {
+        return lhs.key == rhs.key && lhs.wrappedValue == rhs.wrappedValue
+    }
+}
+
+extension Flag: Hashable where Value: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.key)
+        hasher.combine(self.wrappedValue)
+    }
+}
+
+
 // MARK: - Real Time Flag Publishing
 
 #if !os(Linux)

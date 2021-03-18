@@ -103,6 +103,21 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
 }
 
 
+// MARK: - Equatable and Hashable Support
+
+extension FlagGroup: Equatable where Group: Equatable {
+    public static func == (lhs: FlagGroup, rhs: FlagGroup) -> Bool {
+        lhs.wrappedValue == rhs.wrappedValue
+    }
+}
+
+extension FlagGroup: Hashable where Group: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.wrappedValue)
+    }
+}
+
+
 // MARK: - Group Display
 
 public extension FlagGroup {

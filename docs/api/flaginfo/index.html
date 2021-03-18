@@ -48,26 +48,26 @@
     <hr />
 
 <h2 id="initializers">Initializers <a href="#initializers" class="permalink">¶</a></h2>
-<h3 id="initdescription"><code>init(description:​)</code> <a href="#initdescription" class="permalink">¶</a></h3><p>Allows a <code>FlagInfo</code> to be initialised directly when required</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">description</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span>
+<h3 id="initdescription"><code>init(description:)</code> <a href="#initdescription" class="permalink">¶</a></h3><p>Allows a <code>FlagInfo</code> to be initialised directly when required</p>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span>
 </code></pre></div>
 <h4 id="parameters">Parameters <a href="#parameters" class="permalink">¶</a></h4><ul>
-<li>description:​ - description:​ A brief description of the <code>Flag</code> or <code>FlagGroup</code>s purpose.</li>
+<li>description: A brief description of the <code>Flag</code> or <code>FlagGroup</code>s purpose.</li>
 </ul>
 
-<h3 id="initstringliteral"><code>init(stringLiteral:​)</code> <a href="#initstringliteral" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">stringLiteral</span> <span class="n">value</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">)</span>
+<h3 id="initstringliteral"><code>init(stringLiteral:)</code> <a href="#initstringliteral" class="permalink">¶</a></h3><div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">init</span><span class="p">(</span><span class="n">stringLiteral</span> <span class="n">value</span><span class="p">:</span> <span class="nb">String</span><span class="p">)</span>
 </code></pre></div>
     <hr />
 
 <h2 id="properties">Properties <a href="#properties" class="permalink">¶</a></h2>
 <h3 id="name"><code>name</code> <a href="#name" class="permalink">¶</a></h3><p>The name of the flag or flag group, if nil it is calculated from the containing property name</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">name</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span><span class="p">?</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">name</span><span class="p">:</span> <span class="nb">String</span><span class="p">?</span>
 </code></pre></div>
 <h3 id="description"><code>description</code> <a href="#description" class="permalink">¶</a></h3><p>A brief description of the flag or flag group&rsquo;s purpose</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">description</span><span class="p">:</span><span class="err">​</span> <span class="nb">String</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">description</span><span class="p">:</span> <span class="nb">String</span>
 </code></pre></div>
 <h3 id="shoulddisplay"><code>shouldDisplay</code> <a href="#shoulddisplay" class="permalink">¶</a></h3><p>Whether or not the flag or flag group should be visible in Vexillographer</p>
-<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">shouldDisplay</span><span class="p">:</span><span class="err">​</span> <span class="nb">Bool</span>
+<div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">var</span> <span class="nv">shouldDisplay</span><span class="p">:</span> <span class="nb">Bool</span>
 </code></pre></div>
 <h3 id="hidden"><code>hidden</code> <a href="#hidden" class="permalink">¶</a></h3><p>Hides the <code>Flag</code> or <code>FlagGroup</code> from flag editors like Vexillographer</p>
 <div class="highlight"><pre class="chroma"><code class="language-swift" data-lang="swift"><span class="kd">let</span> <span class="nv">hidden</span>
@@ -84,8 +84,8 @@
     <li><a href="#inheritance">Inheritance</a></li>
     <li><a href="#initializers">Initializers</a>
       <ul>
-        <li><a href="#initdescription"><code>init(description:​)</code></a></li>
-        <li><a href="#initstringliteral"><code>init(stringLiteral:​)</code></a></li>
+        <li><a href="#initdescription"><code>init(description:)</code></a></li>
+        <li><a href="#initstringliteral"><code>init(stringLiteral:)</code></a></li>
       </ul>
     </li>
     <li><a href="#properties">Properties</a>
@@ -103,7 +103,7 @@
             </div>
             <footer id="footer">
     <div class="copyright">
-        <small>Copyright © 2020 Unsigned Apps Pty Ltd.</small><br />
+        <small>Copyright © 2021 Unsigned Apps Pty Ltd.</small><br />
         <small>API docs are generated using <a href="https://github.com/SwiftDocOrg/swift-doc" target="_blank">swift-doc</a>. The theme is also from there.</small>
     </div>
 </footer>

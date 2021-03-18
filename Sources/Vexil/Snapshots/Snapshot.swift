@@ -70,7 +70,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Internal Properties
 
-    private var _rootGroup: RootGroup
+    internal var _rootGroup: RootGroup
 
     private(set) internal var values: [String: Any] = [:]
 
