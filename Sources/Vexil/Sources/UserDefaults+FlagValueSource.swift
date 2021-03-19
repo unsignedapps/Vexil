@@ -47,6 +47,7 @@ extension UserDefaults: FlagValueSource {
     /// A Publisher that emits events when the flag values it manages changes
     public var valuesDidChange: AnyPublisher<Void, Never>? {
         return NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+            .filter { ($0.object as AnyObject) === self }
             .map { _ in () }
             .eraseToAnyPublisher()
     }
@@ -55,7 +56,9 @@ extension UserDefaults: FlagValueSource {
 
     public var valuesDidChange: AnyPublisher<Void, Never>? {
         return Publishers.Merge (
-            NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification).map { _ in () },
+            NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+                .filter { ($0.object as AnyObject) === self }
+                .map { _ in () },
             NotificationCenter.default.publisher(for: ApplicationDidBecomeActive).map { _ in () }
         )
             .eraseToAnyPublisher()
