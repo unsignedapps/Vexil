@@ -65,6 +65,7 @@ final class EquatableTests: XCTestCase {
 
     #if !os(Linux)
 
+    // swiftlint:disable:next function_body_length
     func testPublisherEmitsEquatableElements() throws {
 
         // GIVEN an empty dictionary and flag pole
@@ -85,7 +86,7 @@ final class EquatableTests: XCTestCase {
             .handleEvents (receiveOutput: { secondFilter.append($0) })
             .removeDuplicates(by: { $0.subgroup.doubleSubgroup == $1.subgroup.doubleSubgroup })
             .handleEvents (receiveOutput: { thirdFilter.append($0) })
-            .sink { snapshot in
+            .sink { _ in
                 if allSnapshots.count == 6 {
                     expectation.fulfill()
                 }
