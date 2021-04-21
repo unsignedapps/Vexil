@@ -14,8 +14,8 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
     // MARK: - Properties
 
-    private var group: Group
-    private var snapshot: Snapshot<Root>
+    private let group: Group
+    private let snapshot: Snapshot<Root>
 
 
     // MARK: - Dynamic Member Lookup
