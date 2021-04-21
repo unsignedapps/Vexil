@@ -195,6 +195,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     #endif
 
+
     // MARK: - Snapshots
 
     /// Creates a `Snapshot` of the current state of the `FlagPole`
@@ -282,5 +283,22 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     public func save (snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
         try snapshot.changedFlags()
             .forEach { try $0.save(to: source) }
+    }
+}
+
+
+// MARK: - Debugging
+
+extension FlagPole: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "FlagPole<\(String(describing: RootGroup.self))>("
+            + Mirror(reflecting: _rootGroup).children
+                .map { _, value -> String in
+                    (value as? CustomDebugStringConvertible)?.debugDescription
+                        ?? (value as? CustomStringConvertible)?.description
+                        ?? String(describing: value)
+                }
+                .joined(separator: "; ")
+            + ")"
     }
 }

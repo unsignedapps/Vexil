@@ -42,7 +42,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     /// - Parameters:
     ///   - name:               An optional display name to give the group. Only visible in flag editors like Vexillographer.
     ///                         Default is to calculate one based on the property name.
-    ///   - codingKeyStragey:   An optional strategy to use when calculating the key name for this group. The default is to use the `FlagPole`s strategy.
+    ///   - codingKeyStrategy:  An optional strategy to use when calculating the key name for this group. The default is to use the `FlagPole`s strategy.
     ///   - description:        A description of this flag group. Used in flag editors like Vexillographer and also for future developer context.
     ///                         You can also specify `.hidden` to hide this flag group from Vexillographer.
     ///   - display:            Whether we should display this FlagGroup as using a `NavigationLink` or as a `Section` in Vexillographer
@@ -114,6 +114,23 @@ extension FlagGroup: Equatable where Group: Equatable {
 extension FlagGroup: Hashable where Group: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(self.wrappedValue)
+    }
+}
+
+
+// MARK: - Debugging
+
+extension FlagGroup: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "\(String(describing: Group.self))("
+            + Mirror(reflecting: wrappedValue).children
+                .map { _, value -> String in
+                    (value as? CustomDebugStringConvertible)?.debugDescription
+                        ?? (value as? CustomStringConvertible)?.description
+                        ?? String(describing: value)
+                }
+                    .joined(separator: ", ")
+            + ")"
     }
 }
 
