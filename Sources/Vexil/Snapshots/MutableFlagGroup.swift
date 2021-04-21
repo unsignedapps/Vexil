@@ -14,8 +14,8 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
     // MARK: - Properties
 
-    private var group: Group
-    weak private var snapshot: Snapshot<Root>?
+    private let group: Group
+    private let snapshot: Snapshot<Root>
 
 
     // MARK: - Dynamic Member Lookup
@@ -45,15 +45,11 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
     ///
     public subscript<Value> (dynamicMember dynamicMember: KeyPath<Group, Value>) -> Value where Value: FlagValue {
         get {
-            guard let snapshot = self.snapshot else { return self.group[keyPath: dynamicMember] }
-
-            return snapshot.lock.withLock {
+            return self.snapshot.lock.withLock {
                 self.group[keyPath: dynamicMember]
             }
         }
         set {
-            guard let snapshot = self.snapshot else { return }
-
             // see Snapshot.swift for how terrible this is
             return snapshot.lock.withLock {
                 _ = self.group[keyPath: dynamicMember]
@@ -65,7 +61,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
     /// Internal initialiser used to create MutableFlagGroups for a given subgroup and snapshot
     ///
-    init (group: Group, snapshot: Snapshot<Root>?) {
+    init (group: Group, snapshot: Snapshot<Root>) {
         self.group = group
         self.snapshot = snapshot
     }
