@@ -199,6 +199,24 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
 }
 
+
+// MARK: - Debugging
+
+extension Snapshot: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "Snapshot<\(String(describing: RootGroup.self))>("
+            + Mirror(reflecting: _rootGroup).children
+            .map { _, value -> String in
+                (value as? CustomDebugStringConvertible)?.debugDescription
+                    ?? (value as? CustomStringConvertible)?.description
+                    ?? String(describing: value)
+            }
+            .joined(separator: "; ")
+            + ")"
+    }
+}
+
+
 #if !os(Linux)
 
 typealias SnapshotValueChanged = PassthroughSubject<Void, Never>

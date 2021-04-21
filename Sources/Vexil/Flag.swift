@@ -141,6 +141,15 @@ extension Flag: Hashable where Value: Hashable {
 }
 
 
+// MARK: - Debugging
+
+extension Flag: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "\(key)=\(wrappedValue)"
+    }
+}
+
+
 // MARK: - Real Time Flag Publishing
 
 #if !os(Linux)

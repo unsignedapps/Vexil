@@ -86,3 +86,19 @@ extension MutableFlagGroup: Hashable where Group: Hashable {
         hasher.combine(self.group)
     }
 }
+
+// MARK: - Debugging
+
+extension MutableFlagGroup: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "\(String(describing: Group.self))("
+            + Mirror(reflecting: group).children
+                .map { _, value -> String in
+                    (value as? CustomDebugStringConvertible)?.debugDescription
+                        ?? (value as? CustomStringConvertible)?.description
+                        ?? String(describing: value)
+                }
+                .joined(separator: ", ")
+            + ")"
+    }
+}
