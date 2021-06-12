@@ -18,7 +18,7 @@ import Foundation
 /// Only `FlagPole` and `Snapshot`s conform to this.
 ///
 internal protocol Lookup: AnyObject {
-    func lookup<Value> (key: String) -> Value? where Value: FlagValue
+    func lookup<Value> (key: String, in source: FlagValueSource?) -> Value? where Value: FlagValue
 
     #if !os(Linux)
     func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
@@ -33,7 +33,11 @@ extension FlagPole: Lookup {
     /// It iterates through our `FlagValueSource`s and asks each if they have a `FlagValue` for
     /// that key, returning the first non-nil value it finds.
     ///
-    func lookup<Value> (key: String) -> Value? where Value: FlagValue {
+    func lookup<Value> (key: String, in source: FlagValueSource?) -> Value? where Value: FlagValue {
+        if let source = source {
+            return source.flagValue(key: key)
+        }
+
         for source in self._sources {
             if let value: Value = source.flagValue(key: key) {
                 return value

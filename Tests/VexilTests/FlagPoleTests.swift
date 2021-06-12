@@ -17,6 +17,7 @@ final class FlagPoleTests: XCTestCase {
         XCTAssertEqual(pole._sources.count, 1)
         XCTAssertTrue(pole._sources.first as AnyObject === UserDefaults.standard)
     }
+
 }
 
 // MARK: - Fixtures

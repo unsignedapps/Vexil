@@ -32,28 +32,47 @@ final class FlagValueSourceTests: XCTestCase {
         XCTAssertEqual(accessedKeys.last, "test-flag")
     }
 
-    func testSourceSets () {
-        AssertNoThrow {
-            var events = [TestSetSource.Event]()
-            let source = TestSetSource {
-                events.append($0)
-            }
-
-            let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
-
-            let snapshot = pole.emptySnapshot()
-            snapshot.secondTestFlag = false
-            snapshot.testFlag = true
-
-            try pole.save(snapshot: snapshot, to: source)
-
-            XCTAssertEqual(events.count, 2)
-            XCTAssertEqual(events.first?.0, "test-flag")
-            XCTAssertEqual(events.first?.1, true)
-            XCTAssertEqual(events.last?.0, "second-test-flag")
-            XCTAssertEqual(events.last?.1, false)
+    func testSourceSets () throws {
+        var events = [TestSetSource.Event]()
+        let source = TestSetSource {
+            events.append($0)
         }
+
+        let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
+
+        let snapshot = pole.emptySnapshot()
+        snapshot.secondTestFlag = false
+        snapshot.testFlag = true
+
+        try pole.save(snapshot: snapshot, to: source)
+
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events.first?.0, "test-flag")
+        XCTAssertEqual(events.first?.1, true)
+        XCTAssertEqual(events.last?.0, "second-test-flag")
+        XCTAssertEqual(events.last?.1, false)
     }
+
+    func testSourceCopies () throws {
+
+        // GIVEN two dictionaries
+        let source = FlagValueDictionary([
+            "test-flag": true,
+            "subgroup.test-flag": true
+        ])
+        let destination = FlagValueDictionary()
+
+        // WHEN we copy from the source to the destination
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        try pole.copyFlagValues(from: source, to: destination)
+
+        // THEN we expect those two dictionaries to match
+        XCTAssertEqual(destination.count, 2)
+        XCTAssertEqual(destination["test-flag"] as? Bool, true)
+        XCTAssertEqual(destination["subgroup.test-flag"] as? Bool, true)
+
+    }
+
 }
 
 
@@ -68,6 +87,15 @@ private struct TestFlags: FlagContainer {
 
     @Flag(default: true, description: "This is another test flag")
     var secondTestFlag: Bool
+
+    @FlagGroup(description: "A test subgroup")
+    var subgroup: Subgroup
+}
+
+private struct Subgroup: FlagContainer {
+
+    @Flag(default: false, description: "A test flag in a subgroup")
+    var testFlag: Bool
 
 }
 

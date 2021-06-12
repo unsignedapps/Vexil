@@ -81,12 +81,12 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init (flagPole: FlagPole<RootGroup>, copyCurrentFlagValues: Bool) {
+    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?) {
         self._rootGroup = RootGroup()
         self.decorateRootGroup(config: flagPole._configuration)
 
-        if copyCurrentFlagValues {
-            self.copyCurrentValues(flagPole: flagPole)
+        if let source = source {
+            self.copyCurrentValues(source: source, flagPole: flagPole)
         }
     }
 
@@ -156,13 +156,24 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .allFlags()
     }
 
-    private func copyCurrentValues (flagPole: FlagPole<RootGroup>) {
+    private func copyCurrentValues (source: Source, flagPole: FlagPole<RootGroup>) {
+        let flagValueSource = source.flagValueSource
+
         let flags = Mirror(reflecting: flagPole._rootGroup)
             .children
             .lazy
             .map { $0.value }
             .allFlags()
-            .map { ($0.key, $0.getFlagValue()) }
+            .compactMap { flag -> (String, Any)? in
+                let value = flag.getFlagValue(in: flagValueSource)
+
+                // we copy everything from FlagPoles but only what a source contains
+                if flagValueSource != nil && value == nil {
+                    return nil
+                }
+
+                return (flag.key, value as Any)
+            }
 
         self.values = Dictionary(uniqueKeysWithValues: flags)
     }
@@ -195,6 +206,22 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     enum Error: Swift.Error {
         case flagKeyNotFound (String)
+    }
+
+
+    // MARK: - Source
+
+    /// The source that we are to copy flag values from, if any
+    enum Source {
+        case pole
+        case source(FlagValueSource)
+
+        var flagValueSource: FlagValueSource? {
+            switch self {
+            case .pole:                     return nil
+            case .source(let source):       return source
+            }
+        }
     }
 
 }

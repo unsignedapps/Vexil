@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the SwiftNIO open source project
@@ -11,8 +13,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-
-// swiftlint:disable all
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 import Darwin
