@@ -73,6 +73,23 @@ final class FlagValueSourceTests: XCTestCase {
 
     }
 
+    func testSourceRemovesAllVales () throws {
+
+        // GIVEN a dictionary with some values
+        let source = FlagValueDictionary([
+            "test-flag": true,
+            "subgroup.test-flag": true
+        ])
+
+        // WHEN we remove all values from that source
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        try pole.removeFlagValues(in: source)
+
+        // THEN the source should now be empty
+        XCTAssertTrue(source.isEmpty)
+
+    }
+
 }
 
 

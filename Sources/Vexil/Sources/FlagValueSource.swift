@@ -25,6 +25,9 @@ public protocol FlagValueSource {
     func flagValue<Value> (key: String) -> Value? where Value: FlagValue
 
     /// And to save values – if your source does not support saving just do nothing
+    ///
+    /// It is expected if the value passed in is `nil` then the flag value would be cleared
+    ///
     func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue
 
     #if !os(Linux)

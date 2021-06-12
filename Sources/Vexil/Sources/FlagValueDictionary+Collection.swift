@@ -32,4 +32,8 @@ extension FlagValueDictionary: Collection {
         return self.storage.index(after: i)
     }
 
+    public var keys: DictionaryType.Keys {
+        return self.storage.keys
+    }
+
 }
