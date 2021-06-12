@@ -58,7 +58,7 @@ final class FlagValueSourceTests: XCTestCase {
         // GIVEN two dictionaries
         let source = FlagValueDictionary([
             "test-flag": true,
-            "subgroup.test-flag": true,
+            "subgroup.test-flag": true
         ])
         let destination = FlagValueDictionary()
 
