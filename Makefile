@@ -7,7 +7,7 @@ SWIFT_DOCKER_IMAGE = swift:latest
 .PHONY: test docs
 
 test:
-	docker run --rm --volume "$(shell pwd):/src" --workdir "/src" $(SWIFT_DOCKER_IMAGE) swift test --enable-test-discovery
+	docker run --rm --platform linux/amd64 -e QEMU_CPU=max --volume "$(shell pwd):/src" --workdir "/src" $(SWIFT_DOCKER_IMAGE) swift test --enable-test-discovery
 
 docs:
 	rm -f website/content/guides/*.md
