@@ -27,7 +27,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
     internal var storage: DictionaryType
 
     #if !os(Linux)
-    private(set) internal var valueDidChange = PassthroughSubject<[String], Never>()
+    private(set) internal var valueDidChange = PassthroughSubject<Set<String>, Never>()
     #endif
 
 

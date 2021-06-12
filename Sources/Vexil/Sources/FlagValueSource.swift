@@ -42,7 +42,7 @@ public protocol FlagValueSource {
     ///
     /// If your source does not know which keys changed please emit an empty array.
     ///
-    func valuesDidChange(keys: [String]) -> AnyPublisher<[String], Never>?
+    func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>?
 
     #endif
 }
@@ -56,7 +56,7 @@ public extension FlagValueSource {
         return nil
     }
 
-    func valuesDidChange(keys: [String]) -> AnyPublisher<[String], Never>? {
+    func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         return nil
     }
 }

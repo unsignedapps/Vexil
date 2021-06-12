@@ -29,7 +29,7 @@ extension FlagValueDictionary: FlagValueSource {
 
     #if !os(Linux)
 
-    public func valuesDidChange(keys: [String]) -> AnyPublisher<[String], Never>? {
+    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         self.valueDidChange
             .eraseToAnyPublisher()
     }

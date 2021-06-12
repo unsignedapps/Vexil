@@ -81,7 +81,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: [String]? = nil) {
+    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil) {
         self._rootGroup = RootGroup()
         self.decorateRootGroup(config: flagPole._configuration)
 
@@ -162,7 +162,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .allFlags()
     }
 
-    private func copyCurrentValues (source: Source, keys: [String]? = nil, flagPole: FlagPole<RootGroup>) {
+    private func copyCurrentValues (source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>) {
         let flagValueSource = source.flagValueSource
 
         let flags = Mirror(reflecting: flagPole._rootGroup)

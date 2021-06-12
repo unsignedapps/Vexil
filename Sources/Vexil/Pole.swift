@@ -125,8 +125,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     }()
 
     /// A reference to all flag keys declared within the RootGroup
-    internal lazy var allFlagKeys: [String] = {
-        return self.allFlags.map { $0.key }
+    internal lazy var allFlagKeys: Set<String> = {
+        return Set(self.allFlags.map({ $0.key }))
     }()
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
@@ -186,7 +186,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     private lazy var cancellables = Set<AnyCancellable>()
 
-    private func setupSnapshotPublishing (keys: [String], sendImmediately: Bool) {
+    private func setupSnapshotPublishing (keys: Set<String>, sendImmediately: Bool) {
         guard self.shouldSetupSnapshotPublishing else { return }
 
         // cancel our existing one

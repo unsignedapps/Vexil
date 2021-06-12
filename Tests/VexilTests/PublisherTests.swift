@@ -223,9 +223,9 @@ private struct TestFlags: FlagContainer {
 
 private final class TestSource: FlagValueSource {
     var name = "Test Source"
-    var subject = PassthroughSubject<[String], Never>()
+    var subject = PassthroughSubject<Set<String>, Never>()
 
-    var requestedKeys: [String] = []
+    var requestedKeys: Set<String> = []
 
     init () {}
 
@@ -236,7 +236,7 @@ private final class TestSource: FlagValueSource {
     func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
     }
 
-    func valuesDidChange(keys: [String]) -> AnyPublisher<[String], Never>? {
+    func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         self.requestedKeys = keys
         return subject.eraseToAnyPublisher()
     }
