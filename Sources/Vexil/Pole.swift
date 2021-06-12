@@ -316,7 +316,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     }
 
 
-    // MARK: - Copying Flag Values
+    // MARK: - Mutating Flag Values
 
     /// Copies the flag values from one `FlagValueSource` to another.
     ///
@@ -333,6 +333,24 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     public func copyFlagValues (from source: FlagValueSource?, to destination: FlagValueSource) throws {
         let snapshot = self.snapshot(of: source)
         try self.save(snapshot: snapshot, to: destination)
+    }
+
+    /// Removes all of the flag values from the specified flag value source.
+    ///
+    /// All flag values for the given source are expected to return `nil` after this
+    /// method is called. This is useful if you want to provide a button or the capability
+    /// to "reset" a source back to its defaults, or clear any overrides in the given source.
+    ///
+    public func removeFlagValues (in source: FlagValueSource) throws {
+        let flagsInSource = FlagValueDictionary()
+        try self.copyFlagValues(from: source, to: flagsInSource)
+
+        for key in flagsInSource.keys {
+
+            // setFlagValue<Value> needs to specialise the generic, so we picked `Bool` at
+            // random so we can pass in the nil
+            try source.setFlagValue(Bool?.none, key: key)
+        }
     }
 
 }
