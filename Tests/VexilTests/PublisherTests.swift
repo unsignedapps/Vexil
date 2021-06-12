@@ -37,6 +37,7 @@ final class PublisherTests: XCTestCase {
 
     func testPublishesSnapshotWhenAddingSource () {
         let expectation = self.expectation(description: "snapshot")
+        expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
@@ -45,9 +46,7 @@ final class PublisherTests: XCTestCase {
         let cancellable = pole.publisher
             .sink { snapshot in
                 snapshots.append(snapshot)
-                if snapshots.count == 2 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
         let change = pole.emptySnapshot()
@@ -64,6 +63,7 @@ final class PublisherTests: XCTestCase {
 
     func testPublishesWhenSourceChanges () {
         let expectation = self.expectation(description: "published")
+        expectation.expectedFulfillmentCount = 3
         let source = TestSource()
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
 
@@ -72,13 +72,11 @@ final class PublisherTests: XCTestCase {
         let cancellable = pole.publisher
             .sink { snapshot in
                 snapshots.append(snapshot)
-                if snapshots.count == 3 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
-        source.subject.send()
-        source.subject.send()
+        source.subject.send([])
+        source.subject.send([])
 
         wait(for: [ expectation ], timeout: 1)
 
@@ -88,6 +86,7 @@ final class PublisherTests: XCTestCase {
 
     func testPublishesWithMultipleSources () {
         let expectation = self.expectation(description: "published")
+        expectation.expectedFulfillmentCount = 3
 
         let source1 = TestSource()
         let source2 = TestSource()
@@ -99,13 +98,11 @@ final class PublisherTests: XCTestCase {
         let cancellable = pole.publisher
             .sink { snapshot in
                 snapshots.append(snapshot)
-                if snapshots.count == 3 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
-        source1.subject.send()
-        source2.subject.send()
+        source1.subject.send([])
+        source2.subject.send([])
 
         wait(for: [ expectation ], timeout: 1)
 
@@ -121,6 +118,7 @@ final class PublisherTests: XCTestCase {
 
     func testIndividualFlagPublisher () {
         let expectation = self.expectation(description: "publisher")
+        expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
@@ -129,9 +127,7 @@ final class PublisherTests: XCTestCase {
         let cancellable = pole.$testFlag.publisher
             .sink { value in
                 values.append(value)
-                if values.count == 2 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
         let change = pole.emptySnapshot()
@@ -149,6 +145,7 @@ final class PublisherTests: XCTestCase {
 
     func testIndividualFlagPublisheRemovesDuplicates () {
         let expectation = self.expectation(description: "publisher")
+        expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
@@ -157,9 +154,7 @@ final class PublisherTests: XCTestCase {
         let cancellable = pole.$testFlag.publisher
             .sink { value in
                 values.append(value)
-                if values.count == 2 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
         let change = pole.emptySnapshot()
@@ -175,6 +170,35 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(values.last, true)
     }
 
+
+    // MARK: - Setup
+
+    func testSendsAllKeysToSourceDuringSetup () throws {
+
+        // GIVEN a flag pole and a mock source
+        let source = TestSource()
+        let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
+
+        // WHEN we setup a publisher (we don't actually need it, but we want it to
+        // do a full setup)
+        let cancellable = pole.publisher
+            .sink { _ in
+                // Intentionally left blank
+            }
+
+        // THEN we expect the source to have been told about all the keys
+        XCTAssertEqual(
+            source.requestedKeys,
+            [
+                "test-flag",
+                "test-flag2",
+                "test-flag3",
+                "test-flag4"
+            ]
+        )
+        XCTAssertNotNil(cancellable)
+    }
+
 }
 
 // MARK: - Test Fixtures
@@ -186,11 +210,22 @@ private struct TestFlags: FlagContainer {
     @Flag(default: false, description: "This is a test flag")
     var testFlag: Bool
 
+    @Flag(default: false, description: "This is a test flag")
+    var testFlag2: Bool
+
+    @Flag(default: false, description: "This is a test flag")
+    var testFlag3: Bool
+
+    @Flag(default: false, description: "This is a test flag")
+    var testFlag4: Bool
+
 }
 
 private final class TestSource: FlagValueSource {
     var name = "Test Source"
-    var subject = PassthroughSubject<Void, Never>()
+    var subject = PassthroughSubject<[String], Never>()
+
+    var requestedKeys: [String] = []
 
     init () {}
 
@@ -201,9 +236,11 @@ private final class TestSource: FlagValueSource {
     func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
     }
 
-    var valuesDidChange: AnyPublisher<Void, Never>? {
+    func valuesDidChange(keys: [String]) -> AnyPublisher<[String], Never>? {
+        self.requestedKeys = keys
         return subject.eraseToAnyPublisher()
     }
+
 }
 
 #endif

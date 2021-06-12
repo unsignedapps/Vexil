@@ -21,7 +21,7 @@ extension Snapshot: Hashable where RootGroup: Hashable {
 
 extension Snapshot: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "Snapshot<\(String(describing: RootGroup.self))>("
+        return "Snapshot<\(String(describing: RootGroup.self)), \(self.values.count) overrides>("
             + Mirror(reflecting: _rootGroup).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription
