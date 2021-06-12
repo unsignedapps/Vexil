@@ -198,12 +198,19 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Snapshots
 
-    /// Creates a `Snapshot` of the current state of the `FlagPole`
+    /// Creates a `Snapshot` of the current state of the `FlagPole` (or optionally a
+    /// `FlagValueSource`)
     ///
-    /// The value of each `Flag` within the `FlagPole` is copied into the snapshot.
+    /// - Parameters:
+    ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
+    ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
+    ///                     into the snapshot instead.
     ///
-    public func snapshot () -> Snapshot<RootGroup> {
-        return Snapshot(flagPole: self, copyCurrentFlagValues: true)
+    public func snapshot (of source: FlagValueSource? = nil) -> Snapshot<RootGroup> {
+        return Snapshot (
+            flagPole: self,
+            copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole
+        )
     }
 
     /// Creates an empty `Snapshot` of the current `FlagPole`.
@@ -212,7 +219,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// within the snapshot will return the flag's `defaultValue`.
     ///
     public func emptySnapshot () -> Snapshot<RootGroup> {
-        return Snapshot(flagPole: self, copyCurrentFlagValues: false)
+        return Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
     }
 
     /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
@@ -284,6 +291,27 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         try snapshot.changedFlags()
             .forEach { try $0.save(to: source) }
     }
+
+
+    // MARK: - Copying Flag Values
+
+    /// Copies the flag values from one `FlagValueSource` to another.
+    ///
+    /// If the `from` source is `nil` then the values will be copied from the `FlagPole` into
+    /// the `to` source.
+    ///
+    /// ```swift
+    /// /// Copies any flags currently saved in the `UserDefaults` to a `FlagValueDictionary`
+    /// let defaults = UserDefaults.standard
+    /// let dictionary = FlagValueDictionary()
+    /// try flagPole.copy(from: defaults, to: dictionary)
+    /// ```
+    ///
+    public func copyFlagValues (from source: FlagValueSource?, to destination: FlagValueSource) throws {
+        let snapshot = self.snapshot(of: source)
+        try self.save(snapshot: snapshot, to: destination)
+    }
+
 }
 
 

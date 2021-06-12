@@ -86,6 +86,27 @@ final class SnapshotTests: XCTestCase {
         XCTAssertFalse(empty.subgroup.secondLevelFlag)
         XCTAssertFalse(empty.subgroup.doubleSubgroup.thirdLevelFlag)
     }
+
+    func testCurrentSourceValueSnapshot () throws {
+
+        // GIVEN a FlagPole and a dictionary that is not a part it
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let dictionary = FlagValueDictionary([
+            "top-level-flag": true,
+            "subgroup.double-subgroup.third-level-flag": true,
+        ])
+
+        // WHEN we take a snapshot of that source
+        let snapshot = pole.snapshot(of: dictionary)
+
+        // THEN we expect only the values we've changed to be true
+        XCTAssertTrue(snapshot.topLevelFlag)
+        XCTAssertFalse(snapshot.secondTestFlag)
+        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
+        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+
+    }
+
 }
 
 

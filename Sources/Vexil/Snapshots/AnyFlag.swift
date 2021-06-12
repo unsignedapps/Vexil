@@ -8,7 +8,7 @@
 protocol AnyFlag {
     var key: String { get }
 
-    func getFlagValue () -> Any
+    func getFlagValue (in source: FlagValueSource?) -> Any?
     func save (to source: FlagValueSource) throws
 }
 
@@ -17,8 +17,8 @@ protocol AnyFlagGroup {
 }
 
 extension Flag: AnyFlag {
-    func getFlagValue() -> Any {
-        return self.wrappedValue
+    func getFlagValue(in source: FlagValueSource?) -> Any? {
+        return value(in: source)
     }
 
     func save(to source: FlagValueSource) throws {
@@ -30,6 +30,16 @@ extension Flag: AnyFlag {
 extension FlagGroup: AnyFlagGroup {
     func allFlags () -> [AnyFlag] {
         return Mirror(reflecting: self.wrappedValue)
+            .children
+            .lazy
+            .map { $0.value }
+            .allFlags()
+    }
+}
+
+extension FlagPole: AnyFlagGroup {
+    func allFlags() -> [AnyFlag] {
+        return Mirror(reflecting: self._rootGroup)
             .children
             .lazy
             .map { $0.value }
