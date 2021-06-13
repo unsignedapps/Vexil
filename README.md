@@ -186,9 +186,8 @@ We welcome all contributions! Please read the [Contribution Guide](CONTRIBUTING.
 
 Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
-[vexil-logo]: .github/vexil.png
+[vexil-logo]: .github/vexil-banner.png
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser
-[vexil-cli]: https://github.com/unsignedapps/Vexil-cli
 
 [defining-flags]: Documentation/Defining-Flags.md
 [flag-value-sources]: Documentation/Sources.md

@@ -10,6 +10,8 @@
 import SwiftUI
 import Vexil
 
+/// A SwiftUI View that allows you to easily edit the flag
+/// structure in a provided FlagValueSource.
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
