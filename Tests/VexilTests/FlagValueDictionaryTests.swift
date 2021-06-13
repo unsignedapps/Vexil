@@ -47,6 +47,7 @@ final class FlagValueDictionaryTests: XCTestCase {
 
     func testPublishesValues () {
         let expectation = self.expectation(description: "publisher")
+        expectation.expectedFulfillmentCount = 3
 
         let source = FlagValueDictionary()
         let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
@@ -55,9 +56,7 @@ final class FlagValueDictionaryTests: XCTestCase {
         let cancellable = flagPole.publisher
             .sink { snapshot in
                 snapshots.append(snapshot)
-                if snapshots.count == 3 {
-                    expectation.fulfill()
-                }
+                expectation.fulfill()
             }
 
         source["top-level-flag"] = true

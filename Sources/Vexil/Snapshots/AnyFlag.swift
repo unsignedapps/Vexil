@@ -37,16 +37,6 @@ extension FlagGroup: AnyFlagGroup {
     }
 }
 
-extension FlagPole: AnyFlagGroup {
-    func allFlags() -> [AnyFlag] {
-        return Mirror(reflecting: self._rootGroup)
-            .children
-            .lazy
-            .map { $0.value }
-            .allFlags()
-    }
-}
-
 internal extension Sequence {
     func allFlags () -> [AnyFlag] {
         return self

@@ -59,7 +59,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             #if !os(Linux)
 
             if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-                self.setupSnapshotPublishing(sendImmediately: true)
+                self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
             }
 
             #endif
@@ -103,7 +103,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         #if !os(Linux)
 
         if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-            self.setupSnapshotPublishing(sendImmediately: false)
+            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
         }
 
         #endif
@@ -114,6 +114,20 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     /// The "Root Group" that  contains your Flag tree/hierarchy.
     public var _rootGroup: RootGroup
+
+    /// A reference to all flags declared within the RootGroup
+    internal lazy var allFlags: [AnyFlag] = {
+        return Mirror(reflecting: self._rootGroup)
+            .children
+            .lazy
+            .map { $0.value }
+            .allFlags()
+    }()
+
+    /// A reference to all flag keys declared within the RootGroup
+    internal lazy var allFlagKeys: Set<String> = {
+        return Set(self.allFlags.map({ $0.key }))
+    }()
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
@@ -165,26 +179,35 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         let snapshot = self.latestSnapshot
         if self.shouldSetupSnapshotPublishing == false {
             self.shouldSetupSnapshotPublishing = true
-            self.setupSnapshotPublishing(sendImmediately: true)
+            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
         }
         return snapshot.eraseToAnyPublisher()
     }
 
     private lazy var cancellables = Set<AnyCancellable>()
 
-    private func setupSnapshotPublishing (sendImmediately: Bool) {
+    private func setupSnapshotPublishing (keys: Set<String>, sendImmediately: Bool) {
         guard self.shouldSetupSnapshotPublishing else { return }
 
         // cancel our existing one
         self.cancellables.forEach { $0.cancel() }
         self.cancellables.removeAll()
 
-        let upstream = self._sources.compactMap { $0.valuesDidChange }
+        let upstream = self._sources
+            .compactMap { source in
+                source.valuesDidChange(keys: keys)
+                    ?? source.valuesDidChange?.map({ _ in [] }).eraseToAnyPublisher()   // backwards compatibility
+            }
 
         Publishers.MergeMany(upstream)
-            .sink { [weak self] in
+            .sink { [weak self] keys in
                 guard let self = self else { return }
-                self.latestSnapshot.send(self.snapshot())
+
+                let snapshot = Snapshot(flagPole: self, snapshot: self.latestSnapshot.value)
+                let changed = Snapshot(flagPole: self, copyingFlagValuesFrom: .pole, keys: keys.isEmpty == true ? nil : keys)
+                snapshot.merge(changed)
+
+                self.latestSnapshot.send(snapshot)
             }
             .store(in: &self.cancellables)
 

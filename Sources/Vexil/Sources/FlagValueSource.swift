@@ -33,9 +33,19 @@ public protocol FlagValueSource {
     #if !os(Linux)
 
     /// If you're running on a platform that supports Combine you can optionally support real-time
-    /// flag updates
+    /// flag updates.
+    ///
+    /// - Important: Use of this method is deprecated. Please implement `valuesDidChange(keys:)` instead
+    ///              and emit an empty array if your source does not know which keys changed.
     ///
     var valuesDidChange: AnyPublisher<Void, Never>? { get }
+
+    /// If you're running on a platform that supports Combine you can optionally support real-time
+    /// flag updates.
+    ///
+    /// If your source does not know which keys changed please emit an empty array.
+    ///
+    func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>?
 
     #endif
 }
@@ -46,6 +56,10 @@ public protocol FlagValueSource {
 ///
 public extension FlagValueSource {
     var valuesDidChange: AnyPublisher<Void, Never>? {
+        return nil
+    }
+
+    func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         return nil
     }
 }

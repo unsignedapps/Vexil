@@ -81,13 +81,19 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?) {
+    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil) {
         self._rootGroup = RootGroup()
         self.decorateRootGroup(config: flagPole._configuration)
 
         if let source = source {
-            self.copyCurrentValues(source: source, flagPole: flagPole)
+            self.copyCurrentValues(source: source, keys: keys, flagPole: flagPole)
         }
+    }
+
+    internal init (flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
+        self._rootGroup = RootGroup()
+        self.decorateRootGroup(config: flagPole._configuration)
+        self.values = snapshot.values
     }
 
 
@@ -156,14 +162,15 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .allFlags()
     }
 
-    private func copyCurrentValues (source: Source, flagPole: FlagPole<RootGroup>) {
+    private func copyCurrentValues (source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>) {
         let flagValueSource = source.flagValueSource
 
         let flags = Mirror(reflecting: flagPole._rootGroup)
             .children
             .lazy
-            .map { $0.value }
+            .compactMap { $0.value }
             .allFlags()
+            .filter { keys == nil || keys?.contains($0.key) == true }
             .compactMap { flag -> (String, Any)? in
                 let value = flag.getFlagValue(in: flagValueSource)
 
@@ -194,6 +201,15 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
 
         self.valuesDidChange.send()
+    }
+
+
+    // MARK: - Working with other Snapshots
+
+    internal func merge(_ other: Snapshot<RootGroup>) {
+        for value in other.values {
+            self.values.updateValue(value.value, forKey: value.key)
+        }
     }
 
 

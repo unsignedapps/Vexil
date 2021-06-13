@@ -47,14 +47,14 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
 
     /// A Publisher that emits events when the flag values it manages changes
-    public var valuesDidChange: AnyPublisher<Void, Never>? {
+    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         return Publishers.Merge(
                 NotificationCenter.default.publisher(for: Self.didChangeExternallyNotification, object: self).map { _ in () },
                 NotificationCenter.default.publisher(for: Self.didChangeInternallyNotification, object: self).map { _ in () }
             )
             .map { _ in
                 self.synchronize()
-                return ()
+                return []
             }
             .eraseToAnyPublisher()
     }

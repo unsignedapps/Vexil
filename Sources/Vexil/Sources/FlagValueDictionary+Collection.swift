@@ -25,6 +25,9 @@ extension FlagValueDictionary: Collection {
             } else {
                 self.storage.removeValue(forKey: key)
             }
+            #if !os(Linux)
+            self.valueDidChange.send([ key ])
+            #endif
         }
     }
 

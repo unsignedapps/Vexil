@@ -24,16 +24,10 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
     /// Our internal dictionary type
     public typealias DictionaryType = [String: Any]
 
-    internal var storage: DictionaryType {
-        didSet {
-            #if !os(Linux)
-            self.valueDidChange.send()
-            #endif
-        }
-    }
+    internal var storage: DictionaryType
 
     #if !os(Linux)
-    private(set) internal var valueDidChange = PassthroughSubject<Void, Never>()
+    private(set) internal var valueDidChange = PassthroughSubject<Set<String>, Never>()
     #endif
 
 
