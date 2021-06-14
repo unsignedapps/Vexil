@@ -4,16 +4,15 @@
 
 <p align="center">
 	<a href="https://sonarcloud.io/dashboard?id=unsignedapps_Vexil"><img src="https://sonarcloud.io/api/project_badges/measure?project=unsignedapps_Vexil&metric=alert_status"></a>
-	<img src="https://github.com/unsignedapps/Vexil/workflows/%3E90%25%20Documented/badge.svg">
+	<!--<img src="https://github.com/unsignedapps/Vexil/workflows/%3E90%25%20Documented/badge.svg">-->
 	<br />
 	<img src="https://github.com/unsignedapps/Vexil/workflows/iOS%20Tests/badge.svg">
 	<img src="https://github.com/unsignedapps/Vexil/workflows/macOS%20Tests/badge.svg">
+	<br />
 	<img src="https://github.com/unsignedapps/Vexil/workflows/tvOS%20Tests/badge.svg">
 	<img src="https://github.com/unsignedapps/Vexil/workflows/watchOS%20Build%20Tests/badge.svg">
-	<img src="https://github.com/unsignedapps/Vexil/workflows/Linux%20Tests/badge.svg">
 	<br />
-	<a href="https://swiftpackageindex.com/unsignedapps/Vexil"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Funsignedapps%2FVexil%2Fbadge%3Ftype%3Dplatforms"></a>
-</p>
+	<img src="https://github.com/unsignedapps/Vexil/workflows/Linux%20Tests/badge.svg">
 
 ## Features
 
@@ -25,10 +24,7 @@
 
 ## Documentation
 
-In addition to this README, which covers basic usage and installation, you can find more documentation:
-
-- On our documentation website: [https://unsignedapps.github.io/Vexil/](https://unsignedapps.github.io/Vexil/)
-- Detailed documentation and guides in the [Documentation](Documentation) subdirectory
+In addition to this README, which covers basic usage and installation, you can find more documentation on our website: https://vexil.unsignedapps.com/
 
 ## Usage
 
@@ -189,7 +185,7 @@ Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for mo
 [vexil-logo]: .github/vexil-banner.png
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser
 
-[defining-flags]: Documentation/Defining-Flags.md
-[flag-value-sources]: Documentation/Sources.md
-[snapshots]: Documentation/Snapshots.md
+[defining-flags]: https://vexil.unsignedapps.com/documentation/vexil/definingflags
+[flag-value-sources]: https://vexil.unsignedapps.com/documentation/vexil/sources/
+[snapshots]: https://vexil.unsignedapps.com/documentation/vexil/snapshots/
 [vexillographer]: Documentation/Vexillographer.md
