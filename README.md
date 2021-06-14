@@ -166,11 +166,7 @@ To use Vexil in Xcode 11 or higher, navigate to the _File_ menu and choose _Swif
 
 The second library product of Vexil is Vexillographer, a small SwiftUI tool for displaying and manipulating flags.
 
-<div>
-    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-1.png" />
-    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-2.png" />
-    <img src="https://github.com/unsignedapps/Vexil/raw/main/Documentation/Images/Vexillographer-3.png" />
-</div>
+![Vexillographer screenshots](https://github.com/unsignedapps/Vexil/raw/main/Sources/Vexillographer/Vexillographer.docc/Resources/screenshots.png)
 
 Read more about [Vexillographer][vexillographer].
 
