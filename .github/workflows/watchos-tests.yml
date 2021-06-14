@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-11.0
     strategy:
       matrix:
-        xcode: [ 13.0 ]
+        xcode: [ "13.0" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -34,7 +34,7 @@ jobs:
     runs-on: macos-11.0
     strategy:
       matrix:
-        xcode: [ 11.7, 12.2, 12.3, 12.4, 12.5 ]
+        xcode: [ "11.7", "12.2", "12.3", "12.4", "12.5" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -50,7 +50,7 @@ jobs:
     runs-on: macos-10.15
     strategy:
       matrix:
-        xcode: [ 11.7, 12, 12.1, 12.2, 12.3, 12.4, 12.5 ]
+        xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4", "12.5" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
