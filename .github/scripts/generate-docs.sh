@@ -41,6 +41,7 @@ cp -R "${VEXIL_DOCCARCHIVE}"/* "${WORKING}"
 
 # But only the docs from Vexillographer
 cp -R "${VEXILLOGRAPHER_DOCCARCHIVE}"/data/documentation/* "${WORKING}/data/documentation/"
+cp -R "${VEXILLOGRAPHER_DOCCARCHIVE}"/images/* "${WORKING}/images/"
 
 # Re-create the .json structure inside /documentation
 find "${WORKING}/data" -type f -name '*.json' \
