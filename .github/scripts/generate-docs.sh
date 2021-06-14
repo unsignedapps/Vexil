@@ -8,7 +8,7 @@
 SCHEME="Vexil-Package"
 DERIVED_DATA=".build/DerivedData"
 
-PRODUCT_DIR="${DERIVED_DATA}/Vexil/Build/Products/Debug"
+PRODUCT_DIR="${DERIVED_DATA}/Build/Products/Debug"
 VEXIL_DOCCARCHIVE="${PRODUCT_DIR}/Vexil.doccarchive"
 VEXILLOGRAPHER_DOCCARCHIVE="${PRODUCT_DIR}/Vexillographer.doccarchive"
 

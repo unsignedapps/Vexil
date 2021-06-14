@@ -1,0 +1,33 @@
+name: "Generate Website"
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/website.yml'
+      - '**/*.swift'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/website.yml'
+      - '**/*.swift'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
+
+jobs:
+  BuildWebsite:
+    name: "Build Website"
+    runs-on: macos-11.0
+    steps:
+      - name: 🛒 Checkout
+        uses: actions/checkout@v2
+      
+      - name: 👷 Build Website
+        run: .github/scripts/generate-docs.sh
+      
+      - name: 🚀 Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs
