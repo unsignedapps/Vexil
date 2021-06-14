@@ -1,4 +1,0 @@
-{{ if eq .Level 2 }}
-    <hr />
-{{ end }}
-<h{{ .Level }} id="{{ .Anchor | safeURL }}">{{ .Text | safeHTML }} <a href="#{{ .Anchor | safeURL }}" class="permalink">¶</a></h{{ .Level }}>
