@@ -1,0 +1,78 @@
+body {
+    --color-background-dark: #000000;
+    --color-background-light: #ffffff;
+    --color-background: var(--color-background-light);
+    --color-foreground-dark: #ffffff;
+    --color-foreground-light: #000000;
+    --color-foreground: var(--color-foreground-light);
+    --color-btn-outline-dark: #f8f9fa;
+    --color-btn-outline-light: #212529;
+    --color-btn-outline: var(--color-btn-outline-light);
+    --color-btn-outline-hover-dark: #212529;
+    --color-btn-outline-hover-light: #fff;
+    --color-btn-outline-hover: var(--color-btn-outline-hover-light);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+}
+
+@media screen and (prefers-color-scheme:dark) {
+    body {
+        --color-background: var(--color-background-dark);
+        --color-foreground: var(--color-foreground-dark);
+        --color-btn-outline: var(--color-btn-outline-dark);
+        --color-btn-outline-hover: var(--color-btn-outline-hover-dark);
+    }
+}
+
+.wrapper {
+    min-height: 100%;
+    /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh;
+    /* These two lines are counted as one :-)       */
+    display: flex;
+    align-items: center;
+}
+
+.btn-outline-documentation {
+    color: var(--color-btn-outline);
+    background-color: transparent;
+    background-image: none;
+    border-color: var(--color-btn-outline);
+}
+
+.btn-outline-documentation:hover {
+    color: var(--color-btn-outline-hover);
+    background-color: var(--color-btn-outline);
+    border-color: var(--color-btn-outline);
+}
+
+@media (min-width: 992px) {
+    .logo {
+        padding-right: 40px;
+        text-align: right;
+    }
+    .content-header,
+    .content-body {
+        width: 500px;
+    }
+    .privacy-link {
+        margin-right: 100px;
+    }
+    .subscribe-group {
+        left: 100px;
+        width: 300px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .logo {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        text-align: center;
+    }
+    .content {
+        padding-top: 20px;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+}
