@@ -8,6 +8,7 @@ on:
     
 jobs:
   check-changes:
+    name: Check for Changes
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
@@ -20,10 +21,15 @@ jobs:
             - '.github/workflows/linux-tests.yml'
             - '**/*.swift'
 
-  test:
-    name: Linux Tests
+  #########
+  # Linux #
+  #########
+
+  matrix:
+    name: Linux Matrix
     runs-on: ubuntu-latest
     if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         swift: [ "5.2.5", "5.3", "5.3.1", "5.3.2", "5.3.3", "5.4.1", "5.4.2", "5.5.0" ]
@@ -37,3 +43,13 @@ jobs:
         uses: actions/checkout@v1
       - name: Build and Test
         run: swift test --enable-test-discovery
+
+  test:
+    runs-on: ubuntu-latest
+    name: Linux Tests
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.matrix.result == 'failure' }}
+        run: exit 1

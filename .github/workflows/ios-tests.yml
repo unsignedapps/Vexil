@@ -8,6 +8,7 @@ on:
     
 jobs:
   check-changes:
+    name: Check for Changes
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
@@ -19,6 +20,10 @@ jobs:
           changed:
             - '.github/workflows/ios-tests.yml'
             - '**/*.swift'
+
+  #############
+  # iOS Betas #
+  #############
 
   # build-ios-beta:
   #   name: iOS Tests - Xcode Betas
@@ -39,9 +44,15 @@ jobs:
   #       run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
   #       if: ${{ needs.check-changes.outputs.changed == 'true' }}
 
-  build-ios-macos-11:
-    name: iOS Tests - macOS 11
+  #####################
+  # macOS 11 Versions #
+  #####################
+
+  build-ios-macos-11-matrix:
+    name: iOS Metrix - macOS 11
     runs-on: macos-11.0
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
@@ -52,14 +63,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        if: ${{ needs.check-changes.outputs.changed == 'true' }}
       - name: Build and Test
         run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
-        if: ${{ needs.check-changes.outputs.changed == 'true' }}
 
-  build-ios-macos-10_15:
-    name: iOS Tests - macOS 10.15
+  build-ios-macos-11:
+    runs-on: ubuntu-latest
+    name: iOS Tests - macOS 11
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-ios-macos-11-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-ios-macos-11-matrix.result == 'failure' }}
+        run: exit 1
+
+  ########################
+  # macOS 10.15 Versions #
+  ########################
+
+  build-ios-macos-10_15-matrix:
+    name: iOS Matrix - macOS 10.15
     runs-on: macos-10.15
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4" ]
@@ -70,7 +95,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        if: ${{ needs.check-changes.outputs.changed == 'true' }}
       - name: Build and Test
         run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
-        if: ${{ needs.check-changes.outputs.changed == 'true' }}
+
+  build-ios-macos-10_15:
+    runs-on: ubuntu-latest
+    name: iOS Tests - macOS 10.15
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-ios-macos-10_15-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-ios-macos-11-matrix.result == 'failure' }}
+        run: exit 1

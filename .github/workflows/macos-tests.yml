@@ -8,6 +8,7 @@ on:
     
 jobs:
   check-changes:
+    name: Check for Changes
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
@@ -20,10 +21,15 @@ jobs:
             - '.github/workflows/macos-tests.yml'
             - '**/*.swift'
 
+  ###############
+  # macOS Betas #
+  ###############
+
   # build-macos-beta:
   #   name: macOS Tests - Xcode Betas
   #   runs-on: macos-11.0
   #   if: ${{ needs.check-changes.outputs.changed == 'true' }}
+  #   needs: check-changes
   #   strategy:
   #     matrix:
   #       xcode: [ "13.0" ]
@@ -37,10 +43,15 @@ jobs:
   #     - name: Build and Test
   #       run: swift test
 
-  build-macos-macos-11:
-    name: macOS Tests - macOS 11
+  ############
+  # macOS 11 #
+  ############
+
+  build-macos-macos-11-matrix:
+    name: macOS Matrix - macOS 11
     runs-on: macos-11.0
     if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
@@ -54,10 +65,25 @@ jobs:
       - name: Build and Test
         run: swift test
 
-  build-macos-macos-10_15:
-    name: macOS Tests - macOS 10.15
+  build-macos-macos-11:
+    runs-on: ubuntu-latest
+    name: macOS Tests - macOS 11
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-macos-macos-11-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-macos-macos-11-matrix.result == 'failure' }}
+        run: exit 1
+
+  ###############
+  # macOS 10.15 #
+  ###############
+
+  build-macos-macos-10_15-matrix:
+    name: macOS Matrix - macOS 10.15
     runs-on: macos-10.15
     if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4" ]
@@ -69,4 +95,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift test
+        run: swift
+        
+  build-macos-macos-10_15:
+    runs-on: ubuntu-latest
+    name: macOS Tests - macOS 10.15
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-macos-macos-10_15-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-macos-macos-10_15-matrix.result == 'failure' }}
+        run: exit 1

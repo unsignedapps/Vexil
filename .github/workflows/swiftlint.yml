@@ -6,6 +6,7 @@ on:
 
 jobs:
   check-changes:
+    name: Check for Changes
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
@@ -22,6 +23,7 @@ jobs:
   SwiftLint:
     runs-on: ubuntu-latest
     if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     steps:
       - uses: actions/checkout@v1
       - name: "🧹 SwiftLint changed files"
