@@ -2,14 +2,26 @@ name: SwiftLint
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/swiftlint.yml'
-      - '.swiftlint.yml'
-      - '**/*.swift'
+    branches: [ main ]
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          changed:
+            - '.github/workflows/swiftlint.yml'
+            - '.swiftlint.yml'
+            - '**/*.swift'
+
   SwiftLint:
     runs-on: ubuntu-latest
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v1
       - name: "🧹 SwiftLint changed files"
