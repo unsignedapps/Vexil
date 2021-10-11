@@ -3,19 +3,27 @@ name: Linux Tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - '.github/workflows/linux-tests.yml'
-      - '**/*.swift'
   pull_request:
     branches: [ main ]
-    paths:
-      - '.github/workflows/linux-tests.yml'
-      - '**/*.swift'
     
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          changed:
+            - '.github/workflows/linux-tests.yml'
+            - '**/*.swift'
+
   test:
     name: Linux Tests
     runs-on: ubuntu-latest
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
     strategy:
       matrix:
         swift: [ "5.2.5", "5.3", "5.3.1", "5.3.2", "5.3.3", "5.4.1", "5.4.2", "5.5.0" ]
