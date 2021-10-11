@@ -13,28 +13,28 @@ on:
       - '**/*.swift'
     
 jobs:
-  build-watchos-beta:
-    name: watchOS Build - Xcode Betas
-    runs-on: macos-11.0
-    strategy:
-      matrix:
-        xcode: [ "13.0" ]
+  # build-watchos-beta:
+  #   name: watchOS Build - Xcode Betas
+  #   runs-on: macos-11.0
+  #   strategy:
+  #     matrix:
+  #       xcode: [ "13.0" ]
 
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+  #   env:
+  #     DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Build and Test
+  #       run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
 
   build-watchos-macos-11:
     name: watchOS Build - macOS 11
     runs-on: macos-11.0
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5", "12.5.1" ]
+        xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
