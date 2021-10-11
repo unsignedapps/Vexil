@@ -16,12 +16,15 @@ extension FlagValueDictionary: FlagValueSource {
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return self.storage[key] as? Value
+        guard let value = self.storage[key] else {
+            return nil
+        }
+        return Value(boxedFlagValue: value)
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
         if let value = value {
-            self.storage.updateValue(value, forKey: key)
+            self.storage.updateValue(value.boxedFlagValue, forKey: key)
         } else {
             self.storage.removeValue(forKey: key)
         }

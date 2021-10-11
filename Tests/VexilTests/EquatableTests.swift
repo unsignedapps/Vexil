@@ -93,11 +93,11 @@ final class EquatableTests: XCTestCase {
             }
 
         // WHEN we emit, then change some values and emit more
-        dictionary["untracked-key"] = true                              // 1
-        dictionary["top-level-flag"] = true                             // 2
-        dictionary["second-test-flag"] = true                           // 3
-        dictionary["subgroup.second-level-flag"] = true                 // 4
-        dictionary["subgroup.double-subgroup.third-level-flag"] = true  // 5
+        dictionary["untracked-key"] = .bool(true)                              // 1
+        dictionary["top-level-flag"] = .bool(true)                             // 2
+        dictionary["second-test-flag"] = .bool(true)                           // 3
+        dictionary["subgroup.second-level-flag"] = .bool(true)                 // 4
+        dictionary["subgroup.double-subgroup.third-level-flag"] = .bool(true)  // 5
 
         // THEN we should have 6 snapshots of varying equatability
         wait(for: [ expectation ], timeout: 0.1)

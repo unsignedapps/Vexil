@@ -92,8 +92,8 @@ final class SnapshotTests: XCTestCase {
         // GIVEN a FlagPole and a dictionary that is not a part it
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let dictionary = FlagValueDictionary([
-            "top-level-flag": true,
-            "subgroup.double-subgroup.third-level-flag": true
+            "top-level-flag": .bool(true),
+            "subgroup.double-subgroup.third-level-flag": .bool(true)
         ])
 
         // WHEN we take a snapshot of that source

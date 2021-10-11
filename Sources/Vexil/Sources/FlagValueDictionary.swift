@@ -22,7 +22,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
     public let id = UUID()
 
     /// Our internal dictionary type
-    public typealias DictionaryType = [String: Any]
+    public typealias DictionaryType = [String: BoxedFlagValue]
 
     internal var storage: DictionaryType
 
@@ -41,7 +41,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral {
 
     /// Initialises a `FlagValueDictionary` using a dictionary literal
     ///
-    public required init(dictionaryLiteral elements: (String, Any)...) {
+    public required init(dictionaryLiteral elements: (String, BoxedFlagValue)...) {
         self.storage = elements.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.1, forKey: pair.0)
         }
