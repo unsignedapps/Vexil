@@ -14,7 +14,7 @@ final class FlagValueDictionaryTests: XCTestCase {
 
     func testReadsValues () {
         let source: FlagValueDictionary = [
-            "top-level-flag": true
+            "top-level-flag": .bool(true)
         ]
 
         let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
@@ -35,8 +35,8 @@ final class FlagValueDictionaryTests: XCTestCase {
             snapshot.oneFlagGroup.secondLevelFlag = false
             try flagPole.save(snapshot: snapshot, to: source)
 
-            XCTAssertEqual(source.storage["top-level-flag"] as? Bool, true)
-            XCTAssertEqual(source.storage["one-flag-group.second-level-flag"] as? Bool, false)
+            XCTAssertEqual(source.storage["top-level-flag"], .bool(true))
+            XCTAssertEqual(source.storage["one-flag-group.second-level-flag"], .bool(false))
         }
     }
 
@@ -59,8 +59,8 @@ final class FlagValueDictionaryTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        source["top-level-flag"] = true
-        source["one-flag-group.second-level-flag"] = true
+        source["top-level-flag"] = .bool(true)
+        source["one-flag-group.second-level-flag"] = .bool(true)
 
         self.wait(for: [ expectation ], timeout: 1)
 

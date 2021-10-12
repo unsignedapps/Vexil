@@ -57,8 +57,8 @@ final class FlagValueSourceTests: XCTestCase {
 
         // GIVEN two dictionaries
         let source = FlagValueDictionary([
-            "test-flag": true,
-            "subgroup.test-flag": true
+            "test-flag": .bool(true),
+            "subgroup.test-flag": .bool(true)
         ])
         let destination = FlagValueDictionary()
 
@@ -68,8 +68,8 @@ final class FlagValueSourceTests: XCTestCase {
 
         // THEN we expect those two dictionaries to match
         XCTAssertEqual(destination.count, 2)
-        XCTAssertEqual(destination["test-flag"] as? Bool, true)
-        XCTAssertEqual(destination["subgroup.test-flag"] as? Bool, true)
+        XCTAssertEqual(destination["test-flag"], .bool(true))
+        XCTAssertEqual(destination["subgroup.test-flag"], .bool(true))
 
     }
 
@@ -77,8 +77,8 @@ final class FlagValueSourceTests: XCTestCase {
 
         // GIVEN a dictionary with some values
         let source = FlagValueDictionary([
-            "test-flag": true,
-            "subgroup.test-flag": true
+            "test-flag": .bool(true),
+            "subgroup.test-flag": .bool(true)
         ])
 
         // WHEN we remove all values from that source
