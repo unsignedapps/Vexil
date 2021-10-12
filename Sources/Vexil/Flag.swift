@@ -85,6 +85,30 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         self.info = info
     }
 
+    /// Initialises a new `Flag` with the supplied info.
+    ///
+    /// You must at least a `description` of the flag and specify the default value
+    ///
+    /// ```swift
+    /// @Flag(description: "This is a test flag. Isn't it nice?")
+    /// var myFlag: Bool = false
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - name:               An optional display name to give the flag. Only visible in flag editors like Vexillographer. Default is to calculate one based on the property name.
+    ///   - codingKeyStrategy:  An optional strategy to use when calculating the key name. The default is to use the `FlagPole`s strategy.
+    ///   - description:        A description of this flag. Used in flag editors like Vexillographer, and also for future developer context.
+    ///                         You can also specify `.hidden` to hide this flag from Vexillographer.
+    ///
+    public init (wrappedValue: Value, name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
+        self.codingKeyStrategy = codingKeyStrategy
+        self.defaultValue = wrappedValue
+
+        var info = description
+        info.name = name
+        self.info = info
+    }
+
 
     // MARK: - Decorated Conformance
 
