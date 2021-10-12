@@ -150,8 +150,8 @@ private struct TestFlags: FlagContainer, Equatable {
     @Flag(default: false, description: "Top level test flag")
     var topLevelFlag: Bool
 
-    @Flag(default: false, description: "Second test flag")
-    var secondTestFlag: Bool
+    @Flag(description: "Second test flag")
+    var secondTestFlag = false
 
     @FlagGroup(description: "Subgroup of test flags")
     var subgroup: SubgroupFlags
@@ -170,7 +170,7 @@ private struct SubgroupFlags: FlagContainer, Equatable {
 
 private struct DoubleSubgroupFlags: FlagContainer, Equatable {
 
-    @Flag(default: false, description: "Third level test flag")
-    var thirdLevelFlag: Bool
+    @Flag(description: "Third level test flag")
+    var thirdLevelFlag = false
 
 }

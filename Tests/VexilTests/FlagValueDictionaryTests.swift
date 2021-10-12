@@ -88,8 +88,8 @@ private struct TestFlags: FlagContainer {
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
 
-    @Flag(default: false, description: "Top level test flag")
-    var topLevelFlag: Bool
+    @Flag(description: "Top level test flag")
+    var topLevelFlag: Bool = false
 
 }
 

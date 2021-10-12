@@ -20,7 +20,7 @@ WORKING="docs"
 xcodebuild docbuild \
     -scheme "${SCHEME}" \
     -derivedDataPath "${DERIVED_DATA}" \
-    -destination "platform=macOS, name=Any Mac"
+    -destination "generic/platform=macOS"
 
 # Make sure they exist
 if [ ! -d "${VEXIL_DOCCARCHIVE}" ]; then
