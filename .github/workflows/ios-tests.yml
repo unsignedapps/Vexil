@@ -10,6 +10,7 @@ jobs:
   check-changes:
     name: Check for Changes
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
@@ -28,7 +29,7 @@ jobs:
   # build-ios-beta:
   #   name: iOS Tests - Xcode Betas
   #   runs-on: macos-11.0
-  #   if: ${{ needs.check-changes.outputs.changed == 'true' }}
+  #   if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
   #   strategy:
   #     matrix:
   #       xcode: [ "13.0" ]
@@ -39,10 +40,10 @@ jobs:
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v2
-  #       if: ${{ needs.check-changes.outputs.changed == 'true' }}
+  #       if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
   #     - name: Build and Test
   #       run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
-  #       if: ${{ needs.check-changes.outputs.changed == 'true' }}
+  #       if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
 
   #####################
   # macOS 11 Versions #
@@ -51,7 +52,7 @@ jobs:
   build-ios-macos-11-matrix:
     name: iOS Metrix - macOS 11
     runs-on: macos-11.0
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
       matrix:
@@ -69,7 +70,7 @@ jobs:
   build-ios-macos-11:
     runs-on: ubuntu-latest
     name: iOS Tests - macOS 11
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: build-ios-macos-11-matrix
     steps:
       - name: Check build matrix status
@@ -83,7 +84,7 @@ jobs:
   build-ios-macos-10_15-matrix:
     name: iOS Matrix - macOS 10.15
     runs-on: macos-10.15
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
       matrix:
@@ -101,7 +102,7 @@ jobs:
   build-ios-macos-10_15:
     runs-on: ubuntu-latest
     name: iOS Tests - macOS 10.15
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: build-ios-macos-10_15-matrix
     steps:
       - name: Check build matrix status

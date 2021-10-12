@@ -8,6 +8,7 @@ jobs:
   check-changes:
     name: Check for Changes
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
@@ -22,7 +23,7 @@ jobs:
 
   SwiftLint:
     runs-on: ubuntu-latest
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     steps:
       - uses: actions/checkout@v1
