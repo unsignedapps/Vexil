@@ -3,22 +3,58 @@ name: watchOS Build Tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - '.github/workflows/watchos-tests.yml'
-      - '**/*.swift'
   pull_request:
     branches: [ main ]
-    paths:
-      - '.github/workflows/watchos-tests.yml'
-      - '**/*.swift'
     
 jobs:
-  build-watchos-beta:
-    name: watchOS Build - Xcode Betas
+  check-changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          changed:
+            - '.github/workflows/watchos-tests.yml'
+            - '**/*.swift'
+
+  #################
+  # watchOS Betas #
+  #################
+
+  # build-watchos-beta:
+  #   name: watchOS Build - Xcode Betas
+  #   runs-on: macos-11.0
+  #   if: ${{ needs.check-changes.outputs.changed == 'true' }}
+  #   needs: check-changes
+  #   strategy:
+  #     matrix:
+  #       xcode: [ "13.0" ]
+
+  #   env:
+  #     DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Build and Test
+  #       run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  #####################
+  # macOS 11 Versions #
+  #####################
+
+  build-watchos-macos-11-matrix:
+    name: watchOS Matrix - macOS 11
     runs-on: macos-11.0
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
-        xcode: [ "13.0" ]
+        xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -30,24 +66,24 @@ jobs:
         run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
 
   build-watchos-macos-11:
+    runs-on: ubuntu-latest
     name: watchOS Build - macOS 11
-    runs-on: macos-11.0
-    strategy:
-      matrix:
-        xcode: [ "11.7", "12.4", "12.5", "12.5.1" ]
-
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-watchos-macos-11-matrix
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+      - name: Check build matrix status
+        if: ${{ needs.build-watchos-macos-11-matrix.result == 'failure' }}
+        run: exit 1
 
-  build-watchos-macos-10_15:
-    name: watchOS Build - macOS 10.15
+  ########################
+  # macOS 10.15 Versions #
+  ########################
+
+  build-watchos-macos-10_15-matrix:
+    name: watchOS Matrix - macOS 10.15
     runs-on: macos-10.15
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4" ]
@@ -60,3 +96,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Build and Test
         run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-macos-10_15:
+    runs-on: ubuntu-latest
+    name: watchOS Build - macOS 10.15
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: build-watchos-macos-10_15-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-watchos-macos-10_15-matrix.result == 'failure' }}
+        run: exit 1
