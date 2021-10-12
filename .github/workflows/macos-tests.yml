@@ -3,22 +3,59 @@ name: macOS Tests
 on:
   push:
     branches: [ main ]
-    paths:
-      - '.github/workflows/macos-tests.yml'
-      - '**/*.swift'
   pull_request:
     branches: [ main ]
-    paths:
-      - '.github/workflows/macos-tests.yml'
-      - '**/*.swift'
     
 jobs:
-  build-macos-beta:
-    name: macOS Tests - Xcode Betas
+  check-changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          changed:
+            - '.github/workflows/macos-tests.yml'
+            - '**/*.swift'
+
+  ###############
+  # macOS Betas #
+  ###############
+
+  # build-macos-beta:
+  #   name: macOS Tests - Xcode Betas
+  #   runs-on: macos-11.0
+  #   if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+  #   needs: check-changes
+  #   strategy:
+  #     matrix:
+  #       xcode: [ "13.0" ]
+
+  #   env:
+  #     DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Build and Test
+  #       run: swift test
+
+  ############
+  # macOS 11 #
+  ############
+
+  build-macos-macos-11-matrix:
+    name: macOS Matrix - macOS 11
     runs-on: macos-11.0
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
-        xcode: [ "13.0" ]
+        xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -30,24 +67,24 @@ jobs:
         run: swift test
 
   build-macos-macos-11:
+    runs-on: ubuntu-latest
     name: macOS Tests - macOS 11
-    runs-on: macos-11.0
-    strategy:
-      matrix:
-        xcode: [ "11.7", "12.4", "12.5", "12.5.1" ]
-
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: build-macos-macos-11-matrix
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift test
+      - name: Check build matrix status
+        if: ${{ needs.build-macos-macos-11-matrix.result == 'failure' }}
+        run: exit 1
 
-  build-tvos-macos-10_15:
-    name: macOS Tests - macOS 10.15
+  ###############
+  # macOS 10.15 #
+  ###############
+
+  build-macos-macos-10_15-matrix:
+    name: macOS Matrix - macOS 10.15
     runs-on: macos-10.15
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
     strategy:
       matrix:
         xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4" ]
@@ -59,4 +96,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift test
+        run: swift
+        
+  build-macos-macos-10_15:
+    runs-on: ubuntu-latest
+    name: macOS Tests - macOS 10.15
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: build-macos-macos-10_15-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-macos-macos-10_15-matrix.result == 'failure' }}
+        run: exit 1

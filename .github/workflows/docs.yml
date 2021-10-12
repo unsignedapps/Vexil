@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - '.github/workflows/docs.yml'
-      - '.github/generate-docs.sh'
+      - '.github/scripts/generate-docs.sh'
       - '**/*.swift'
 
 env:
