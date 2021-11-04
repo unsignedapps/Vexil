@@ -22,29 +22,6 @@ jobs:
             - '.github/workflows/ios-tests.yml'
             - '**/*.swift'
 
-  #############
-  # iOS Betas #
-  #############
-
-  # build-ios-beta:
-  #   name: iOS Tests - Xcode Betas
-  #   runs-on: macos-11.0
-  #   if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-  #   strategy:
-  #     matrix:
-  #       xcode: [ "13.0" ]
-
-  #   env:
-  #     DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-  #     - name: Build and Test
-  #       run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
-  #       if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-
   #####################
   # macOS 11 Versions #
   #####################
@@ -56,7 +33,7 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5.1", "13.0" ]
+        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
