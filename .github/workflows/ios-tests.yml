@@ -13,13 +13,15 @@ jobs:
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          changed:
-            - '.github/workflows/ios-tests.yml'
-            - '**/*.swift'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - '.github/workflows/ios-tests.yml'
+              - '**/*.swift'
 
   #####################
   # macOS 11 Versions #

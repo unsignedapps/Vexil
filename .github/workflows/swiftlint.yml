@@ -11,14 +11,16 @@ jobs:
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          changed:
-            - '.github/workflows/swiftlint.yml'
-            - '.swiftlint.yml'
-            - '**/*.swift'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - '.github/workflows/swiftlint.yml'
+              - '.swiftlint.yml'
+              - '**/*.swift'
 
   SwiftLint:
     runs-on: ubuntu-latest
