@@ -5,6 +5,7 @@
 //  Created by Rob Amos on 17/8/20.
 //
 
+import Foundation
 @testable import Vexil
 import XCTest
 
@@ -25,20 +26,74 @@ final class FlagValueDictionaryTests: XCTestCase {
 
     // MARK: - Writing Values
 
-    func testWritesValues () {
-        AssertNoThrow {
-            let source = FlagValueDictionary()
-            let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
+    func testWritesValues () throws {
+        let source = FlagValueDictionary()
+        let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
 
-            let snapshot = flagPole.emptySnapshot()
-            snapshot.topLevelFlag = true
-            snapshot.oneFlagGroup.secondLevelFlag = false
-            try flagPole.save(snapshot: snapshot, to: source)
+        let snapshot = flagPole.emptySnapshot()
+        snapshot.topLevelFlag = true
+        snapshot.oneFlagGroup.secondLevelFlag = false
+        try flagPole.save(snapshot: snapshot, to: source)
 
-            XCTAssertEqual(source.storage["top-level-flag"], .bool(true))
-            XCTAssertEqual(source.storage["one-flag-group.second-level-flag"], .bool(false))
-        }
+        XCTAssertEqual(source.storage["top-level-flag"], .bool(true))
+        XCTAssertEqual(source.storage["one-flag-group.second-level-flag"], .bool(false))
     }
+
+    // MARK: - Equatable Tests
+
+    func testEquatable() {
+
+        let identifier1 = UUID()
+        let original = FlagValueDictionary(
+            id: identifier1,
+            storage: [
+                "top-level-flag": .bool(true)
+            ]
+        )
+
+        let same = FlagValueDictionary(
+            id: identifier1,
+            storage: [
+                "top-level-flag": .bool(true)
+            ]
+        )
+
+        let differentContent = FlagValueDictionary(
+            id: identifier1,
+            storage: [
+                "top-level-flag": .bool(false)
+            ]
+        )
+
+        let differentIdentifier = FlagValueDictionary(
+            id: UUID(),
+            storage: [
+                "top-level-flag": .bool(true)
+            ]
+        )
+
+        XCTAssertEqual(original, same)
+        XCTAssertNotEqual(original, differentContent)
+        XCTAssertNotEqual(original, differentIdentifier)
+
+    }
+
+    // MARK: - Codable Tests
+
+    func testCodable() throws {
+        // BoxedFlagValue's Codable support is more heavily tested in it's tests
+        let source: FlagValueDictionary = [
+            "bool-flag": .bool(true),
+            "string-flag": .string("alpha"),
+            "integer-flag": .integer(123)
+        ]
+
+        let encoded = try JSONEncoder().encode(source)
+        let decoded = try JSONDecoder().decode(FlagValueDictionary.self, from: encoded)
+
+        XCTAssertEqual(source, decoded)
+    }
+    
 
 
     // MARK: - Publishing Tests
