@@ -93,7 +93,6 @@ final class FlagValueDictionaryTests: XCTestCase {
 
         XCTAssertEqual(source, decoded)
     }
-    
 
 
     // MARK: - Publishing Tests
@@ -144,7 +143,7 @@ private struct TestFlags: FlagContainer {
     var oneFlagGroup: OneFlags
 
     @Flag(description: "Top level test flag")
-    var topLevelFlag: Bool = false
+    var topLevelFlag = false
 
 }
 
