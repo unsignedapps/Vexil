@@ -21,6 +21,11 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
     /// A Unique Identifier for this FlagValueDictionary
     public let id: UUID
 
+    /// The name of our `FlagValueSource`
+    public var name: String {
+        return "\(String(describing: Self.self)): \(self.id.uuidString)"
+    }
+
     /// Our internal dictionary type
     public typealias DictionaryType = [String: BoxedFlagValue]
 
@@ -39,13 +44,19 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
         self.storage = storage
     }
 
+    /// Initialises an empty `FlagValueDictionary`
+    public init() {
+        self.id = UUID()
+        self.storage = [:]
+    }
+
     /// Initialises a `FlagValueDictionary` with the specified dictionary
     ///
-    public convenience init (_ dictionary: DictionaryType = [:]) {
-        self.init(
-            id: UUID(),
-            storage: dictionary
-        )
+    public required init<S> (_ sequence: S) where S: Sequence, S.Element == (key: String, value: BoxedFlagValue) {
+        self.id = UUID()
+        self.storage = sequence.reduce(into: [:]) { dict, pair in
+            dict.updateValue(pair.value, forKey: pair.key)
+        }
     }
 
     /// Initialises a `FlagValueDictionary` using a dictionary literal

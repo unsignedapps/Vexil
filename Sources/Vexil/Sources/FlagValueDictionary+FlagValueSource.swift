@@ -11,10 +11,6 @@ import Combine
 
 extension FlagValueDictionary: FlagValueSource {
 
-    public var name: String {
-        return "\(String(describing: Self.self)): \(self.id.uuidString)"
-    }
-
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         guard let value = self.storage[key] else {
             return nil
