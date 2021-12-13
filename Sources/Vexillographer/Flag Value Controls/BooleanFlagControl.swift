@@ -28,6 +28,7 @@ struct BooleanFlagControl: View {
     @Binding var value: Bool
 
     let hasChanges: Bool
+    let isEditable: Bool
     @Binding var showDetail: Bool
 
 
@@ -35,7 +36,13 @@ struct BooleanFlagControl: View {
 
     var body: some View {
         HStack {
-            Toggle(self.label, isOn: self.$value)
+            if self.isEditable {
+                Toggle(self.label, isOn: self.$value)
+            } else {
+                Text(self.label).font(.headline)
+                Spacer()
+                FlagDisplayValueView(value: self.value)
+            }
             DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
@@ -63,6 +70,7 @@ extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
                 transformer: BoxedPassthroughTransformer.self
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail
         )
             .eraseToAnyView()
@@ -90,6 +98,7 @@ extension UnfurledFlag: OptionalBooleanEditableFlag where Value: FlagValue, Valu
                 transformer: OptionalTransformer<Value.BoxedValueType, Bool, BoxedPassthroughTransformer>.self
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail
         )
             .eraseToAnyView()

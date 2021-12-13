@@ -25,20 +25,29 @@ struct OptionalCaseIterableFlagControl<Value>: View
     @Binding var value: Value
 
     let hasChanges: Bool
+    let isEditable: Bool
     @Binding var showDetail: Bool
 
     @Binding var showPicker: Bool
 
     // MARK: - View Body
 
+    var content: some View {
+        HStack {
+            Text(self.label).font(.headline)
+            Spacer()
+            FlagDisplayValueView(value: self.value.wrapped)
+        }
+    }
+
     var body: some View {
         HStack {
-            NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                HStack {
-                    Text(self.label).font(.headline)
-                    Spacer()
-                    FlagDisplayValueView(value: self.value.wrapped)
+            if self.isEditable {
+                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                    self.content
                 }
+            } else {
+                self.content
             }
             DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
@@ -147,6 +156,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                 }
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail,
             showPicker: showPicker
         )

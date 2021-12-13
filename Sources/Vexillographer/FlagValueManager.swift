@@ -18,13 +18,17 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     // MARK: - Properties
 
     let flagPole: FlagPole<RootGroup>
-    let source: FlagValueSource
+    let source: FlagValueSource?
     private var cancellables = Set<AnyCancellable>()
+
+    var isEditable: Bool {
+        return self.source != nil
+    }
 
 
     // MARK: - Initialisation
 
-    init (flagPole: FlagPole<RootGroup>, source: FlagValueSource) {
+    init (flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
         self.flagPole = flagPole
         self.source = source
 
@@ -41,7 +45,7 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     // MARK: - Flag Values
 
     func rawValue<Value> (key: String) -> Value? where Value: FlagValue {
-        return self.source.flagValue(key: key)
+        return self.source?.flagValue(key: key)
     }
 
     func flagValue<Value> (key: String) -> Value? where Value: FlagValue {
@@ -50,13 +54,17 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     }
 
     func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue {
+        guard let source = source else {
+            return
+        }
+
         let snapshot = self.flagPole.emptySnapshot()
         try snapshot.setFlagValue(value, key: key)
-        try self.flagPole.save(snapshot: snapshot, to: self.source)
+        try self.flagPole.save(snapshot: snapshot, to: source)
     }
 
     func hasValueInSource<Value> (flag: Flag<Value>) -> Bool {
-        if let _: Value = self.source.flagValue(key: flag.key) {
+        if let _: Value = self.source?.flagValue(key: flag.key) {
             return true
 
         } else {

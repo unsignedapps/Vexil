@@ -23,6 +23,7 @@ struct StringFlagControl: View {
     @Binding var value: String
 
     let hasChanges: Bool
+    let isEditable: Bool
     @Binding var showDetail: Bool
 
 
@@ -32,8 +33,12 @@ struct StringFlagControl: View {
         HStack {
             Text(self.label)
             Spacer()
-            TextField("", text: self.$value)
-                .multilineTextAlignment(.trailing)
+            if self.isEditable {
+                TextField("", text: self.$value)
+                    .multilineTextAlignment(.trailing)
+            } else {
+                FlagDisplayValueView(value: self.value)
+            }
             DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
     }
@@ -60,6 +65,7 @@ extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessS
                 transformer: LosslessStringTransformer<Value.BoxedValueType>.self
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail
         )
             .flagValueKeyboard(type: Value.self)
@@ -90,6 +96,7 @@ extension UnfurledFlag: OptionalStringEditableFlag
                 transformer: OptionalTransformer<Value.BoxedValueType, String, LosslessStringTransformer<Value.BoxedValueType.WrappedFlagValue>>.self
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail
         )
             .flagValueKeyboard(type: Value.self)

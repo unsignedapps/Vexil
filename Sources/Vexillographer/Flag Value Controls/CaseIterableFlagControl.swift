@@ -23,22 +23,31 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     @Binding var value: Value
 
     let hasChanges: Bool
+    let isEditable: Bool
     @Binding var showDetail: Bool
 
     @Binding var showPicker: Bool
 
     // MARK: - View Body
 
+    var content: some View {
+        HStack {
+            Text(self.label).font(.headline)
+            Spacer()
+            FlagDisplayValueView(value: self.value)
+        }
+    }
+
     #if os(iOS)
 
     var body: some View {
         HStack {
-            NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                HStack {
-                    Text(self.label).font(.headline)
-                    Spacer()
-                    FlagDisplayValueView(value: self.value)
+            if self.isEditable {
+                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                    self.content
                 }
+            } else {
+                self.content
             }
             DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
         }
@@ -51,7 +60,15 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     #elseif os(macOS)
 
-    var body: some View {
+    @ViewBuilder var body: some View {
+        if self.isEditable {
+            self.picker
+        } else {
+            self.content
+        }
+    }
+
+    var picker: some View {
         let picker = Picker (
             selection: self.$value,
             label: Text(self.label),
@@ -138,6 +155,7 @@ extension UnfurledFlag: CaseIterableEditableFlag
                 transformer: PassthroughTransformer<Value>.self
             ),
             hasChanges: manager.hasValueInSource(flag: self.flag),
+            isEditable: manager.isEditable,
             showDetail: showDetail,
             showPicker: showPicker
         )
