@@ -11,7 +11,7 @@ extension Snapshot: FlagValueSource {
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return self.values[key] as? Value
+        return self.values[key]?.value as? Value
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {

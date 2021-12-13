@@ -18,11 +18,17 @@ import Foundation
 /// Only `FlagPole` and `Snapshot`s conform to this.
 ///
 internal protocol Lookup: AnyObject {
-    func lookup<Value> (key: String, in source: FlagValueSource?) -> Value? where Value: FlagValue
+    func lookup<Value> (key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue
 
     #if !os(Linux)
     func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
     #endif
+}
+
+/// A lightweight internal type used to support diagnostics by tagging the values with the source that resolved it
+struct LookupResult<Value> where Value: FlagValue {
+    let source: String?
+    let value: Value
 }
 
 extension FlagPole: Lookup {
@@ -33,14 +39,15 @@ extension FlagPole: Lookup {
     /// It iterates through our `FlagValueSource`s and asks each if they have a `FlagValue` for
     /// that key, returning the first non-nil value it finds.
     ///
-    func lookup<Value> (key: String, in source: FlagValueSource?) -> Value? where Value: FlagValue {
+    func lookup<Value> (key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
         if let source = source {
             return source.flagValue(key: key)
+                .map { LookupResult(source: source.name, value: $0) }
         }
 
         for source in self._sources {
             if let value: Value = source.flagValue(key: key) {
-                return value
+                return LookupResult(source: source.name, value: value)
             }
         }
         return nil

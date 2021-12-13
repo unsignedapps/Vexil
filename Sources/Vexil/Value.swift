@@ -5,7 +5,7 @@
 //  Created by Rob Amos on 25/5/20.
 //
 
-// swiftlint:disable extension_access_modifier file_length
+// swiftlint:disable extension_access_modifier
 
 import Foundation
 

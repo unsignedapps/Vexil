@@ -72,7 +72,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     internal var _rootGroup: RootGroup
 
-    private(set) internal var values: [String: Any] = [:]
+    internal var diagnosticsEnabled: Bool
+
+    private(set) internal var values: [String: LocatedFlagValue] = [:]
 
     internal var lock = Lock()
 
@@ -81,17 +83,19 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil) {
+    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
         self._rootGroup = RootGroup()
+        self.diagnosticsEnabled = diagnosticsEnabled
         self.decorateRootGroup(config: flagPole._configuration)
 
         if let source = source {
-            self.copyCurrentValues(source: source, keys: keys, flagPole: flagPole)
+            self.copyCurrentValues(source: source, keys: keys, flagPole: flagPole, diagnosticsEnabled: diagnosticsEnabled)
         }
     }
 
     internal init (flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
         self._rootGroup = RootGroup()
+        self.diagnosticsEnabled = flagPole._diagnosticsEnabled
         self.decorateRootGroup(config: flagPole._configuration)
         self.values = snapshot.values
     }
@@ -162,24 +166,16 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .allFlags()
     }
 
-    private func copyCurrentValues (source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>) {
+    private func copyCurrentValues (source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>, diagnosticsEnabled: Bool) {
         let flagValueSource = source.flagValueSource
 
-        let flags = Mirror(reflecting: flagPole._rootGroup)
-            .children
-            .lazy
-            .compactMap { $0.value }
-            .allFlags()
+        let flags = flagPole.allFlags
             .filter { keys == nil || keys?.contains($0.key) == true }
-            .compactMap { flag -> (String, Any)? in
-                let value = flag.getFlagValue(in: flagValueSource)
-
-                // we copy everything from FlagPoles but only what a source contains
-                if flagValueSource != nil && value == nil {
+            .compactMap { flag -> (String, LocatedFlagValue)? in
+                guard let locatedValue = flag.getFlagValue(in: flagValueSource, diagnosticsEnabled: diagnosticsEnabled) else {
                     return nil
                 }
-
-                return (flag.key, value as Any)
+                return (flag.key, locatedValue)
             }
 
         self.values = Dictionary(uniqueKeysWithValues: flags)
@@ -193,9 +189,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .filter { changed.contains($0.key) }
     }
 
-    internal func set (_ value: Any?, key: String) {
+    internal func set<Value> (_ value: Value?, key: String) where Value: FlagValue {
         if let value = value {
-            self.values[key] = value
+            self.values[key] = LocatedFlagValue(source: self.name, value: value, diagnosticsEnabled: self.diagnosticsEnabled)
         } else {
             self.values.removeValue(forKey: key)
         }
@@ -239,6 +235,25 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             }
         }
     }
+
+
+    // MARK: - Diagnostics
+
+    /// Returns the current diagnostic state of all flags copied into this Snapshot.
+    ///
+    /// This method is intended to be called from the debugger
+    ///
+    /// - Important: You must enable diagnostics by setting `enableDiagnostics` to true in your ``VexilConfiguration``
+    /// when initialising your FlagPole. Otherwise this method will throw a ``FlagPoleDiagnostic/Error/notEnabledForSnapshot`` error.
+    ///
+    public func makeDiagnostics () throws -> [FlagPoleDiagnostic] {
+        guard self.diagnosticsEnabled == true else {
+            throw FlagPoleDiagnostic.Error.notEnabledForSnapshot
+        }
+
+        return .init(current: self)
+    }
+
 
 }
 
