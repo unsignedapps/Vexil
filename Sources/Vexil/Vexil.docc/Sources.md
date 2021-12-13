@@ -65,7 +65,7 @@ flagPole.save(snapshot: snapshot, to: UserDefaults.standard)
 
 ## Custom sources
 
-To implement your own source you need only conform to the ``FlagPoleSource`` protocol and implement its two key methods:
+To implement your own source you need only conform to the ``FlagValueSource`` protocol and implement its two key methods:
 
 ```swift
 public protocol FlagValueSource {

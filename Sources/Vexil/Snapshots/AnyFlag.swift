@@ -8,17 +8,16 @@
 protocol AnyFlag {
     var key: String { get }
 
-    func getFlagValue (in source: FlagValueSource?) -> Any?
+    func getFlagValue (in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue?
     func save (to source: FlagValueSource) throws
 }
 
-protocol AnyFlagGroup {
-    func allFlags () -> [AnyFlag]
-}
-
 extension Flag: AnyFlag {
-    func getFlagValue(in source: FlagValueSource?) -> Any? {
-        return value(in: source)
+    func getFlagValue (in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue? {
+        guard let result = value(in: source) else {
+            return nil
+        }
+        return LocatedFlagValue(lookupResult: result, diagnosticsEnabled: diagnosticsEnabled)
     }
 
     func save(to source: FlagValueSource) throws {
@@ -26,6 +25,12 @@ extension Flag: AnyFlag {
     }
 }
 
+
+// MARK: - Flag Groups
+
+protocol AnyFlagGroup {
+    func allFlags () -> [AnyFlag]
+}
 
 extension FlagGroup: AnyFlagGroup {
     func allFlags () -> [AnyFlag] {
