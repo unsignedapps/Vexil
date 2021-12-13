@@ -201,7 +201,7 @@ final class FlagValueCompilationTests: XCTestCase {
 
 }
 
-// swiftlint:disable let_var_whitespace unavailable_function
+// swiftlint:disable unavailable_function
 
 // MARK: - Generic Flag Time
 

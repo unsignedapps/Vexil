@@ -6,6 +6,7 @@ disabled_rules:
   - type_name
   - vertical_whitespace
   - identifier_name
+  - let_var_whitespace
 
 opt_in_rules:
   - anyobject_protocol
@@ -66,6 +67,10 @@ cyclomatic_complexity:
 line_length:
   ignores_function_declarations: true
   warning: 180
+
+file_length:
+  warning: 800
+  error: 1500
 
 identifier_name:
   excluded: [id, x, y, z, r, g, b, a, i, j, k, cx, cy, dx, dy, _rootGroup]

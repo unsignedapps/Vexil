@@ -203,7 +203,6 @@ final class PublisherTests: XCTestCase {
 
 // MARK: - Test Fixtures
 
-// swiftlint:disable let_var_whitespace
 
 private struct TestFlags: FlagContainer {
 

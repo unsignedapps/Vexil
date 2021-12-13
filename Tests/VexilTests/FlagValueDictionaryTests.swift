@@ -135,7 +135,6 @@ final class FlagValueDictionaryTests: XCTestCase {
 
 // MARK: - Fixtures
 
-// swiftlint:disable let_var_whitespace
 
 private struct TestFlags: FlagContainer {
 
