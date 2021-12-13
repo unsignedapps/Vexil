@@ -164,4 +164,9 @@ Vexil includes support for a number of sources out of the box, including `UserDe
 - ``FlagDisplayValue``
 - ``FlagInfo``
 
+### Diagnostics
+
+- <doc:Diagnostics>
+- ``FlagPoleDiagnostic``
+
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser

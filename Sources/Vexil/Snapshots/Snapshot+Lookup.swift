@@ -10,9 +10,9 @@ import Combine
 #endif
 
 extension Snapshot: Lookup {
-    func lookup<Value>(key: String, in source: FlagValueSource?) -> Value? where Value: FlagValue {
+    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
         self.lastAccessedKey = key
-        return self.values[key] as? Value
+        return self.values[key]?.toLookupResult()
     }
 
     #if !os(Linux)

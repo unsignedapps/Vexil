@@ -59,7 +59,14 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             #if !os(Linux)
 
             if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-                self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
+                let oldSourceNames = oldValue.map(\.name)
+                let newSourceNames = _sources.map(\.name)
+
+                self.setupSnapshotPublishing(
+                    keys: self.allFlagKeys,
+                    sendImmediately: true,
+                    changedSources: oldSourceNames.difference(from: newSourceNames).map(\.element)
+                )
             }
 
             #endif
@@ -159,7 +166,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Real Time Changes
 
-    #if !os(Linux)
+#if !os(Linux)
 
     /// An internal state variable used so we don't setup the `Publisher` infrastructure
     /// until someone has accessed `self.publisher`
@@ -179,14 +186,14 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         let snapshot = self.latestSnapshot
         if self.shouldSetupSnapshotPublishing == false {
             self.shouldSetupSnapshotPublishing = true
-            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
+            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
         }
         return snapshot.eraseToAnyPublisher()
     }
 
     private lazy var cancellables = Set<AnyCancellable>()
 
-    private func setupSnapshotPublishing (keys: Set<String>, sendImmediately: Bool) {
+    private func setupSnapshotPublishing (keys: Set<String>, sendImmediately: Bool, changedSources: [String]? = nil) {
         guard self.shouldSetupSnapshotPublishing else { return }
 
         // cancel our existing one
@@ -194,29 +201,91 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         self.cancellables.removeAll()
 
         let upstream = self._sources
-            .compactMap { source in
-                source.valuesDidChange(keys: keys)
+            .compactMap { source -> AnyPublisher<(String, Set<String>), Never>? in
+                let maybePublisher = source.valuesDidChange(keys: keys)
                     ?? source.valuesDidChange?.map({ _ in [] }).eraseToAnyPublisher()   // backwards compatibility
+
+                guard let publisher = maybePublisher else {
+                    return nil
+                }
+
+                let name = source.name
+                return publisher
+                    .map { (name, $0) }
+                    .eraseToAnyPublisher()
             }
 
         Publishers.MergeMany(upstream)
-            .sink { [weak self] keys in
+            .sink { [weak self] source, keys in
                 guard let self = self else { return }
 
                 let snapshot = Snapshot(flagPole: self, snapshot: self.latestSnapshot.value)
-                let changed = Snapshot(flagPole: self, copyingFlagValuesFrom: .pole, keys: keys.isEmpty == true ? nil : keys)
+                let changed = Snapshot(flagPole: self, copyingFlagValuesFrom: .pole, keys: keys.isEmpty == true ? nil : keys, diagnosticsEnabled: self._diagnosticsEnabled)
                 snapshot.merge(changed)
-
                 self.latestSnapshot.send(snapshot)
+
+                if self._diagnosticsEnabled == true {
+                    self.diagnosticSubject.send(.init(changed: changed, sources: [source]))
+                }
             }
             .store(in: &self.cancellables)
 
         if sendImmediately {
-            self.latestSnapshot.send(self.snapshot())
+            let snapshot = self.snapshot()
+            self.latestSnapshot.send(snapshot)
+            if self._diagnosticsEnabled == true {
+                self.diagnosticSubject.send(.init(changed: snapshot, sources: changedSources))
+            }
         }
     }
 
-    #endif
+#endif // !os(Linux)
+
+    // MARK: - Diagnostics
+
+    var _diagnosticsEnabled = false
+
+    /// Returns the current diagnostic state of all flags managed by this FlagPole.
+    ///
+    /// This method is intended to be called from the debugger
+    ///
+    public func makeDiagnostics () -> [FlagPoleDiagnostic] {
+        return .init(current: self.snapshot(enableDiagnostics: true))
+    }
+
+#if !os(Linux)
+
+    private lazy var diagnosticSubject = PassthroughSubject<[FlagPoleDiagnostic], Never>()
+
+    /// A `Publisher` that can be used to monitor diagnostic outputs
+    ///
+    /// An array of `Diagnostic` messages is emitted every time a flag value changes. It can be one of two types:
+    ///
+    ///  - The value of every flag on the `FlagPole` at the time of subscribing, and which `FlagValueSource` it was resolved by
+    ///  - An array of the flag values that were changed, which `FlagValueSource` they were changed by, and their resolved value/source
+    ///
+    public func makeDiagnosticsPublisher () -> AnyPublisher<[FlagPoleDiagnostic], Never> {
+        let wasAlreadyEnabled = _diagnosticsEnabled
+        _diagnosticsEnabled = true
+
+        let snapshot = self.latestSnapshot.value
+
+        // if publishing hasn't been started yet (ie they've accessed `_diagnosticsPublisher` before `publisher`)
+        if self.shouldSetupSnapshotPublishing == false {
+            self.shouldSetupSnapshotPublishing = true
+            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
+
+        // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
+        } else if wasAlreadyEnabled == false {
+            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
+        }
+
+        return diagnosticSubject
+            .prepend(.init(current: snapshot))
+            .eraseToAnyPublisher()
+    }
+
+#endif // !os(Linux)
 
 
     // MARK: - Snapshots
@@ -229,10 +298,11 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
     ///                     into the snapshot instead.
     ///
-    public func snapshot (of source: FlagValueSource? = nil) -> Snapshot<RootGroup> {
+    public func snapshot (of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
         return Snapshot (
             flagPole: self,
-            copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole
+            copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
+            diagnosticsEnabled: enableDiagnostics || self._diagnosticsEnabled
         )
     }
 

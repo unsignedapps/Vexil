@@ -28,14 +28,19 @@ extension FlagValueDictionary: FlagValueSource {
         } else {
             self.storage.removeValue(forKey: key)
         }
+
+#if !os(Linux)
+        self.valueDidChange.send([ key ])
+#endif
+
     }
 
-    #if !os(Linux)
+#if !os(Linux)
 
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         self.valueDidChange
             .eraseToAnyPublisher()
     }
 
-    #endif
+#endif
 }

@@ -124,7 +124,7 @@ Similarly to the ``Flag``s, we can customise the calculation of the ``FlagGroup`
 
 ### Skipping FlagGroups
 
-It does support an additional ``CodingKeyStrategy`` though: `.skip`. Which will ignore that ``FlagGroup``s key in the calculation:
+It does support an additional ``FlagGroup/CodingKeyStrategy`` though: `.skip`. Which will ignore that ``FlagGroup``s key in the calculation:
 
 ```swift
 struct MyFlags: FlagContainer {

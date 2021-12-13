@@ -42,7 +42,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     /// The `Flag` value. This is a calculated property based on the `FlagPole`s sources.
     public var wrappedValue: Value {
-        return value(in: nil) ?? self.defaultValue
+        return value(in: nil)?.value ?? self.defaultValue
     }
 
     /// The string-based Key for this `Flag`, as calculated during `init`. This key is
@@ -149,9 +149,11 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     // MARK: - Lookup Support
 
-    func value (in source: FlagValueSource?) -> Value? {
-        guard let lookup = self.decorator.lookup, let key = self.decorator.key else { return self.defaultValue }
-        let value: Value? = lookup.lookup(key: key, in: source)
+    func value (in source: FlagValueSource?) -> LookupResult<Value>? {
+        guard let lookup = self.decorator.lookup, let key = self.decorator.key else {
+            return LookupResult(source: nil, value: self.defaultValue)
+        }
+        let value: LookupResult<Value>? = lookup.lookup(key: key, in: source)
 
         // if we're looking up against a specific source we return only what we get from it
         if source != nil {
@@ -159,7 +161,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         }
 
         // otherwise we're looking up on the FlagPole - which must always return a value so go back to our default
-        return value ?? self.defaultValue
+        return value ?? LookupResult(source: nil, value: self.defaultValue)
     }
 
 }
