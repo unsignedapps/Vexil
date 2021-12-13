@@ -17,41 +17,50 @@ struct FlagDisplayValueView<Value>: View where Value: FlagValue {
 
     let value: Value
 
+    var string: String? {
+        if let value = self.value as? OptionalFlagDisplayValue {
+            return value.flagDisplayValue
+        }
+        if let displayValue = value as? FlagDisplayValue {
+            return displayValue.flagDisplayValue
+        }
+        return String(describing: value)
+    }
 
     // MARK: - Body
 
     var body: some View {
-        return (self.value as? OptionalFlagDisplayValue)?.flagDisplayText
-            ?? (self.value as? FlagDisplayValue)?.flagDisplayText
-            ?? Text(String(describing: self.value)).eraseToAnyView()
+        Group {
+            if self.string != nil {
+                Text(string!)
+                    .contextMenu {
+                        CopyButton(action: self.string!.copyToPasteboard)
+                    }
+
+            } else {
+                Text("nil").foregroundColor(.red)
+            }
+        }
     }
 
 }
 
 private protocol OptionalFlagDisplayValue {
-    var flagDisplayText: AnyView { get }
+    var flagDisplayValue: String? { get }
 }
 
 extension Optional: OptionalFlagDisplayValue where Wrapped: FlagValue {
-    var flagDisplayText: AnyView {
+    var flagDisplayValue: String? {
         guard let value = self else {
-            return Text("nil")
-                .foregroundColor(.red)
-                .eraseToAnyView()
+            return nil
         }
 
-        let string = (value as? FlagDisplayValue)?.flagDisplayValue ?? String(describing: value)
-        return Text(string)
-            .eraseToAnyView()
+        if let displayValue = value as? FlagDisplayValue {
+            return displayValue.flagDisplayValue
+        }
+
+        return String(describing: value)
     }
 }
-
-private extension FlagDisplayValue {
-    var flagDisplayText: AnyView {
-        return Text(self.flagDisplayValue)
-            .eraseToAnyView()
-    }
-}
-
 
 #endif

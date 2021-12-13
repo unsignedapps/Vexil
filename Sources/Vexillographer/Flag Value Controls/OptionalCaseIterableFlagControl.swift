@@ -145,7 +145,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
         return OptionalCaseIterableFlagControl<Value> (
             label: label,
             value: Binding (
-                get: { Value(manager.rawValue(key: key)) },
+                get: { Value(manager.flagValue(key: key)) },
                 set: { newValue in
                     do {
                         try manager.setFlagValue(newValue.wrapped, key: key)
