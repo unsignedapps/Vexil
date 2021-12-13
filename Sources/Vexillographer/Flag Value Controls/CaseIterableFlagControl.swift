@@ -60,11 +60,13 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     #elseif os(macOS)
 
-    @ViewBuilder var body: some View {
-        if self.isEditable {
-            self.picker
-        } else {
-            self.content
+    var body: some View {
+        Group {
+            if self.isEditable {
+                self.picker
+            } else {
+                self.content
+            }
         }
     }
 
