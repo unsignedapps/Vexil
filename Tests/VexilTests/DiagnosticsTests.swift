@@ -5,6 +5,8 @@
 //  Created by Rob Amos on 12/12/21.
 //
 
+// swiftlint:disable let_var_whitespace function_body_length
+
 #if canImport(Combine)
 
 import Combine
