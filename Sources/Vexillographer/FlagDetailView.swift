@@ -74,13 +74,13 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 }
             }
 
-            if let source = self.manager.source {
+            if self.manager.source != nil {
                 FlagDetailSection(header: Text("Current Source")) {
                     HStack {
-                        Text(source.name)
+                        Text(self.manager.source!.name)
                             .font(.headline)
                         Spacer()
-                        self.description(source: source)
+                        self.description(source: self.manager.source!)
                     }
 
                     Button(action: self.clearValue) {
