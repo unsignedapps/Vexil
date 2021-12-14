@@ -16,6 +16,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     // MARK: - Properties
 
     let flag: UnfurledFlag<Value, RootGroup>
+    let isEditable: Bool
 
     @ObservedObject var manager: FlagValueManager<RootGroup>
 
@@ -25,6 +26,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     init (flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
         self.flag = flag
         self.manager = manager
+        self.isEditable = manager.isEditable
     }
 
 
@@ -72,22 +74,24 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
                 }
             }
 
-            FlagDetailSection(header: Text("Current Source")) {
-                HStack {
-                    Text(self.manager.source.name)
-                        .font(.headline)
-                    Spacer()
-                    self.description(source: self.manager.source)
-                }
+            if self.manager.source != nil {
+                FlagDetailSection(header: Text("Current Source")) {
+                    HStack {
+                        Text(self.manager.source!.name)
+                            .font(.headline)
+                        Spacer()
+                        self.description(source: self.manager.source!)
+                    }
 
-                Button(action: self.clearValue) {
-                    Text("Clear Flag Value in Current Source")
+                    Button(action: self.clearValue) {
+                        Text("Clear Flag Value in Current Source")
+                    }
+                    .foregroundColor(.red)
+                    .opacity(self.isCurrentSourceSet ? 1 : 0.3)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                    .disabled(self.isCurrentSourceSet == false)
+                    .animation(.easeInOut, value: self.isCurrentSourceSet)
                 }
-                .foregroundColor(.red)
-                .opacity(self.isCurrentSourceSet ? 1 : 0.3)
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                .disabled(self.isCurrentSourceSet == false)
-                .animation(.easeInOut, value: self.isCurrentSourceSet)
             }
 
             FlagDetailSection(header: Text("FlagPole Source Hierarchy")) {
@@ -125,11 +129,14 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     }
 
     func clearValue () {
-        try? self.manager.source.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
+        try? self.manager.source?.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
     }
 
     var isCurrentSourceSet: Bool {
-        self.flagValue(source: self.manager.source) != nil
+        guard let source = self.manager.source else {
+            return false
+        }
+        return self.flagValue(source: source) != nil
     }
 
     private var flagKeyView: some View {

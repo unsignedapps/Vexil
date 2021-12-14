@@ -22,7 +22,13 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    public init (flagPole: FlagPole<RootGroup>, source: FlagValueSource) {
+    /// Initialises a new `Vexillographer` instance with the provided FlagPole and source
+    ///
+    /// - Parameters;
+    ///   - flagPole:           A `FlagPole` instance manages the flag and source hierarchy we want to display
+    ///   - source:             An optional `FlagValueSource` for editing the flag values in. If `nil` the flag values are displayed read-only
+    ///
+    public init (flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
         self.manager = FlagValueManager(flagPole: flagPole, source: source)
     }
 
