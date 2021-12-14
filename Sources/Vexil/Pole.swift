@@ -268,7 +268,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         let wasAlreadyEnabled = _diagnosticsEnabled
         _diagnosticsEnabled = true
 
-        let snapshot = self.latestSnapshot.value
+        var snapshot = self.latestSnapshot.value
 
         // if publishing hasn't been started yet (ie they've accessed `_diagnosticsPublisher` before `publisher`)
         if self.shouldSetupSnapshotPublishing == false {
@@ -277,7 +277,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
         // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
         } else if wasAlreadyEnabled == false {
-            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: true)
+            snapshot = self.snapshot()
+            self.latestSnapshot.send(snapshot)
         }
 
         return diagnosticSubject
