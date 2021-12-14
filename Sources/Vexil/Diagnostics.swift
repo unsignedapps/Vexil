@@ -38,12 +38,11 @@ extension Array where Element == FlagPoleDiagnostic {
 
     /// Creates diagnostic cases from a changed snapshot
     init<Root> (changed: Snapshot<Root>, sources: [String]?) where Root: FlagContainer {
-        let changedBy: String?
-        if let sources = sources {
-            changedBy = Set(sources).sorted().joined(separator: ", ")
-        } else {
-            changedBy = nil
+        guard let sources = sources else {
+            self = .init(current: changed)
+            return
         }
+        let changedBy = Set(sources).sorted().joined(separator: ", ")
 
         self = changed.values
             .sorted(by: { $0.key < $1.key })
