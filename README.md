@@ -184,4 +184,4 @@ Vexil is available under the MIT license. See the [LICENSE](LICENSE) file for mo
 [defining-flags]: https://vexil.unsignedapps.com/documentation/vexil/definingflags
 [flag-value-sources]: https://vexil.unsignedapps.com/documentation/vexil/sources/
 [snapshots]: https://vexil.unsignedapps.com/documentation/vexil/snapshots/
-[vexillographer]: Documentation/Vexillographer.md
+[vexillographer]: https://vexil.unsignedapps.com/documentation/vexillographer/
