@@ -28,17 +28,92 @@ import Foundation
 @propertyWrapper
 public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
+    // FlagContainers may have many flags, so to reduce code bloat
+    // it's important that each Flag have as few stored properties
+    // (with nontrivial copy behavior) as possible. We therefore use
+    // a single `Allocation` for all of Flag's stored properties.
+    final class Allocation {
+        var id: UUID
+        var info: FlagInfo
+        var defaultValue: Value
+
+        // these are computed lazily during `decorate`
+        var key: String?
+        weak var lookup: Lookup?
+
+        var codingKeyStrategy: CodingKeyStrategy
+
+        init(
+            id: UUID = UUID(),
+            info: FlagInfo,
+            defaultValue: Value,
+            key: String? = nil,
+            lookup: Lookup? = nil,
+            codingKeyStrategy: CodingKeyStrategy
+        ) {
+            self.id = id
+            self.info = info
+            self.defaultValue = defaultValue
+            self.key = key
+            self.lookup = lookup
+            self.codingKeyStrategy = codingKeyStrategy
+        }
+
+        func copy() -> Allocation {
+            Allocation(
+                id: id,
+                info: info,
+                defaultValue: defaultValue,
+                key: key,
+                lookup: lookup,
+                codingKeyStrategy: codingKeyStrategy
+            )
+        }
+    }
+
     // MARK: - Properties
 
+    var allocation: Allocation
+
     /// All `Flag`s are `Identifiable`
-    public var id = UUID()
+    public var id: UUID {
+        get {
+            allocation.id
+        }
+        set {
+            if !isKnownUniquelyReferenced(&allocation) {
+                allocation = allocation.copy()
+            }
+            allocation.id = newValue
+        }
+    }
 
     /// A collection of information about this `Flag`, such as its display name and description.
-    public var info: FlagInfo
+    public var info: FlagInfo {
+        get {
+            allocation.info
+        }
+        set {
+            if !isKnownUniquelyReferenced(&allocation) {
+                allocation = allocation.copy()
+            }
+            allocation.info = newValue
+        }
+    }
 
     /// The default value for this `Flag` for when no sources are available, or if no
     /// sources have a value specified for this flag.
-    public var defaultValue: Value
+    public var defaultValue: Value {
+        get {
+            allocation.defaultValue
+        }
+        set {
+            if !isKnownUniquelyReferenced(&allocation) {
+                allocation = allocation.copy()
+            }
+            allocation.defaultValue = newValue
+        }
+    }
 
     /// The `Flag` value. This is a calculated property based on the `FlagPole`s sources.
     public var wrappedValue: Value {
@@ -48,7 +123,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     /// The string-based Key for this `Flag`, as calculated during `init`. This key is
     /// sent to  the `FlagValueSource`s.
     public var key: String {
-        return self.decorator.key!
+        return self.allocation.key!
     }
 
     /// A reference to the `Flag` itself is available as a projected value, in case you need
@@ -77,12 +152,12 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     ///                         You can also specify `.hidden` to hide this flag from Vexillographer.
     ///
     public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, default initialValue: Value, description: FlagInfo) {
-        self.codingKeyStrategy = codingKeyStrategy
-        self.defaultValue = initialValue
-
-        var info = description
-        info.name = name
-        self.info = info
+        self.init(
+            wrappedValue: initialValue,
+            name: name,
+            codingKeyStrategy: codingKeyStrategy,
+            description: description
+        )
     }
 
     /// Initialises a new `Flag` with the supplied info.
@@ -101,29 +176,33 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     ///                         You can also specify `.hidden` to hide this flag from Vexillographer.
     ///
     public init (wrappedValue: Value, name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
-        self.codingKeyStrategy = codingKeyStrategy
-        self.defaultValue = wrappedValue
-
         var info = description
         info.name = name
-        self.info = info
+        self.allocation = Allocation(
+            info: info,
+            defaultValue: wrappedValue,
+            codingKeyStrategy: codingKeyStrategy
+        )
     }
 
 
     // MARK: - Decorated Conformance
-
-    internal var decorator = Decorator()
-    internal let codingKeyStrategy: CodingKeyStrategy
 
     /// Decorates the receiver with the given lookup info.
     ///
     /// `self.key` is calculated during this step based on the supplied parameters. `lookup` is used by `self.wrappedValue`
     /// to find out the current flag value from the source hierarchy.
     ///
-    internal func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration) {
-        self.decorator.lookup = lookup
+    internal func decorate (
+        lookup: Lookup,
+        label: String,
+        codingPath: [String],
+        config: VexilConfiguration
+    ) {
+        // FIXME: this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
+        self.allocation.lookup = lookup
 
-        var action = self.codingKeyStrategy.codingKey(label: label)
+        var action = self.allocation.codingKeyStrategy.codingKey(label: label)
         if action == .default {
             action = config.codingPathStrategy.codingKey(label: label)
         }
@@ -131,16 +210,19 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         switch action {
 
         case .append(let string):
-            self.decorator.key = (codingPath + [string])
+            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
+            self.allocation.key = (codingPath + [string])
                 .joined(separator: config.separator)
 
         case .absolute(let string):
-            self.decorator.key = string
+            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
+            self.allocation.key = string
 
         // these two options should really never happen, but just in case, use what we've got
         case .default, .skip:
             assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for Flag \(self)")
-            self.decorator.key = (codingPath + [label])
+            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
+            self.allocation.key = (codingPath + [label])
                 .joined(separator: config.separator)
 
         }
@@ -150,7 +232,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     // MARK: - Lookup Support
 
     func value (in source: FlagValueSource?) -> LookupResult<Value>? {
-        guard let lookup = self.decorator.lookup, let key = self.decorator.key else {
+        guard let lookup = self.allocation.lookup, let key = self.allocation.key else {
             return LookupResult(source: nil, value: self.defaultValue)
         }
         let value: LookupResult<Value>? = lookup.lookup(key: key, in: source)
@@ -206,7 +288,7 @@ public extension Flag where Value: FlagValue & Equatable {
     /// remove duplicates.
     ///
     var publisher: AnyPublisher<Value, Never> {
-        decorator.lookup!.publisher(key: self.key)
+        allocation.lookup!.publisher(key: self.key)
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -224,7 +306,7 @@ public extension Flag {
     /// remove duplicates.
     ///
     var publisher: AnyPublisher<Value, Never> {
-        decorator.lookup!.publisher(key: self.key)
+        allocation.lookup!.publisher(key: self.key)
     }
 
 }

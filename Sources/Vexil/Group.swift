@@ -17,17 +17,81 @@ import Foundation
 @propertyWrapper
 public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContainer {
 
+    // FlagContainers may have many flag groups, so to reduce code bloat
+    // it's important that each FlagGroup have as few stored properties
+    // (with nontrivial copy behavior) as possible. We therefore use
+    // a single `Allocation` for all of FlagGroup's stored properties.
+    final class Allocation {
+        public let id: UUID
+        public let info: FlagInfo
+        public var wrappedValue: Group
+        public let display: Display
+
+        // these are computed lazily during `decorate`
+        var key: String?
+        weak var lookup: Lookup?
+
+        let codingKeyStrategy: CodingKeyStrategy
+
+        init(
+            id: UUID = UUID(),
+            info: FlagInfo,
+            wrappedValue: Group,
+            display: Display,
+            key: String? = nil,
+            lookup: Lookup? = nil,
+            codingKeyStrategy: CodingKeyStrategy
+        ) {
+            self.id = id
+            self.info = info
+            self.wrappedValue = wrappedValue
+            self.display = display
+            self.key = key
+            self.lookup = lookup
+            self.codingKeyStrategy = codingKeyStrategy
+        }
+
+        func copy() -> Allocation {
+            Allocation(
+                info: info,
+                wrappedValue: wrappedValue,
+                display: display,
+                key: key,
+                lookup: lookup,
+                codingKeyStrategy: codingKeyStrategy
+            )
+        }
+    }
+
+    var allocation: Allocation
+
     /// All `FlagGroup`s are `Identifiable`
-    public let id = UUID()
+    public var id: UUID {
+        allocation.id
+    }
 
     /// A collection of information about this `FlagGroup` such as its display name and description.
-    public let info: FlagInfo
+    public var info: FlagInfo {
+        allocation.info
+    }
 
     /// The `FlagContainer` being wrapped.
-    public var wrappedValue: Group
+    public var wrappedValue: Group {
+        get {
+            allocation.wrappedValue
+        }
+        set {
+            if !isKnownUniquelyReferenced(&allocation) {
+                allocation = allocation.copy()
+            }
+            allocation.wrappedValue = newValue
+        }
+    }
 
     /// How we should display this group in Vexillographer
-    public let display: Display
+    public var display: Display {
+        allocation.display
+    }
 
 
     // MARK: - Initialisation
@@ -48,20 +112,18 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     ///   - display:            Whether we should display this FlagGroup as using a `NavigationLink` or as a `Section` in Vexillographer
     ///
     public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {
-        self.codingKeyStrategy = codingKeyStrategy
-        self.wrappedValue = Group()
-        self.display = display
-
         var info = description
         info.name = name
-        self.info = info
+        self.allocation = Allocation(
+            info: info,
+            wrappedValue: Group(),
+            display: display,
+            codingKeyStrategy: codingKeyStrategy
+        )
     }
 
 
-    // MARK: - Decoratod Conformance
-
-    internal var decorator = Decorator()
-    private let codingKeyStrategy: CodingKeyStrategy
+    // MARK: - Decorated Conformance
 
     /// Decorates the receiver with the given lookup info.
     ///
@@ -69,7 +131,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     /// any `Flag` or `FlagGroup` contained within the receiver.
     ///
     func decorate(lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration) {
-        var action = self.codingKeyStrategy.codingKey(label: label)
+        var action = self.allocation.codingKeyStrategy.codingKey(label: label)
         if action == .default {
             action = config.codingPathStrategy.codingKey(label: label)
         }
@@ -89,8 +151,9 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
 
         }
 
-        self.decorator.key = codingPath.joined(separator: config.separator)
-        self.decorator.lookup = lookup
+        // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
+        self.allocation.key = codingPath.joined(separator: config.separator)
+        self.allocation.lookup = lookup
 
         Mirror(reflecting: self.wrappedValue)
             .children

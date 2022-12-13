@@ -15,17 +15,6 @@ internal protocol Decorated {
     func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
 }
 
-/// An internal class that `Flag` and `FlagGroup`s store their information in.
-/// It is specifically a class so that  the `Flag` and `FlagGroup` structs can
-/// mutate the `Decorator` while remaining immutable themselves.
-///
-internal class Decorator {
-    var key: String?
-    weak var lookup: Lookup?
-
-    init() {}
-}
-
 internal extension Sequence where Element == Mirror.Child {
 
     typealias DecoratedChild = (label: String, value: Decorated)
