@@ -21,48 +21,6 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     // it's important that each FlagGroup have as few stored properties
     // (with nontrivial copy behavior) as possible. We therefore use
     // a single `Allocation` for all of FlagGroup's stored properties.
-    final class Allocation {
-        public let id: UUID
-        public let info: FlagInfo
-        public var wrappedValue: Group
-        public let display: Display
-
-        // these are computed lazily during `decorate`
-        var key: String?
-        weak var lookup: Lookup?
-
-        let codingKeyStrategy: CodingKeyStrategy
-
-        init(
-            id: UUID = UUID(),
-            info: FlagInfo,
-            wrappedValue: Group,
-            display: Display,
-            key: String? = nil,
-            lookup: Lookup? = nil,
-            codingKeyStrategy: CodingKeyStrategy
-        ) {
-            self.id = id
-            self.info = info
-            self.wrappedValue = wrappedValue
-            self.display = display
-            self.key = key
-            self.lookup = lookup
-            self.codingKeyStrategy = codingKeyStrategy
-        }
-
-        func copy() -> Allocation {
-            Allocation(
-                info: info,
-                wrappedValue: wrappedValue,
-                display: display,
-                key: key,
-                lookup: lookup,
-                codingKeyStrategy: codingKeyStrategy
-            )
-        }
-    }
-
     var allocation: Allocation
 
     /// All `FlagGroup`s are `Identifiable`
@@ -81,7 +39,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
             allocation.wrappedValue
         }
         set {
-            if !isKnownUniquelyReferenced(&allocation) {
+            if isKnownUniquelyReferenced(&allocation) == false {
                 allocation = allocation.copy()
             }
             allocation.wrappedValue = newValue
@@ -195,6 +153,55 @@ extension FlagGroup: CustomDebugStringConvertible {
                     .joined(separator: ", ")
             + ")"
     }
+}
+
+
+// MARK: - Property Storage
+
+extension FlagGroup {
+
+    final class Allocation {
+        let id: UUID
+        let info: FlagInfo
+        var wrappedValue: Group
+        let display: Display
+
+        // these are computed lazily during `decorate`
+        var key: String?
+        weak var lookup: Lookup?
+
+        let codingKeyStrategy: CodingKeyStrategy
+
+        init(
+            id: UUID = UUID(),
+            info: FlagInfo,
+            wrappedValue: Group,
+            display: Display,
+            key: String? = nil,
+            lookup: Lookup? = nil,
+            codingKeyStrategy: CodingKeyStrategy
+        ) {
+            self.id = id
+            self.info = info
+            self.wrappedValue = wrappedValue
+            self.display = display
+            self.key = key
+            self.lookup = lookup
+            self.codingKeyStrategy = codingKeyStrategy
+        }
+
+        func copy() -> Allocation {
+            Allocation(
+                info: info,
+                wrappedValue: wrappedValue,
+                display: display,
+                key: key,
+                lookup: lookup,
+                codingKeyStrategy: codingKeyStrategy
+            )
+        }
+    }
+
 }
 
 

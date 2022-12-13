@@ -28,51 +28,12 @@ import Foundation
 @propertyWrapper
 public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
+    // MARK: - Properties
+
     // FlagContainers may have many flags, so to reduce code bloat
     // it's important that each Flag have as few stored properties
     // (with nontrivial copy behavior) as possible. We therefore use
     // a single `Allocation` for all of Flag's stored properties.
-    final class Allocation {
-        var id: UUID
-        var info: FlagInfo
-        var defaultValue: Value
-
-        // these are computed lazily during `decorate`
-        var key: String?
-        weak var lookup: Lookup?
-
-        var codingKeyStrategy: CodingKeyStrategy
-
-        init(
-            id: UUID = UUID(),
-            info: FlagInfo,
-            defaultValue: Value,
-            key: String? = nil,
-            lookup: Lookup? = nil,
-            codingKeyStrategy: CodingKeyStrategy
-        ) {
-            self.id = id
-            self.info = info
-            self.defaultValue = defaultValue
-            self.key = key
-            self.lookup = lookup
-            self.codingKeyStrategy = codingKeyStrategy
-        }
-
-        func copy() -> Allocation {
-            Allocation(
-                id: id,
-                info: info,
-                defaultValue: defaultValue,
-                key: key,
-                lookup: lookup,
-                codingKeyStrategy: codingKeyStrategy
-            )
-        }
-    }
-
-    // MARK: - Properties
-
     var allocation: Allocation
 
     /// All `Flag`s are `Identifiable`
@@ -81,7 +42,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
             allocation.id
         }
         set {
-            if !isKnownUniquelyReferenced(&allocation) {
+            if isKnownUniquelyReferenced(&allocation) == false {
                 allocation = allocation.copy()
             }
             allocation.id = newValue
@@ -94,7 +55,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
             allocation.info
         }
         set {
-            if !isKnownUniquelyReferenced(&allocation) {
+            if isKnownUniquelyReferenced(&allocation) == false {
                 allocation = allocation.copy()
             }
             allocation.info = newValue
@@ -108,7 +69,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
             allocation.defaultValue
         }
         set {
-            if !isKnownUniquelyReferenced(&allocation) {
+            if isKnownUniquelyReferenced(&allocation) == false {
                 allocation = allocation.copy()
             }
             allocation.defaultValue = newValue
@@ -199,7 +160,6 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         codingPath: [String],
         config: VexilConfiguration
     ) {
-        // FIXME: this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
         self.allocation.lookup = lookup
 
         var action = self.allocation.codingKeyStrategy.codingKey(label: label)
@@ -210,18 +170,15 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         switch action {
 
         case .append(let string):
-            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
             self.allocation.key = (codingPath + [string])
                 .joined(separator: config.separator)
 
         case .absolute(let string):
-            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
             self.allocation.key = string
 
         // these two options should really never happen, but just in case, use what we've got
         case .default, .skip:
             assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for Flag \(self)")
-            // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
             self.allocation.key = (codingPath + [label])
                 .joined(separator: config.separator)
 
@@ -271,6 +228,52 @@ extension Flag: CustomDebugStringConvertible {
     public var debugDescription: String {
         return "\(key)=\(wrappedValue)"
     }
+}
+
+
+// MARK: - Property Storage
+
+extension Flag {
+
+    final class Allocation {
+        var id: UUID
+        var info: FlagInfo
+        var defaultValue: Value
+
+        // these are computed lazily during `decorate`
+        var key: String?
+        weak var lookup: Lookup?
+
+        var codingKeyStrategy: CodingKeyStrategy
+
+        init(
+            id: UUID = UUID(),
+            info: FlagInfo,
+            defaultValue: Value,
+            key: String? = nil,
+            lookup: Lookup? = nil,
+            codingKeyStrategy: CodingKeyStrategy
+        ) {
+            self.id = id
+            self.info = info
+            self.defaultValue = defaultValue
+            self.key = key
+            self.lookup = lookup
+            self.codingKeyStrategy = codingKeyStrategy
+        }
+
+        func copy() -> Allocation {
+            Allocation(
+                id: id,
+                info: info,
+                defaultValue: defaultValue,
+                key: key,
+                lookup: lookup,
+                codingKeyStrategy: codingKeyStrategy
+            )
+        }
+    }
+
 }
 
 
