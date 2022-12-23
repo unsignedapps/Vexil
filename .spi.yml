@@ -3,3 +3,4 @@ builder:
   configs:
   - platform: watchos
     scheme: Vexil
+  - documentation_targets: [Vexil, Vexillographer]
