@@ -208,8 +208,8 @@ extension Int8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = Int8(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(Int8.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -221,8 +221,8 @@ extension Int16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = Int16(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(Int16.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -234,8 +234,8 @@ extension Int32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = Int32(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(Int32.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -247,8 +247,8 @@ extension Int64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = Int64(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(Int64.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -260,8 +260,8 @@ extension UInt: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = UInt(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(UInt.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -273,8 +273,8 @@ extension UInt8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = UInt8(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(UInt8.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -286,8 +286,8 @@ extension UInt16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = UInt16(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(UInt16.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -299,8 +299,8 @@ extension UInt32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = UInt32(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(UInt32.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {
@@ -312,8 +312,8 @@ extension UInt64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
-        self = UInt64(value)
+        guard let value = Int(boxedFlagValue: boxedFlagValue).flatMap(UInt64.init(exactly:)) else { return nil }
+        self = value
     }
 
     public var boxedFlagValue: BoxedFlagValue {

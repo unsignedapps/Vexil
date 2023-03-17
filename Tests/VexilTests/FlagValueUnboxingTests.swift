@@ -161,6 +161,45 @@ final class FlagValueUnboxingTests: XCTestCase {
     }
 
 
+    // MARK: - Integer overflows
+
+    func testInt8FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(Int8.max) + 1)
+
+        XCTAssertNil(Int8(boxedFlagValue: boxed))
+    }
+
+    func testInt16FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(Int16.max) + 1)
+
+        XCTAssertNil(Int16(boxedFlagValue: boxed))
+    }
+
+    func testInt32FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(Int32.max) + 1)
+
+        XCTAssertNil(Int32(boxedFlagValue: boxed))
+    }
+
+    func testUInt8FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(UInt8.max) + 1)
+
+        XCTAssertNil(UInt8(boxedFlagValue: boxed))
+    }
+
+    func testUInt16FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(UInt16.max) + 1)
+
+        XCTAssertNil(UInt16(boxedFlagValue: boxed))
+    }
+
+    func testUInt32FlagValueWithOverflow () {
+        let boxed = BoxedFlagValue.integer(Int(UInt32.max) + 1)
+
+        XCTAssertNil(UInt32(boxedFlagValue: boxed))
+    }
+
+
     // MARK: - Floating Point Flag Values
 
     func testFloatFlagValue () {
