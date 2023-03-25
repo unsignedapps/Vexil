@@ -2,9 +2,8 @@
 # Makefile for Linux-based tests
 #
 
-SWIFT := $(shell xcrun -f swift)
+SWIFT := swift
 SWIFTFORMAT := $(SWIFT) package plugin --allow-writing-to-package-directory swiftformat
-XCODEBUILD := $(shell xcrun -f xcodebuild)
 DOCKER := docker
 SWIFT_DOCKER_IMAGE = swift:latest
 
