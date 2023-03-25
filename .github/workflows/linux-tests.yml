@@ -47,6 +47,8 @@ jobs:
             os: jammy
           - swift: 5.6.3
             os: jammy
+          - swift: 5.7.3
+            os: centos7
 
     container:
       image: swift:${{ matrix.swift }}-${{ matrix.os }}
