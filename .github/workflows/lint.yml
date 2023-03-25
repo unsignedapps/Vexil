@@ -1,4 +1,4 @@
-name: SwiftLint
+name: Linting
 
 on:
   pull_request:
@@ -12,25 +12,21 @@ jobs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
           filters: |
             changed:
-              - '.github/workflows/swiftlint.yml'
-              - '.swiftlint.yml'
+              - '.github/workflows/lint.yml'
+              - '..swiftformat'
               - '**/*.swift'
 
-  SwiftLint:
+  Lint:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     steps:
-      - uses: actions/checkout@v1
-      - name: "🧹 SwiftLint changed files"
-        uses: norio-nomura/action-swiftlint@3.1.0
-        with:
-          args: --strict
-        # env:
-        #   DIFF_BASE: ${{ github.base_ref }}
+      - uses: actions/checkout@v3
+      - name: "🧹 Lint changed files"
+        run: make lint

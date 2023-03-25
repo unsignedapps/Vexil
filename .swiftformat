@@ -1,0 +1,23 @@
+# Formatting
+--header //===----------------------------------------------------------------------===//\n//\n// This source file is part of the Vexil open source project\n//\n// Copyright (c) {year} Unsigned Apps and the open source contributors.\n// Licensed under the MIT license\n//\n// See LICENSE for license information\n//\n// SPDX-License-Identifier: MIT\n//\n//===----------------------------------------------------------------------===//
+--self init-only
+--semicolons never
+--ifdef outdent
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes prev-line
+--stripunusedargs closure-only
+
+# Disabling default rules
+--disable consecutiveBlankLines
+--disable consecutiveSpaces
+--disable spaceInsideBrackets
+--disable wrap
+--disable blankLinesAtEndOfScope
+--disable blankLinesAtStartOfScope
+
+# Enabling optional rules
+--enable blankLinesBetweenImports
+--enable blockComments
+--enable isEmpty
+--enable wrapConditionalBodies

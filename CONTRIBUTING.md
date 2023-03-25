@@ -26,6 +26,8 @@ Submit your pull request against the `main` branch.
 
 Pull requests that include tests for modified and new functionalities, inline documentation, and relevant updates to the main README.md are merged faster, because you won't have to wait for somebody else to complete your contribution.
 
+Please make sure your contributions are formatted with [SwiftFormat](http://github.com/nicklockwood/SwiftFormat) using `make format`.
+
 [issues]: https://github.com/unsignedapps/Vexil/issues
 [new-issue]: https://github.com/unsignedapps/Vexil/issues/new
 [twitter]: http://twitter.com/bok_
