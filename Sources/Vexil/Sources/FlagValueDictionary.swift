@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueDictionary.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -23,7 +29,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     /// The name of our `FlagValueSource`
     public var name: String {
-        return "\(String(describing: Self.self)): \(self.id.uuidString)"
+        return "\(String(describing: Self.self)): \(id.uuidString)"
     }
 
     /// Our internal dictionary type
@@ -31,15 +37,15 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     internal var storage: DictionaryType
 
-    #if !os(Linux)
-    private(set) internal var valueDidChange = PassthroughSubject<Set<String>, Never>()
-    #endif
+#if !os(Linux)
+    internal private(set) var valueDidChange = PassthroughSubject<Set<String>, Never>()
+#endif
 
 
     // MARK: - Initialisation
 
     /// Private (but for @testable) memeberwise initialiser
-    init (id: UUID, storage: DictionaryType) {
+    init(id: UUID, storage: DictionaryType) {
         self.id = id
         self.storage = storage
     }
@@ -52,7 +58,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     /// Initialises a `FlagValueDictionary` with the specified dictionary
     ///
-    public required init<S> (_ sequence: S) where S: Sequence, S.Element == (key: String, value: BoxedFlagValue) {
+    public required init<S>(_ sequence: S) where S: Sequence, S.Element == (key: String, value: BoxedFlagValue) {
         self.id = UUID()
         self.storage = sequence.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.value, forKey: pair.key)

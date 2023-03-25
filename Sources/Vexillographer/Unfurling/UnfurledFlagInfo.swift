@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnfurledFlagInfo.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -26,7 +32,7 @@ struct UnfurledFlagInfo {
 
     // MARK: - Initialisation
 
-    init (key: String, info: FlagInfo, defaultName: String) {
+    init(key: String, info: FlagInfo, defaultName: String) {
         self.key = key
         self.name = info.name ?? defaultName
         self.description = info.description

@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  BoxedFlagValue+Codable.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 11/10/21.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -83,32 +89,32 @@ extension BoxedFlagValue: Decodable {
 
         // Simple Types
         if container.contains(.bool) {
-            self = .bool(try container.decode(Bool.self, forKey: .bool))
+            self = try .bool(container.decode(Bool.self, forKey: .bool))
 
         } else if container.contains(.data) {
-            self = .data(try container.decode(Data.self, forKey: .data))
+            self = try .data(container.decode(Data.self, forKey: .data))
 
         } else if container.contains(.double) {
-            self = .double(try container.decode(Double.self, forKey: .double))
+            self = try .double(container.decode(Double.self, forKey: .double))
 
         } else if container.contains(.float) {
-            self = .float(try container.decode(Float.self, forKey: .float))
+            self = try .float(container.decode(Float.self, forKey: .float))
 
         } else if container.contains(.integer) {
-            self = .integer(try container.decode(Int.self, forKey: .integer))
+            self = try .integer(container.decode(Int.self, forKey: .integer))
 
         } else if container.contains(.none) {
             self = .none
 
         } else if container.contains(.string) {
-            self = .string(try container.decode(String.self, forKey: .string))
+            self = try .string(container.decode(String.self, forKey: .string))
 
-        // Collection Types
+            // Collection Types
         } else if container.contains(.array) {
             var array = [BoxedFlagValue]()
             var nested = try container.nestedUnkeyedContainer(forKey: .array)
             while nested.isAtEnd == false {
-                array.append(try nested.decode(BoxedFlagValue.self))
+                try array.append(nested.decode(BoxedFlagValue.self))
             }
             self = .array(array)
 
@@ -135,25 +141,25 @@ extension BoxedFlagValue: Decodable {
 
 private struct DynamicCodingKey: CodingKey, ExpressibleByStringLiteral {
 
-     var stringValue: String
-     var intValue: Int?
+    var stringValue: String
+    var intValue: Int?
 
-     init(_ value: String) {
-         self.stringValue = value
-         self.intValue = nil
-     }
+    init(_ value: String) {
+        self.stringValue = value
+        self.intValue = nil
+    }
 
-     init(stringLiteral value: StringLiteralType) {
-         self.stringValue = value
-         self.intValue = nil
-     }
+    init(stringLiteral value: StringLiteralType) {
+        self.stringValue = value
+        self.intValue = nil
+    }
 
-     init?(stringValue: String) {
-         self.stringValue = stringValue
-         self.intValue = nil
-     }
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
 
-     init?(intValue: Int) {
+    init?(intValue: Int) {
         self.intValue = intValue
         self.stringValue = intValue.description
     }

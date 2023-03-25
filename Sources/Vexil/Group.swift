@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagGroup.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -69,7 +75,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     ///                         You can also specify `.hidden` to hide this flag group from Vexillographer.
     ///   - display:            Whether we should display this FlagGroup as using a `NavigationLink` or as a `Section` in Vexillographer
     ///
-    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {
+    public init(name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {
         var info = description
         info.name = name
         self.allocation = Allocation(
@@ -89,7 +95,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
     /// any `Flag` or `FlagGroup` contained within the receiver.
     ///
     func decorate(lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration) {
-        var action = self.allocation.codingKeyStrategy.codingKey(label: label)
+        var action = allocation.codingKeyStrategy.codingKey(label: label)
         if action == .default {
             action = config.codingPathStrategy.codingKey(label: label)
         }
@@ -97,7 +103,7 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
         var codingPath = codingPath
 
         switch action {
-        case .append(let string):
+        case let .append(string):
             codingPath.append(string)
 
         case .skip:
@@ -110,10 +116,10 @@ public struct FlagGroup<Group>: Decorated, Identifiable where Group: FlagContain
         }
 
         // FIXME: for compatibility with existing behavior, this doesn't use `isKnownUniquelyReferenced`, but perhaps it should?
-        self.allocation.key = codingPath.joined(separator: config.separator)
-        self.allocation.lookup = lookup
+        allocation.key = codingPath.joined(separator: config.separator)
+        allocation.lookup = lookup
 
-        Mirror(reflecting: self.wrappedValue)
+        Mirror(reflecting: wrappedValue)
             .children
             .lazy
             .decorated
@@ -134,7 +140,7 @@ extension FlagGroup: Equatable where Group: Equatable {
 
 extension FlagGroup: Hashable where Group: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.wrappedValue)
+        hasher.combine(wrappedValue)
     }
 }
 
@@ -145,12 +151,12 @@ extension FlagGroup: CustomDebugStringConvertible {
     public var debugDescription: String {
         return "\(String(describing: Group.self))("
             + Mirror(reflecting: wrappedValue).children
-                .map { _, value -> String in
-                    (value as? CustomDebugStringConvertible)?.debugDescription
-                        ?? (value as? CustomStringConvertible)?.description
-                        ?? String(describing: value)
-                }
-                    .joined(separator: ", ")
+            .map { _, value -> String in
+                (value as? CustomDebugStringConvertible)?.debugDescription
+                    ?? (value as? CustomStringConvertible)?.description
+                    ?? String(describing: value)
+            }
+            .joined(separator: ", ")
             + ")"
     }
 }

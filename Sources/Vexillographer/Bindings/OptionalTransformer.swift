@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  OptionalTransformer.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 26/9/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -11,13 +17,16 @@ import Foundation
 import Vexil
 
 struct OptionalTransformer<Value, Default, Underlying>: BoxedFlagValueTransformer
-                where Value: OptionalFlagValue, Default: OptionalDefaultValue, Underlying: BoxedFlagValueTransformer,
-                      Underlying.OriginalValue == Value.WrappedFlagValue, Default == Underlying.EditingValue {
+    where Value: OptionalFlagValue, Default: OptionalDefaultValue, Underlying: BoxedFlagValueTransformer,
+    Underlying.OriginalValue == Value.WrappedFlagValue, Default == Underlying.EditingValue
+{
     typealias OriginalValue = Value
     typealias EditingValue = Underlying.EditingValue
 
     static func toEditingValue(_ value: OriginalValue?) -> EditingValue {
-        guard let wrapped = value?.wrapped else { return Default.defaultValue }
+        guard let wrapped = value?.wrapped else {
+            return Default.defaultValue
+        }
         return Underlying.toEditingValue(wrapped)
     }
 

@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Flag.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -78,13 +84,13 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     /// The `Flag` value. This is a calculated property based on the `FlagPole`s sources.
     public var wrappedValue: Value {
-        return value(in: nil)?.value ?? self.defaultValue
+        return value(in: nil)?.value ?? defaultValue
     }
 
     /// The string-based Key for this `Flag`, as calculated during `init`. This key is
     /// sent to  the `FlagValueSource`s.
     public var key: String {
-        return self.allocation.key!
+        return allocation.key!
     }
 
     /// A reference to the `Flag` itself is available as a projected value, in case you need
@@ -112,7 +118,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     ///   - description:        A description of this flag. Used in flag editors like Vexillographer, and also for future developer context.
     ///                         You can also specify `.hidden` to hide this flag from Vexillographer.
     ///
-    public init (name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, default initialValue: Value, description: FlagInfo) {
+    public init(name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, default initialValue: Value, description: FlagInfo) {
         self.init(
             wrappedValue: initialValue,
             name: name,
@@ -136,7 +142,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     ///   - description:        A description of this flag. Used in flag editors like Vexillographer, and also for future developer context.
     ///                         You can also specify `.hidden` to hide this flag from Vexillographer.
     ///
-    public init (wrappedValue: Value, name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
+    public init(wrappedValue: Value, name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo) {
         var info = description
         info.name = name
         self.allocation = Allocation(
@@ -154,32 +160,32 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
     /// `self.key` is calculated during this step based on the supplied parameters. `lookup` is used by `self.wrappedValue`
     /// to find out the current flag value from the source hierarchy.
     ///
-    internal func decorate (
+    internal func decorate(
         lookup: Lookup,
         label: String,
         codingPath: [String],
         config: VexilConfiguration
     ) {
-        self.allocation.lookup = lookup
+        allocation.lookup = lookup
 
-        var action = self.allocation.codingKeyStrategy.codingKey(label: label)
+        var action = allocation.codingKeyStrategy.codingKey(label: label)
         if action == .default {
             action = config.codingPathStrategy.codingKey(label: label)
         }
 
         switch action {
 
-        case .append(let string):
-            self.allocation.key = (codingPath + [string])
+        case let .append(string):
+            allocation.key = (codingPath + [string])
                 .joined(separator: config.separator)
 
-        case .absolute(let string):
-            self.allocation.key = string
+        case let .absolute(string):
+            allocation.key = string
 
         // these two options should really never happen, but just in case, use what we've got
         case .default, .skip:
             assertionFailure("Invalid `CodingKeyAction` found when attempting to create key name for Flag \(self)")
-            self.allocation.key = (codingPath + [label])
+            allocation.key = (codingPath + [label])
                 .joined(separator: config.separator)
 
         }
@@ -188,9 +194,9 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     // MARK: - Lookup Support
 
-    func value (in source: FlagValueSource?) -> LookupResult<Value>? {
-        guard let lookup = self.allocation.lookup, let key = self.allocation.key else {
-            return LookupResult(source: nil, value: self.defaultValue)
+    func value(in source: FlagValueSource?) -> LookupResult<Value>? {
+        guard let lookup = allocation.lookup, let key = allocation.key else {
+            return LookupResult(source: nil, value: defaultValue)
         }
         let value: LookupResult<Value>? = lookup.lookup(key: key, in: source)
 
@@ -200,7 +206,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
         }
 
         // otherwise we're looking up on the FlagPole - which must always return a value so go back to our default
-        return value ?? LookupResult(source: nil, value: self.defaultValue)
+        return value ?? LookupResult(source: nil, value: defaultValue)
     }
 
 }
@@ -216,8 +222,8 @@ extension Flag: Equatable where Value: Equatable {
 
 extension Flag: Hashable where Value: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.key)
-        hasher.combine(self.wrappedValue)
+        hasher.combine(key)
+        hasher.combine(wrappedValue)
     }
 }
 
@@ -291,7 +297,7 @@ public extension Flag where Value: FlagValue & Equatable {
     /// remove duplicates.
     ///
     var publisher: AnyPublisher<Value, Never> {
-        allocation.lookup!.publisher(key: self.key)
+        allocation.lookup!.publisher(key: key)
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -309,7 +315,7 @@ public extension Flag {
     /// remove duplicates.
     ///
     var publisher: AnyPublisher<Value, Never> {
-        allocation.lookup!.publisher(key: self.key)
+        allocation.lookup!.publisher(key: key)
     }
 
 }

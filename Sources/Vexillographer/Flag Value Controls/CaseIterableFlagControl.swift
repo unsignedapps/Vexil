@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  CaseIterableFlagControl.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 14/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -20,13 +26,16 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     // MARK: - Properties
 
     let label: String
-    @Binding var value: Value
+    @Binding
+    var value: Value
 
     let hasChanges: Bool
     let isEditable: Bool
-    @Binding var showDetail: Bool
+    @Binding
+    var showDetail: Bool
 
-    @Binding var showPicker: Bool
+    @Binding
+    var showPicker: Bool
 
     // MARK: - View Body
 
@@ -38,7 +47,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
         }
     }
 
-    #if os(iOS)
+#if os(iOS)
 
     var body: some View {
         HStack {
@@ -58,7 +67,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
-    #elseif os(macOS)
+#elseif os(macOS)
 
     var body: some View {
         Group {
@@ -71,7 +80,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     }
 
     var picker: some View {
-        let picker = Picker (
+        let picker = Picker(
             selection: self.$value,
             label: Text(self.label),
             content: {
@@ -81,19 +90,19 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
             }
         )
 
-        #if compiler(>=5.3.1)
+#if compiler(>=5.3.1)
 
         return picker
             .pickerStyle(MenuPickerStyle())
 
-        #else
+#else
 
         return picker
 
-        #endif
+#endif
     }
 
-    #endif
+#endif
 
     var selectorList: some View {
         Form {
@@ -119,19 +128,19 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
         }
     }
 
-    #if os(macOS)
+#if os(macOS)
 
     var checkmark: some View {
         return Text("✓")
     }
 
-    #else
+#else
 
     var checkmark: some View {
         return Image(systemName: "checkmark")
     }
 
-    #endif
+#endif
 
 }
 
@@ -140,28 +149,29 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol CaseIterableEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: CaseIterableEditableFlag
-            where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
-                  Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable {
+    where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
+    Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable
+{
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return CaseIterableFlagControl<Value> (
+        return CaseIterableFlagControl<Value>(
             label: label,
-            value: Binding (
-                key: self.flag.key,
+            value: Binding(
+                key: flag.key,
                 manager: manager,
-                defaultValue: self.flag.defaultValue,
+                defaultValue: flag.defaultValue,
                 transformer: PassthroughTransformer<Value>.self
             ),
-            hasChanges: manager.hasValueInSource(flag: self.flag),
+            hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
             showDetail: showDetail,
             showPicker: showPicker
         )
-            .eraseToAnyView()
+        .eraseToAnyView()
     }
 }
 

@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 // swiftlint:disable all
 
 //===----------------------------------------------------------------------===//
@@ -28,31 +41,31 @@ import Glibc
 /// of lock is safe to use with `libpthread`-based threading models, such as the
 /// one used by NIO.
 internal final class Lock {
-    #if os(Windows)
+#if os(Windows)
     fileprivate let mutex: UnsafeMutablePointer<SRWLOCK> =
         UnsafeMutablePointer.allocate(capacity: 1)
-    #else
+#else
     fileprivate let mutex: UnsafeMutablePointer<pthread_mutex_t> =
         UnsafeMutablePointer.allocate(capacity: 1)
-    #endif
+#endif
 
     /// Create a new lock.
     public init() {
-        #if os(Windows)
-        InitializeSRWLock(self.mutex)
-        #else
-        let err = pthread_mutex_init(self.mutex, nil)
+#if os(Windows)
+        InitializeSRWLock(mutex)
+#else
+        let err = pthread_mutex_init(mutex, nil)
         precondition(err == 0)
-        #endif
+#endif
     }
 
     deinit {
-        #if os(Windows)
-        // SRWLOCK does not need to be free'd
-        #else
+#if os(Windows)
+// SRWLOCK does not need to be free'd
+#else
         let err = pthread_mutex_destroy(self.mutex)
         precondition(err == 0)
-        #endif
+#endif
         self.mutex.deallocate()
     }
 
@@ -61,12 +74,12 @@ internal final class Lock {
     /// Whenever possible, consider using `withLock` instead of this method and
     /// `unlock`, to simplify lock handling.
     public func lock() {
-        #if os(Windows)
-        AcquireSRWLockExclusive(self.mutex)
-        #else
-        let err = pthread_mutex_lock(self.mutex)
+#if os(Windows)
+        AcquireSRWLockExclusive(mutex)
+#else
+        let err = pthread_mutex_lock(mutex)
         precondition(err == 0)
-        #endif
+#endif
     }
 
     /// Release the lock.
@@ -74,12 +87,12 @@ internal final class Lock {
     /// Whenever possible, consider using `withLock` instead of this method and
     /// `lock`, to simplify lock handling.
     public func unlock() {
-        #if os(Windows)
-        ReleaseSRWLockExclusive(self.mutex)
-        #else
-        let err = pthread_mutex_unlock(self.mutex)
+#if os(Windows)
+        ReleaseSRWLockExclusive(mutex)
+#else
+        let err = pthread_mutex_unlock(mutex)
         precondition(err == 0)
-        #endif
+#endif
     }
 }
 
@@ -93,8 +106,8 @@ extension Lock {
     /// - Parameter body: The block to execute while holding the lock.
     /// - Returns: The value returned by the block.
     @inlinable
-    internal func withLock<T>(_ body: () throws -> T) rethrows -> T {
-        self.lock()
+    func withLock<T>(_ body: () throws -> T) rethrows -> T {
+        lock()
         defer {
             self.unlock()
         }
@@ -103,8 +116,8 @@ extension Lock {
 
     // specialise Void return (for performance)
     @inlinable
-    internal func withLockVoid(_ body: () throws -> Void) rethrows {
-        try self.withLock(body)
+    func withLockVoid(_ body: () throws -> Void) rethrows {
+        try withLock(body)
     }
 }
 

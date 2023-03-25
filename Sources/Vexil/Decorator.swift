@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Decorator.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 28/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -12,7 +18,7 @@ import Foundation
 /// with a reference to where to lookup flag values and how to calculate their key.
 ///
 internal protocol Decorated {
-    func decorate (lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
+    func decorate(lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
 }
 
 internal extension Sequence where Element == Mirror.Child {
@@ -20,25 +26,24 @@ internal extension Sequence where Element == Mirror.Child {
     typealias DecoratedChild = (label: String, value: Decorated)
 
     var decorated: [DecoratedChild] {
-        return self
-            .compactMap { child -> DecoratedChild? in
-                guard
-                    let label = child.label,
-                    let value = child.value as? Decorated
-                else {
-                        return nil
-                }
-
-                return (label, value)
+        return compactMap { child -> DecoratedChild? in
+            guard
+                let label = child.label,
+                let value = child.value as? Decorated
+            else {
+                return nil
             }
 
-            // all of our decorated items are property wrappers,
-            // so they'll start with an underscore
-            .map { child -> DecoratedChild in
-                (
-                    label: child.label.hasPrefix("_") ? String(child.label.dropFirst()) : child.label,
-                    value: child.value
-                )
-            }
+            return (label, value)
+        }
+
+        // all of our decorated items are property wrappers,
+        // so they'll start with an underscore
+        .map { child -> DecoratedChild in
+            (
+                label: child.label.hasPrefix("_") ? String(child.label.dropFirst()) : child.label,
+                value: child.value
+            )
+        }
     }
 }

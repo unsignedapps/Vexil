@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  LocatedFlagValue.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 13/12/21.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 /// A wrapper type used in snapshots to support diagnostics
 ///
@@ -42,7 +48,7 @@ struct LocatedFlagValue {
     ///
     /// If diagnostics are enabled the `BoxedFlagValue` will be captured alongside the type-erased value
     ///
-    init<Value> (source: String?, value: Value, diagnosticsEnabled: Bool) where Value: FlagValue {
+    init<Value>(source: String?, value: Value, diagnosticsEnabled: Bool) where Value: FlagValue {
         self.init(
             source: source,
             value: value,
@@ -61,7 +67,7 @@ extension LocatedFlagValue {
     ///
     /// If diagnostics are enabled the `BoxedFlagValue` will be captured alongside the type-erased value
     ///
-    init<Value> (lookupResult: LookupResult<Value>, diagnosticsEnabled: Bool) where Value: FlagValue {
+    init<Value>(lookupResult: LookupResult<Value>, diagnosticsEnabled: Bool) where Value: FlagValue {
         self.init(
             source: lookupResult.source,
             value: lookupResult.value,
@@ -70,11 +76,11 @@ extension LocatedFlagValue {
     }
 
     /// Returns the specialised `LookupResult` for the receiving `LocatedFlagValue`
-    func toLookupResult<Value> () -> LookupResult<Value>? {
-        guard let value = self.value as? Value else {
+    func toLookupResult<Value>() -> LookupResult<Value>? {
+        guard let value = value as? Value else {
             return nil
         }
-        return LookupResult(source: self.source, value: value)
+        return LookupResult(source: source, value: value)
     }
 
 }

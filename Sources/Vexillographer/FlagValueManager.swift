@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-// FlagValueSourceManager.swift
-// Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-// Created by Rob Amos on 29/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -22,13 +28,13 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     private var cancellables = Set<AnyCancellable>()
 
     var isEditable: Bool {
-        return self.source != nil
+        return source != nil
     }
 
 
     // MARK: - Initialisation
 
-    init (flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
+    init(flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
         self.flagPole = flagPole
         self.source = source
 
@@ -38,33 +44,33 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
-            .store(in: &self.cancellables)
+            .store(in: &cancellables)
     }
 
 
     // MARK: - Flag Values
 
-    func rawValue<Value> (key: String) -> Value? where Value: FlagValue {
-        return self.source?.flagValue(key: key)
+    func rawValue<Value>(key: String) -> Value? where Value: FlagValue {
+        return source?.flagValue(key: key)
     }
 
-    func flagValue<Value> (key: String) -> Value? where Value: FlagValue {
-        let snapshot = self.flagPole.snapshot()
+    func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
+        let snapshot = flagPole.snapshot()
         return snapshot.flagValue(key: key)
     }
 
-    func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue {
+    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
         guard let source = source else {
             return
         }
 
-        let snapshot = self.flagPole.emptySnapshot()
+        let snapshot = flagPole.emptySnapshot()
         try snapshot.setFlagValue(value, key: key)
-        try self.flagPole.save(snapshot: snapshot, to: source)
+        try flagPole.save(snapshot: snapshot, to: source)
     }
 
-    func hasValueInSource<Value> (flag: Flag<Value>) -> Bool {
-        if let _: Value = self.source?.flagValue(key: flag.key) {
+    func hasValueInSource<Value>(flag: Flag<Value>) -> Bool {
+        if let _: Value = source?.flagValue(key: flag.key) {
             return true
 
         } else {
@@ -75,24 +81,28 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
 
     // MARK: - Boxed Values
 
-    func boxedValue<Value> (key: String, type: Value.Type) -> Value.BoxedValueType? where Value: FlagValue {
-        guard let value: Value = self.flagValue(key: key) else { return nil }
+    func boxedValue<Value>(key: String, type: Value.Type) -> Value.BoxedValueType? where Value: FlagValue {
+        guard let value: Value = flagValue(key: key) else {
+            return nil
+        }
         return value.unwrappedBoxedValue()
     }
 
-    func setBoxedValue<Value> (_ value: Value.BoxedValueType?, type: Value.Type, key: String) throws where Value: FlagValue {
+    func setBoxedValue<Value>(_ value: Value.BoxedValueType?, type: Value.Type, key: String) throws where Value: FlagValue {
         let unboxed = value.flatMap(Value.init(unwrapped:))
-        try self.setFlagValue(unboxed, key: key)
+        try setFlagValue(unboxed, key: key)
     }
 
 
     // MARK: - Displaying Flag Values
 
-    func allItems () -> [UnfurledFlagItem] {
-        return Mirror(reflecting: self.flagPole._rootGroup)
+    func allItems() -> [UnfurledFlagItem] {
+        return Mirror(reflecting: flagPole._rootGroup)
             .children
             .compactMap { child -> UnfurledFlagItem? in
-                guard let label = child.label, let unfurlable = child.value as? Unfurlable else { return nil }
+                guard let label = child.label, let unfurlable = child.value as? Unfurlable else {
+                    return nil
+                }
                 let unfurled = unfurlable.unfurl(label: label, manager: self)
                 return unfurled
             }

@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Snapshot+Extensions.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 19/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 extension Snapshot: Identifiable {}
 
@@ -15,13 +21,13 @@ extension Snapshot: Equatable where RootGroup: Equatable {
 
 extension Snapshot: Hashable where RootGroup: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self._rootGroup)
+        hasher.combine(_rootGroup)
     }
 }
 
 extension Snapshot: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "Snapshot<\(String(describing: RootGroup.self)), \(self.values.count) overrides>("
+        return "Snapshot<\(String(describing: RootGroup.self)), \(values.count) overrides>("
             + Mirror(reflecting: _rootGroup).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription

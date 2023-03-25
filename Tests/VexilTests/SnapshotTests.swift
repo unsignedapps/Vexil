@@ -1,17 +1,22 @@
+//===----------------------------------------------------------------------===//
 //
-//  SnapshotTests.swift
-//  Vexil: VexilTests
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 16/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
-
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Vexil
 import XCTest
 
 final class SnapshotTests: XCTestCase {
 
-    func testSnapshotReading () {
+    func testSnapshotReading() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let snapshot = pole.emptySnapshot()
 
@@ -20,7 +25,7 @@ final class SnapshotTests: XCTestCase {
         XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
-    func testSnapshotWriting () {
+    func testSnapshotWriting() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let snapshot = pole.emptySnapshot()
         snapshot.topLevelFlag = true
@@ -34,7 +39,7 @@ final class SnapshotTests: XCTestCase {
 
     // MARK: - Taking Snapshots
 
-    func testEmptySnapshot () {
+    func testEmptySnapshot() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
         // craft a snapshot
@@ -55,7 +60,7 @@ final class SnapshotTests: XCTestCase {
         XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
-    func testCurrentValueSnapshot () {
+    func testCurrentValueSnapshot() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
         // craft a snapshot
@@ -86,13 +91,13 @@ final class SnapshotTests: XCTestCase {
         XCTAssertFalse(empty.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
-    func testCurrentSourceValueSnapshot () throws {
+    func testCurrentSourceValueSnapshot() throws {
 
         // GIVEN a FlagPole and a dictionary that is not a part it
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let dictionary = FlagValueDictionary([
             "top-level-flag": .bool(true),
-            "subgroup.double-subgroup.third-level-flag": .bool(true)
+            "subgroup.double-subgroup.third-level-flag": .bool(true),
         ])
 
         // WHEN we take a snapshot of that source

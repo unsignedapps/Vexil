@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagInfo.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 /// A simple collection of information about a `Flag` or `FlagGroup`
 ///
@@ -27,7 +33,7 @@ public struct FlagInfo {
 
     /// Internal memberwise initialiser
     ///
-    init (name: String?, description: String, shouldDisplay: Bool) {
+    init(name: String?, description: String, shouldDisplay: Bool) {
         self.name = name
         self.description = description
         self.shouldDisplay = shouldDisplay
@@ -38,7 +44,7 @@ public struct FlagInfo {
     /// - Parameters:
     ///   - description:        A brief description of the `Flag` or `FlagGroup`s purpose.
     ///
-    public init (description: String) {
+    public init(description: String) {
         self.init(name: nil, description: description, shouldDisplay: true)
     }
 }

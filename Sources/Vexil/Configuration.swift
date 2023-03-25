@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Configuration.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -66,7 +72,7 @@ public extension VexilConfiguration {
         /// Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name
         case snakecase
 
-        internal func codingKey (label: String) -> CodingKeyAction {
+        internal func codingKey(label: String) -> CodingKeyAction {
             switch self {
             case .kebabcase, .default:
                 return .append(label.convertedToSnakeCase(separator: "-"))
@@ -102,13 +108,13 @@ public extension FlagGroup {
         /// Manually specifies the key name for this `FlagGroup`.
         case customKey(String)
 
-        internal func codingKey (label: String) -> CodingKeyAction {
+        internal func codingKey(label: String) -> CodingKeyAction {
             switch self {
             case .default:                  return .default
             case .kebabcase:                return .append(label.convertedToSnakeCase(separator: "-"))
             case .snakecase:                return .append(label.convertedToSnakeCase())
             case .skip:                     return .skip
-            case .customKey(let custom):    return .append(custom)
+            case let .customKey(custom):    return .append(custom)
             }
         }
     }
@@ -143,13 +149,13 @@ public extension Flag {
         /// This is the absolute key name. It is NOT combined with the keys from the parent groups.
         case customKeyPath(String)
 
-        internal func codingKey (label: String) -> CodingKeyAction {
+        internal func codingKey(label: String) -> CodingKeyAction {
             switch self {
             case .default:                      return .default
             case .kebabcase:                    return .append(label.convertedToSnakeCase(separator: "-"))
             case .snakecase:                    return .append(label.convertedToSnakeCase())
-            case .customKey(let custom):        return .append(custom)
-            case .customKeyPath(let custom):    return .absolute(custom)
+            case let .customKey(custom):        return .append(custom)
+            case let .customKeyPath(custom):    return .absolute(custom)
             }
         }
     }
@@ -193,7 +199,9 @@ private extension String {
     ///     "myURLProperty".convertedToSnakeCase(separator: "-")
     ///     // my-url-property
     func convertedToSnakeCase(separator: Character = "_") -> String {
-        guard !isEmpty else { return self }
+        guard !isEmpty else {
+            return self
+        }
         var result = ""
         // Whether we should append a separator when we see a uppercase character.
         var separateOnUppercase = true
@@ -201,7 +209,7 @@ private extension String {
             let nextIndex = self.index(after: index)
             let character = self[index]
             if character.isUppercase {
-                if separateOnUppercase && !result.isEmpty {
+                if separateOnUppercase, !result.isEmpty {
                     // Append the separator.
                     result += "\(separator)"
                 }

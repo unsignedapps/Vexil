@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagDetailSection.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rod Brown on 15/11/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -20,19 +26,19 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
         self.content = content()
     }
 
-    #if os(macOS)
+#if os(macOS)
 
     var body: some View {
         GroupBox(label: self.header) {
             VStack(alignment: .leading, spacing: 8) {
                 self.content
             }
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+            .frame(maxWidth: .infinity, alignment: .leading)
         }.padding(.bottom, 8)
     }
 
-    #else
+#else
 
     var body: some View {
         Section(header: self.header) {
@@ -40,7 +46,7 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
         }
     }
 
-    #endif
+#endif
 
 }
 

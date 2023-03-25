@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagGroupView.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 16/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -16,12 +22,13 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     // MARK: - Properties
 
     let group: UnfurledFlagGroup<Group, Root>
-    @ObservedObject var manager: FlagValueManager<Root>
+    @ObservedObject
+    var manager: FlagValueManager<Root>
 
 
     // MARK: - Initialisation
 
-    init (group: UnfurledFlagGroup<Group, Root>, manager: FlagValueManager<Root>) {
+    init(group: UnfurledFlagGroup<Group, Root>, manager: FlagValueManager<Root>) {
         self.group = group
         self.manager = manager
     }
@@ -29,19 +36,19 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     // MARK: - View Body
 
-    #if os(iOS)
+#if os(iOS)
 
     var body: some View {
         Form {
             Section {
                 self.description
             }
-                .padding([.top, .bottom], 4)
+            .padding([.top, .bottom], 4)
             self.flags
         }
     }
 
-    #elseif os(macOS) && compiler(>=5.3.1)
+#elseif os(macOS) && compiler(>=5.3.1)
 
     var body: some View {
         ScrollView {
@@ -50,23 +57,23 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                     .padding(.bottom, 8)
                 Divider()
             }
-                .padding()
+            .padding()
 
             Form {
                 Section {
                     // Filter out all links. They won't work on the mac flag group view.
-                    ForEach(self.group.allItems().filter({ $0.isLink == false }), id: \.id) { item in
+                    ForEach(self.group.allItems().filter { $0.isLink == false }, id: \.id) { item in
                         item.unfurledView
                     }
                 }
             }
-                .padding([.leading, .trailing, .bottom], 30)
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+            .padding([.leading, .trailing, .bottom], 30)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }
-            .navigationTitle(self.group.info.name)
+        .navigationTitle(self.group.info.name)
     }
 
-    #else
+#else
 
     var body: some View {
         Form {
@@ -77,16 +84,16 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
         }
     }
 
-    #endif
+#endif
 
     var description: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Description").font(.headline)
             Text(self.group.info.description)
         }
-            .contextMenu {
-                CopyButton(action: self.group.info.description.copyToPasteboard)
-            }
+        .contextMenu {
+            CopyButton(action: self.group.info.description.copyToPasteboard)
+        }
     }
 
     var flags: some View {

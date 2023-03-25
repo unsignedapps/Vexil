@@ -1,16 +1,22 @@
+//===----------------------------------------------------------------------===//
 //
-//  AnyView.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 29/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
 import SwiftUI
 
 extension View {
-    func eraseToAnyView () -> AnyView {
+    func eraseToAnyView() -> AnyView {
         return AnyView(self)
     }
 }

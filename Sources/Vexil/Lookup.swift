@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagLookup.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -18,11 +24,11 @@ import Foundation
 /// Only `FlagPole` and `Snapshot`s conform to this.
 ///
 internal protocol Lookup: AnyObject {
-    func lookup<Value> (key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue
+    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue
 
-    #if !os(Linux)
-    func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
-    #endif
+#if !os(Linux)
+    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
+#endif
 }
 
 /// A lightweight internal type used to support diagnostics by tagging the values with the source that resolved it
@@ -39,13 +45,13 @@ extension FlagPole: Lookup {
     /// It iterates through our `FlagValueSource`s and asks each if they have a `FlagValue` for
     /// that key, returning the first non-nil value it finds.
     ///
-    func lookup<Value> (key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
+    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
         if let source = source {
             return source.flagValue(key: key)
                 .map { LookupResult(source: source.name, value: $0) }
         }
 
-        for source in self._sources {
+        for source in _sources {
             if let value: Value = source.flagValue(key: key) {
                 return LookupResult(source: source.name, value: value)
             }
@@ -53,15 +59,15 @@ extension FlagPole: Lookup {
         return nil
     }
 
-    #if !os(Linux)
+#if !os(Linux)
 
     /// Retrieves a publsiher from the FlagPole that is bound to updates of a specific key
     ///
-    func publisher<Value> (key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-        self.publisher
+    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
+        publisher
             .compactMap { $0.flagValue(key: key) }
             .eraseToAnyPublisher()
     }
 
-    #endif
+#endif
 }

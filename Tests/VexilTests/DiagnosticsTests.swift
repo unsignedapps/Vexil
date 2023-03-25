@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  DiagnosticsTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 12/12/21.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 // swiftlint:disable function_body_length
 
@@ -19,15 +25,15 @@ final class DiagnosticsTests: XCTestCase {
 
         // GIVEN a FlagPole with three different FlagSources
         let source1 = FlagValueDictionary([
-            "top-level-flag": .bool(true)
+            "top-level-flag": .bool(true),
         ])
         let source2 = FlagValueDictionary([
-            "subgroup.second-level-flag": .bool(true)
+            "subgroup.second-level-flag": .bool(true),
         ])
         let source3 = FlagValueDictionary([
             "top-level-flag": .bool(true),
             "second-test-flag": .bool(true),
-            "subgroup.second-level-flag": .bool(true)
+            "subgroup.second-level-flag": .bool(true),
         ])
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source1, source2 ])
 
@@ -56,7 +62,7 @@ final class DiagnosticsTests: XCTestCase {
         pole._sources.removeAll(where: { $0.name == source3.name })
 
         // THEN everything should line up with the above changes
-        self.wait(for: [ expectation ], timeout: 1.0)
+        wait(for: [ expectation ], timeout: 1.0)
         XCTAssertEqual(receivedDiagnostics.count, 5)
 
         // 0. We should have gotten the default value of all flags

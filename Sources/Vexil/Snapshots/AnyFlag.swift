@@ -1,19 +1,25 @@
+//===----------------------------------------------------------------------===//
 //
-//  AnyFlag.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 2/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 protocol AnyFlag {
     var key: String { get }
 
-    func getFlagValue (in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue?
-    func save (to source: FlagValueSource) throws
+    func getFlagValue(in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue?
+    func save(to source: FlagValueSource) throws
 }
 
 extension Flag: AnyFlag {
-    func getFlagValue (in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue? {
+    func getFlagValue(in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue? {
         guard let result = value(in: source) else {
             return nil
         }
@@ -21,7 +27,7 @@ extension Flag: AnyFlag {
     }
 
     func save(to source: FlagValueSource) throws {
-        try source.setFlagValue(self.wrappedValue, key: self.key)
+        try source.setFlagValue(wrappedValue, key: key)
     }
 }
 
@@ -29,12 +35,12 @@ extension Flag: AnyFlag {
 // MARK: - Flag Groups
 
 protocol AnyFlagGroup {
-    func allFlags () -> [AnyFlag]
+    func allFlags() -> [AnyFlag]
 }
 
 extension FlagGroup: AnyFlagGroup {
-    func allFlags () -> [AnyFlag] {
-        return Mirror(reflecting: self.wrappedValue)
+    func allFlags() -> [AnyFlag] {
+        return Mirror(reflecting: wrappedValue)
             .children
             .lazy
             .map { $0.value }
@@ -43,17 +49,16 @@ extension FlagGroup: AnyFlagGroup {
 }
 
 internal extension Sequence {
-    func allFlags () -> [AnyFlag] {
-        return self
-            .compactMap { element -> [AnyFlag]? in
-                if let flag = element as? AnyFlag {
-                    return [flag]
-                } else if let group = element as? AnyFlagGroup {
-                    return group.allFlags()
-                } else {
-                    return nil
-                }
+    func allFlags() -> [AnyFlag] {
+        return compactMap { element -> [AnyFlag]? in
+            if let flag = element as? AnyFlag {
+                return [flag]
+            } else if let group = element as? AnyFlagGroup {
+                return group.allFlags()
+            } else {
+                return nil
             }
-            .flatMap { $0 }
+        }
+        .flatMap { $0 }
     }
 }

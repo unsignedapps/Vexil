@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  EquatableTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 18/3/21.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 @testable import Vexil
 import XCTest
@@ -61,7 +67,7 @@ final class EquatableTests: XCTestCase {
 
     // MARK: - Publisher-based Tests
 
-    #if !os(Linux)
+#if !os(Linux)
 
     // swiftlint:disable:next function_body_length
     func testPublisherEmitsEquatableElements() throws {
@@ -77,13 +83,13 @@ final class EquatableTests: XCTestCase {
         let expectation = self.expectation(description: "snapshot")
 
         let cancellable = pole.publisher
-            .handleEvents (receiveOutput: { allSnapshots.append($0) })
+            .handleEvents(receiveOutput: { allSnapshots.append($0) })
             .removeDuplicates()
-            .handleEvents (receiveOutput: { firstFilter.append($0) })
+            .handleEvents(receiveOutput: { firstFilter.append($0) })
             .removeDuplicates(by: { $0.subgroup == $1.subgroup })
-            .handleEvents (receiveOutput: { secondFilter.append($0) })
+            .handleEvents(receiveOutput: { secondFilter.append($0) })
             .removeDuplicates(by: { $0.subgroup.doubleSubgroup == $1.subgroup.doubleSubgroup })
-            .handleEvents (receiveOutput: { thirdFilter.append($0) })
+            .handleEvents(receiveOutput: { thirdFilter.append($0) })
             .sink { _ in
                 if allSnapshots.count == 6 {
                     expectation.fulfill()
@@ -137,7 +143,7 @@ final class EquatableTests: XCTestCase {
 
     }
 
-    #endif
+#endif
 }
 
 

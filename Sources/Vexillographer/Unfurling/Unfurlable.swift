@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Unfurlable.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -17,7 +23,7 @@ import Vexil
 ///
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol Unfurlable {
-    func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer
+    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
@@ -25,9 +31,11 @@ extension Flag: Unfurlable where Value: FlagValue {
 
     /// Creates an `UnfurledFlag` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup> (label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
-        guard self.info.shouldDisplay == true else { return nil }
-        let unfurled = UnfurledFlag(name: self.info.name ?? label.localizedDisplayName, flag: self, manager: manager)
+    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+        guard info.shouldDisplay == true else {
+            return nil
+        }
+        let unfurled = UnfurledFlag(name: info.name ?? label.localizedDisplayName, flag: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }
@@ -38,8 +46,10 @@ extension FlagGroup: Unfurlable {
     /// Creates an `UnfurledFlagGroup` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
     func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
-        guard self.info.shouldDisplay == true else { return nil }
-        let unfurled = UnfurledFlagGroup(name: self.info.name ?? label.localizedDisplayName, group: self, manager: manager)
+        guard info.shouldDisplay == true else {
+            return nil
+        }
+        let unfurled = UnfurledFlagGroup(name: info.name ?? label.localizedDisplayName, group: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }

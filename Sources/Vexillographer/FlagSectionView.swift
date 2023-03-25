@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagSectionView.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 4/10/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -16,12 +22,13 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
     // MARK: - Properties
 
     let group: UnfurledFlagGroup<Group, Root>
-    @ObservedObject var manager: FlagValueManager<Root>
+    @ObservedObject
+    var manager: FlagValueManager<Root>
 
 
     // MARK: - Initialisation
 
-    init (group: UnfurledFlagGroup<Group, Root>, manager: FlagValueManager<Root>) {
+    init(group: UnfurledFlagGroup<Group, Root>, manager: FlagValueManager<Root>) {
         self.group = group
         self.manager = manager
     }
@@ -29,7 +36,7 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 
     // MARK: - View Body
 
-    #if os(macOS)
+#if os(macOS)
 
     var body: some View {
         GroupBox(
@@ -45,10 +52,10 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
         .padding([.top, .bottom])
     }
 
-    #else
+#else
 
     var body: some View {
-        Section (
+        Section(
             header: Text(self.group.info.name),
             footer: Text(self.group.info.description),
             content: {
@@ -57,7 +64,7 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
         )
     }
 
-    #endif
+#endif
 
     private var content: some View {
         ForEach(self.group.allItems(), id: \.id) { item in

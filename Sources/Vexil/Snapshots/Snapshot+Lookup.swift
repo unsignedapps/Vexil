@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Snapshot+Lookup.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 19/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -11,19 +17,19 @@ import Combine
 
 extension Snapshot: Lookup {
     func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
-        self.lastAccessedKey = key
-        return self.values[key]?.toLookupResult()
+        lastAccessedKey = key
+        return values[key]?.toLookupResult()
     }
 
-    #if !os(Linux)
+#if !os(Linux)
 
     func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-        self.valuesDidChange
+        valuesDidChange
             .compactMap { [weak self] _ in
                 self?.values[key] as? Value
             }
             .eraseToAnyPublisher()
     }
 
-    #endif
+#endif
 }
