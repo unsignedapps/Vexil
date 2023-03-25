@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  DisplayName.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -11,16 +17,16 @@ import Foundation
 
 extension String {
     var localizedDisplayName: String {
-        return self.displayName(with: Locale.autoupdatingCurrent)
+        return displayName(with: Locale.autoupdatingCurrent)
     }
 
     var displayName: String {
         return self.displayName(with: nil)
     }
 
-    func displayName (with locale: Locale?) -> String {
+    func displayName(with locale: Locale?) -> String {
         let uppercased = CharacterSet.uppercaseLetters
-        return (self.hasPrefix("_") ? String(self.dropFirst()) : self)
+        return (hasPrefix("_") ? String(dropFirst()) : self)
             .separatedAtWordBoundaries
             .map { CharacterSet(charactersIn: $0).isStrictSubset(of: uppercased) ? $0 : $0.capitalized(with: locale) }
             .joined(separator: " ")
@@ -36,7 +42,9 @@ extension String {
     /// Adapted from JSONEncoder's `toSnakeCase()`
     ///
     var separatedAtWordBoundaries: [String] {
-        guard !self.isEmpty else { return [] }
+        guard !isEmpty else {
+            return []
+        }
 
         let string = self
 
@@ -49,17 +57,17 @@ extension String {
         //
         // We assume, per Swift naming conventions, that the first character of the key is lowercase.
         var wordStart = string.startIndex
-        var searchRange = string.index(after: wordStart)..<string.endIndex
+        var searchRange = string.index(after: wordStart) ..< string.endIndex
 
         let uppercase = CharacterSet.uppercaseLetters.union(CharacterSet.decimalDigits)
 
         // Find next uppercase character
         while let upperCaseRange = string.rangeOfCharacter(from: uppercase, options: [], range: searchRange) {
-            let untilUpperCase = wordStart..<upperCaseRange.lowerBound
+            let untilUpperCase = wordStart ..< upperCaseRange.lowerBound
             words.append(untilUpperCase)
 
             // Find next lowercase character
-            searchRange = upperCaseRange.lowerBound..<searchRange.upperBound
+            searchRange = upperCaseRange.lowerBound ..< searchRange.upperBound
             guard let lowerCaseRange = string.rangeOfCharacter(from: CharacterSet.lowercaseLetters, options: [], range: searchRange) else {
                 // There are no more lower case letters. Just end here.
                 wordStart = searchRange.lowerBound
@@ -76,14 +84,14 @@ extension String {
             } else {
                 // There was a range of >1 capital letters. Turn those into a word, stopping at the capital before the lower case character.
                 let beforeLowerIndex = string.index(before: lowerCaseRange.lowerBound)
-                words.append(upperCaseRange.lowerBound..<beforeLowerIndex)
+                words.append(upperCaseRange.lowerBound ..< beforeLowerIndex)
 
                 // Next word starts at the capital before the lowercase we just found
                 wordStart = beforeLowerIndex
             }
-            searchRange = lowerCaseRange.upperBound..<searchRange.upperBound
+            searchRange = lowerCaseRange.upperBound ..< searchRange.upperBound
         }
-        words.append(wordStart..<searchRange.upperBound)
+        words.append(wordStart ..< searchRange.upperBound)
 
         return words.map { string[$0].lowercased() }
     }

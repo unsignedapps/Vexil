@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueCompilationTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 20/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 @testable import Vexil
 import XCTest
@@ -24,7 +30,7 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Boolean Flag Values
 
-    func testBooleanFlagValue () {
+    func testBooleanFlagValue() {
         let value = true
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -33,13 +39,13 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - String Flag Values
 
-    func testStringFlagValue () {
+    func testStringFlagValue() {
         let value = "Test"
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testURLFlagValue () {
+    func testURLFlagValue() {
         let value = URL(string: "https://google.com/")!
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -48,13 +54,13 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Data and Date Flag Values
 
-    func testDateFlagValue () {
+    func testDateFlagValue() {
         let value = Date()
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testDataFlagValue () {
+    func testDataFlagValue() {
         let value = Data()
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -63,61 +69,61 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Integer Flag Values
 
-    func testIntFlagValue () {
-        let value: Int = 123
+    func testIntFlagValue() {
+        let value = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testInt8FlagValue () {
+    func testInt8FlagValue() {
         let value: Int8 = 12
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testInt16FlagValue () {
+    func testInt16FlagValue() {
         let value: Int16 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testInt32FlagValue () {
+    func testInt32FlagValue() {
         let value: Int32 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testInt64FlagValue () {
+    func testInt64FlagValue() {
         let value: Int64 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testUIntFlagValue () {
+    func testUIntFlagValue() {
         let value: UInt = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testUInt8FlagValue () {
+    func testUInt8FlagValue() {
         let value: UInt8 = 12
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testUInt16FlagValue () {
+    func testUInt16FlagValue() {
         let value: UInt16 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testUInt32FlagValue () {
+    func testUInt32FlagValue() {
         let value: UInt32 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testUInt64FlagValue () {
+    func testUInt64FlagValue() {
         let value: UInt64 = 123
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -126,14 +132,14 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Floating Point Flag Values
 
-    func testFloatFlagValue () {
+    func testFloatFlagValue() {
         let value: Float = 123.23
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testDoubleFlagValue () {
-        let value: Double = 123.23
+    func testDoubleFlagValue() {
+        let value = 123.23
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
@@ -141,7 +147,7 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentableFlagValue () {
+    func testRawRepresentableFlagValue() {
         let value = TestStruct(rawValue: "Test")
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -151,13 +157,13 @@ final class FlagValueCompilationTests: XCTestCase {
         }
     }
 
-    func testOptionalFlagValue () {
+    func testOptionalFlagValue() {
         let value: String? = "Test"
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testOptionalNoFlagValue () {
+    func testOptionalNoFlagValue() {
         let value: String? = nil
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -166,13 +172,13 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Collection Types
 
-    func testArrayFlagValue () {
+    func testArrayFlagValue() {
         let value = [ 123, 456, 789 ]
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
     }
 
-    func testDictionaryFlagValue () {
+    func testDictionaryFlagValue() {
         let value = [ "First": 123, "Second": 456, "Third": 789 ]
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -181,7 +187,7 @@ final class FlagValueCompilationTests: XCTestCase {
 
     // MARK: - Codable Types
 
-    func testCodableFlagValue () {
+    func testCodableFlagValue() {
         let value = TestStruct()
         let pole = FlagPole(hoisting: TestFlags(default: value), sources: [])
         XCTAssertEqual(pole.flag, value)
@@ -191,7 +197,7 @@ final class FlagValueCompilationTests: XCTestCase {
             let property2: String
             let property3: Double
 
-            init () {
+            init() {
                 self.property1 = 123
                 self.property2 = "456"
                 self.property3 = 789.0
@@ -210,11 +216,11 @@ private struct TestFlags<Value>: FlagContainer where Value: FlagValue {
     @Flag
     var flag: Value
 
-    init (default value: Value) {
+    init(default value: Value) {
         self._flag = Flag(default: value, description: "Test flag")
     }
 
-    init () {
+    init() {
         fatalError("This shouldn't be accessed during testing")
     }
 }

@@ -1,20 +1,26 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueSourceTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 2/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Vexil
 import XCTest
 
 final class FlagValueSourceTests: XCTestCase {
 
-    func testSourceIsChecked () {
+    func testSourceIsChecked() {
         var accessedKeys = [String]()
         let values = [
             "test-flag": true,
-            "second-test-flag": false
+            "second-test-flag": false,
         ]
 
         let source = TestGetSource(values: values) {
@@ -32,7 +38,7 @@ final class FlagValueSourceTests: XCTestCase {
         XCTAssertEqual(accessedKeys.last, "test-flag")
     }
 
-    func testSourceSets () throws {
+    func testSourceSets() throws {
         var events = [TestSetSource.Event]()
         let source = TestSetSource {
             events.append($0)
@@ -53,12 +59,12 @@ final class FlagValueSourceTests: XCTestCase {
         XCTAssertEqual(events.last?.1, false)
     }
 
-    func testSourceCopies () throws {
+    func testSourceCopies() throws {
 
         // GIVEN two dictionaries
         let source = FlagValueDictionary([
             "test-flag": .bool(true),
-            "subgroup.test-flag": .bool(true)
+            "subgroup.test-flag": .bool(true),
         ])
         let destination = FlagValueDictionary()
 
@@ -73,12 +79,12 @@ final class FlagValueSourceTests: XCTestCase {
 
     }
 
-    func testSourceRemovesAllVales () throws {
+    func testSourceRemovesAllVales() throws {
 
         // GIVEN a dictionary with some values
         let source = FlagValueDictionary([
             "test-flag": .bool(true),
-            "subgroup.test-flag": .bool(true)
+            "subgroup.test-flag": .bool(true),
         ])
 
         // WHEN we remove all values from that source
@@ -121,18 +127,17 @@ private final class TestGetSource: FlagValueSource {
     var subject: (String) -> Void
     var values: [String: Bool]
 
-    init (values: [String: Bool], subject: @escaping (String) -> Void) {
+    init(values: [String: Bool], subject: @escaping (String) -> Void) {
         self.values = values
         self.subject = subject
     }
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        self.subject(key)
-        return self.values[key] as? Value
+        subject(key)
+        return values[key] as? Value
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-    }
+    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {}
 
 }
 
@@ -144,7 +149,7 @@ private final class TestSetSource: FlagValueSource {
     let name = "Test Source"
     var subject: (Event) -> Void
 
-    init (subject: @escaping (Event) -> Void) {
+    init(subject: @escaping (Event) -> Void) {
         self.subject = subject
     }
 
@@ -153,8 +158,10 @@ private final class TestSetSource: FlagValueSource {
     }
 
     func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        guard let value = value as? Bool else { return }
-        self.subject((key, value))
+        guard let value = value as? Bool else {
+            return
+        }
+        subject((key, value))
     }
 
 }

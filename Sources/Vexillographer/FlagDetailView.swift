@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagDetailView.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 29/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -18,12 +24,13 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     let flag: UnfurledFlag<Value, RootGroup>
     let isEditable: Bool
 
-    @ObservedObject var manager: FlagValueManager<RootGroup>
+    @ObservedObject
+    var manager: FlagValueManager<RootGroup>
 
 
     // MARK: - Initialisation
 
-    init (flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
+    init(flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
         self.flag = flag
         self.manager = manager
         self.isEditable = manager.isEditable
@@ -32,14 +39,14 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     // MARK: - View Body
 
-    #if os(iOS)
+#if os(iOS)
 
     var body: some View {
         self.content
             .navigationBarTitle(Text(self.flag.info.name), displayMode: .inline)
     }
 
-    #elseif os(macOS)
+#elseif os(macOS)
 
     var body: some View {
         ScrollView {
@@ -48,13 +55,13 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
         .frame(minWidth: 300)
     }
 
-    #else
+#else
 
     var body: some View {
         self.content
     }
 
-    #endif
+#endif
 
 
     var content: some View {
@@ -116,38 +123,38 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
         }
     }
 
-    func description (source: FlagValueSource) -> some View {
-        if let value = self.flagValue(source: source) {
+    func description(source: FlagValueSource) -> some View {
+        if let value = flagValue(source: source) {
             return FlagDisplayValueView(value: value).eraseToAnyView()
         } else {
             return Text("not set").italic().eraseToAnyView()
         }
     }
 
-    func flagValue (source: FlagValueSource) -> Value? {
-        return source.flagValue(key: self.flag.flag.key)
+    func flagValue(source: FlagValueSource) -> Value? {
+        return source.flagValue(key: flag.flag.key)
     }
 
-    func clearValue () {
-        try? self.manager.source?.setFlagValue(Optional<Value>.none, key: self.flag.flag.key)        // swiftlint:disable:this syntactic_sugar
+    func clearValue() {
+        try? manager.source?.setFlagValue(Value?.none, key: flag.flag.key)        // swiftlint:disable:this syntactic_sugar
     }
 
     var isCurrentSourceSet: Bool {
-        guard let source = self.manager.source else {
+        guard let source = manager.source else {
             return false
         }
-        return self.flagValue(source: source) != nil
+        return flagValue(source: source) != nil
     }
 
     private var flagKeyView: some View {
-        #if os(macOS)
+#if os(macOS)
 
         return VStack(alignment: .leading) {
             Text("Key").font(.headline)
             Text(self.flag.info.key)
         }
 
-        #else
+#else
 
         return HStack {
             Text("Key").font(.headline)
@@ -155,7 +162,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             Text(self.flag.info.key)
         }
 
-        #endif
+#endif
     }
 
 }

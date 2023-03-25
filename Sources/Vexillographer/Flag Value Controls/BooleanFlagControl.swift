@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  BooleanFlagControl.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 29/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -25,11 +31,13 @@ struct BooleanFlagControl: View {
     // MARK: - Properties
 
     let label: String
-    @Binding var value: Bool
+    @Binding
+    var value: Bool
 
     let hasChanges: Bool
     let isEditable: Bool
-    @Binding var showDetail: Bool
+    @Binding
+    var showDetail: Bool
 
 
     // MARK: - Views
@@ -55,25 +63,25 @@ struct BooleanFlagControl: View {
 ///
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol BooleanEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return BooleanFlagControl (
+        return BooleanFlagControl(
             label: label,
-            value: Binding (
-                key: self.info.key,
+            value: Binding(
+                key: info.key,
                 manager: manager,
-                defaultValue: self.flag.defaultValue,
+                defaultValue: flag.defaultValue,
                 transformer: BoxedPassthroughTransformer.self
             ),
-            hasChanges: manager.hasValueInSource(flag: self.flag),
+            hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
             showDetail: showDetail
         )
-            .eraseToAnyView()
+        .eraseToAnyView()
     }
 }
 
@@ -83,25 +91,25 @@ extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
 ///
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalBooleanEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalBooleanEditableFlag where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue == Bool {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return BooleanFlagControl (
+        return BooleanFlagControl(
             label: label,
-            value: Binding (
-                key: self.flag.key,
+            value: Binding(
+                key: flag.key,
                 manager: manager,
-                defaultValue: self.flag.defaultValue,
+                defaultValue: flag.defaultValue,
                 transformer: OptionalTransformer<Value.BoxedValueType, Bool, BoxedPassthroughTransformer>.self
             ),
-            hasChanges: manager.hasValueInSource(flag: self.flag),
+            hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
             showDetail: showDetail
         )
-            .eraseToAnyView()
+        .eraseToAnyView()
     }
 }
 

@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Snapshot.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 28/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -74,7 +80,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     internal var diagnosticsEnabled: Bool
 
-    private(set) internal var values: [String: LocatedFlagValue] = [:]
+    internal private(set) var values: [String: LocatedFlagValue] = [:]
 
     internal var lock = Lock()
 
@@ -83,7 +89,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init (flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
+    internal init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
         self._rootGroup = RootGroup()
         self.diagnosticsEnabled = diagnosticsEnabled
         self.decorateRootGroup(config: flagPole._configuration)
@@ -93,7 +99,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    internal init (flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
+    internal init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
         self._rootGroup = RootGroup()
         self.diagnosticsEnabled = flagPole._diagnosticsEnabled
         self.decorateRootGroup(config: flagPole._configuration)
@@ -106,14 +112,14 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     /// A `@DynamicMemberLookup` implementation that returns a `MutableFlagGroup` in place of a `FlagGroup`.
     /// The `MutableFlagGroup` provides a setter for the `Flag`s it contains, allowing them to be mutated as required.
     ///
-    public subscript<Subgroup> (dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> MutableFlagGroup<Subgroup, RootGroup> where Subgroup: FlagContainer {
+    public subscript<Subgroup>(dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> MutableFlagGroup<Subgroup, RootGroup> where Subgroup: FlagContainer {
         let group = self._rootGroup[keyPath: dynamicMember]
         return MutableFlagGroup<Subgroup, RootGroup>(group: group, snapshot: self)
     }
 
     /// A `@DynamicMemberLookup` implementation that returns a `Flag.wrappedValue` and allows them to be mutated.
     ///
-    public subscript<Value> (dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value where Value: FlagValue {
+    public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value where Value: FlagValue {
         get {
             return self.lock.withLock {
                 self._rootGroup[keyPath: dynamicMember]
@@ -135,7 +141,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
                 // noop to access the existing property
                 _ = self._rootGroup[keyPath: dynamicMember]
 
-                guard let key = self.lastAccessedKey else { return }
+                guard let key = self.lastAccessedKey else {
+                    return
+                }
                 self.set(newValue, key: key)
 
             }
@@ -144,7 +152,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     private var allFlags: [AnyFlag] = []
 
-    private func decorateRootGroup (config: VexilConfiguration) {
+    private func decorateRootGroup(config: VexilConfiguration) {
 
         var codingPath: [String] = []
         if let prefix = config.prefix {
@@ -162,11 +170,11 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
         self.allFlags = children
             .lazy
-            .map({ $0.value })
+            .map { $0.value }
             .allFlags()
     }
 
-    private func copyCurrentValues (source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>, diagnosticsEnabled: Bool) {
+    private func copyCurrentValues(source: Source, keys: Set<String>? = nil, flagPole: FlagPole<RootGroup>, diagnosticsEnabled: Bool) {
         let flagValueSource = source.flagValueSource
 
         let flags = flagPole.allFlags
@@ -181,15 +189,17 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         self.values = Dictionary(uniqueKeysWithValues: flags)
     }
 
-    internal func changedFlags () -> [AnyFlag] {
-        guard self.values.isEmpty == false else { return [] }
+    internal func changedFlags() -> [AnyFlag] {
+        guard self.values.isEmpty == false else {
+            return []
+        }
 
         let changed = self.values.keys
         return self.allFlags
             .filter { changed.contains($0.key) }
     }
 
-    internal func set<Value> (_ value: Value?, key: String) where Value: FlagValue {
+    internal func set<Value>(_ value: Value?, key: String) where Value: FlagValue {
         if let value = value {
             self.values[key] = LocatedFlagValue(source: self.name, value: value, diagnosticsEnabled: self.diagnosticsEnabled)
         } else {
@@ -211,13 +221,13 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Real Time Flag Changes
 
-    private(set) internal var valuesDidChange = SnapshotValueChanged()
+    internal private(set) var valuesDidChange = SnapshotValueChanged()
 
 
     // MARK: - Errors
 
     enum Error: Swift.Error {
-        case flagKeyNotFound (String)
+        case flagKeyNotFound(String)
     }
 
 
@@ -231,7 +241,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         var flagValueSource: FlagValueSource? {
             switch self {
             case .pole:                     return nil
-            case .source(let source):       return source
+            case let .source(source):       return source
             }
         }
     }
@@ -246,7 +256,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     /// - Important: You must enable diagnostics by setting `enableDiagnostics` to true in your ``VexilConfiguration``
     /// when initialising your FlagPole. Otherwise this method will throw a ``FlagPoleDiagnostic/Error/notEnabledForSnapshot`` error.
     ///
-    public func makeDiagnostics () throws -> [FlagPoleDiagnostic] {
+    public func makeDiagnostics() throws -> [FlagPoleDiagnostic] {
         guard self.diagnosticsEnabled == true else {
             throw FlagPoleDiagnostic.Error.notEnabledForSnapshot
         }
@@ -267,7 +277,7 @@ typealias SnapshotValueChanged = PassthroughSubject<Void, Never>
 typealias SnapshotValueChanged = NotificationSink
 
 struct NotificationSink {
-    func send () {}
+    func send() {}
 }
 
 #endif

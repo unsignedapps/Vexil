@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnfurledFlagGroup.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 16/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -23,26 +29,26 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     private let manager: FlagValueManager<Root>
 
     var id: UUID {
-        return self.group.id
+        return group.id
     }
 
     var isEditable: Bool {
-        return self.allItems()
+        return allItems()
             .isEmpty == false
     }
 
     var isLink: Bool {
-        return self.group.display == .navigation
+        return group.display == .navigation
     }
 
     var childLinks: [UnfurledFlagItem]? {
-        let children = self.allItems().filter { $0.hasChildren == true && $0.isLink }
+        let children = allItems().filter { $0.hasChildren == true && $0.isLink }
         return children.isEmpty == false ? children : nil
     }
 
     // MARK: - Initialisation
 
-    init (name: String, group: FlagGroup<Group>, manager: FlagValueManager<Root>) {
+    init(name: String, group: FlagGroup<Group>, manager: FlagValueManager<Root>) {
         self.info = UnfurledFlagInfo(key: "", info: group.info, defaultName: name)
         self.group = group
         self.manager = manager
@@ -51,43 +57,47 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
 
     // MARK: - Unfurled Flag Item Conformance
 
-    func allItems () -> [UnfurledFlagItem] {
-        return Mirror(reflecting: self.group.wrappedValue)
+    func allItems() -> [UnfurledFlagItem] {
+        return Mirror(reflecting: group.wrappedValue)
             .children
             .compactMap { child -> UnfurledFlagItem? in
-                guard let label = child.label, let unfurlable = child.value as? Unfurlable else { return nil }
-                guard let unfurled = unfurlable.unfurl(label: label, manager: self.manager) else { return nil }
+                guard let label = child.label, let unfurlable = child.value as? Unfurlable else {
+                    return nil
+                }
+                guard let unfurled = unfurlable.unfurl(label: label, manager: self.manager) else {
+                    return nil
+                }
                 return unfurled.isEditable ? unfurled : nil
             }
     }
 
     var unfurledView: AnyView {
-        switch self.group.display {
+        switch group.display {
         case .navigation:
-            return self.unfurledNavigationLink
+            return unfurledNavigationLink
 
         case .section:
-            return UnfurledFlagSectionView(group: self, manager: self.manager)
+            return UnfurledFlagSectionView(group: self, manager: manager)
                 .eraseToAnyView()
         }
     }
 
     private var unfurledNavigationLink: AnyView {
-        var destination = UnfurledFlagGroupView(group: self, manager: self.manager).eraseToAnyView()
+        var destination = UnfurledFlagGroupView(group: self, manager: manager).eraseToAnyView()
 
-        #if os(iOS)
-
-        destination = destination
-            .navigationBarTitle(Text(self.info.name), displayMode: .inline)
-            .eraseToAnyView()
-
-        #elseif compiler(>=5.3.1)
+#if os(iOS)
 
         destination = destination
-            .navigationTitle(self.info.name)
+            .navigationBarTitle(Text(info.name), displayMode: .inline)
             .eraseToAnyView()
 
-        #endif
+#elseif compiler(>=5.3.1)
+
+        destination = destination
+            .navigationTitle(info.name)
+            .eraseToAnyView()
+
+#endif
 
         return NavigationLink(destination: destination) {
             HStack {

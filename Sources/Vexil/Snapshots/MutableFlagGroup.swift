@@ -1,13 +1,19 @@
+//===----------------------------------------------------------------------===//
 //
-//  Group+Mutability.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 31/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
-/// A `MutableFlagGroup` is a wrapper type that provides a "setter" for each contained `Flag`. 
+/// A `MutableFlagGroup` is a wrapper type that provides a "setter" for each contained `Flag`.
 @dynamicMemberLookup
 public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: FlagContainer {
 
@@ -29,7 +35,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
     /// snapshot.mySubgroup.mySecondSubgroup    // -> MutableFlagGroup<MySecondSubgroup>
     /// ```
     ///
-    public subscript<Subgroup> (dynamicMember dynamicMember: KeyPath<Group, Subgroup>) -> MutableFlagGroup<Subgroup, Root> where Subgroup: FlagContainer {
+    public subscript<Subgroup>(dynamicMember dynamicMember: KeyPath<Group, Subgroup>) -> MutableFlagGroup<Subgroup, Root> where Subgroup: FlagContainer {
         let group = self.group[keyPath: dynamicMember]
         return MutableFlagGroup<Subgroup, Root>(group: group, snapshot: self.snapshot)
     }
@@ -43,7 +49,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
     /// snapshot.mySubgroup.myFlag = true       // 👍
     /// ```
     ///
-    public subscript<Value> (dynamicMember dynamicMember: KeyPath<Group, Value>) -> Value where Value: FlagValue {
+    public subscript<Value>(dynamicMember dynamicMember: KeyPath<Group, Value>) -> Value where Value: FlagValue {
         get {
             return self.snapshot.lock.withLock {
                 self.group[keyPath: dynamicMember]
@@ -53,7 +59,9 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
             // see Snapshot.swift for how terrible this is
             return snapshot.lock.withLock {
                 _ = self.group[keyPath: dynamicMember]
-                guard let key = snapshot.lastAccessedKey else { return }
+                guard let key = snapshot.lastAccessedKey else {
+                    return
+                }
                 snapshot.set(newValue, key: key)
             }
         }
@@ -61,7 +69,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
     /// Internal initialiser used to create MutableFlagGroups for a given subgroup and snapshot
     ///
-    init (group: Group, snapshot: Snapshot<Root>) {
+    init(group: Group, snapshot: Snapshot<Root>) {
         self.group = group
         self.snapshot = snapshot
     }
@@ -89,12 +97,12 @@ extension MutableFlagGroup: CustomDebugStringConvertible {
     public var debugDescription: String {
         return "\(String(describing: Group.self))("
             + Mirror(reflecting: group).children
-                .map { _, value -> String in
-                    (value as? CustomDebugStringConvertible)?.debugDescription
-                        ?? (value as? CustomStringConvertible)?.description
-                        ?? String(describing: value)
-                }
-                .joined(separator: ", ")
+            .map { _, value -> String in
+                (value as? CustomDebugStringConvertible)?.debugDescription
+                    ?? (value as? CustomStringConvertible)?.description
+                    ?? String(describing: value)
+            }
+            .joined(separator: ", ")
             + ")"
     }
 }

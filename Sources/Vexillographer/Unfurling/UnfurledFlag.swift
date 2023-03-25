@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UnfurledFlag.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 16/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -23,7 +29,7 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     private let manager: FlagValueManager<RootGroup>
 
     var id: UUID {
-        return self.flag.id
+        return flag.id
     }
 
     var isEditable: Bool {
@@ -45,7 +51,7 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
 
     // MARK: - Initialisation
 
-    init (name: String, flag: Flag<Value>, manager: FlagValueManager<RootGroup>) {
+    init(name: String, flag: Flag<Value>, manager: FlagValueManager<RootGroup>) {
         self.info = UnfurledFlagInfo(key: flag.key, info: flag.info, defaultName: name)
         self.flag = flag
         self.manager = manager
@@ -55,7 +61,7 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     // MARK: - Unfurled Flag Item Conformance
 
     var unfurledView: AnyView {
-        return AnyView(UnfurledFlagView(flag: self, manager: self.manager))
+        return AnyView(UnfurledFlagView(flag: self, manager: manager))
     }
 
 }

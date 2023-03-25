@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagView.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 16/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -17,16 +23,19 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     let flag: UnfurledFlag<Value, RootGroup>
 
-    @ObservedObject var manager: FlagValueManager<RootGroup>
+    @ObservedObject
+    var manager: FlagValueManager<RootGroup>
 
-    @State private var showDetail = false
+    @State
+    private var showDetail = false
 
-    @State private var showPicker = false
+    @State
+    private var showPicker = false
 
 
     // MARK: - Initialisation
 
-    init (flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
+    init(flag: UnfurledFlag<Value, RootGroup>, manager: FlagValueManager<RootGroup>) {
         self.flag = flag
         self.manager = manager
     }
@@ -39,7 +48,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
             .contextMenu {
                 Button("Show Details") { self.showDetail = true }
             }
-            .sheet (
+            .sheet(
                 isPresented: self.$showDetail,
                 content: {
                     self.detailView
@@ -71,7 +80,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
         return EmptyView().eraseToAnyView()
     }
 
-    #if os(iOS)
+#if os(iOS)
 
     var detailView: some View {
         NavigationView {
@@ -80,7 +89,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
         }
     }
 
-    #elseif os(macOS)
+#elseif os(macOS)
 
     var detailView: some View {
         VStack {
@@ -93,7 +102,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
         .padding()
     }
 
-    #endif
+#endif
 
     var detailDoneButton: some View {
         Button("Close") {

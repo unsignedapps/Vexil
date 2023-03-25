@@ -1,16 +1,22 @@
+//===----------------------------------------------------------------------===//
 //
-//  Pasteboard.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 30/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS)
 
 import UIKit
 
 extension String {
-    func copyToPasteboard () {
+    func copyToPasteboard() {
         UIPasteboard.general.string = self
     }
 }
@@ -20,7 +26,7 @@ extension String {
 import Cocoa
 
 extension String {
-    func copyToPasteboard () {
+    func copyToPasteboard() {
         NSPasteboard.general.setString(self, forType: .string)
     }
 }

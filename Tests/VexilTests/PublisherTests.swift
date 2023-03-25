@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  PublisherTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 31/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 
@@ -15,7 +21,7 @@ final class PublisherTests: XCTestCase {
 
     // MARK: - Flag Pole Publisher
 
-    func testPublisherSetup () {
+    func testPublisherSetup() {
         let expectation = self.expectation(description: "snapshot")
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -35,7 +41,7 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(snapshots.first?.testFlag, false)
     }
 
-    func testPublishesSnapshotWhenAddingSource () {
+    func testPublishesSnapshotWhenAddingSource() {
         let expectation = self.expectation(description: "snapshot")
         expectation.expectedFulfillmentCount = 2
 
@@ -61,7 +67,7 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(snapshots.last?.testFlag, true)
     }
 
-    func testPublishesWhenSourceChanges () {
+    func testPublishesWhenSourceChanges() {
         let expectation = self.expectation(description: "published")
         expectation.expectedFulfillmentCount = 3
         let source = TestSource()
@@ -84,7 +90,7 @@ final class PublisherTests: XCTestCase {
         XCTAssertEqual(snapshots.count, 3)
     }
 
-    func testPublishesWithMultipleSources () {
+    func testPublishesWithMultipleSources() {
         let expectation = self.expectation(description: "published")
         expectation.expectedFulfillmentCount = 3
 
@@ -116,7 +122,7 @@ final class PublisherTests: XCTestCase {
 
     // swiftlint:disable xct_specific_matcher
 
-    func testIndividualFlagPublisher () {
+    func testIndividualFlagPublisher() {
         let expectation = self.expectation(description: "publisher")
         expectation.expectedFulfillmentCount = 2
 
@@ -143,7 +149,7 @@ final class PublisherTests: XCTestCase {
     }
 
 
-    func testIndividualFlagPublisheRemovesDuplicates () {
+    func testIndividualFlagPublisheRemovesDuplicates() {
         let expectation = self.expectation(description: "publisher")
         expectation.expectedFulfillmentCount = 2
 
@@ -173,7 +179,7 @@ final class PublisherTests: XCTestCase {
 
     // MARK: - Setup
 
-    func testSendsAllKeysToSourceDuringSetup () throws {
+    func testSendsAllKeysToSourceDuringSetup() throws {
 
         // GIVEN a flag pole and a mock source
         let source = TestSource()
@@ -193,7 +199,7 @@ final class PublisherTests: XCTestCase {
                 "test-flag",
                 "test-flag2",
                 "test-flag3",
-                "test-flag4"
+                "test-flag4",
             ]
         )
         XCTAssertNotNil(cancellable)
@@ -226,17 +232,16 @@ private final class TestSource: FlagValueSource {
 
     var requestedKeys: Set<String> = []
 
-    init () {}
+    init() {}
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         return nil
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-    }
+    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {}
 
     func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        self.requestedKeys = keys
+        requestedKeys = keys
         return subject.eraseToAnyPublisher()
     }
 

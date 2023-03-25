@@ -1,17 +1,22 @@
+//===----------------------------------------------------------------------===//
 //
-//  KeyEncodingTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 10/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
-
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Vexil
 import XCTest
 
 final class KeyEncodingTests: XCTestCase {
 
-    func testKebabCaseCodingKeyStrategy () {
+    func testKebabCaseCodingKeyStrategy() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: nil, separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
@@ -24,7 +29,7 @@ final class KeyEncodingTests: XCTestCase {
         XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "one-flag-group.two.standard")
     }
 
-    func testSnakeCaseCodingKeyStrategy () {
+    func testSnakeCaseCodingKeyStrategy() {
         let config = VexilConfiguration(codingPathStrategy: .snakecase, prefix: nil, separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
@@ -37,7 +42,7 @@ final class KeyEncodingTests: XCTestCase {
         XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "one_flag_group.two.standard")
     }
 
-    func testPrefixCodingKeyStrategy () {
+    func testPrefixCodingKeyStrategy() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: "prefix", separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
@@ -50,7 +55,7 @@ final class KeyEncodingTests: XCTestCase {
         XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "prefix.one-flag-group.two.standard")
     }
 
-    func testCustomSeparatorCodingKeyStrategy () {
+    func testCustomSeparatorCodingKeyStrategy() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: "prefix", separator: "/")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 

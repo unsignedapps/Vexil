@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  CaseIterableFlagControl.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 14/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -16,19 +22,23 @@ import Vexil
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 struct OptionalCaseIterableFlagControl<Value>: View
-            where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
-                  Value.WrappedFlagValue: Hashable, Value.WrappedFlagValue.AllCases: RandomAccessCollection {
+    where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
+    Value.WrappedFlagValue: Hashable, Value.WrappedFlagValue.AllCases: RandomAccessCollection
+{
 
     // MARK: - Properties
 
     let label: String
-    @Binding var value: Value
+    @Binding
+    var value: Value
 
     let hasChanges: Bool
     let isEditable: Bool
-    @Binding var showDetail: Bool
+    @Binding
+    var showDetail: Bool
 
-    @Binding var showPicker: Bool
+    @Binding
+    var showPicker: Bool
 
     // MARK: - View Body
 
@@ -53,20 +63,20 @@ struct OptionalCaseIterableFlagControl<Value>: View
         }
     }
 
-    #if os(iOS)
+#if os(iOS)
 
     var selector: some View {
         return self.selectorList
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
-    #else
+#else
 
     var selector: some View {
         return self.selectorList
     }
 
-    #endif
+#endif
 
     var selectorList: some View {
         Form {
@@ -105,23 +115,23 @@ struct OptionalCaseIterableFlagControl<Value>: View
         }
     }
 
-    #if os(macOS)
+#if os(macOS)
 
     var checkmark: some View {
         return Text("✓")
     }
 
-    #else
+#else
 
     var checkmark: some View {
         return Image(systemName: "checkmark")
     }
 
-    #endif
+#endif
 
     func valueSelected(_ value: Value.WrappedFlagValue?) {
         self.value.wrapped = value
-        self.showPicker = false
+        showPicker = false
     }
 
 }
@@ -131,20 +141,21 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalCaseIterableEditableFlag {
-    func control<RootGroup> (label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalCaseIterableEditableFlag
-                where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
-                      Value.WrappedFlagValue.AllCases: RandomAccessCollection, Value.WrappedFlagValue: RawRepresentable,
-                      Value.WrappedFlagValue.RawValue: FlagValue, Value.WrappedFlagValue: Hashable {
+    where Value: OptionalFlagValue, Value.WrappedFlagValue: CaseIterable,
+    Value.WrappedFlagValue.AllCases: RandomAccessCollection, Value.WrappedFlagValue: RawRepresentable,
+    Value.WrappedFlagValue.RawValue: FlagValue, Value.WrappedFlagValue: Hashable
+{
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        let key = self.info.key
+        let key = info.key
 
-        return OptionalCaseIterableFlagControl<Value> (
+        return OptionalCaseIterableFlagControl<Value>(
             label: label,
-            value: Binding (
+            value: Binding(
                 get: { Value(manager.flagValue(key: key)) },
                 set: { newValue in
                     do {
@@ -155,12 +166,12 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                     }
                 }
             ),
-            hasChanges: manager.hasValueInSource(flag: self.flag),
+            hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
             showDetail: showDetail,
             showPicker: showPicker
         )
-            .eraseToAnyView()
+        .eraseToAnyView()
     }
 }
 

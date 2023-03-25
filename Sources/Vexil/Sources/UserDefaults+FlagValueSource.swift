@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UserDefaults+FlagValueSource.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 28/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -24,9 +30,11 @@ extension UserDefaults: FlagValueSource {
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
 
         guard
-            let object = self.object(forKey: key),
+            let object = object(forKey: key),
             let boxed = BoxedFlagValue(object: object, typeHint: Value.self)
-        else { return nil }
+        else {
+            return nil
+        }
 
         return Value(boxedFlagValue: boxed)
     }
@@ -34,15 +42,15 @@ extension UserDefaults: FlagValueSource {
     /// Sets the value for the specified key
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
         guard let value = value else {
-            self.removeObject(forKey: key)
+            removeObject(forKey: key)
             return
         }
 
-        self.set(value.boxedFlagValue.object, forKey: key)
+        set(value.boxedFlagValue.object, forKey: key)
 
     }
 
-    #if os(watchOS)
+#if os(watchOS)
 
     /// A Publisher that emits events when the flag values it manages changes
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
@@ -52,20 +60,20 @@ extension UserDefaults: FlagValueSource {
             .eraseToAnyPublisher()
     }
 
-    #elseif !os(Linux)
+#elseif !os(Linux)
 
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return Publishers.Merge (
+        return Publishers.Merge(
             NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
                 .filter { ($0.object as AnyObject) === self }
                 .map { _ in () },
             NotificationCenter.default.publisher(for: ApplicationDidBecomeActive).map { _ in () }
         )
-            .map { _ in [] }
-            .eraseToAnyPublisher()
+        .map { _ in [] }
+        .eraseToAnyPublisher()
     }
 
-    #endif
+#endif
 }
 
 

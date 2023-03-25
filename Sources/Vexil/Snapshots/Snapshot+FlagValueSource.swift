@@ -1,20 +1,26 @@
+//===----------------------------------------------------------------------===//
 //
-//  Snapshot+FlagValueSource.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 19/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 extension Snapshot: FlagValueSource {
     public var name: String {
-        return self.displayName ?? "Snapshot \(self.id.uuidString)"
+        return displayName ?? "Snapshot \(id.uuidString)"
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return self.values[key]?.value as? Value
+        return values[key]?.value as? Value
     }
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        self.set(value, key: key)
+        set(value, key: key)
     }
 }

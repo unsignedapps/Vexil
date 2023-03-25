@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UserDefaultPublisherTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 2/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 
@@ -13,7 +19,7 @@ import XCTest
 
 final class UserDefaultPublisherTests: XCTestCase {
 
-    func testPublishesWhenUserDefaultsChange () {
+    func testPublishesWhenUserDefaultsChange() {
         let expectation = self.expectation(description: "published")
 
         let defaults = UserDefaults(suiteName: "Test Suite")!
@@ -33,13 +39,13 @@ final class UserDefaultPublisherTests: XCTestCase {
         defaults.set("Test Value", forKey: "test-key")
         defaults.set(123, forKey: "second-test-key")
 
-        self.wait(for: [ expectation ], timeout: 1)
+        wait(for: [ expectation ], timeout: 1)
 
         XCTAssertNotNil(cancellable)
         XCTAssertEqual(snapshots.count, 2)
     }
 
-    func testDoesNotPublishWhenDifferentUserDefaultsChange () {
+    func testDoesNotPublishWhenDifferentUserDefaultsChange() {
         let expectation = self.expectation(description: "published")
 
         let defaults1 = UserDefaults(suiteName: "Test Suite")!
@@ -60,7 +66,7 @@ final class UserDefaultPublisherTests: XCTestCase {
         defaults2.set("Test Value", forKey: "test-key")
         defaults1.set(123, forKey: "second-test-key")
 
-        self.wait(for: [ expectation ], timeout: 1)
+        wait(for: [ expectation ], timeout: 1)
 
         XCTAssertNotNil(cancellable)
         XCTAssertEqual(snapshots.count, 1)
@@ -71,7 +77,6 @@ final class UserDefaultPublisherTests: XCTestCase {
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {
-}
+private struct TestFlags: FlagContainer {}
 
 #endif

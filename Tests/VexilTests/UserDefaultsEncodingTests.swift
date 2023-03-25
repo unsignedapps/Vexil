@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  UserDefaultsEncodingTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 6/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 @testable import Vexil
 import XCTest
@@ -14,25 +20,25 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     private var defaults: UserDefaults!
 
-    override func setUp () {
+    override func setUp() {
         super.setUp()
-        self.defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")
+        defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")
     }
 
-    override func tearDown () {
+    override func tearDown() {
         super.tearDown()
-        self.defaults.removePersistentDomain(forName: "UserDefaultsEncodingTests")
+        defaults.removePersistentDomain(forName: "UserDefaultsEncodingTests")
     }
 
 
     // MARK: - Removing Values
 
-    func testEncodeMissingUnset () {
+    func testEncodeMissingUnset() {
         AssertNoThrow {
             self.defaults.set(true, forKey: #function)
             XCTAssertNotNil(self.defaults.object(forKey: #function))
 
-            try self.defaults.setFlagValue(Optional<Bool>.none, key: #function)         // swiftlint:disable:this syntactic_sugar
+            try self.defaults.setFlagValue(Bool?.none, key: #function)         // swiftlint:disable:this syntactic_sugar
             XCTAssertNil(self.defaults.object(forKey: #function))
         }
     }
@@ -40,7 +46,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Decoding Boolean Types
 
-    func testEncodeBooleanTrue () {
+    func testEncodeBooleanTrue() {
         AssertNoThrow {
             let value = true
 
@@ -49,7 +55,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeBooleanFalse () {
+    func testEncodeBooleanFalse() {
         AssertNoThrow {
             let value = false
 
@@ -61,7 +67,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Decoding String Types
 
-    func testEncodeString () {
+    func testEncodeString() {
         AssertNoThrow {
             let value = "abcd1234"
 
@@ -70,7 +76,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeURL () {
+    func testEncodeURL() {
         AssertNoThrow {
             let value = URL(string: "https://google.com/")!
 
@@ -82,7 +88,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Encoding Float / Double Types
 
-    func testEncodeDouble () {
+    func testEncodeDouble() {
         AssertNoThrow {
             let value = Double(1.23456789)
 
@@ -91,7 +97,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeFloat () {
+    func testEncodeFloat() {
         AssertNoThrow {
             let value = Float(1.23456789)
 
@@ -103,7 +109,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Encoding Integer Types
 
-    func testEncodeInt () {
+    func testEncodeInt() {
         AssertNoThrow {
             let value = 1234
 
@@ -112,7 +118,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeInt8 () {
+    func testEncodeInt8() {
         AssertNoThrow {
             let value: Int8 = 12
 
@@ -121,7 +127,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeInt16 () {
+    func testEncodeInt16() {
         AssertNoThrow {
             let value: Int16 = 1234
 
@@ -130,7 +136,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeInt32 () {
+    func testEncodeInt32() {
         AssertNoThrow {
             let value: Int32 = 1234
 
@@ -139,7 +145,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeInt64 () {
+    func testEncodeInt64() {
         AssertNoThrow {
             let value: Int64 = 1234
 
@@ -148,7 +154,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeUInt () {
+    func testEncodeUInt() {
         AssertNoThrow {
             let value: UInt = 12
 
@@ -157,7 +163,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeUInt8 () {
+    func testEncodeUInt8() {
         AssertNoThrow {
             let value: UInt8 = 14
 
@@ -166,7 +172,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeUInt16 () {
+    func testEncodeUInt16() {
         AssertNoThrow {
             let value: UInt16 = 1234
 
@@ -175,7 +181,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeUInt32 () {
+    func testEncodeUInt32() {
         AssertNoThrow {
             let value: UInt32 = 1234
 
@@ -184,7 +190,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeUInt64 () {
+    func testEncodeUInt64() {
         AssertNoThrow {
             let value: UInt64 = 1234
 
@@ -196,7 +202,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentable () {
+    func testRawRepresentable() {
         AssertNoThrow {
             let value = TestStruct(rawValue: "Test Value")
 
@@ -209,7 +215,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testOptionalSome () {
+    func testOptionalSome() {
         AssertNoThrow {
             let value: String? = "Test Value"
 
@@ -218,7 +224,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testOptionalNone () {
+    func testOptionalNone() {
         AssertNoThrow {
             let value: String? = nil
 
@@ -230,7 +236,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Array Tests
 
-    func testEncodeStringArray () {
+    func testEncodeStringArray() {
         AssertNoThrow {
             let value = [ "abc", "123" ]
 
@@ -239,7 +245,7 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeIntegerArray () {
+    func testEncodeIntegerArray() {
         AssertNoThrow {
             let value = [ 234, -123 ]
 
@@ -251,11 +257,11 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Dictionary Tests
 
-    func testEncodeStringDictionary () {
+    func testEncodeStringDictionary() {
         AssertNoThrow {
             let value = [
                 "key1": "value1",
-                "key2": "value2"
+                "key2": "value2",
             ]
 
             try self.defaults.setFlagValue(value, key: #function)
@@ -263,11 +269,11 @@ final class UserDefaultsEncodingTests: XCTestCase {
         }
     }
 
-    func testEncodeIntegerDictionary () {
+    func testEncodeIntegerDictionary() {
         AssertNoThrow {
             let value = [
                 "key1": 123,
-                "key2": -987
+                "key2": -987,
             ]
 
             try self.defaults.setFlagValue(value, key: #function)
@@ -277,13 +283,13 @@ final class UserDefaultsEncodingTests: XCTestCase {
 
     // MARK: - Codable Tests
 
-    func testEncodeCodable () {
+    func testEncodeCodable() {
         struct MyStruct: FlagValue, Codable, Equatable {
             let property1: String
             let property2: Int
             let property3: String
 
-            init () {
+            init() {
                 self.property1 = "value1"
                 self.property2 = 123
                 self.property3 = "🤯"

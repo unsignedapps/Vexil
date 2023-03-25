@@ -5,12 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "Vexil",
-    
+
     platforms: [
         .iOS(.v13),
         .macOS(.v10_15),
         .tvOS(.v13),
-        .watchOS(.v6)
+        .watchOS(.v6),
     ],
 
     products: [
@@ -27,7 +27,7 @@ let package = Package(
             name: "Vexil",
             dependencies: [],
             exclude: [
-                "Vexil.docc"
+                "Vexil.docc",
             ]
         ),
         .testTarget(
@@ -36,17 +36,17 @@ let package = Package(
         ),
 
         .target(
-            name: "Vexillographer", 
+            name: "Vexillographer",
             dependencies: [
-                "Vexil"
+                "Vexil",
             ],
             exclude: [
-                "Vexil.docc"
+                "Vexil.docc",
             ]
         ),
     ],
 
     swiftLanguageVersions: [
-        .v5
+        .v5,
     ]
 )

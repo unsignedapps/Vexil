@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagPoleTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 2/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 import Vexil
@@ -11,7 +17,7 @@ import XCTest
 
 final class FlagPoleTests: XCTestCase {
 
-    func testSetsDefaultSources () {
+    func testSetsDefaultSources() {
         let pole = FlagPole(hoist: TestFlags.self)
 
         XCTAssertEqual(pole._sources.count, 1)
@@ -22,6 +28,4 @@ final class FlagPoleTests: XCTestCase {
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {
-
-}
+private struct TestFlags: FlagContainer {}

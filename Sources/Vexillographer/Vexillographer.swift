@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Vexillographer.swift
-//  Vexil: Vexilographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 14/6/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -17,7 +23,8 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Properties
 
-    @ObservedObject var manager: FlagValueManager<RootGroup>
+    @ObservedObject
+    var manager: FlagValueManager<RootGroup>
 
 
     // MARK: - Initialisation
@@ -28,39 +35,39 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     ///   - flagPole:           A `FlagPole` instance manages the flag and source hierarchy we want to display
     ///   - source:             An optional `FlagValueSource` for editing the flag values in. If `nil` the flag values are displayed read-only
     ///
-    public init (flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
+    public init(flagPole: FlagPole<RootGroup>, source: FlagValueSource?) {
         self.manager = FlagValueManager(flagPole: flagPole, source: source)
     }
 
 
     // MARK: - Body
 
-    #if os(macOS) && compiler(>=5.3.1)
+#if os(macOS) && compiler(>=5.3.1)
 
     public var body: some View {
         List(self.manager.allItems(), id: \.id, children: \.childLinks) { item in
             item.unfurledView
         }
-            .listStyle(SidebarListStyle())
-            .toolbar {
-                ToolbarItem(placement: .navigation) {
-                    Button(action: NSApp.toggleKeyWindowSidebar) {
-                        Image(systemName: "sidebar.left")
-                    }
+        .listStyle(SidebarListStyle())
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button(action: NSApp.toggleKeyWindowSidebar) {
+                    Image(systemName: "sidebar.left")
                 }
             }
+        }
     }
 
-    #else
+#else
 
     public var body: some View {
         ForEach(self.manager.allItems(), id: \.id) { item in
             item.unfurledView
         }
-            .environmentObject(self.manager)
+        .environmentObject(self.manager)
     }
 
-    #endif
+#endif
 }
 
 #endif

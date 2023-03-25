@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  Diagnostics.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 12/12/21.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 import Foundation
 
@@ -24,7 +30,7 @@ public enum FlagPoleDiagnostic: Equatable {
 extension Array where Element == FlagPoleDiagnostic {
 
     /// Creates diagnostic cases from an initial snapshot
-    init<Root> (current: Snapshot<Root>) where Root: FlagContainer {
+    init<Root>(current: Snapshot<Root>) where Root: FlagContainer {
         self = current.values
             .sorted(by: { $0.key < $1.key })
             .compactMap { element -> FlagPoleDiagnostic? in
@@ -37,7 +43,7 @@ extension Array where Element == FlagPoleDiagnostic {
     }
 
     /// Creates diagnostic cases from a changed snapshot
-    init<Root> (changed: Snapshot<Root>, sources: [String]?) where Root: FlagContainer {
+    init<Root>(changed: Snapshot<Root>, sources: [String]?) where Root: FlagContainer {
         guard let sources = sources else {
             self = .init(current: changed)
             return

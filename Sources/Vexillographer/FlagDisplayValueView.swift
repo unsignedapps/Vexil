@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagDisplayView.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -18,7 +24,7 @@ struct FlagDisplayValueView<Value>: View where Value: FlagValue {
     let value: Value
 
     var string: String? {
-        if let value = self.value as? OptionalFlagDisplayValue {
+        if let value = value as? OptionalFlagDisplayValue {
             return value.flagDisplayValue
         }
         if let displayValue = value as? FlagDisplayValue {

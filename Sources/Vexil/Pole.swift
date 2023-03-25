@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagPole.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -56,7 +62,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     public var _sources: [FlagValueSource] {
         didSet {
-            #if !os(Linux)
+#if !os(Linux)
 
             if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
                 let oldSourceNames = oldValue.map(\.name)
@@ -69,7 +75,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
                 )
             }
 
-            #endif
+#endif
         }
     }
 
@@ -80,7 +86,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     public static var defaultSources: [FlagValueSource] {
         return [
-            UserDefaults.standard
+            UserDefaults.standard,
         ]
     }
 
@@ -97,23 +103,23 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - configuration:      An optional configuration describing how `Flag` keys should be calculated. Defaults to `VexilConfiguration.default`
     ///   - sources:            An optional Array of `FlagValueSource`s to use as the flag pole's source hierarchy. Defaults to `FlagPole.defaultSources`
     ///
-    public convenience init (hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
+    public convenience init(hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
         self.init(hoisting: RootGroup(), configuration: configuration, sources: sources)
     }
 
-    internal init (hoisting: RootGroup, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
+    internal init(hoisting: RootGroup, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
         self._rootGroup = hoisting
         self._configuration = configuration
         self._sources = sources ?? Self.defaultSources
         self.decorateRootGroup()
 
-        #if !os(Linux)
+#if !os(Linux)
 
         if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
             self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
         }
 
-        #endif
+#endif
     }
 
 
@@ -123,23 +129,19 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     public var _rootGroup: RootGroup
 
     /// A reference to all flags declared within the RootGroup
-    internal lazy var allFlags: [AnyFlag] = {
-        return Mirror(reflecting: self._rootGroup)
-            .children
-            .lazy
-            .map { $0.value }
-            .allFlags()
-    }()
+    internal lazy var allFlags: [AnyFlag] = Mirror(reflecting: self._rootGroup)
+        .children
+        .lazy
+        .map { $0.value }
+        .allFlags()
 
     /// A reference to all flag keys declared within the RootGroup
-    internal lazy var allFlagKeys: Set<String> = {
-        return Set(self.allFlags.map({ $0.key }))
-    }()
+    internal lazy var allFlagKeys: Set<String> = Set(self.allFlags.map { $0.key })
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
     ///
-    public subscript<Value> (dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
+    public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
         return self._rootGroup[keyPath: dynamicMember]
     }
 
@@ -147,10 +149,10 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// all `Flag` and `FlagGroup`s contained within `RootGroup` have their keys calcualted
     /// and sets a weak reference to ourselves that they can use to lookup the flag values.
     ///
-    private func decorateRootGroup () {
+    private func decorateRootGroup() {
 
         var codingPath: [String] = []
-        if let prefix = self._configuration.prefix {
+        if let prefix = _configuration.prefix {
             codingPath.append(prefix)
         }
 
@@ -173,9 +175,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     private var shouldSetupSnapshotPublishing = false
 
     /// An internal reference to the latest snapshot as emitted by our `FlagValueSource`s
-    private lazy var latestSnapshot: CurrentValueSubject<Snapshot<RootGroup>, Never> = {
-        return CurrentValueSubject(self.snapshot())
-    }()
+    private lazy var latestSnapshot: CurrentValueSubject<Snapshot<RootGroup>, Never> = CurrentValueSubject(self.snapshot())
 
     /// A `Publisher` that can be used to monitor flag value changes in real-time.
     ///
@@ -193,8 +193,10 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     private lazy var cancellables = Set<AnyCancellable>()
 
-    private func setupSnapshotPublishing (keys: Set<String>, sendImmediately: Bool, changedSources: [String]? = nil) {
-        guard self.shouldSetupSnapshotPublishing else { return }
+    private func setupSnapshotPublishing(keys: Set<String>, sendImmediately: Bool, changedSources: [String]? = nil) {
+        guard self.shouldSetupSnapshotPublishing else {
+            return
+        }
 
         // cancel our existing one
         self.cancellables.forEach { $0.cancel() }
@@ -203,7 +205,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         let upstream = self._sources
             .compactMap { source -> AnyPublisher<(String, Set<String>), Never>? in
                 let maybePublisher = source.valuesDidChange(keys: keys)
-                    ?? source.valuesDidChange?.map({ _ in [] }).eraseToAnyPublisher()   // backwards compatibility
+                    ?? source.valuesDidChange?.map { _ in [] }.eraseToAnyPublisher()   // backwards compatibility
 
                 guard let publisher = maybePublisher else {
                     return nil
@@ -217,7 +219,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
         Publishers.MergeMany(upstream)
             .sink { [weak self] source, keys in
-                guard let self = self else { return }
+                guard let self = self else {
+                    return
+                }
 
                 let snapshot = Snapshot(flagPole: self, snapshot: self.latestSnapshot.value)
                 let changed = Snapshot(flagPole: self, copyingFlagValuesFrom: .pole, keys: keys.isEmpty == true ? nil : keys, diagnosticsEnabled: self._diagnosticsEnabled)
@@ -249,7 +253,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     /// This method is intended to be called from the debugger
     ///
-    public func makeDiagnostics () -> [FlagPoleDiagnostic] {
+    public func makeDiagnostics() -> [FlagPoleDiagnostic] {
         return .init(current: self.snapshot(enableDiagnostics: true))
     }
 
@@ -264,7 +268,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///  - The value of every flag on the `FlagPole` at the time of subscribing, and which `FlagValueSource` it was resolved by
     ///  - An array of the flag values that were changed, which `FlagValueSource` they were changed by, and their resolved value/source
     ///
-    public func makeDiagnosticsPublisher () -> AnyPublisher<[FlagPoleDiagnostic], Never> {
+    public func makeDiagnosticsPublisher() -> AnyPublisher<[FlagPoleDiagnostic], Never> {
         let wasAlreadyEnabled = _diagnosticsEnabled
         _diagnosticsEnabled = true
 
@@ -275,7 +279,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             self.shouldSetupSnapshotPublishing = true
             self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
 
-        // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
+            // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
         } else if wasAlreadyEnabled == false {
             snapshot = self.snapshot()
             self.latestSnapshot.send(snapshot)
@@ -299,8 +303,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
     ///                     into the snapshot instead.
     ///
-    public func snapshot (of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
-        return Snapshot (
+    public func snapshot(of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
+        return Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
             diagnosticsEnabled: enableDiagnostics || self._diagnosticsEnabled
@@ -312,7 +316,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// The snapshot itself will be empty and access to any flags
     /// within the snapshot will return the flag's `defaultValue`.
     ///
-    public func emptySnapshot () -> Snapshot<RootGroup> {
+    public func emptySnapshot() -> Snapshot<RootGroup> {
         return Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
     }
 
@@ -328,7 +332,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:       The `Snapshot` to be inserted
     ///   - at:             The index at which to insert the `Snapshot`.
     ///
-    public func insert (snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
+    public func insert(snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
         self._sources.insert(snapshot, at: index)
 
     }
@@ -340,7 +344,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// - Parameters:
     ///   - snapshot:       The `Snapshot` to be added to the source hierarchy.
     ///
-    public func append (snapshot: Snapshot<RootGroup>) {
+    public func append(snapshot: Snapshot<RootGroup>) {
         self._sources.append(snapshot)
     }
 
@@ -351,7 +355,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// - Parameters:
     ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
     ///
-    public func remove (snapshot: Snapshot<RootGroup>) {
+    public func remove(snapshot: Snapshot<RootGroup>) {
         self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
     }
 
@@ -381,7 +385,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:           The `Snapshot` to save to the source. Only the values included in the snapshot will be saved.
     ///   - to:                 The `FlagValueSource` to save the snapshot to.
     ///
-    public func save (snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
+    public func save(snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
         try snapshot.changedFlags()
             .forEach { try $0.save(to: source) }
     }
@@ -401,7 +405,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// try flagPole.copy(from: defaults, to: dictionary)
     /// ```
     ///
-    public func copyFlagValues (from source: FlagValueSource?, to destination: FlagValueSource) throws {
+    public func copyFlagValues(from source: FlagValueSource?, to destination: FlagValueSource) throws {
         let snapshot = self.snapshot(of: source)
         try self.save(snapshot: snapshot, to: destination)
     }
@@ -412,7 +416,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// method is called. This is useful if you want to provide a button or the capability
     /// to "reset" a source back to its defaults, or clear any overrides in the given source.
     ///
-    public func removeFlagValues (in source: FlagValueSource) throws {
+    public func removeFlagValues(in source: FlagValueSource) throws {
         let flagsInSource = FlagValueDictionary()
         try self.copyFlagValues(from: source, to: flagsInSource)
 
@@ -433,12 +437,12 @@ extension FlagPole: CustomDebugStringConvertible {
     public var debugDescription: String {
         return "FlagPole<\(String(describing: RootGroup.self))>("
             + Mirror(reflecting: _rootGroup).children
-                .map { _, value -> String in
-                    (value as? CustomDebugStringConvertible)?.debugDescription
-                        ?? (value as? CustomStringConvertible)?.description
-                        ?? String(describing: value)
-                }
-                .joined(separator: "; ")
+            .map { _, value -> String in
+                (value as? CustomDebugStringConvertible)?.debugDescription
+                    ?? (value as? CustomStringConvertible)?.description
+                    ?? String(describing: value)
+            }
+            .joined(separator: "; ")
             + ")"
     }
 }

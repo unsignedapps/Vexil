@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValue.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 // swiftlint:disable extension_access_modifier
 
@@ -99,7 +105,9 @@ extension String: FlagValue {
     public typealias BoxedValueType = String
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .string(let value) = boxedFlagValue else { return nil }
+        guard case let .string(value) = boxedFlagValue else {
+            return nil
+        }
         self = value
     }
 
@@ -112,12 +120,14 @@ extension URL: FlagValue {
     public typealias BoxedValueType = String
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .string(let value) = boxedFlagValue else { return nil }
+        guard case let .string(value) = boxedFlagValue else {
+            return nil
+        }
         self.init(string: value)
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .string(self.absoluteString)
+        return .string(absoluteString)
     }
 }
 
@@ -125,10 +135,14 @@ extension Date: FlagValue {
     public typealias BoxedValueType = String
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .string(let value) = boxedFlagValue else { return nil }
+        guard case let .string(value) = boxedFlagValue else {
+            return nil
+        }
 
         let formatter = ISO8601DateFormatter()
-        guard let date = formatter.date(from: value) else { return nil }
+        guard let date = formatter.date(from: value) else {
+            return nil
+        }
 
         self = date
     }
@@ -143,7 +157,9 @@ extension Data: FlagValue {
     public typealias BoxedValueType = Data
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .data(let value) = boxedFlagValue else { return nil }
+        guard case let .data(value) = boxedFlagValue else {
+            return nil
+        }
         self = value
     }
 
@@ -208,7 +224,9 @@ extension Int8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = Int8(value)
     }
 
@@ -221,7 +239,9 @@ extension Int16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = Int16(value)
     }
 
@@ -234,7 +254,9 @@ extension Int32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = Int32(value)
     }
 
@@ -247,7 +269,9 @@ extension Int64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = Int64(value)
     }
 
@@ -260,7 +284,9 @@ extension UInt: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = UInt(value)
     }
 
@@ -273,7 +299,9 @@ extension UInt8: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = UInt8(value)
     }
 
@@ -286,7 +314,9 @@ extension UInt16: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = UInt16(value)
     }
 
@@ -299,7 +329,9 @@ extension UInt32: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = UInt32(value)
     }
 
@@ -312,7 +344,9 @@ extension UInt64: FlagValue {
     public typealias BoxedValueType = Int
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let value = Int(boxedFlagValue: boxedFlagValue) else { return nil }
+        guard let value = Int(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self = UInt64(value)
     }
 
@@ -324,16 +358,18 @@ extension UInt64: FlagValue {
 
 // MARK: - Conforming Other Types
 
-extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
-    public typealias BoxedValueType = RawValue.BoxedValueType
+public extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
+    typealias BoxedValueType = RawValue.BoxedValueType
 
-    public init? (boxedFlagValue: BoxedFlagValue) {
-        guard let rawValue = RawValue(boxedFlagValue: boxedFlagValue) else { return nil }
+    init? (boxedFlagValue: BoxedFlagValue) {
+        guard let rawValue = RawValue(boxedFlagValue: boxedFlagValue) else {
+            return nil
+        }
         self.init(rawValue: rawValue)
     }
 
-    public var boxedFlagValue: BoxedFlagValue {
-        return self.rawValue.boxedFlagValue
+    var boxedFlagValue: BoxedFlagValue {
+        return rawValue.boxedFlagValue
     }
 }
 
@@ -361,12 +397,14 @@ extension Array: FlagValue where Element: FlagValue {
     public typealias BoxedValueType = [Element.BoxedValueType]
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .array(let array) = boxedFlagValue else { return nil }
+        guard case let .array(array) = boxedFlagValue else {
+            return nil
+        }
         self = array.compactMap { Element(boxedFlagValue: $0) }
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .array(self.map({ $0.boxedFlagValue }))
+        return .array(map { $0.boxedFlagValue })
     }
 }
 
@@ -374,21 +412,25 @@ extension Dictionary: FlagValue where Key == String, Value: FlagValue {
     public typealias BoxedValueType = [String: Value.BoxedValueType]
 
     public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .dictionary(let dictionary) = boxedFlagValue else { return nil }
+        guard case let .dictionary(dictionary) = boxedFlagValue else {
+            return nil
+        }
         self = dictionary.compactMapValues { Value(boxedFlagValue: $0) }
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .dictionary(self.mapValues({ $0.boxedFlagValue }))
+        return .dictionary(mapValues { $0.boxedFlagValue })
     }
 }
 
 
 // MARK: - Conforming Codable Types
 
-extension Decodable where Self: FlagValue, Self: Encodable {
-    public init? (boxedFlagValue: BoxedFlagValue) {
-        guard case .data(let data) = boxedFlagValue else { return nil }
+public extension Decodable where Self: FlagValue, Self: Encodable {
+    init? (boxedFlagValue: BoxedFlagValue) {
+        guard case let .data(data) = boxedFlagValue else {
+            return nil
+        }
 
         do {
             let decoder = JSONDecoder()
@@ -401,12 +443,12 @@ extension Decodable where Self: FlagValue, Self: Encodable {
     }
 }
 
-extension Encodable where Self: FlagValue, Self: Decodable {
-    public var boxedFlagValue: BoxedFlagValue {
+public extension Encodable where Self: FlagValue, Self: Decodable {
+    var boxedFlagValue: BoxedFlagValue {
         do {
             let encoder = JSONEncoder()
             encoder.outputFormatting = .sortedKeys
-            return .data(try encoder.encode(Wrapper(wrapped: self)))
+            return try .data(encoder.encode(Wrapper(wrapped: self)))
 
         } catch {
             assertionFailure("[Vexil] Unable to encode type \(String(describing: Self.self)): \(error)")

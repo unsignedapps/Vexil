@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  DetailButton.swift
-//  Vexil: Vexillographer
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 15/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if os(iOS) || os(macOS)
 
@@ -16,11 +22,14 @@ struct DetailButton: View {
 
     let hasChanges: Bool
 
-    @Binding var showDetail: Bool
+    @Binding
+    var showDetail: Bool
 
-    @State private var size = CGSize.zero
+    @State
+    private var size = CGSize.zero
 
-    @State private var isDraggingInside = false
+    @State
+    private var isDraggingInside = false
 
     // MARK: - View
 

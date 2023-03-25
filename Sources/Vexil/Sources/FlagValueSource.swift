@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueSource.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 25/5/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -22,15 +28,15 @@ public protocol FlagValueSource {
     var name: String { get }
 
     /// Provide a way to fetch values
-    func flagValue<Value> (key: String) -> Value? where Value: FlagValue
+    func flagValue<Value>(key: String) -> Value? where Value: FlagValue
 
     /// And to save values – if your source does not support saving just do nothing
     ///
     /// It is expected if the value passed in is `nil` then the flag value would be cleared
     ///
-    func setFlagValue<Value> (_ value: Value?, key: String) throws where Value: FlagValue
+    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue
 
-    #if !os(Linux)
+#if !os(Linux)
 
     /// If you're running on a platform that supports Combine you can optionally support real-time
     /// flag updates.
@@ -47,7 +53,7 @@ public protocol FlagValueSource {
     ///
     func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>?
 
-    #endif
+#endif
 }
 
 #if !os(Linux)

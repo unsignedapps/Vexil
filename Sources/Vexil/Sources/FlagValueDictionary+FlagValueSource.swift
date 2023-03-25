@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueDictionary+FlagValueSource.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 19/8/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 #if !os(Linux)
 import Combine
@@ -12,7 +18,7 @@ import Combine
 extension FlagValueDictionary: FlagValueSource {
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        guard let value = self.storage[key] else {
+        guard let value = storage[key] else {
             return nil
         }
         return Value(boxedFlagValue: value)
@@ -20,13 +26,13 @@ extension FlagValueDictionary: FlagValueSource {
 
     public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
         if let value = value {
-            self.storage.updateValue(value.boxedFlagValue, forKey: key)
+            storage.updateValue(value.boxedFlagValue, forKey: key)
         } else {
-            self.storage.removeValue(forKey: key)
+            storage.removeValue(forKey: key)
         }
 
 #if !os(Linux)
-        self.valueDidChange.send([ key ])
+        valueDidChange.send([ key ])
 #endif
 
     }
@@ -34,7 +40,7 @@ extension FlagValueDictionary: FlagValueSource {
 #if !os(Linux)
 
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        self.valueDidChange
+        valueDidChange
             .eraseToAnyPublisher()
     }
 

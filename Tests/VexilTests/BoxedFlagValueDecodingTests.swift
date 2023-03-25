@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  BoxedFlagValueDecodingTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 11/10/2021.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 @testable import Vexil
 import XCTest
@@ -16,83 +22,83 @@ final class BoxedFlagValueDecodingTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        self.decoder = JSONDecoder()
-        self.decoder.dataDecodingStrategy = .base64
-        self.decoder.dateDecodingStrategy = .secondsSince1970
+        decoder = JSONDecoder()
+        decoder.dataDecodingStrategy = .base64
+        decoder.dateDecodingStrategy = .secondsSince1970
     }
 
 
     // MARK: - Boolean Flag Values
 
-    func testBooleanTrueFlagValue () throws {
+    func testBooleanTrueFlagValue() throws {
         let input = #"{"b":true}"#
         let expected = BoxedFlagValue.bool(true)
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
-    func testBooleanFalseFlagValue () {
+    func testBooleanFalseFlagValue() {
         let input = #"{"b":false}"#
         let expected = BoxedFlagValue.bool(false)
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 
     // MARK: - String Flag Values
 
-    func testStringFlagValue () {
+    func testStringFlagValue() {
         let input = #"{"s":"Test String"}"#
         let expected = BoxedFlagValue.string("Test String")
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 
     // MARK: - Data Values
 
-    func testDataFlagValue () {
+    func testDataFlagValue() {
         let input = #"{"d":"VGVzdCBzdHJpbmc="}"#
         let expected = BoxedFlagValue.data(Data("Test string".utf8))
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 
     // MARK: - Number Flag Values
 
-    func testIntFlagValue () {
+    func testIntFlagValue() {
         let input = #"{"i":1234}"#
         let expected = BoxedFlagValue.integer(1234)
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 
     // MARK: - Wrapping Types
 
-    func testOptionalNoFlagValue () {
+    func testOptionalNoFlagValue() {
         let input = #"{"n":null}"#
         let expected = BoxedFlagValue.none
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 
     // MARK: - Collection Types
 
-    func testArrayFlagValue () {
+    func testArrayFlagValue() {
         let input = #"{"a":[{"i":123},{"i":456},{"i":789}]}"#
         let expected = BoxedFlagValue.array([ .integer(123), .integer(456), .integer(789) ])
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
-    func testDictionaryFlagValue () {
+    func testDictionaryFlagValue() {
         let input = #"{"o":{"one":{"i":123},"three":{"i":789},"two":{"i":456}}}"#
         let expected = BoxedFlagValue.dictionary([ "one": .integer(123), "two": .integer(456), "three": .integer(789) ])
 
-        XCTAssertEqual(try self.decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
     }
 
 }

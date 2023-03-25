@@ -1,9 +1,15 @@
+//===----------------------------------------------------------------------===//
 //
-//  FlagValueBoxingTests.swift
-//  Vexil
+// This source file is part of the Vexil open source project
 //
-//  Created by Rob Amos on 21/7/20.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
 //
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
 
 @testable import Vexil
 import XCTest
@@ -12,14 +18,14 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Boolean Flag Values
 
-    func testBooleanTrueFlagValue () {
+    func testBooleanTrueFlagValue() {
         let input = true
         let expected = BoxedFlagValue.bool(true)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testBooleanFalseFlagValue () {
+    func testBooleanFalseFlagValue() {
         let input = false
         let expected = BoxedFlagValue.bool(false)
 
@@ -29,14 +35,14 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - String Flag Values
 
-    func testStringFlagValue () {
+    func testStringFlagValue() {
         let input = "Test String"
         let expected = BoxedFlagValue.string("Test String")
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testURLStringFlagValue () {
+    func testURLStringFlagValue() {
         let input = URL(string: "https://google.com/")!
         let expected = BoxedFlagValue.string("https://google.com/")
 
@@ -46,14 +52,14 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Data and Date Types
 
-    func testDataFlagValue () {
+    func testDataFlagValue() {
         let input = Data("Test string".utf8)
         let expected = BoxedFlagValue.data(input)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testDateFlagValue () {
+    func testDateFlagValue() {
         let input = Date()
         let formatter = ISO8601DateFormatter()
         let expected = BoxedFlagValue.string(formatter.string(from: input))
@@ -64,70 +70,70 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Integer Flag Values
 
-    func testIntFlagValue () {
-        let input: Int = 123
+    func testIntFlagValue() {
+        let input = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testInt8FlagValue () {
+    func testInt8FlagValue() {
         let input: Int8 = 12
         let expected = BoxedFlagValue.integer(12)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testInt16FlagValue () {
+    func testInt16FlagValue() {
         let input: Int16 = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testInt32FlagValue () {
+    func testInt32FlagValue() {
         let input: Int32 = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testInt64FlagValue () {
+    func testInt64FlagValue() {
         let input: Int64 = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testUIntFlagValue () {
+    func testUIntFlagValue() {
         let input: UInt = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testUInt8FlagValue () {
+    func testUInt8FlagValue() {
         let input: UInt8 = 12
         let expected = BoxedFlagValue.integer(12)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testUInt16FlagValue () {
+    func testUInt16FlagValue() {
         let input: UInt16 = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testUInt32FlagValue () {
+    func testUInt32FlagValue() {
         let input: UInt32 = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testUInt64FlagValue () {
+    func testUInt64FlagValue() {
         let input: UInt64 = 123
         let expected = BoxedFlagValue.integer(123)
 
@@ -137,15 +143,15 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Floating Point Flag Values
 
-    func testFloatFlagValue () {
+    func testFloatFlagValue() {
         let input: Float = 123.456
         let expected = BoxedFlagValue.float(123.456)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testDoubleFlagValue () {
-        let input: Double = 123.456
+    func testDoubleFlagValue() {
+        let input = 123.456
         let expected = BoxedFlagValue.double(123.456)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
@@ -154,7 +160,7 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentableFlagValue () {
+    func testRawRepresentableFlagValue() {
         let input = TestStruct(rawValue: 123)
         let expected = BoxedFlagValue.integer(123)
 
@@ -166,14 +172,14 @@ final class FlagValueBoxingTests: XCTestCase {
         }
     }
 
-    func testOptionalSomeFlagValue () {
+    func testOptionalSomeFlagValue() {
         let input: Int? = 123
         let expected = BoxedFlagValue.integer(123)
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testOptionalNoFlagValue () {
+    func testOptionalNoFlagValue() {
         let input: Int? = nil
         let expected = BoxedFlagValue.none
 
@@ -183,14 +189,14 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Collection Types
 
-    func testArrayFlagValue () {
+    func testArrayFlagValue() {
         let input = [ 123, 456, 789 ]
         let expected = BoxedFlagValue.array([ .integer(123), .integer(456), .integer(789) ])
 
         XCTAssertEqual(input.boxedFlagValue, expected)
     }
 
-    func testDictionaryFlagValue () {
+    func testDictionaryFlagValue() {
         let input = [ "one": 123, "two": 456, "three": 789 ]
         let expected = BoxedFlagValue.dictionary([ "one": .integer(123), "two": .integer(456), "three": .integer(789) ])
 
@@ -200,7 +206,7 @@ final class FlagValueBoxingTests: XCTestCase {
 
     // MARK: - Codable Types
 
-    func testCodableFlagValue () {
+    func testCodableFlagValue() {
         AssertNoThrow {
             let input = TestStruct()
             let encoder = JSONEncoder()
@@ -216,7 +222,7 @@ final class FlagValueBoxingTests: XCTestCase {
             let property2: String
             let property3: Double
 
-            init () {
+            init() {
                 self.property1 = 123
                 self.property2 = "456"
                 self.property3 = 789.0
