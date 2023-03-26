@@ -75,7 +75,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K"
+        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K (2nd generation)"
 
   build-tvos-macos-12:
     runs-on: ubuntu-latest
