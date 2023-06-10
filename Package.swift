@@ -2,6 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "Vexil",
@@ -21,11 +22,32 @@ let package = Package(
 
     dependencies: [
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.2"),
+        .package(url: "https://github.com/apple/swift-syntax.git", branch: "release/5.9"),
     ],
 
     targets: [
-        .target(name: "Vexil", dependencies: []),
+        .target(
+            name: "Vexil",
+            dependencies: [
+                .target(name: "VexilMacros"),
+            ]
+        ),
         .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
+
+        .macro(
+            name: "VexilMacros",
+            dependencies: [
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            ]
+        ),
+        .testTarget(
+            name: "VexilMacroTests",
+            dependencies: [
+                .target(name: "VexilMacros"),
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
 
         .target(name: "Vexillographer", dependencies: [ "Vexil" ]),
     ],
