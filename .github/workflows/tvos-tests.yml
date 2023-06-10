@@ -34,7 +34,7 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2" ]
+        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2.1" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -55,18 +55,18 @@ jobs:
         if: ${{ needs.build-tvos-macos-11-matrix.result == 'failure' }}
         run: exit 1
 
-  ########################
-  # macOS 10.15 Versions #
-  ########################
+  #####################
+  # macOS 12 Versions #
+  #####################
 
-  build-tvos-macos-10_15-matrix:
-    name: tvOS Matrix - macOS 10.15
-    runs-on: macos-10.15
+  build-tvos-macos-12-matrix:
+    name: tvOS Matrix - macOS 12
+    runs-on: macos-12
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12", "12.1", "12.2", "12.3", "12.4" ]
+        xcode: [ "13.1", "13.2.1", "13.3.1", "13.4.1", "14.0.1", "14.1", "14.2" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -75,14 +75,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K"
+        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K (2nd generation)"
 
-  build-tvos-macos-10_15:
+  build-tvos-macos-12:
     runs-on: ubuntu-latest
-    name: tvOS Tests - macOS 10.15
+    name: tvOS Tests - macOS 12
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-tvos-macos-10_15-matrix
+    needs: build-tvos-macos-12-matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build-tvos-macos-10_15-matrix.result == 'failure' }}
+        if: ${{ needs.build-tvos-macos-12-matrix.result == 'failure' }}
         run: exit 1
