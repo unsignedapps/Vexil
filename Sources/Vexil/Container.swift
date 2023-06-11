@@ -18,5 +18,5 @@ import Foundation
 /// with an empty `init()`.
 ///
 public protocol FlagContainer {
-    init()
+    init(_lookup: FlagLookup)
 }
