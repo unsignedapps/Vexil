@@ -84,19 +84,19 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
     /// The `Flag` value. This is a calculated property based on the `FlagPole`s sources.
     public var wrappedValue: Value {
-        return value(in: nil)?.value ?? defaultValue
+        value(in: nil)?.value ?? defaultValue
     }
 
     /// The string-based Key for this `Flag`, as calculated during `init`. This key is
     /// sent to  the `FlagValueSource`s.
     public var key: String {
-        return allocation.key!
+        allocation.key!
     }
 
     /// A reference to the `Flag` itself is available as a projected value, in case you need
     /// access to the key or other information.
     public var projectedValue: Flag<Value> {
-        return self
+        self
     }
 
 
@@ -216,7 +216,7 @@ public struct Flag<Value>: Decorated, Identifiable where Value: FlagValue {
 
 extension Flag: Equatable where Value: Equatable {
     public static func == (lhs: Flag, rhs: Flag) -> Bool {
-        return lhs.key == rhs.key && lhs.wrappedValue == rhs.wrappedValue
+        lhs.key == rhs.key && lhs.wrappedValue == rhs.wrappedValue
     }
 }
 
@@ -232,7 +232,7 @@ extension Flag: Hashable where Value: Hashable {
 
 extension Flag: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "\(key)=\(wrappedValue)"
+        "\(key)=\(wrappedValue)"
     }
 }
 

@@ -17,11 +17,11 @@ import Foundation
 
 extension String {
     var localizedDisplayName: String {
-        return displayName(with: Locale.autoupdatingCurrent)
+        displayName(with: Locale.autoupdatingCurrent)
     }
 
     var displayName: String {
-        return self.displayName(with: nil)
+        self.displayName(with: nil)
     }
 
     func displayName(with locale: Locale?) -> String {

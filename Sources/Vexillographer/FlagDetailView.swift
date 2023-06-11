@@ -42,15 +42,15 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 #if os(iOS)
 
     var body: some View {
-        self.content
-            .navigationBarTitle(Text(self.flag.info.name), displayMode: .inline)
+        content
+            .navigationBarTitle(Text(flag.info.name), displayMode: .inline)
     }
 
 #elseif os(macOS)
 
     var body: some View {
         ScrollView {
-            self.content
+            content
         }
         .frame(minWidth: 300)
     }
@@ -58,7 +58,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 #else
 
     var body: some View {
-        self.content
+        content
     }
 
 #endif
@@ -67,57 +67,57 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     var content: some View {
         Form {
             FlagDetailSection(header: Text("Flag Details")) {
-                self.flagKeyView
+                flagKeyView
                     .contextMenu {
-                        CopyButton(action: self.flag.info.key.copyToPasteboard)
+                        CopyButton(action: flag.info.key.copyToPasteboard)
                     }
 
                 VStack(alignment: .leading) {
                     Text("Description:").font(.headline)
-                    Text(self.flag.info.description)
+                    Text(flag.info.description)
                 }
                 .contextMenu {
-                    CopyButton(action: self.flag.info.description.copyToPasteboard)
+                    CopyButton(action: flag.info.description.copyToPasteboard)
                 }
             }
 
-            if self.manager.source != nil {
+            if manager.source != nil {
                 FlagDetailSection(header: Text("Current Source")) {
                     HStack {
-                        Text(self.manager.source!.name)
+                        Text(manager.source!.name)
                             .font(.headline)
                         Spacer()
-                        self.description(source: self.manager.source!)
+                        description(source: manager.source!)
                     }
 
-                    Button(action: self.clearValue) {
+                    Button(action: clearValue) {
                         Text("Clear Flag Value in Current Source")
                     }
                     .foregroundColor(.red)
-                    .opacity(self.isCurrentSourceSet ? 1 : 0.3)
+                    .opacity(isCurrentSourceSet ? 1 : 0.3)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                    .disabled(self.isCurrentSourceSet == false)
-                    .animation(.easeInOut, value: self.isCurrentSourceSet)
+                    .disabled(isCurrentSourceSet == false)
+                    .animation(.easeInOut, value: isCurrentSourceSet)
                 }
             }
 
             FlagDetailSection(header: Text("FlagPole Source Hierarchy")) {
-                ForEach(self.manager.flagPole._sources, id: \.name) { source in
+                ForEach(manager.flagPole._sources, id: \.name) { source in
                     HStack {
-                        if (source as AnyObject) === (self.manager.source as AnyObject) {
+                        if (source as AnyObject) === (manager.source as AnyObject) {
                             Text(source.name)
                                 .font(.headline)
                         } else {
                             Text(source.name)
                         }
                         Spacer()
-                        self.description(source: source)
+                        description(source: source)
                     }
                 }
                 HStack {
                     Text("Default Value")
                     Spacer()
-                    FlagDisplayValueView(value: self.flag.flag.defaultValue)
+                    FlagDisplayValueView(value: flag.flag.defaultValue)
                 }
             }
         }
@@ -132,7 +132,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
     }
 
     func flagValue(source: FlagValueSource) -> Value? {
-        return source.flagValue(key: flag.flag.key)
+        source.flagValue(key: flag.flag.key)
     }
 
     func clearValue() {
@@ -151,7 +151,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
         return VStack(alignment: .leading) {
             Text("Key").font(.headline)
-            Text(self.flag.info.key)
+            Text(flag.info.key)
         }
 
 #else
@@ -159,7 +159,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
         return HStack {
             Text("Key").font(.headline)
             Spacer()
-            Text(self.flag.info.key)
+            Text(flag.info.key)
         }
 
 #endif

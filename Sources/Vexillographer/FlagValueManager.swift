@@ -28,7 +28,7 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     private var cancellables = Set<AnyCancellable>()
 
     var isEditable: Bool {
-        return source != nil
+        source != nil
     }
 
 
@@ -51,7 +51,7 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     // MARK: - Flag Values
 
     func rawValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return source?.flagValue(key: key)
+        source?.flagValue(key: key)
     }
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
@@ -59,8 +59,8 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
         return snapshot.flagValue(key: key)
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        guard let source = source else {
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
+        guard let source else {
             return
         }
 
@@ -97,7 +97,7 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     // MARK: - Displaying Flag Values
 
     func allItems() -> [UnfurledFlagItem] {
-        return Mirror(reflecting: flagPole._rootGroup)
+        Mirror(reflecting: flagPole._rootGroup)
             .children
             .compactMap { child -> UnfurledFlagItem? in
                 guard let label = child.label, let unfurlable = child.value as? Unfurlable else {

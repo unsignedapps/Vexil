@@ -149,7 +149,7 @@ extension FlagGroup: Hashable where Group: Hashable {
 
 extension FlagGroup: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "\(String(describing: Group.self))("
+        "\(String(describing: Group.self))("
             + Mirror(reflecting: wrappedValue).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription

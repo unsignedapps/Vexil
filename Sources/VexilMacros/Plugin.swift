@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 //
 //  Plugin.swift
 //  Vexil: VexilMacros
@@ -12,7 +25,7 @@ import SwiftSyntaxMacros
 
 @main
 struct VexilMacroPlugin: CompilerPlugin {
-    
+
     let providingMacros: [Macro.Type] = [
         TestMacro.self,
     ]
@@ -20,8 +33,8 @@ struct VexilMacroPlugin: CompilerPlugin {
 }
 
 public enum TestMacro: ExpressionMacro {
-    
-    public static func expansion<Node, Context>(of node: Node, in context: Context) throws -> ExprSyntax where Node: FreestandingMacroExpansionSyntax, Context: MacroExpansionContext {
+
+    public static func expansion(of node: some FreestandingMacroExpansionSyntax, in context: some MacroExpansionContext) throws -> ExprSyntax {
         "print(\"moo\")"
     }
 

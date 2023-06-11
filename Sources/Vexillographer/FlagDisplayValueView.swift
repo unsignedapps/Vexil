@@ -37,10 +37,10 @@ struct FlagDisplayValueView<Value>: View where Value: FlagValue {
 
     var body: some View {
         Group {
-            if self.string != nil {
+            if string != nil {
                 Text(string!)
                     .contextMenu {
-                        CopyButton(action: self.string!.copyToPasteboard)
+                        CopyButton(action: string!.copyToPasteboard)
                     }
 
             } else {

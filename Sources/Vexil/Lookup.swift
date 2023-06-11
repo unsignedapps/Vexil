@@ -46,7 +46,7 @@ extension FlagPole: Lookup {
     /// that key, returning the first non-nil value it finds.
     ///
     func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
-        if let source = source {
+        if let source {
             return source.flagValue(key: key)
                 .map { LookupResult(source: source.name, value: $0) }
         }

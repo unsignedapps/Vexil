@@ -38,7 +38,7 @@ final class DiagnosticsTests: XCTestCase {
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source1, source2 ])
 
         var receivedDiagnostics: [[FlagPoleDiagnostic]] = []
-        let expectation = self.expectation(description: "received diagnostics")
+        let expectation = expectation(description: "received diagnostics")
         expectation.expectedFulfillmentCount = 5
         expectation.assertForOverFulfill = true
 

@@ -31,7 +31,7 @@ struct CopyButton: View {
             }.eraseToAnyView()
         }
 #endif
-        return Button("Copy", action: self.action)
+        return Button("Copy", action: action)
             .eraseToAnyView()
     }
 

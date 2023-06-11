@@ -62,11 +62,11 @@ public protocol FlagValueSource {
 ///
 public extension FlagValueSource {
     var valuesDidChange: AnyPublisher<Void, Never>? {
-        return nil
+        nil
     }
 
     func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return nil
+        nil
     }
 }
 

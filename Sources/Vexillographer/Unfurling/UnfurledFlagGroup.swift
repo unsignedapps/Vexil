@@ -29,16 +29,16 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     private let manager: FlagValueManager<Root>
 
     var id: UUID {
-        return group.id
+        group.id
     }
 
     var isEditable: Bool {
-        return allItems()
+        allItems()
             .isEmpty == false
     }
 
     var isLink: Bool {
-        return group.display == .navigation
+        group.display == .navigation
     }
 
     var childLinks: [UnfurledFlagItem]? {
@@ -58,13 +58,13 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     // MARK: - Unfurled Flag Item Conformance
 
     func allItems() -> [UnfurledFlagItem] {
-        return Mirror(reflecting: group.wrappedValue)
+        Mirror(reflecting: group.wrappedValue)
             .children
             .compactMap { child -> UnfurledFlagItem? in
                 guard let label = child.label, let unfurlable = child.value as? Unfurlable else {
                     return nil
                 }
-                guard let unfurled = unfurlable.unfurl(label: label, manager: self.manager) else {
+                guard let unfurled = unfurlable.unfurl(label: label, manager: manager) else {
                     return nil
                 }
                 return unfurled.isEditable ? unfurled : nil
@@ -74,10 +74,10 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     var unfurledView: AnyView {
         switch group.display {
         case .navigation:
-            return unfurledNavigationLink
+            unfurledNavigationLink
 
         case .section:
-            return UnfurledFlagSectionView(group: self, manager: manager)
+            UnfurledFlagSectionView(group: self, manager: manager)
                 .eraseToAnyView()
         }
     }
@@ -101,7 +101,7 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
 
         return NavigationLink(destination: destination) {
             HStack {
-                Text(self.info.name)
+                Text(info.name)
                     .font(.headline)
             }
         }.eraseToAnyView()

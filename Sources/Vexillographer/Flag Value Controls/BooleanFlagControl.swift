@@ -44,14 +44,14 @@ struct BooleanFlagControl: View {
 
     var body: some View {
         HStack {
-            if self.isEditable {
-                Toggle(self.label, isOn: self.$value)
+            if isEditable {
+                Toggle(label, isOn: $value)
             } else {
-                Text(self.label).font(.headline)
+                Text(label).font(.headline)
                 Spacer()
-                FlagDisplayValueView(value: self.value)
+                FlagDisplayValueView(value: value)
             }
-            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
+            DetailButton(hasChanges: hasChanges, showDetail: $showDetail)
         }
     }
 }
@@ -68,8 +68,8 @@ protocol BooleanEditableFlag {
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return BooleanFlagControl(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        BooleanFlagControl(
             label: label,
             value: Binding(
                 key: info.key,
@@ -96,8 +96,8 @@ protocol OptionalBooleanEditableFlag {
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: OptionalBooleanEditableFlag where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue == Bool {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return BooleanFlagControl(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        BooleanFlagControl(
             label: label,
             value: Binding(
                 key: flag.key,
@@ -115,7 +115,7 @@ extension UnfurledFlag: OptionalBooleanEditableFlag where Value: FlagValue, Valu
 
 extension Bool: OptionalDefaultValue {
     static var defaultValue: Bool {
-        return false
+        false
     }
 }
 

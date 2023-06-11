@@ -14,7 +14,7 @@
 import Foundation
 
 internal extension BoxedFlagValue {
-    init?<Value>(object: Any, typeHint: Value.Type) where Value: FlagValue {
+    init?(object: Any, typeHint: (some FlagValue).Type) {
         switch object {
         case let value as Bool where typeHint.BoxedValueType == Bool.self || typeHint.BoxedValueType == Optional<Bool>.self:
             self = .bool(value)
@@ -36,7 +36,7 @@ internal extension BoxedFlagValue {
 
     var object: NSObject {
         switch self {
-        case let .array(value):         return value.map { $0.object } as NSArray
+        case let .array(value):         return value.map(\.object) as NSArray
         case let .bool(value):          return value as NSNumber
         case let .data(value):          return value as NSData
         case let .dictionary(value):    return value.mapValues { $0.object } as NSDictionary

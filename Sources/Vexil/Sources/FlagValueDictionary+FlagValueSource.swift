@@ -24,8 +24,8 @@ extension FlagValueDictionary: FlagValueSource {
         return Value(boxedFlagValue: value)
     }
 
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        if let value = value {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
+        if let value {
             storage.updateValue(value.boxedFlagValue, forKey: key)
         } else {
             storage.removeValue(forKey: key)

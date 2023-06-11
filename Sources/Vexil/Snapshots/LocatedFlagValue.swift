@@ -48,7 +48,7 @@ struct LocatedFlagValue {
     ///
     /// If diagnostics are enabled the `BoxedFlagValue` will be captured alongside the type-erased value
     ///
-    init<Value>(source: String?, value: Value, diagnosticsEnabled: Bool) where Value: FlagValue {
+    init(source: String?, value: some FlagValue, diagnosticsEnabled: Bool) {
         self.init(
             source: source,
             value: value,
@@ -67,7 +67,7 @@ extension LocatedFlagValue {
     ///
     /// If diagnostics are enabled the `BoxedFlagValue` will be captured alongside the type-erased value
     ///
-    init<Value>(lookupResult: LookupResult<Value>, diagnosticsEnabled: Bool) where Value: FlagValue {
+    init(lookupResult: LookupResult<some FlagValue>, diagnosticsEnabled: Bool) {
         self.init(
             source: lookupResult.source,
             value: lookupResult.value,

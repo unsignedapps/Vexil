@@ -23,7 +23,7 @@ extension UserDefaults: FlagValueSource {
 
     /// The name of the Flag Value Source
     public var name: String {
-        return "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"
+        "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"
     }
 
     /// Fetch values for the specified key
@@ -40,8 +40,8 @@ extension UserDefaults: FlagValueSource {
     }
 
     /// Sets the value for the specified key
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        guard let value = value else {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
+        guard let value else {
             removeObject(forKey: key)
             return
         }
@@ -54,7 +54,7 @@ extension UserDefaults: FlagValueSource {
 
     /// A Publisher that emits events when the flag values it manages changes
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
+        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
             .filter { ($0.object as AnyObject) === self }
             .map { _ in [] }
             .eraseToAnyPublisher()
@@ -63,7 +63,7 @@ extension UserDefaults: FlagValueSource {
 #elseif !os(Linux)
 
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return Publishers.Merge(
+        Publishers.Merge(
             NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
                 .filter { ($0.object as AnyObject) === self }
                 .map { _ in () },

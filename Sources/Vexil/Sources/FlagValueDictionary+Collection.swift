@@ -16,15 +16,15 @@ extension FlagValueDictionary: Collection {
     public typealias Index = DictionaryType.Index
     public typealias Element = DictionaryType.Element
 
-    public var startIndex: Index { return storage.startIndex }
-    public var endIndex: Index { return storage.endIndex }
+    public var startIndex: Index { storage.startIndex }
+    public var endIndex: Index { storage.endIndex }
 
     public subscript(index: Index) -> Iterator.Element {
-        return storage[index]
+        storage[index]
     }
 
     public subscript(key: Key) -> Value? {
-        get { return storage[key] }
+        get { storage[key] }
         set {
             if let value = newValue {
                 storage.updateValue(value, forKey: key)
@@ -38,11 +38,11 @@ extension FlagValueDictionary: Collection {
     }
 
     public func index(after i: Index) -> Index {
-        return storage.index(after: i)
+        storage.index(after: i)
     }
 
     public var keys: DictionaryType.Keys {
-        return storage.keys
+        storage.keys
     }
 
 }

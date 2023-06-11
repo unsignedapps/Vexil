@@ -20,7 +20,7 @@ import XCTest
 final class UserDefaultPublisherTests: XCTestCase {
 
     func testPublishesWhenUserDefaultsChange() {
-        let expectation = self.expectation(description: "published")
+        let expectation = expectation(description: "published")
 
         let defaults = UserDefaults(suiteName: "Test Suite")!
         let pole = FlagPole(hoist: TestFlags.self, sources: [ defaults ])
@@ -46,7 +46,7 @@ final class UserDefaultPublisherTests: XCTestCase {
     }
 
     func testDoesNotPublishWhenDifferentUserDefaultsChange() {
-        let expectation = self.expectation(description: "published")
+        let expectation = expectation(description: "published")
 
         let defaults1 = UserDefaults(suiteName: "Test Suite")!
         let defaults2 = UserDefaults(suiteName: "Separate Test Suite")!

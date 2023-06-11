@@ -29,7 +29,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     /// The name of our `FlagValueSource`
     public var name: String {
-        return "\(String(describing: Self.self)): \(id.uuidString)"
+        "\(String(describing: Self.self)): \(id.uuidString)"
     }
 
     /// Our internal dictionary type
@@ -58,7 +58,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     /// Initialises a `FlagValueDictionary` with the specified dictionary
     ///
-    public required init<S>(_ sequence: S) where S: Sequence, S.Element == (key: String, value: BoxedFlagValue) {
+    public required init(_ sequence: some Sequence<(key: String, value: BoxedFlagValue)>) {
         self.id = UUID()
         self.storage = sequence.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.value, forKey: pair.key)
@@ -87,6 +87,6 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
 extension FlagValueDictionary: Equatable {
     public static func == (lhs: FlagValueDictionary, rhs: FlagValueDictionary) -> Bool {
-        return lhs.id == rhs.id && lhs.storage == rhs.storage
+        lhs.id == rhs.id && lhs.storage == rhs.storage
     }
 }

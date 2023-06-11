@@ -94,7 +94,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         self.diagnosticsEnabled = diagnosticsEnabled
         self.decorateRootGroup(config: flagPole._configuration)
 
-        if let source = source {
+        if let source {
             self.copyCurrentValues(source: source, keys: keys, flagPole: flagPole, diagnosticsEnabled: diagnosticsEnabled)
         }
     }
@@ -121,7 +121,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value where Value: FlagValue {
         get {
-            return self.lock.withLock {
+            self.lock.withLock {
                 self._rootGroup[keyPath: dynamicMember]
             }
         }
@@ -170,7 +170,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
         self.allFlags = children
             .lazy
-            .map { $0.value }
+            .map(\.value)
             .allFlags()
     }
 
@@ -199,8 +199,8 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             .filter { changed.contains($0.key) }
     }
 
-    internal func set<Value>(_ value: Value?, key: String) where Value: FlagValue {
-        if let value = value {
+    internal func set(_ value: (some FlagValue)?, key: String) {
+        if let value {
             self.values[key] = LocatedFlagValue(source: self.name, value: value, diagnosticsEnabled: self.diagnosticsEnabled)
         } else {
             self.values.removeValue(forKey: key)

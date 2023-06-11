@@ -47,7 +47,7 @@ public struct VexilConfiguration {
     /// The "default" `VexilConfiguration`
     ///
     public static var `default`: VexilConfiguration {
-        return VexilConfiguration()
+        VexilConfiguration()
     }
 }
 
@@ -75,10 +75,10 @@ public extension VexilConfiguration {
         internal func codingKey(label: String) -> CodingKeyAction {
             switch self {
             case .kebabcase, .default:
-                return .append(label.convertedToSnakeCase(separator: "-"))
+                .append(label.convertedToSnakeCase(separator: "-"))
 
             case .snakecase:
-                return .append(label.convertedToSnakeCase())
+                .append(label.convertedToSnakeCase())
             }
         }
     }

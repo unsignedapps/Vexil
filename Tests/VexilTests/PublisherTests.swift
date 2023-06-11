@@ -22,7 +22,7 @@ final class PublisherTests: XCTestCase {
     // MARK: - Flag Pole Publisher
 
     func testPublisherSetup() {
-        let expectation = self.expectation(description: "snapshot")
+        let expectation = expectation(description: "snapshot")
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
@@ -42,7 +42,7 @@ final class PublisherTests: XCTestCase {
     }
 
     func testPublishesSnapshotWhenAddingSource() {
-        let expectation = self.expectation(description: "snapshot")
+        let expectation = expectation(description: "snapshot")
         expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -68,7 +68,7 @@ final class PublisherTests: XCTestCase {
     }
 
     func testPublishesWhenSourceChanges() {
-        let expectation = self.expectation(description: "published")
+        let expectation = expectation(description: "published")
         expectation.expectedFulfillmentCount = 3
         let source = TestSource()
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
@@ -91,7 +91,7 @@ final class PublisherTests: XCTestCase {
     }
 
     func testPublishesWithMultipleSources() {
-        let expectation = self.expectation(description: "published")
+        let expectation = expectation(description: "published")
         expectation.expectedFulfillmentCount = 3
 
         let source1 = TestSource()
@@ -123,7 +123,7 @@ final class PublisherTests: XCTestCase {
     // swiftlint:disable xct_specific_matcher
 
     func testIndividualFlagPublisher() {
-        let expectation = self.expectation(description: "publisher")
+        let expectation = expectation(description: "publisher")
         expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -150,7 +150,7 @@ final class PublisherTests: XCTestCase {
 
 
     func testIndividualFlagPublisheRemovesDuplicates() {
-        let expectation = self.expectation(description: "publisher")
+        let expectation = expectation(description: "publisher")
         expectation.expectedFulfillmentCount = 2
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -235,10 +235,10 @@ private final class TestSource: FlagValueSource {
     init() {}
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return nil
+        nil
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {}
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
     func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
         requestedKeys = keys

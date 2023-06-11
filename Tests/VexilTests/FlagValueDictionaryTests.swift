@@ -106,7 +106,7 @@ final class FlagValueDictionaryTests: XCTestCase {
 #if !os(Linux)
 
     func testPublishesValues() {
-        let expectation = self.expectation(description: "publisher")
+        let expectation = expectation(description: "publisher")
         expectation.expectedFulfillmentCount = 3
 
         let source = FlagValueDictionary()

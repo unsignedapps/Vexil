@@ -51,13 +51,13 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
     ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<Group, Value>) -> Value where Value: FlagValue {
         get {
-            return self.snapshot.lock.withLock {
+            self.snapshot.lock.withLock {
                 self.group[keyPath: dynamicMember]
             }
         }
         set {
             // see Snapshot.swift for how terrible this is
-            return snapshot.lock.withLock {
+            snapshot.lock.withLock {
                 _ = self.group[keyPath: dynamicMember]
                 guard let key = snapshot.lastAccessedKey else {
                     return
@@ -81,7 +81,7 @@ public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: Fla
 
 extension MutableFlagGroup: Equatable where Group: Equatable {
     public static func == (lhs: MutableFlagGroup, rhs: MutableFlagGroup) -> Bool {
-        return lhs.group == rhs.group
+        lhs.group == rhs.group
     }
 }
 
@@ -95,7 +95,7 @@ extension MutableFlagGroup: Hashable where Group: Hashable {
 
 extension MutableFlagGroup: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "\(String(describing: Group.self))("
+        "\(String(describing: Group.self))("
             + Mirror(reflecting: group).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription

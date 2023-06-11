@@ -27,10 +27,10 @@ public enum FlagPoleDiagnostic: Equatable {
 
 // MARK: - Initialisation
 
-extension Array where Element == FlagPoleDiagnostic {
+extension [FlagPoleDiagnostic] {
 
     /// Creates diagnostic cases from an initial snapshot
-    init<Root>(current: Snapshot<Root>) where Root: FlagContainer {
+    init(current: Snapshot<some FlagContainer>) {
         self = current.values
             .sorted(by: { $0.key < $1.key })
             .compactMap { element -> FlagPoleDiagnostic? in
@@ -43,8 +43,8 @@ extension Array where Element == FlagPoleDiagnostic {
     }
 
     /// Creates diagnostic cases from a changed snapshot
-    init<Root>(changed: Snapshot<Root>, sources: [String]?) where Root: FlagContainer {
-        guard let sources = sources else {
+    init(changed: Snapshot<some FlagContainer>, sources: [String]?) {
+        guard let sources else {
             self = .init(current: changed)
             return
         }
@@ -90,7 +90,7 @@ public extension FlagPoleDiagnostic {
         public var errorDescription: String? {
             switch self {
             case .notEnabledForSnapshot:
-                return "This snapshot was not taken with diagnostics enabled. Take it again using `FlagPole.snapshot(enableDiagnostics: true)`"
+                "This snapshot was not taken with diagnostics enabled. Take it again using `FlagPole.snapshot(enableDiagnostics: true)`"
             }
         }
     }

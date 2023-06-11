@@ -21,12 +21,12 @@ internal protocol Decorated {
     func decorate(lookup: Lookup, label: String, codingPath: [String], config: VexilConfiguration)
 }
 
-internal extension Sequence where Element == Mirror.Child {
+internal extension Sequence<Mirror.Child> {
 
     typealias DecoratedChild = (label: String, value: Decorated)
 
     var decorated: [DecoratedChild] {
-        return compactMap { child -> DecoratedChild? in
+        compactMap { child -> DecoratedChild? in
             guard
                 let label = child.label,
                 let value = child.value as? Decorated

@@ -61,7 +61,7 @@ extension FlagValue {
             self.init(boxedFlagValue: .string(wrapped))
 
         } else {
-            return nil
+            nil
         }
     }
 }

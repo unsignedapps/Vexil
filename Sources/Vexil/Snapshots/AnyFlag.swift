@@ -40,17 +40,17 @@ protocol AnyFlagGroup {
 
 extension FlagGroup: AnyFlagGroup {
     func allFlags() -> [AnyFlag] {
-        return Mirror(reflecting: wrappedValue)
+        Mirror(reflecting: wrappedValue)
             .children
             .lazy
-            .map { $0.value }
+            .map(\.value)
             .allFlags()
     }
 }
 
 internal extension Sequence {
     func allFlags() -> [AnyFlag] {
-        return compactMap { element -> [AnyFlag]? in
+        compactMap { element -> [AnyFlag]? in
             if let flag = element as? AnyFlag {
                 return [flag]
             } else if let group = element as? AnyFlagGroup {

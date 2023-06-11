@@ -31,7 +31,7 @@ extension Flag: Unfurlable where Value: FlagValue {
 
     /// Creates an `UnfurledFlag` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }
@@ -45,7 +45,7 @@ extension FlagGroup: Unfurlable {
 
     /// Creates an `UnfurledFlagGroup` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }

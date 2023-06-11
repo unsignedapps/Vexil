@@ -44,37 +44,37 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     // MARK: - View Body
 
     var body: some View {
-        self.content
+        content
             .contextMenu {
-                Button("Show Details") { self.showDetail = true }
+                Button("Show Details") { showDetail = true }
             }
             .sheet(
-                isPresented: self.$showDetail,
+                isPresented: $showDetail,
                 content: {
-                    self.detailView
+                    detailView
                 }
             )
     }
 
     var content: some View {
 
-        if let flag = self.flag as? BooleanEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+        if let flag = flag as? BooleanEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
 
-        } else if let flag = self.flag as? OptionalBooleanEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+        } else if let flag = flag as? OptionalBooleanEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
 
-        } else if let flag = self.flag as? CaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail, showPicker: self.$showPicker)
+        } else if let flag = flag as? CaseIterableEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail, showPicker: $showPicker)
 
-        } else if let flag = self.flag as? OptionalCaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail, showPicker: self.$showPicker)
+        } else if let flag = flag as? OptionalCaseIterableEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail, showPicker: $showPicker)
 
-        } else if let flag = self.flag as? StringEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+        } else if let flag = flag as? StringEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
 
-        } else if let flag = self.flag as? OptionalStringEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: self.manager, showDetail: self.$showDetail)
+        } else if let flag = flag as? OptionalStringEditableFlag {
+            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
         }
 
         return EmptyView().eraseToAnyView()
@@ -84,8 +84,8 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     var detailView: some View {
         NavigationView {
-            FlagDetailView(flag: self.flag, manager: self.manager)
-                .navigationBarItems(trailing: self.detailDoneButton)
+            FlagDetailView(flag: flag, manager: manager)
+                .navigationBarItems(trailing: detailDoneButton)
         }
     }
 
@@ -93,10 +93,10 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     var detailView: some View {
         VStack {
-            FlagDetailView(flag: self.flag, manager: self.manager)
+            FlagDetailView(flag: flag, manager: manager)
             HStack {
                 Spacer()
-                self.detailDoneButton
+                detailDoneButton
             }
         }
         .padding()
@@ -106,7 +106,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
     var detailDoneButton: some View {
         Button("Close") {
-            self.showDetail = false
+            showDetail = false
         }
     }
 

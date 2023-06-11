@@ -13,14 +13,14 @@
 
 extension Snapshot: FlagValueSource {
     public var name: String {
-        return displayName ?? "Snapshot \(id.uuidString)"
+        displayName ?? "Snapshot \(id.uuidString)"
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return values[key]?.value as? Value
+        values[key]?.value as? Value
     }
 
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         set(value, key: key)
     }
 }

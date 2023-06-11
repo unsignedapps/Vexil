@@ -85,7 +85,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - `UserDefaults.standard`
     ///
     public static var defaultSources: [FlagValueSource] {
-        return [
+        [
             UserDefaults.standard,
         ]
     }
@@ -132,17 +132,17 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     internal lazy var allFlags: [AnyFlag] = Mirror(reflecting: self._rootGroup)
         .children
         .lazy
-        .map { $0.value }
+        .map(\.value)
         .allFlags()
 
     /// A reference to all flag keys declared within the RootGroup
-    internal lazy var allFlagKeys: Set<String> = Set(self.allFlags.map { $0.key })
+    internal lazy var allFlagKeys: Set<String> = Set(self.allFlags.map(\.key))
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
     ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
-        return self._rootGroup[keyPath: dynamicMember]
+        self._rootGroup[keyPath: dynamicMember]
     }
 
     /// Starts the decoration process. Called during `init()` to make sure that
@@ -219,7 +219,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
         Publishers.MergeMany(upstream)
             .sink { [weak self] source, keys in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -254,7 +254,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// This method is intended to be called from the debugger
     ///
     public func makeDiagnostics() -> [FlagPoleDiagnostic] {
-        return .init(current: self.snapshot(enableDiagnostics: true))
+        .init(current: self.snapshot(enableDiagnostics: true))
     }
 
 #if !os(Linux)
@@ -304,7 +304,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///                     into the snapshot instead.
     ///
     public func snapshot(of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
-        return Snapshot(
+        Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
             diagnosticsEnabled: enableDiagnostics || self._diagnosticsEnabled
@@ -317,7 +317,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// within the snapshot will return the flag's `defaultValue`.
     ///
     public func emptySnapshot() -> Snapshot<RootGroup> {
-        return Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
+        Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
     }
 
     /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
@@ -435,7 +435,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
 extension FlagPole: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "FlagPole<\(String(describing: RootGroup.self))>("
+        "FlagPole<\(String(describing: RootGroup.self))>("
             + Mirror(reflecting: _rootGroup).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription

@@ -23,11 +23,11 @@ struct BoxedPassthroughTransformer<Value>: BoxedFlagValueTransformer {
     typealias EditingValue = Value
 
     static func toEditingValue(_ value: OriginalValue?) -> Value {
-        return value!
+        value!
     }
 
     static func toOriginalValue(_ value: Value) -> OriginalValue? {
-        return value
+        value
     }
 }
 
@@ -36,11 +36,11 @@ struct PassthroughTransformer<Value>: FlagValueTransformer where Value: FlagValu
     typealias EditingValue = Value
 
     static func toEditingValue(_ value: OriginalValue?) -> Value {
-        return value!
+        value!
     }
 
     static func toOriginalValue(_ value: Value) -> OriginalValue? {
-        return value
+        value
     }
 }
 

@@ -31,7 +31,7 @@ struct OptionalTransformer<Value, Default, Underlying>: BoxedFlagValueTransforme
     }
 
     static func toOriginalValue(_ value: EditingValue) -> OriginalValue? {
-        return Value(Underlying.toOriginalValue(value))
+        Value(Underlying.toOriginalValue(value))
     }
 }
 

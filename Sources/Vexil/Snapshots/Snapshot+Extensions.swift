@@ -15,7 +15,7 @@ extension Snapshot: Identifiable {}
 
 extension Snapshot: Equatable where RootGroup: Equatable {
     public static func == (lhs: Snapshot, rhs: Snapshot) -> Bool {
-        return lhs._rootGroup == rhs._rootGroup
+        lhs._rootGroup == rhs._rootGroup
     }
 }
 
@@ -27,7 +27,7 @@ extension Snapshot: Hashable where RootGroup: Hashable {
 
 extension Snapshot: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "Snapshot<\(String(describing: RootGroup.self)), \(values.count) overrides>("
+        "Snapshot<\(String(describing: RootGroup.self)), \(values.count) overrides>("
             + Mirror(reflecting: _rootGroup).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription

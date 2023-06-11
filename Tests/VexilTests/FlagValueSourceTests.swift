@@ -137,7 +137,7 @@ private final class TestGetSource: FlagValueSource {
         return values[key] as? Value
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {}
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
 }
 
@@ -154,10 +154,10 @@ private final class TestSetSource: FlagValueSource {
     }
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return nil
+        nil
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         guard let value = value as? Bool else {
             return
         }

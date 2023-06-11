@@ -176,7 +176,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Float(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
 
@@ -190,7 +190,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Float(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
     }
@@ -202,7 +202,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Double(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
 

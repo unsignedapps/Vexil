@@ -29,9 +29,9 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
 #if os(macOS)
 
     var body: some View {
-        GroupBox(label: self.header) {
+        GroupBox(label: header) {
             VStack(alignment: .leading, spacing: 8) {
-                self.content
+                content
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -41,8 +41,8 @@ struct FlagDetailSection<Header, Content>: View where Header: View, Content: Vie
 #else
 
     var body: some View {
-        Section(header: self.header) {
-            self.content
+        Section(header: header) {
+            content
         }
     }
 

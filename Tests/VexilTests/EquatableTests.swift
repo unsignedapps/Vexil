@@ -80,7 +80,7 @@ final class EquatableTests: XCTestCase {
         var firstFilter: [Snapshot<TestFlags>] = []
         var secondFilter: [Snapshot<TestFlags>] = []
         var thirdFilter: [Snapshot<TestFlags>] = []
-        let expectation = self.expectation(description: "snapshot")
+        let expectation = expectation(description: "snapshot")
 
         let cancellable = pole.publisher
             .handleEvents(receiveOutput: { allSnapshots.append($0) })

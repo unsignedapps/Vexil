@@ -97,7 +97,7 @@ extension Bool: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .bool(self)
+        .bool(self)
     }
 }
 
@@ -112,7 +112,7 @@ extension String: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .string(self)
+        .string(self)
     }
 }
 
@@ -127,7 +127,7 @@ extension URL: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .string(absoluteString)
+        .string(absoluteString)
     }
 }
 
@@ -164,7 +164,7 @@ extension Data: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .data(self)
+        .data(self)
     }
 }
 
@@ -182,7 +182,7 @@ extension Double: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .double(self)
+        .double(self)
     }
 }
 
@@ -200,7 +200,7 @@ extension Float: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .float(self)
+        .float(self)
     }
 }
 
@@ -216,7 +216,7 @@ extension Int: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(self)
+        .integer(self)
     }
 }
 
@@ -231,7 +231,7 @@ extension Int8: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -246,7 +246,7 @@ extension Int16: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -261,7 +261,7 @@ extension Int32: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -276,7 +276,7 @@ extension Int64: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -291,7 +291,7 @@ extension UInt: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -306,7 +306,7 @@ extension UInt8: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -321,7 +321,7 @@ extension UInt16: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -336,7 +336,7 @@ extension UInt32: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -351,7 +351,7 @@ extension UInt64: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -369,7 +369,7 @@ public extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
     }
 
     var boxedFlagValue: BoxedFlagValue {
-        return rawValue.boxedFlagValue
+        rawValue.boxedFlagValue
     }
 }
 
@@ -389,7 +389,7 @@ extension Optional: FlagValue where Wrapped: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return self?.boxedFlagValue ?? .none
+        self?.boxedFlagValue ?? .none
     }
 }
 
@@ -404,7 +404,7 @@ extension Array: FlagValue where Element: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .array(map { $0.boxedFlagValue })
+        .array(map(\.boxedFlagValue))
     }
 }
 
@@ -419,7 +419,7 @@ extension Dictionary: FlagValue where Key == String, Value: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .dictionary(mapValues { $0.boxedFlagValue })
+        .dictionary(mapValues { $0.boxedFlagValue })
     }
 }
 

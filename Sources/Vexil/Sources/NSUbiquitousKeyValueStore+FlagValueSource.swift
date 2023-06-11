@@ -22,7 +22,7 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
 
     /// The name of the Flag Value Source
     public var name: String {
-        return "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"
+        "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"
     }
 
     /// Fetch values for the specified key
@@ -39,8 +39,8 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
     }
 
     /// Sets the value for the specified key
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        guard let value = value else {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
+        guard let value else {
             removeObject(forKey: key)
             return
         }
@@ -56,7 +56,7 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
 
     /// A Publisher that emits events when the flag values it manages changes
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return Publishers.Merge(
+        Publishers.Merge(
             NotificationCenter.default.publisher(for: Self.didChangeExternallyNotification, object: self).map { _ in () },
             NotificationCenter.default.publisher(for: Self.didChangeInternallyNotification, object: self).map { _ in () }
         )
