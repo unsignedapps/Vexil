@@ -11,11 +11,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-//#if !os(Linux)
-//import Combine
-//#endif
+// #if !os(Linux)
+// import Combine
+// #endif
 //
-//import Foundation
+// import Foundation
 //
 ///// A `Snapshot` serves multiple purposes in Vexil. It is a point-in-time container of flag values, and is also
 ///// mutable and can be applied / saved to a `FlagValueSource`.
@@ -62,8 +62,8 @@
 /////     }
 ///// ```
 /////
-//@dynamicMemberLookup
-//public class Snapshot<RootGroup> where RootGroup: FlagContainer {
+// @dynamicMemberLookup
+// public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 //
 //    // MARK: - Properties
 //
@@ -265,19 +265,19 @@
 //    }
 //
 //
-//}
+// }
 //
 //
-//#if !os(Linux)
+// #if !os(Linux)
 //
-//typealias SnapshotValueChanged = PassthroughSubject<Void, Never>
+// typealias SnapshotValueChanged = PassthroughSubject<Void, Never>
 //
-//#else
+// #else
 //
-//typealias SnapshotValueChanged = NotificationSink
+// typealias SnapshotValueChanged = NotificationSink
 //
-//struct NotificationSink {
+// struct NotificationSink {
 //    func send() {}
-//}
+// }
 //
-//#endif
+// #endif

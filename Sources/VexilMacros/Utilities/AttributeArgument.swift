@@ -11,4 +11,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
+import SwiftSyntax
+
+extension AttributeSyntax.Argument {
+
+    subscript(label label: String) -> TupleExprElementSyntax? {
+        guard case let .argumentList(list) = self else {
+            return nil
+        }
+        return list.first(where: { $0.label?.text == label })
+    }
+
+}

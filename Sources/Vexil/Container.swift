@@ -11,12 +11,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
+@attached(member, names: named(_flagKeyPath), named(_flagLookup), named(init(_flagKeyPath:_flagLookup:)))
+@attached(conformance)
+public macro FlagContainer() = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
 
-/// A `FlagContainer` is a type that encapsulates your `Flag` and `FlagGroup`
-/// types. The only requirement of a `FlagContainer` is that it can be initialised
-/// with an empty `init()`.
-///
 public protocol FlagContainer {
-    init(_lookup: FlagLookup)
+    init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)
 }
+

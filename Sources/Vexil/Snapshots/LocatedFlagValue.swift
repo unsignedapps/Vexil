@@ -17,7 +17,7 @@
 /// memory. The alternative to that is the diagnostics setup needing to walk the flag
 /// hierarchy so we can get access to the generic type. This will be improved in the future.
 ///
-//struct LocatedFlagValue {
+// struct LocatedFlagValue {
 //
 //    /// The name of the source that the value was located in.
 //    /// Optional means no source included it, ie its a default value
@@ -56,12 +56,12 @@
 //        )
 //    }
 //
-//}
+// }
 //
 //
 //// MARK: - LookupResult Conversion
 //
-//extension LocatedFlagValue {
+// extension LocatedFlagValue {
 //
 //    /// Initialises a new `LocatedFlagValue`` by type-erasing the provided `LookupResult`
 //    ///
@@ -83,4 +83,4 @@
 //        return LookupResult(source: source, value: value)
 //    }
 //
-//}
+// }

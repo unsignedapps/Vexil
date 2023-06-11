@@ -11,11 +11,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-//import Foundation
+// import Foundation
 //
 ///// A `MutableFlagGroup` is a wrapper type that provides a "setter" for each contained `Flag`.
-//@dynamicMemberLookup
-//public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: FlagContainer {
+// @dynamicMemberLookup
+// public class MutableFlagGroup<Group, Root> where Group: FlagContainer, Root: FlagContainer {
 //
 //
 //    // MARK: - Properties
@@ -74,26 +74,26 @@
 //        self.snapshot = snapshot
 //    }
 //
-//}
+// }
 //
 //
 //// MARK: - Equatable and Hashable Support
 //
-//extension MutableFlagGroup: Equatable where Group: Equatable {
+// extension MutableFlagGroup: Equatable where Group: Equatable {
 //    public static func == (lhs: MutableFlagGroup, rhs: MutableFlagGroup) -> Bool {
 //        lhs.group == rhs.group
 //    }
-//}
+// }
 //
-//extension MutableFlagGroup: Hashable where Group: Hashable {
+// extension MutableFlagGroup: Hashable where Group: Hashable {
 //    public func hash(into hasher: inout Hasher) {
 //        hasher.combine(self.group)
 //    }
-//}
+// }
 //
 //// MARK: - Debugging
 //
-//extension MutableFlagGroup: CustomDebugStringConvertible {
+// extension MutableFlagGroup: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        "\(String(describing: Group.self))("
 //            + Mirror(reflecting: group).children
@@ -105,4 +105,4 @@
 //            .joined(separator: ", ")
 //            + ")"
 //    }
-//}
+// }

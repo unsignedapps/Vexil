@@ -22,35 +22,35 @@ let package = Package(
 
     dependencies: [
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.2"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b"),
+        .package(url: "https://github.com/apple/swift-syntax.git", branch: "release/5.9"),
     ],
 
     targets: [
         .target(
             name: "Vexil",
             dependencies: [
-                //                .target(name: "VexilMacros"),
+                .target(name: "VexilMacros"),
             ]
         ),
         .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
 
-//        .macro(
-//            name: "VexilMacros",
-//            dependencies: [
-//                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-//                .product(name: "SwiftSyntax", package: "swift-syntax"),
-//                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-//                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-//            ]
-//        ),
-//        .testTarget(
-//            name: "VexilMacroTests",
-//            dependencies: [
-//                .target(name: "VexilMacros"),
-//                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-//            ]
-//        ),
-//
+        .macro(
+            name: "VexilMacros",
+            dependencies: [
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            ]
+        ),
+        .testTarget(
+            name: "VexilMacroTests",
+            dependencies: [
+                .target(name: "VexilMacros"),
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
+
 //        .target(name: "Vexillographer", dependencies: [ "Vexil" ]),
     ],
 

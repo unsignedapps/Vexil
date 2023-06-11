@@ -11,14 +11,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-//protocol AnyFlag {
+// protocol AnyFlag {
 //    var key: String { get }
 //
 //    func getFlagValue(in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue?
 //    func save(to source: FlagValueSource) throws
-//}
+// }
 //
-//extension Flag: AnyFlag {
+// extension Flag: AnyFlag {
 //    func getFlagValue(in source: FlagValueSource?, diagnosticsEnabled: Bool) -> LocatedFlagValue? {
 //        guard let result = value(in: source) else {
 //            return nil
@@ -29,16 +29,16 @@
 //    func save(to source: FlagValueSource) throws {
 //        try source.setFlagValue(wrappedValue, key: key)
 //    }
-//}
+// }
 //
 //
 //// MARK: - Flag Groups
 //
-//protocol AnyFlagGroup {
+// protocol AnyFlagGroup {
 //    func allFlags() -> [AnyFlag]
-//}
+// }
 //
-//extension FlagGroup: AnyFlagGroup {
+// extension FlagGroup: AnyFlagGroup {
 //    func allFlags() -> [AnyFlag] {
 //        Mirror(reflecting: wrappedValue)
 //            .children
@@ -46,9 +46,9 @@
 //            .map(\.value)
 //            .allFlags()
 //    }
-//}
+// }
 //
-//internal extension Sequence {
+// internal extension Sequence {
 //    func allFlags() -> [AnyFlag] {
 //        compactMap { element -> [AnyFlag]? in
 //            if let flag = element as? AnyFlag {
@@ -61,4 +61,4 @@
 //        }
 //        .flatMap { $0 }
 //    }
-//}
+// }

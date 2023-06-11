@@ -140,6 +140,7 @@ extension Date: FlagValue {
         }
 
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = .withFractionalSeconds
         guard let date = formatter.date(from: value) else {
             return nil
         }
@@ -149,6 +150,7 @@ extension Date: FlagValue {
 
     public var boxedFlagValue: BoxedFlagValue {
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = .withFractionalSeconds
         return .string(formatter.string(from: self))
     }
 }

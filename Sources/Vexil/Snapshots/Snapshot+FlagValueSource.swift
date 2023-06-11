@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-//extension Snapshot: FlagValueSource {
+// extension Snapshot: FlagValueSource {
 //    public var name: String {
 //        displayName ?? "Snapshot \(id.uuidString)"
 //    }
@@ -23,4 +23,4 @@
 //    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
 //        set(value, key: key)
 //    }
-//}
+// }

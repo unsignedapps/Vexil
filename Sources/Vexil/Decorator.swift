@@ -17,11 +17,11 @@ import Foundation
 /// the necessary information so generic `Flag`s and `FlagGroup`s can "decorate" themselves
 /// with a reference to where to lookup flag values and how to calculate their key.
 ///
-//internal protocol Decorated {
+// internal protocol Decorated {
 //    func decorate(lookup: FlagLookup, label: String, codingPath: [String], config: VexilConfiguration)
-//}
+// }
 //
-//internal extension Sequence<Mirror.Child> {
+// internal extension Sequence<Mirror.Child> {
 //
 //    typealias DecoratedChild = (label: String, value: Decorated)
 //
@@ -46,4 +46,4 @@ import Foundation
 //            )
 //        }
 //    }
-//}
+// }

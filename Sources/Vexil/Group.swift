@@ -79,8 +79,7 @@ public struct FlagGroup<Group>: Identifiable where Group: FlagContainer {
     ///                         You can also specify `.hidden` to hide this flag group from Vexillographer.
     ///   - display:            Whether we should display this FlagGroup as using a `NavigationLink` or as a `Section` in Vexillographer
     ///
-    public init(name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {
-    }
+    public init(name: String? = nil, codingKeyStrategy: CodingKeyStrategy = .default, description: FlagInfo, display: Display = .navigation) {}
 
 
     // MARK: - Decorated Conformance
@@ -160,7 +159,7 @@ extension FlagGroup: CustomDebugStringConvertible {
 
 // MARK: - Property Storage
 
-//extension FlagGroup {
+// extension FlagGroup {
 //
 //    final class Allocation {
 //        let id: UUID
@@ -204,7 +203,7 @@ extension FlagGroup: CustomDebugStringConvertible {
 //        }
 //    }
 //
-//}
+// }
 
 
 // MARK: - Group Display

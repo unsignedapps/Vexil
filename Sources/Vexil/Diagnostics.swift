@@ -11,23 +11,23 @@
 //
 //===----------------------------------------------------------------------===//
 
-//import Foundation
+// import Foundation
 //
 ///// A diagnostic that is returned by `FlagPole.makeDiagnostics()`
 /////
-//public enum FlagPoleDiagnostic: Equatable {
+// public enum FlagPoleDiagnostic: Equatable {
 //
 //    // MARK: - Cases
 //
 //    case currentValue(key: String, value: BoxedFlagValue, resolvedBy: String?)
 //    case changedValue(key: String, value: BoxedFlagValue, resolvedBy: String?, changedBy: String?)
 //
-//}
+// }
 //
 //
 //// MARK: - Initialisation
 //
-//extension [FlagPoleDiagnostic] {
+// extension [FlagPoleDiagnostic] {
 //
 //    /// Creates diagnostic cases from an initial snapshot
 //    init(current: Snapshot<some FlagContainer>) {
@@ -61,12 +61,12 @@
 //
 //    }
 //
-//}
+// }
 //
 //
 //// MARK: - Debugging
 //
-//extension FlagPoleDiagnostic: CustomDebugStringConvertible {
+// extension FlagPoleDiagnostic: CustomDebugStringConvertible {
 //
 //    public var debugDescription: String {
 //        switch self {
@@ -77,12 +77,12 @@
 //        }
 //    }
 //
-//}
+// }
 //
 //
 //// MARK: - Errors
 //
-//public extension FlagPoleDiagnostic {
+// public extension FlagPoleDiagnostic {
 //
 //    enum Error: LocalizedError {
 //        case notEnabledForSnapshot
@@ -95,4 +95,4 @@
 //        }
 //    }
 //
-//}
+// }

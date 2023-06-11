@@ -11,17 +11,17 @@
 //
 //===----------------------------------------------------------------------===//
 
-//#if !os(Linux)
-//import Combine
-//#endif
+// #if !os(Linux)
+// import Combine
+// #endif
 //
-//extension Snapshot: Lookup {
+// extension Snapshot: Lookup {
 //    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
 //        lastAccessedKey = key
 //        return values[key]?.toLookupResult()
 //    }
 //
-//#if !os(Linux)
+// #if !os(Linux)
 //
 //    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
 //        valuesDidChange
@@ -31,5 +31,5 @@
 //            .eraseToAnyPublisher()
 //    }
 //
-//#endif
-//}
+// #endif
+// }

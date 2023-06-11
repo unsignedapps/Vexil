@@ -11,21 +11,21 @@
 //
 //===----------------------------------------------------------------------===//
 
-//extension Snapshot: Identifiable {}
+// extension Snapshot: Identifiable {}
 //
-//extension Snapshot: Equatable where RootGroup: Equatable {
+// extension Snapshot: Equatable where RootGroup: Equatable {
 //    public static func == (lhs: Snapshot, rhs: Snapshot) -> Bool {
 //        lhs._rootGroup == rhs._rootGroup
 //    }
-//}
+// }
 //
-//extension Snapshot: Hashable where RootGroup: Hashable {
+// extension Snapshot: Hashable where RootGroup: Hashable {
 //    public func hash(into hasher: inout Hasher) {
 //        hasher.combine(_rootGroup)
 //    }
-//}
+// }
 //
-//extension Snapshot: CustomDebugStringConvertible {
+// extension Snapshot: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        "Snapshot<\(String(describing: RootGroup.self)), \(values.count) overrides>("
 //            + Mirror(reflecting: _rootGroup).children
@@ -37,4 +37,4 @@
 //            .joined(separator: "; ")
 //            + ")"
 //    }
-//}
+// }

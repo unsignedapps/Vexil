@@ -119,11 +119,15 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Flag Management
 
+    var rootGroup: RootGroup {
+        RootGroup(_flagKeyPath: .root(separator: _configuration.separator), _flagLookup: self)
+    }
+
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
     ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
-        RootGroup(_lookup: self)[keyPath: dynamicMember]
+        rootGroup[keyPath: dynamicMember]
     }
 
 
@@ -394,7 +398,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
 // MARK: - Debugging
 
-//extension FlagPole: CustomDebugStringConvertible {
+// extension FlagPole: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        "FlagPole<\(String(describing: RootGroup.self))>("
 //            + Mirror(reflecting: _rootGroup).children
@@ -406,4 +410,4 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 //            .joined(separator: "; ")
 //            + ")"
 //    }
-//}
+// }

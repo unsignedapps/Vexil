@@ -20,7 +20,13 @@ import Foundation
 public protocol FlagLookup: AnyObject {
 
     @inlinable
-    func lookup<Value>(key: String, in source: FlagValueSource?) -> (value: Value, source: String?)? where Value: FlagValue
+    func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue
+
+    @inlinable
+    func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue
+//
+//    @inlinable
+//    func locate<Value>(keyPath: FlagKeyPath) -> Value? where Value: FlagValue
 
 #if !os(Linux)
 //    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
@@ -36,15 +42,15 @@ extension FlagPole: FlagLookup {
     /// that key, returning the first non-nil value it finds.
     ///
     @inlinable
-    public func lookup<Value>(key: String, in source: FlagValueSource?) -> (value: Value, source: String?)? where Value: FlagValue {
-        if let source {
-            return source.flagValue(key: key)
-                .map { ($0, source.name) }
-        }
+    public func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue {
+        source.flagValue(key: keyPath.key)
+    }
 
+    @inlinable
+    public func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
         for source in _sources {
-            if let value: Value = source.flagValue(key: key) {
-                return (value, source.name)
+            if let value: Value = source.flagValue(key: keyPath.key) {
+                return value
             }
         }
         return nil

@@ -19,23 +19,14 @@
 //
 
 import SwiftCompilerPlugin
-import SwiftSyntax
-import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 @main
 struct VexilMacroPlugin: CompilerPlugin {
 
     let providingMacros: [Macro.Type] = [
-        TestMacro.self,
+        FlagContainerMacro.self,
+        FlagMacro.self,
     ]
-
-}
-
-public enum TestMacro: ExpressionMacro {
-
-    public static func expansion(of node: some FreestandingMacroExpansionSyntax, in context: some MacroExpansionContext) throws -> ExprSyntax {
-        "print(\"moo\")"
-    }
 
 }
