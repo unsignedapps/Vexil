@@ -26,6 +26,7 @@ public struct FlagKeyPath: Hashable, Sendable {
         self.separator = separator
     }
 
+
     // MARK: - Creating
 
     public func append(_ key: String) -> FlagKeyPath {
@@ -34,6 +35,7 @@ public struct FlagKeyPath: Hashable, Sendable {
             separator: separator
         )
     }
+
 
     // MARK: - Common
 

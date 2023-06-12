@@ -87,11 +87,11 @@ public extension VexilConfiguration {
 
 // MARK: - KeyNamingStrategy - FlagGroup
 
-public extension FlagGroup {
+public extension VexilConfiguration {
 
     /// An enumeration describing how the key should be calculated for this specific `FlagGroup`.
     ///
-    enum CodingKeyStrategy {
+    enum GroupKeyStrategy {
 
         /// Follow the default behaviour applied to the `FlagPole`
         case `default`
@@ -108,15 +108,6 @@ public extension FlagGroup {
         /// Manually specifies the key name for this `FlagGroup`.
         case customKey(StaticString)
 
-//        internal func codingKey(label: String) -> CodingKeyAction {
-//            switch self {
-//            case .default:                  return .default
-//            case .kebabcase:                return .append(label.convertedToSnakeCase(separator: "-"))
-//            case .snakecase:                return .append(label.convertedToSnakeCase())
-//            case .skip:                     return .skip
-//            case let .customKey(custom):    return .append(custom)
-//            }
-//        }
     }
 }
 

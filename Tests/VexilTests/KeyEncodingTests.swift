@@ -11,10 +11,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-//import Vexil
-//import XCTest
+// import Vexil
+// import XCTest
 //
-//final class KeyEncodingTests: XCTestCase {
+// final class KeyEncodingTests: XCTestCase {
 //
 //    func testKebabCaseCodingKeyStrategy() {
 //        let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: nil, separator: ".")
@@ -67,12 +67,12 @@
 //        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key, "customKeyPath")
 //        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "prefix/one-flag-group/two/standard")
 //    }
-//}
+// }
 //
 //
 //// MARK: - Fixtures
 //
-//private struct TestFlags: FlagContainer {
+// private struct TestFlags: FlagContainer {
 //
 //    @FlagGroup(description: "Test 1")
 //    var oneFlagGroup: OneFlags
@@ -80,18 +80,18 @@
 //    @Flag(default: false, description: "Top level test flag")
 //    var topLevelFlag: Bool
 //
-//}
+// }
 //
-//private struct OneFlags: FlagContainer {
+// private struct OneFlags: FlagContainer {
 //
 //    @FlagGroup(codingKeyStrategy: .customKey("two"), description: "Test Two")
 //    var twoFlagGroup: TwoFlags
 //
 //    @Flag(default: false, description: "Second level test flag")
 //    var secondLevelFlag: Bool
-//}
+// }
 //
-//private struct TwoFlags: FlagContainer {
+// private struct TwoFlags: FlagContainer {
 //
 //    @FlagGroup(codingKeyStrategy: .skip, description: "Skipping test 3")
 //    var flagGroupThree: ThreeFlags
@@ -102,9 +102,9 @@
 //    @Flag(default: false, description: "Second Third level test flag")
 //    var thirdLevelFlag2: Bool
 //
-//}
+// }
 //
-//private struct ThreeFlags: FlagContainer {
+// private struct ThreeFlags: FlagContainer {
 //
 //    @Flag(codingKeyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
 //    var custom: Bool
@@ -115,4 +115,4 @@
 //    @Flag(default: true, description: "Standard Flag")
 //    var standard: Bool
 //
-//}
+// }

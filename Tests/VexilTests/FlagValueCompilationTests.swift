@@ -63,7 +63,8 @@ final class FlagValueCompilationTests: XCTestCase {
             func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
                 Value(boxedFlagValue: value.boxedFlagValue)
             }
-            func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+
+            func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
                 fatalError()
             }
         }

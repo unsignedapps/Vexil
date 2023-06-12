@@ -11,11 +11,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-//import Foundation
-//@testable import Vexil
-//import XCTest
+// import Foundation
+// @testable import Vexil
+// import XCTest
 //
-//final class FlagValueDictionaryTests: XCTestCase {
+// final class FlagValueDictionaryTests: XCTestCase {
 //
 //    // MARK: - Reading Values
 //
@@ -103,7 +103,7 @@
 //
 //    // MARK: - Publishing Tests
 //
-//#if !os(Linux)
+// #if !os(Linux)
 //
 //    func testPublishesValues() {
 //        let expectation = expectation(description: "publisher")
@@ -134,15 +134,15 @@
 //        XCTAssertEqual(snapshots[safe: 2]?.oneFlagGroup.secondLevelFlag, true)
 //    }
 //
-//#endif
+// #endif
 //
-//}
+// }
 //
 //
 //// MARK: - Fixtures
 //
 //
-//private struct TestFlags: FlagContainer {
+// private struct TestFlags: FlagContainer {
 //
 //    @FlagGroup(description: "Test 1")
 //    var oneFlagGroup: OneFlags
@@ -150,10 +150,10 @@
 //    @Flag(description: "Top level test flag")
 //    var topLevelFlag = false
 //
-//}
+// }
 //
-//private struct OneFlags: FlagContainer {
+// private struct OneFlags: FlagContainer {
 //
 //    @Flag(default: false, description: "Second level test flag")
 //    var secondLevelFlag: Bool
-//}
+// }

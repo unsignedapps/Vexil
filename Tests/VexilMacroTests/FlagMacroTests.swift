@@ -116,6 +116,7 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
+
     // MARK: - Argument Tests
 
     func testExpandsName() throws {
@@ -142,13 +143,14 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
+
     // MARK: - Key Strategy Detection Tests
 
     func testDetectsKeyStrategyMinimal() throws {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .default, description: "meow")
+                @Flag(keyStrategy: .default, default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -172,7 +174,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: VexilConfiguration.FlagKeyStrategy.default, description: "meow")
+                @Flag(keyStrategy: VexilConfiguration.FlagKeyStrategy.default, default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -192,13 +194,14 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
+    
     // MARK: - Key Strategy Tests
 
     func testKeyStrategyDefault() throws {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .default, description: "meow")
+                @Flag(keyStrategy: .default, default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -222,7 +225,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .kebabcase, description: "meow")
+                @Flag(keyStrategy: .kebabcase, default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -246,7 +249,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .snakecase, description: "meow")
+                @Flag(keyStrategy: .snakecase, default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -270,7 +273,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .customKey("test"), description: "meow")
+                @Flag(keyStrategy: .customKey("test"), default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -294,7 +297,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, keyStrategy: .customKeyPath("test"), description: "meow")
+                @Flag(keyStrategy: .customKeyPath("test"), default: false, description: "meow")
                 var testProperty: Bool
             }
             """,

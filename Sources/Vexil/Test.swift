@@ -20,8 +20,8 @@ struct TestFlags {
     @Flag(default: false, description: "Second test flag")
     var secondTestFlag: Bool
 
-//    @FlagGroup(description: "Subgroup of test flags")
-//    var subgroup: SubgroupFlags
+    @FlagGroup(description: "Subgroup of test flags")
+    var subgroup: SubgroupFlags
 
 }
 
@@ -31,15 +31,15 @@ struct SubgroupFlags {
     @Flag(default: false, description: "Second level test flag")
     var secondLevelFlag: Bool
 
-//    @FlagGroup(description: "Another level of test flags")
-//    var doubleSubgroup: DoubleSubgroupFlags
+    @FlagGroup(description: "Another level of test flags")
+    var doubleSubgroup: DoubleSubgroupFlags
 
 }
 
 @FlagContainer
 struct DoubleSubgroupFlags {
 
-//    @Flag(default: false, description: "Third level test flag")
-//    var thirdLevelFlag: Bool
+    @Flag(default: false, description: "Third level test flag")
+    var thirdLevelFlag: Bool
 
 }

@@ -26,6 +26,7 @@ struct VexilMacroPlugin: CompilerPlugin {
 
     let providingMacros: [Macro.Type] = [
         FlagContainerMacro.self,
+        FlagGroupMacro.self,
         FlagMacro.self,
     ]
 

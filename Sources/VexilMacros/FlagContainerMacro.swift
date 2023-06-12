@@ -18,7 +18,7 @@ import SwiftSyntaxMacros
 public enum FlagContainerMacro {}
 
 extension FlagContainerMacro: MemberMacro {
-    
+
     public static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -26,7 +26,7 @@ extension FlagContainerMacro: MemberMacro {
     ) throws -> [DeclSyntax] {
         // Find the scope modifier if we have one
         let scope = declaration.modifiers?.scope
-        
+
         return [
             """
             private let _flagKeyPath: FlagKeyPath
@@ -39,20 +39,20 @@ extension FlagContainerMacro: MemberMacro {
                 self._flagKeyPath = _flagKeyPath
                 self._flagLookup = _flagLookup
             }
-            """
-            ,
+            """,
+
         ]
     }
-    
+
 }
 
 extension FlagContainerMacro: ConformanceMacro {
 
-    public static func expansion<Declaration, Context>(
+    public static func expansion(
         of node: AttributeSyntax,
-        providingConformancesOf declaration: Declaration,
-        in context: Context
-    ) throws -> [(TypeSyntax, GenericWhereClauseSyntax?)] where Declaration: DeclGroupSyntax, Context: MacroExpansionContext {
+        providingConformancesOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [(TypeSyntax, GenericWhereClauseSyntax?)] {
         let inheritanceList: InheritedTypeListSyntax?
         if let classDecl = declaration.as(ClassDeclSyntax.self) {
             inheritanceList = classDecl.inheritanceClause?.inheritedTypeCollection
@@ -71,7 +71,7 @@ extension FlagContainerMacro: ConformanceMacro {
         }
 
         return [
-            ("FlagContainer", nil)
+            ("FlagContainer", nil),
         ]
     }
 
@@ -82,7 +82,7 @@ extension FlagContainerMacro: ConformanceMacro {
 private extension ModifierListSyntax {
     var scope: String? {
         first { modifier in
-            if case .keyword(let keyword) = modifier.name.tokenKind, keyword == .public {
+            if case let .keyword(keyword) = modifier.name.tokenKind, keyword == .public {
                 return true
             } else {
                 return false
@@ -97,7 +97,7 @@ private extension TypeSyntax {
     var identifier: String? {
         for token in tokens(viewMode: .all) {
             switch token.tokenKind {
-            case .identifier(let identifier):
+            case let .identifier(identifier):
                 return identifier
             default:
                 break

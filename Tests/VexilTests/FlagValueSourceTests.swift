@@ -11,10 +11,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-//import Vexil
-//import XCTest
+// import Vexil
+// import XCTest
 //
-//final class FlagValueSourceTests: XCTestCase {
+// final class FlagValueSourceTests: XCTestCase {
 //
 //    func testSourceIsChecked() {
 //        var accessedKeys = [String]()
@@ -96,13 +96,13 @@
 //
 //    }
 //
-//}
+// }
 //
 //
 //// MARK: - Fixtures
 //
 //
-//private struct TestFlags: FlagContainer {
+// private struct TestFlags: FlagContainer {
 //
 //    @Flag(default: false, description: "This is a test flag")
 //    var testFlag: Bool
@@ -112,16 +112,16 @@
 //
 //    @FlagGroup(description: "A test subgroup")
 //    var subgroup: Subgroup
-//}
+// }
 //
-//private struct Subgroup: FlagContainer {
+// private struct Subgroup: FlagContainer {
 //
 //    @Flag(default: false, description: "A test flag in a subgroup")
 //    var testFlag: Bool
 //
-//}
+// }
 //
-//private final class TestGetSource: FlagValueSource {
+// private final class TestGetSource: FlagValueSource {
 //
 //    let name = "Test Source"
 //    var subject: (String) -> Void
@@ -139,10 +139,10 @@
 //
 //    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 //
-//}
+// }
 //
 //
-//private final class TestSetSource: FlagValueSource {
+// private final class TestSetSource: FlagValueSource {
 //
 //    typealias Event = (String, Bool)
 //
@@ -164,4 +164,4 @@
 //        subject((key, value))
 //    }
 //
-//}
+// }
