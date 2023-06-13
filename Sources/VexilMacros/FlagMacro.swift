@@ -15,20 +15,27 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public enum FlagMacro {}
+public struct FlagMacro {
+    
+    // MARK: - Properties
 
-extension FlagMacro: AccessorMacro {
+    let propertyName: String
+    let key: ExprSyntax
+    let defaultValue: ExprSyntax
 
-    public static func expansion(
-        of node: AttributeSyntax,
-        providingAccessorsOf declaration: some DeclSyntaxProtocol,
-        in context: some MacroExpansionContext
-    ) throws -> [AccessorDeclSyntax] {
+
+    // MARK: - Initialisation
+
+    /// Create a FlagMacro from the given attribute/declaration
+    init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
+        guard node.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "Flag" else {
+            throw Diagnostic.notFlagMacro
+        }
         guard let argument = node.argument else {
-            return []
+            throw Diagnostic.missingArgument
         }
         guard let defaultExprSyntax = argument[label: "default"] else {
-            return []
+            throw Diagnostic.missingDefaultValue
         }
 
         guard
@@ -37,25 +44,78 @@ extension FlagMacro: AccessorMacro {
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
             binding.accessor == nil
         else {
-            return []
+            throw Diagnostic.onlySimpleVariableSupported
         }
 
         let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
 
-        return [
-            """
-            get {
-                _flagLookup.value(for: \(strategy.createKey(identifier.text))) ?? \(defaultExprSyntax.expression)
-            }
-            """,
-        ]
+        self.propertyName = identifier.text
+        self.key = strategy.createKey(identifier.text)
+        self.defaultValue = defaultExprSyntax.expression
+    }
+
+
+    // MARK: - Expression Creation
+
+    func makeLookupExpression() -> CodeBlockItemSyntax {
+        """
+        _flagLookup.value(for: \(key)) ?? \(defaultValue)
+        """
+    }
+
+    func makeVisitExpression() -> CodeBlockItemSyntax {
+        """
+        do {
+            let keyPath = \(key)
+            visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? \(defaultValue))
+        }
+        """
+    }
+
+}
+
+
+// MARK: - Accessor Macro Creation
+
+extension FlagMacro: AccessorMacro {
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingAccessorsOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [AccessorDeclSyntax] {
+        do {
+            let macro = try FlagMacro(node: node, declaration: declaration, context: context)
+            return [
+                """
+                get {
+                    \(macro.makeLookupExpression())
+                }
+                """,
+            ]
+        } catch {
+            return []
+        }
+    }
+
+}
+
+// MARK: - Diagnostics
+
+extension FlagMacro {
+    
+    enum Diagnostic: Error {
+        case notFlagMacro
+        case missingArgument
+        case missingDefaultValue
+        case onlySimpleVariableSupported
     }
 
 }
 
 // MARK: - Coding Key Strategy
 
-private extension FlagMacro {
+extension FlagMacro {
 
     /// This is a mirror of `VexilConfiguration.FlagKeyStrategy` so that we can work with it ourselves
     enum KeyStrategy {
@@ -94,13 +154,16 @@ private extension FlagMacro {
         func createKey(_ propertyName: String) -> ExprSyntax {
             switch self {
             case .default, .kebabcase:
-                return "_flagKeyPath.append(\"\(raw: propertyName.convertedToSnakeCase(separator: "-"))\")"
+                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase(separator: "-"))))"
+
             case .snakecase:
-                return "_flagKeyPath.append(\"\(raw: propertyName.convertedToSnakeCase())\")"
+                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase())))"
+
             case let .customKey(key):
-                return "_flagKeyPath.append(\"\(raw: key)\")"
+                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: key)))"
+
             case let .customKeyPath(keyPath):
-                return "FlagKeyPath(\"\(raw: keyPath)\", separator: _flagKeyPath.separator)"
+                return "FlagKeyPath(\(StringLiteralExprSyntax(content: keyPath)), separator: _flagKeyPath.separator)"
             }
         }
 

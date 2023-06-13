@@ -37,6 +37,10 @@ final class FlagContainerMacroTests: XCTestCase {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
                 }
+                 func walk(visitor: any FlagVisitor) {
+                    visitor.beginGroup(keyPath: _flagKeyPath)
+                    visitor.endGroup(keyPath: _flagKeyPath)
+                }
             }
             """,
             macros: [
@@ -61,6 +65,10 @@ final class FlagContainerMacroTests: XCTestCase {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
                 }
+                public func walk(visitor: any FlagVisitor) {
+                    visitor.beginGroup(keyPath: _flagKeyPath)
+                    visitor.endGroup(keyPath: _flagKeyPath)
+                }
             }
             """,
             macros: [
@@ -84,6 +92,59 @@ final class FlagContainerMacroTests: XCTestCase {
                  init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
+                }
+                 func walk(visitor: any FlagVisitor) {
+                    visitor.beginGroup(keyPath: _flagKeyPath)
+                    visitor.endGroup(keyPath: _flagKeyPath)
+                }
+            }
+            """,
+            macros: [
+                "FlagContainer": FlagContainerMacro.self,
+            ]
+        )
+    }
+
+    func testExpandsVisitorImplementation() throws {
+        assertMacroExpansion(
+            """
+            @FlagContainer
+            struct TestFlags {
+                @Flag(default: false, description: "Flag 1")
+                var first: Bool
+                @FlagGroup(description: "Test Group")
+                var flagGroup: GroupOfFlags
+                @Flag(default: false, description: "Flag 2")
+                var second: Bool
+            }
+            """,
+            expandedSource: """
+
+            struct TestFlags {
+                @Flag(default: false, description: "Flag 1")
+                var first: Bool
+                @FlagGroup(description: "Test Group")
+                var flagGroup: GroupOfFlags
+                @Flag(default: false, description: "Flag 2")
+                var second: Bool
+                private let _flagKeyPath: FlagKeyPath
+                private let _flagLookup: any FlagLookup
+             init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+                self._flagKeyPath = _flagKeyPath
+                self._flagLookup = _flagLookup
+                }
+             func walk(visitor: any FlagVisitor) {
+                    visitor.beginGroup(keyPath: _flagKeyPath)
+                    do {
+                        let keyPath = _flagKeyPath.append("first")
+                        visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? false)
+                    }
+                    flagGroup.walk(visitor: visitor)
+                    do {
+                        let keyPath = _flagKeyPath.append("second")
+                        visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? false)
+                    }
+                    visitor.endGroup(keyPath: _flagKeyPath)
                 }
             }
             """,

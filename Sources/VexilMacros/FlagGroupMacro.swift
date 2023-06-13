@@ -15,7 +15,60 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public enum FlagGroupMacro {}
+public struct FlagGroupMacro {
+
+    // MARK: - Properties
+    
+    let propertyName: String
+    let key: ExprSyntax
+    let type: TypeSyntax
+
+    
+    // MARK: - Initialisation
+    
+    init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
+        guard node.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "FlagGroup" else {
+            throw Diagnostic.notFlagGroupMacro
+        }
+        guard let argument = node.argument else {
+            throw Diagnostic.missingArgument
+        }
+        
+        guard
+            let property = declaration.as(VariableDeclSyntax.self),
+            let binding = property.bindings.first,
+            let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
+            let type = binding.typeAnnotation?.type,
+            binding.accessor == nil
+        else {
+            throw Diagnostic.onlySimpleVariableSupported
+        }
+        
+        let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
+        
+        self.propertyName = identifier.text
+        self.key = strategy.createKey(propertyName)
+        self.type = type
+    }
+
+
+    // MARK: - Expression Creation
+
+    func makeAccessor() -> AccessorDeclSyntax {
+        """
+        get {
+            \(type)(_flagKeyPath: \(key), _flagLookup: _flagLookup)
+        }
+        """
+    }
+
+    func makeVisitExpression() -> CodeBlockItemSyntax {
+        """
+        \(raw: propertyName).walk(visitor: visitor)
+        """
+    }
+
+}
 
 extension FlagGroupMacro: AccessorMacro {
 
@@ -24,29 +77,22 @@ extension FlagGroupMacro: AccessorMacro {
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AccessorDeclSyntax] {
-        guard let argument = node.argument else {
-            return []
-        }
-
-        guard
-            let property = declaration.as(VariableDeclSyntax.self),
-            let binding = property.bindings.first,
-            let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
-            let type = binding.typeAnnotation?.type,
-            binding.accessor == nil
-        else {
-            return []
-        }
-
-        let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
-
+        let group = try FlagGroupMacro(node: node, declaration: declaration, context: context)
         return [
-            """
-            get {
-                \(type)(_flagKeyPath: \(strategy.createKey(identifier.text)), _flagLookup: _flagLookup)
-            }
-            """,
+            group.makeAccessor(),
         ]
+    }
+
+}
+
+// MARK: - Diagnostics
+
+extension FlagGroupMacro {
+
+    enum Diagnostic: Error {
+        case notFlagGroupMacro
+        case missingArgument
+        case onlySimpleVariableSupported
     }
 
 }

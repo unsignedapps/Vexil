@@ -11,11 +11,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-@attached(member, names: named(_flagKeyPath), named(_flagLookup), named(init(_flagKeyPath:_flagLookup:)), named(walk(visitor:)))
-@attached(conformance)
-public macro FlagContainer() = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
+public protocol FlagVisitor {
 
-public protocol FlagContainer {
-    init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)
-    func walk(visitor: any FlagVisitor)
+    func beginGroup(keyPath: FlagKeyPath)
+    func endGroup(keyPath: FlagKeyPath)
+    func visitFlag<Value>(keyPath: FlagKeyPath, value: Value)
+
 }

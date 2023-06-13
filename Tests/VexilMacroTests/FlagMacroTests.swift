@@ -194,7 +194,7 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
-    
+
     // MARK: - Key Strategy Tests
 
     func testKeyStrategyDefault() throws {

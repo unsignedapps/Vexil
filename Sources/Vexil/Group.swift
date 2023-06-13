@@ -21,7 +21,7 @@ public macro FlagGroup(
     display: FlagGroupDisplay = .navigation
 ) = #externalMacro(module: "VexilMacros", type: "FlagGroupMacro")
 
-//import Foundation
+// import Foundation
 //
 ///// A wrapper representing a group of Feature Flags / Feature Toggles.
 /////
@@ -30,8 +30,8 @@ public macro FlagGroup(
 /////
 ///// The type that you wrap with `FlagGroup` must conform to `FlagContainer`.
 /////
-//@propertyWrapper
-//public struct FlagGroup<Group>: Identifiable where Group: FlagContainer {
+// @propertyWrapper
+// public struct FlagGroup<Group>: Identifiable where Group: FlagContainer {
 //
 //    // FlagContainers may have many flag groups, so to reduce code bloat
 //    // it's important that each FlagGroup have as few stored properties
@@ -132,27 +132,27 @@ public macro FlagGroup(
 ////                $0.value.decorate(lookup: lookup, label: $0.label, codingPath: codingPath, config: config)
 ////            }
 //    }
-//}
+// }
 //
 //
 //// MARK: - Equatable and Hashable Support
 //
-//extension FlagGroup: Equatable where Group: Equatable {
+// extension FlagGroup: Equatable where Group: Equatable {
 //    public static func == (lhs: FlagGroup, rhs: FlagGroup) -> Bool {
 //        lhs.wrappedValue == rhs.wrappedValue
 //    }
-//}
+// }
 //
-//extension FlagGroup: Hashable where Group: Hashable {
+// extension FlagGroup: Hashable where Group: Hashable {
 //    public func hash(into hasher: inout Hasher) {
 //        hasher.combine(wrappedValue)
 //    }
-//}
+// }
 //
 //
 //// MARK: - Debugging
 //
-//extension FlagGroup: CustomDebugStringConvertible {
+// extension FlagGroup: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        "\(String(describing: Group.self))("
 //            + Mirror(reflecting: wrappedValue).children
@@ -164,7 +164,7 @@ public macro FlagGroup(
 //            .joined(separator: ", ")
 //            + ")"
 //    }
-//}
+// }
 //
 //
 //// MARK: - Property Storage

@@ -26,7 +26,6 @@ extension FlagContainerMacro: MemberMacro {
     ) throws -> [DeclSyntax] {
         // Find the scope modifier if we have one
         let scope = declaration.modifiers?.scope
-
         return [
             """
             private let _flagKeyPath: FlagKeyPath
@@ -40,7 +39,17 @@ extension FlagContainerMacro: MemberMacro {
                 self._flagLookup = _flagLookup
             }
             """,
-
+            DeclSyntax(try FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
+                "visitor.beginGroup(keyPath: _flagKeyPath)"
+                for variable in declaration.memberBlock.variables {
+                    if let flag = variable.asFlag(in: context) {
+                        flag.makeVisitExpression()
+                    } else if let group = variable.asFlagGroup(in: context) {
+                        group.makeVisitExpression()
+                    }
+                }
+                "visitor.endGroup(keyPath: _flagKeyPath)"
+            })
         ]
     }
 

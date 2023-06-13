@@ -17,7 +17,7 @@ import VexilMacros
 import XCTest
 
 final class FlagGroupMacroTests: XCTestCase {
-    
+
     func testExpands() throws {
         assertMacroExpansion(
             """
@@ -42,7 +42,7 @@ final class FlagGroupMacroTests: XCTestCase {
         )
     }
 
-    
+
     // MARK: - Key Strategy Detection Tests
 
     func testDetectsKeyStrategyMinimal() throws {
