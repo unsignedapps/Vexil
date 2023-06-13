@@ -137,12 +137,14 @@ final class FlagContainerMacroTests: XCTestCase {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     do {
                         let keyPath = _flagKeyPath.append("first")
-                        visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? false)
+                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
+                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
                     }
                     flagGroup.walk(visitor: visitor)
                     do {
                         let keyPath = _flagKeyPath.append("second")
-                        visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? false)
+                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
+                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
                     }
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }

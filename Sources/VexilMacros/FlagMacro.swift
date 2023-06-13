@@ -22,6 +22,7 @@ public struct FlagMacro {
     let propertyName: String
     let key: ExprSyntax
     let defaultValue: ExprSyntax
+    let type: TypeSyntax
 
 
     // MARK: - Initialisation
@@ -42,6 +43,7 @@ public struct FlagMacro {
             let property = declaration.as(VariableDeclSyntax.self),
             let binding = property.bindings.first,
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
+            let type = binding.typeAnnotation?.type,
             binding.accessor == nil
         else {
             throw Diagnostic.onlySimpleVariableSupported
@@ -52,6 +54,7 @@ public struct FlagMacro {
         self.propertyName = identifier.text
         self.key = strategy.createKey(identifier.text)
         self.defaultValue = defaultExprSyntax.expression
+        self.type = type
     }
 
 
@@ -67,7 +70,8 @@ public struct FlagMacro {
         """
         do {
             let keyPath = \(key)
-            visitor.visitFlag(keyPath: keyPath, value: _flagLookup.value(for: keyPath) ?? \(defaultValue))
+            let located = _flagLookup.locate(keyPath: keyPath, of: \(type).self)
+            visitor.visitFlag(keyPath: keyPath, value: located?.value ?? \(defaultValue), sourceName: located?.sourceName)
         }
         """
     }

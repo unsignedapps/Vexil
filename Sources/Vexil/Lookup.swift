@@ -24,9 +24,9 @@ public protocol FlagLookup: AnyObject {
 
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue
-//
-//    @inlinable
-//    func locate<Value>(keyPath: FlagKeyPath) -> Value? where Value: FlagValue
+
+    @inlinable
+    func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue
 
 #if !os(Linux)
 //    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
@@ -48,9 +48,14 @@ extension FlagPole: FlagLookup {
 
     @inlinable
     public func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
+        locate(keyPath: keyPath, of: Value.self)?.value
+    }
+
+    @inlinable
+    public func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue {
         for source in _sources {
             if let value: Value = source.flagValue(key: keyPath.key) {
-                return value
+                return (value, source.name)
             }
         }
         return nil
@@ -68,3 +73,4 @@ extension FlagPole: FlagLookup {
 
 #endif
 }
+

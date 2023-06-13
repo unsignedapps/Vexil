@@ -15,6 +15,6 @@ public protocol FlagVisitor {
 
     func beginGroup(keyPath: FlagKeyPath)
     func endGroup(keyPath: FlagKeyPath)
-    func visitFlag<Value>(keyPath: FlagKeyPath, value: Value)
+    func visitFlag<Value>(keyPath: FlagKeyPath, value: Value, sourceName: String?)
 
 }
