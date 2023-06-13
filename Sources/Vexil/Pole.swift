@@ -45,10 +45,13 @@ import Foundation
 @dynamicMemberLookup
 public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
-    // MARK: - Configuration
+    // MARK: - Properties
 
     /// The configuration information supplied to the `FlagPole` during initialisation.
     public let _configuration: VexilConfiguration
+
+    /// Whether diagnostics have been enabled for this FlagPole.
+    var diagnosticsEnabled = false
 
 
     // MARK: - Sources
@@ -119,8 +122,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Flag Management
 
+    var rootKeyPath: FlagKeyPath {
+        .root(separator: _configuration.separator)
+    }
+
     var rootGroup: RootGroup {
-        RootGroup(_flagKeyPath: .root(separator: _configuration.separator), _flagLookup: self)
+        RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
     }
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
@@ -212,7 +219,6 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Diagnostics
 
-//    var _diagnosticsEnabled = false
 //
 //    /// Returns the current diagnostic state of all flags managed by this FlagPole.
 //    ///
@@ -260,31 +266,31 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Snapshots
 
-//    /// Creates a `Snapshot` of the current state of the `FlagPole` (or optionally a
-//    /// `FlagValueSource`)
-//    ///
-//    /// - Parameters:
-//    ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
-//    ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
-//    ///                     into the snapshot instead.
-//    ///
-//    public func snapshot(of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
-//        Snapshot(
-//            flagPole: self,
-//            copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
-//            diagnosticsEnabled: enableDiagnostics || self._diagnosticsEnabled
-//        )
-//    }
-//
-//    /// Creates an empty `Snapshot` of the current `FlagPole`.
-//    ///
-//    /// The snapshot itself will be empty and access to any flags
-//    /// within the snapshot will return the flag's `defaultValue`.
-//    ///
-//    public func emptySnapshot() -> Snapshot<RootGroup> {
-//        Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
-//    }
-//
+    /// Creates a `Snapshot` of the current state of the `FlagPole` (or optionally a
+    /// `FlagValueSource`)
+    ///
+    /// - Parameters:
+    ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
+    ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
+    ///                     into the snapshot instead.
+    ///
+    public func snapshot(of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
+        Snapshot(
+            flagPole: self,
+            copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
+            diagnosticsEnabled: enableDiagnostics || diagnosticsEnabled
+        )
+    }
+
+    /// Creates an empty `Snapshot` of the current `FlagPole`.
+    ///
+    /// The snapshot itself will be empty and access to any flags
+    /// within the snapshot will return the flag's `defaultValue`.
+    ///
+    public func emptySnapshot() -> Snapshot<RootGroup> {
+        Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
+    }
+
 //    /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
 //    ///
 //    /// Inserting a snapshot at the top of the hierarchy (eg at index `0`) is a good way to

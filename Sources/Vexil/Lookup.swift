@@ -22,8 +22,8 @@ public protocol FlagLookup: AnyObject {
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue
 
-    @inlinable
-    func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue
+//    @inlinable
+//    func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue
 
     @inlinable
     func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue

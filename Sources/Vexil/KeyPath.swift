@@ -31,7 +31,7 @@ public struct FlagKeyPath: Hashable, Sendable {
 
     public func append(_ key: String) -> FlagKeyPath {
         FlagKeyPath(
-            key + separator + key,
+            self.key.isEmpty ? key : self.key + separator + key,
             separator: separator
         )
     }

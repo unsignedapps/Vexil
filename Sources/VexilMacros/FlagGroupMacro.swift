@@ -18,14 +18,14 @@ import SwiftSyntaxMacros
 public struct FlagGroupMacro {
 
     // MARK: - Properties
-    
+
     let propertyName: String
     let key: ExprSyntax
     let type: TypeSyntax
 
-    
+
     // MARK: - Initialisation
-    
+
     init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
         guard node.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "FlagGroup" else {
             throw Diagnostic.notFlagGroupMacro
@@ -33,7 +33,7 @@ public struct FlagGroupMacro {
         guard let argument = node.argument else {
             throw Diagnostic.missingArgument
         }
-        
+
         guard
             let property = declaration.as(VariableDeclSyntax.self),
             let binding = property.bindings.first,
@@ -43,9 +43,9 @@ public struct FlagGroupMacro {
         else {
             throw Diagnostic.onlySimpleVariableSupported
         }
-        
+
         let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
-        
+
         self.propertyName = identifier.text
         self.key = strategy.createKey(propertyName)
         self.type = type

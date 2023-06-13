@@ -14,13 +14,20 @@
 // #if !os(Linux)
 // import Combine
 // #endif
-//
-// extension Snapshot: Lookup {
-//    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
-//        lastAccessedKey = key
-//        return values[key]?.toLookupResult()
-//    }
-//
+
+ extension Snapshot: FlagLookup {
+
+     public func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
+         values[keyPath.key]?.value as? Value
+     }
+
+     public func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue {
+         guard let value = values[keyPath.key]?.value as? Value else {
+             return nil
+         }
+         return (value, name)
+     }
+
 // #if !os(Linux)
 //
 //    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
@@ -32,4 +39,4 @@
 //    }
 //
 // #endif
-// }
+ }

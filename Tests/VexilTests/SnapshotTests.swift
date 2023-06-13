@@ -11,20 +11,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-// import Vexil
-// import XCTest
-//
-// final class SnapshotTests: XCTestCase {
-//
-//    func testSnapshotReading() {
-//        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-//        let snapshot = pole.emptySnapshot()
-//
-//        XCTAssertFalse(snapshot.topLevelFlag)
-//        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
-//        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
-//    }
-//
+import Vexil
+import XCTest
+
+final class SnapshotTests: XCTestCase {
+
+    func testSnapshotReading() {
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let snapshot = pole.emptySnapshot()
+
+        XCTAssertFalse(snapshot.topLevelFlag)
+        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
+        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+    }
+
 //    func testSnapshotWriting() {
 //        let pole = FlagPole(hoist: TestFlags.self, sources: [])
 //        let snapshot = pole.emptySnapshot()
@@ -35,10 +35,10 @@
 //        XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
 //        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
 //    }
-//
-//
-//    // MARK: - Taking Snapshots
-//
+
+
+    // MARK: - Taking Snapshots
+
 //    func testEmptySnapshot() {
 //        let pole = FlagPole(hoist: TestFlags.self, sources: [])
 //
@@ -59,7 +59,7 @@
 //        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
 //        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
 //    }
-//
+
 //    func testCurrentValueSnapshot() {
 //        let pole = FlagPole(hoist: TestFlags.self, sources: [])
 //
@@ -90,58 +90,61 @@
 //        XCTAssertFalse(empty.subgroup.secondLevelFlag)
 //        XCTAssertFalse(empty.subgroup.doubleSubgroup.thirdLevelFlag)
 //    }
-//
-//    func testCurrentSourceValueSnapshot() throws {
-//
-//        // GIVEN a FlagPole and a dictionary that is not a part it
-//        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-//        let dictionary = FlagValueDictionary([
-//            "top-level-flag": .bool(true),
-//            "subgroup.double-subgroup.third-level-flag": .bool(true),
-//        ])
-//
-//        // WHEN we take a snapshot of that source
-//        let snapshot = pole.snapshot(of: dictionary)
-//
-//        // THEN we expect only the values we've changed to be true
-//        XCTAssertTrue(snapshot.topLevelFlag)
-//        XCTAssertFalse(snapshot.secondTestFlag)
-//        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
-//        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
-//
-//    }
-//
-// }
-//
-//
-//// MARK: - Fixtures
-//
-// private struct TestFlags: FlagContainer {
-//
-//    @Flag(default: false, description: "Top level test flag")
-//    var topLevelFlag: Bool
-//
-//    @Flag(default: false, description: "Second test flag")
-//    var secondTestFlag: Bool
-//
-//    @FlagGroup(description: "Subgroup of test flags")
-//    var subgroup: SubgroupFlags
-//
-// }
-//
-// private struct SubgroupFlags: FlagContainer {
-//
-//    @Flag(default: false, description: "Second level test flag")
-//    var secondLevelFlag: Bool
-//
-//    @FlagGroup(description: "Another level of test flags")
-//    var doubleSubgroup: DoubleSubgroupFlags
-//
-// }
-//
-// private struct DoubleSubgroupFlags: FlagContainer {
-//
-//    @Flag(default: false, description: "Third level test flag")
-//    var thirdLevelFlag: Bool
-//
-// }
+
+    func testCurrentSourceValueSnapshot() throws {
+
+        // GIVEN a FlagPole and a dictionary that is not a part it
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let dictionary = FlagValueDictionary([
+            "top-level-flag": .bool(true),
+            "subgroup.double-subgroup.third-level-flag": .bool(true),
+        ])
+
+        // WHEN we take a snapshot of that source
+        let snapshot = pole.snapshot(of: dictionary)
+
+        // THEN we expect only the values we've changed to be true
+        XCTAssertTrue(snapshot.topLevelFlag)
+        XCTAssertFalse(snapshot.secondTestFlag)
+        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
+        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+
+    }
+
+}
+
+
+// MARK: - Fixtures
+
+@FlagContainer
+private struct TestFlags {
+
+    @Flag(default: false, description: "Top level test flag")
+    var topLevelFlag: Bool
+
+    @Flag(default: false, description: "Second test flag")
+    var secondTestFlag: Bool
+
+    @FlagGroup(description: "Subgroup of test flags")
+    var subgroup: SubgroupFlags
+
+}
+
+@FlagContainer
+private struct SubgroupFlags {
+
+    @Flag(default: false, description: "Second level test flag")
+    var secondLevelFlag: Bool
+
+    @FlagGroup(description: "Another level of test flags")
+    var doubleSubgroup: DoubleSubgroupFlags
+
+}
+
+@FlagContainer
+private struct DoubleSubgroupFlags {
+
+    @Flag(default: false, description: "Third level test flag")
+    var thirdLevelFlag: Bool
+
+}

@@ -16,7 +16,7 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 public struct FlagMacro {
-    
+
     // MARK: - Properties
 
     let propertyName: String
@@ -82,7 +82,7 @@ public struct FlagMacro {
 // MARK: - Accessor Macro Creation
 
 extension FlagMacro: AccessorMacro {
-    
+
     public static func expansion(
         of node: AttributeSyntax,
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
@@ -107,7 +107,7 @@ extension FlagMacro: AccessorMacro {
 // MARK: - Diagnostics
 
 extension FlagMacro {
-    
+
     enum Diagnostic: Error {
         case notFlagMacro
         case missingArgument

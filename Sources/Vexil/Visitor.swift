@@ -18,3 +18,20 @@ public protocol FlagVisitor {
     func visitFlag<Value>(keyPath: FlagKeyPath, value: Value, sourceName: String?)
 
 }
+
+// MARK: - Defaults
+
+// By default most visitors only care about flags so we provide
+// default empty implementations so they don't have to.
+
+public extension FlagVisitor {
+
+    func beginGroup(keyPath: FlagKeyPath) {
+        // Intentionally left blank
+    }
+
+    func endGroup(keyPath: FlagKeyPath) {
+        // Intentionally left blank
+    }
+
+}

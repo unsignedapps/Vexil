@@ -25,7 +25,7 @@ extension MemberDeclBlockSyntax {
 }
 
 extension VariableDeclSyntax {
-    
+
     func asFlag(in context: some MacroExpansionContext) -> FlagMacro? {
         guard let attribute = attributes?.first?.as(AttributeSyntax.self) else {
             return nil

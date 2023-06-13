@@ -39,7 +39,7 @@ extension FlagContainerMacro: MemberMacro {
                 self._flagLookup = _flagLookup
             }
             """,
-            DeclSyntax(try FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
+            try DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
                 "visitor.beginGroup(keyPath: _flagKeyPath)"
                 for variable in declaration.memberBlock.variables {
                     if let flag = variable.asFlag(in: context) {
@@ -49,7 +49,7 @@ extension FlagContainerMacro: MemberMacro {
                     }
                 }
                 "visitor.endGroup(keyPath: _flagKeyPath)"
-            })
+            }),
         ]
     }
 
