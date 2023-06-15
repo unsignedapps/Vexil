@@ -46,7 +46,7 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     public var body: some View {
         List(self.manager.allItems(), id: \.id, children: \.childLinks) { item in
-            item.unfurledView
+            UnfurledFlagItemView(item: item)
         }
         .listStyle(SidebarListStyle())
         .toolbar {
@@ -62,7 +62,7 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     public var body: some View {
         ForEach(self.manager.allItems(), id: \.id) { item in
-            item.unfurledView
+            UnfurledFlagItemView(item: item)
         }
         .environmentObject(self.manager)
     }
