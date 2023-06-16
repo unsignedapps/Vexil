@@ -36,6 +36,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -59,6 +66,13 @@ final class FlagMacroTests: XCTestCase {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? 123.456
                     }
+                }
+                var $testProperty: WigWag<Double> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
                 }
             }
             """,
@@ -84,6 +98,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? "alpha"
                     }
                 }
+                var $testProperty: WigWag<String> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -107,6 +128,13 @@ final class FlagMacroTests: XCTestCase {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? .testCase
                     }
+                }
+                var $testProperty: WigWag<SomeEnum> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
                 }
             }
             """,
@@ -135,6 +163,75 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: "Super Test!",
+                        description: "meow"
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testHiddenDescription() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag(name: "Super Test!", default: false, description: .hidden)
+                var testProperty: Bool
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty: Bool {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                    }
+                }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: "Super Test!",
+                        description: .hidden
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testHiddenDescriptionExplicit() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag(name: "Super Test!", default: false, description: FlagDescription.hidden)
+                var testProperty: Bool
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty: Bool {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                    }
+                }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: "Super Test!",
+                        description: FlagDescription.hidden
+                    )
+                }
             }
             """,
             macros: [
@@ -162,6 +259,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -185,6 +289,13 @@ final class FlagMacroTests: XCTestCase {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
+                }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
                 }
             }
             """,
@@ -213,6 +324,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -236,6 +354,13 @@ final class FlagMacroTests: XCTestCase {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
+                }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test-property"),
+                        name: nil,
+                        description: "meow"
+                    )
                 }
             }
             """,
@@ -261,6 +386,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test_property")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test_property"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -285,6 +417,13 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test")) ?? false
                     }
                 }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: _flagKeyPath.append("test"),
+                        name: nil,
+                        description: "meow"
+                    )
+                }
             }
             """,
             macros: [
@@ -308,6 +447,13 @@ final class FlagMacroTests: XCTestCase {
                     get {
                         _flagLookup.value(for: FlagKeyPath("test", separator: _flagKeyPath.separator)) ?? false
                     }
+                }
+                var $testProperty: WigWag<Bool> {
+                    WigWag(
+                        keyPath: FlagKeyPath("test", separator: _flagKeyPath.separator),
+                        name: nil,
+                        description: "meow"
+                    )
                 }
             }
             """,

@@ -30,7 +30,7 @@ extension FlagContainerMacro: MemberMacro {
 
         // Find the scope modifier if we have one
         let scope = declaration.modifiers?.scope
-        return [
+        return try [
 
             // Properties
 
@@ -52,7 +52,7 @@ extension FlagContainerMacro: MemberMacro {
 
             // Flag Hierarchy Walking
 
-            try DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
+            DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
                 "visitor.beginGroup(keyPath: _flagKeyPath)"
                 for variable in declaration.memberBlock.variables {
                     if let flag = variable.asFlag(in: context) {
@@ -66,7 +66,7 @@ extension FlagContainerMacro: MemberMacro {
 
             // Flag Key Path Lookup
 
-            try DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath?") {
+            DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath?") {
                 let variables = declaration.memberBlock.variables
                 if variables.isEmpty == false {
                     "switch keyPath {"

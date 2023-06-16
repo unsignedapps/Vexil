@@ -21,7 +21,7 @@ let package = Package(
     ],
 
     dependencies: [
-        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.2"),
+        .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.12"),
         .package(url: "https://github.com/apple/swift-syntax.git", branch: "release/5.9"),
     ],
 

@@ -21,7 +21,9 @@ public struct FlagMacro {
 
     let propertyName: String
     let key: ExprSyntax
+    let name: ExprSyntax?
     let defaultValue: ExprSyntax
+    let description: ExprSyntax?
     let type: TypeSyntax
 
 
@@ -38,6 +40,9 @@ public struct FlagMacro {
         guard let defaultExprSyntax = argument[label: "default"] else {
             throw Diagnostic.missingDefaultValue
         }
+        guard let descriptionExprSyntax = argument[label: "description"] else {
+            throw Diagnostic.missingDescription
+        }
 
         guard
             let property = declaration.as(VariableDeclSyntax.self),
@@ -50,6 +55,21 @@ public struct FlagMacro {
         }
 
         let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
+
+        if let nameExprSyntax = argument[label: "name"] {
+            self.name = nameExprSyntax.expression
+        } else {
+            self.name = nil
+        }
+
+        if
+            let descriptionMemberAccess = descriptionExprSyntax.expression.as(MemberAccessExprSyntax.self),
+            descriptionMemberAccess.name == .identifier("hidden")
+        {
+            self.description = nil
+        } else {
+            self.description = descriptionExprSyntax.expression
+        }
 
         self.propertyName = identifier.text
         self.key = strategy.createKey(identifier.text)
@@ -104,6 +124,37 @@ extension FlagMacro: AccessorMacro {
 
 }
 
+
+// MARK: - Peer Macro Creation
+
+extension FlagMacro: PeerMacro {
+
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingPeersOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        do {
+            let macro = try FlagMacro(node: node, declaration: declaration, context: context)
+            return [
+                """
+                var $\(raw: macro.propertyName): WigWag<\(macro.type)> {
+                    WigWag(
+                        keyPath: \(macro.key),
+                        name: \(macro.name ?? "nil"),
+                        description: \(macro.description ?? "nil")
+                    )
+                }
+                """,
+            ]
+        } catch {
+            return []
+        }
+    }
+
+}
+
+
 // MARK: - Diagnostics
 
 extension FlagMacro {
@@ -112,6 +163,7 @@ extension FlagMacro {
         case notFlagMacro
         case missingArgument
         case missingDefaultValue
+        case missingDescription
         case onlySimpleVariableSupported
     }
 
