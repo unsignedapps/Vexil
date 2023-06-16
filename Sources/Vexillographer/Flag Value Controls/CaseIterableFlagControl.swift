@@ -112,7 +112,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                     Button(
                         action: {
                             self.value = value
-                            presentationMode.wrappedValue.dismiss()
+                            self.presentationMode.wrappedValue.dismiss()
                         },
                         label: {
                             HStack {
