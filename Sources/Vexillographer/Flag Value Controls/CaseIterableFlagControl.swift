@@ -102,9 +102,11 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 #endif
 
     struct SelectorList: View {
-        @Binding var value: Value
+        @Binding
+        var value: Value
 
-        @Environment(\.presentationMode) private var presentationMode
+        @Environment(\.presentationMode)
+        private var presentationMode
 
         var body: some View {
             Form {

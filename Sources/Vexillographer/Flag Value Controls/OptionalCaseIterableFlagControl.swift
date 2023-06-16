@@ -76,9 +76,11 @@ struct OptionalCaseIterableFlagControl<Value>: View
 #endif
 
     struct SelectorList: View {
-        @Binding var value: Value
+        @Binding
+        var value: Value
 
-        @Environment(\.presentationMode) private var presentationMode
+        @Environment(\.presentationMode)
+        private var presentationMode
 
         var body: some View {
             Form {
