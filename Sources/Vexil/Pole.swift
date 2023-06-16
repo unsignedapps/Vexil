@@ -291,44 +291,44 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
     }
 
-//    /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
-//    ///
-//    /// Inserting a snapshot at the top of the hierarchy (eg at index `0`) is a good way to
-//    /// override the values in the FlagPole without saving it to a source, but you can also
-//    /// insert it anywhere in the hierarchy you need.
-//    ///
-//    /// - Note: You can also manipulate `_sources` directly.
-//    ///
-//    /// - Parameters:
-//    ///   - snapshot:       The `Snapshot` to be inserted
-//    ///   - at:             The index at which to insert the `Snapshot`.
-//    ///
-//    public func insert(snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
-//        self._sources.insert(snapshot, at: index)
-//
-//    }
-//
-//    /// Appends a `Snapshot` to the end of the `FlagPole`s source hierarchy.
-//    ///
-//    /// - Note: You can also manipulate `_sources` directly.
-//    ///
-//    /// - Parameters:
-//    ///   - snapshot:       The `Snapshot` to be added to the source hierarchy.
-//    ///
-//    public func append(snapshot: Snapshot<RootGroup>) {
-//        self._sources.append(snapshot)
-//    }
-//
-//    /// Removes a `Snapshot` from the `FlagPole`s source hierarchy.
-//    ///
-//    /// - Note: You can also manipulate `_sources` directly.
-//    ///
-//    /// - Parameters:
-//    ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
-//    ///
-//    public func remove(snapshot: Snapshot<RootGroup>) {
-//        self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
-//    }
+    /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
+    ///
+    /// Inserting a snapshot at the top of the hierarchy (eg at index `0`) is a good way to
+    /// override the values in the FlagPole without saving it to a source, but you can also
+    /// insert it anywhere in the hierarchy you need.
+    ///
+    /// - Note: You can also manipulate `_sources` directly.
+    ///
+    /// - Parameters:
+    ///   - snapshot:       The `Snapshot` to be inserted
+    ///   - at:             The index at which to insert the `Snapshot`.
+    ///
+    public func insert(snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
+        _sources.insert(snapshot, at: index)
+
+    }
+
+    /// Appends a `Snapshot` to the end of the `FlagPole`s source hierarchy.
+    ///
+    /// - Note: You can also manipulate `_sources` directly.
+    ///
+    /// - Parameters:
+    ///   - snapshot:       The `Snapshot` to be added to the source hierarchy.
+    ///
+    public func append(snapshot: Snapshot<RootGroup>) {
+        _sources.append(snapshot)
+    }
+
+    /// Removes a `Snapshot` from the `FlagPole`s source hierarchy.
+    ///
+    /// - Note: You can also manipulate `_sources` directly.
+    ///
+    /// - Parameters:
+    ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
+    ///
+    public func remove(snapshot: Snapshot<RootGroup>) {
+        _sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
+    }
 
 
     // MARK: - Mutating Flag Sources

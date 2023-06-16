@@ -82,9 +82,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     internal private(set) var values: [String: LocatedFlag] = [:]
 
-//    internal var lock = Lock()
-//
-//    internal var lastAccessedKey: String?
+    private var rootGroup: RootGroup {
+        RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
+    }
 
 
     // MARK: - Initialisation
@@ -107,51 +107,24 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Flag Management
 
-//    /// A `@DynamicMemberLookup` implementation that returns a `MutableFlagGroup` in place of a `FlagGroup`.
-//    /// The `MutableFlagGroup` provides a setter for the `Flag`s it contains, allowing them to be mutated as required.
-//    ///
-//    public subscript<Subgroup>(dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> MutableFlagGroup<Subgroup, RootGroup> where Subgroup: FlagContainer {
-//        let group = self._rootGroup[keyPath: dynamicMember]
-//        return MutableFlagGroup<Subgroup, RootGroup>(group: group, snapshot: self)
-//    }
-
-    public subscript<Subgroup>(dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> Subgroup where Subgroup: FlagContainer {
-        get {
-            RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)[keyPath: dynamicMember]
-        }
+    /// A `@DynamicMemberLookup` implementation that returns a `MutableFlagGroup` in place of a `FlagGroup`.
+    /// The `MutableFlagGroup` provides a setter for the `Flag`s it contains, allowing them to be mutated as required.
+    public subscript<Subgroup>(dynamicMember dynamicMember: KeyPath<RootGroup, Subgroup>) -> MutableFlagContainer<Subgroup> where Subgroup: FlagContainer {
+        MutableFlagContainer(group: rootGroup[keyPath: dynamicMember], source: self)
     }
 
     /// A `@DynamicMemberLookup` implementation that returns a `Flag.wrappedValue` and allows them to be mutated.
     ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value where Value: FlagValue {
         get {
-            RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)[keyPath: dynamicMember]
+            rootGroup[keyPath: dynamicMember]
+        }
+        set {
+            if let keyPath = rootGroup.flagKeyPath(for: dynamicMember) {
+                values[keyPath.key] = (value: newValue, sourceName: name)
+            }
         }
     }
-//        set {
-//
-//            // This is pretty horrible, but it has to stay until we can find a way to
-//            // get the KeyPath of the property wrapper from the KeyPath of the wrappedValue
-//            // (eg. container.myFlag -> container._myFlag) or else the property
-//            // label from the KeyPath (so we can use reflection), or if the technique
-//            // here (https://forums.swift.org/t/getting-keypaths-to-members-automatically-using-mirror/21207/2)
-//            // returned KeyPaths that were equatable/hashable with the actual KeyPath,
-//            // or if the KeyPathIterable / StorePropertyIterable propsal
-//            // (https://forums.swift.org/t/storedpropertyiterable/19218/70) ever gets across the line
-//
-//            self.lock.withLock {
-//
-//                // noop to access the existing property
-//                _ = self._rootGroup[keyPath: dynamicMember]
-//
-//                guard let key = self.lastAccessedKey else {
-//                    return
-//                }
-//                self.set(newValue, key: key)
-//
-//            }
-//        }
-//    }
 
 
     // MARK: - Population
@@ -161,7 +134,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         switch source {
         case .pole:
             builder = Builder(flagPole: flagPole, source: nil, rootKeyPath: flagPole.rootKeyPath, keys: keys)
-        case .source(let flagValueSource):
+        case let .source(flagValueSource):
             builder = Builder(flagPole: nil, source: flagValueSource, rootKeyPath: flagPole.rootKeyPath, keys: keys)
         }
         values = builder.build()
@@ -171,25 +144,15 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         values[keyPath.key] = (value, sourceName)
     }
 
-//    internal func changedFlags() -> [AnyFlag] {
-//        guard self.values.isEmpty == false else {
-//            return []
-//        }
-//
-//        let changed = self.values.keys
-//        return self.allFlags
-//            .filter { changed.contains($0.key) }
-//    }
-//
-//    internal func set(_ value: (some FlagValue)?, key: String) {
-//        if let value {
-//            self.values[key] = LocatedFlagValue(source: self.name, value: value, diagnosticsEnabled: self.diagnosticsEnabled)
-//        } else {
-//            self.values.removeValue(forKey: key)
-//        }
-//
+    internal func set(_ value: (some FlagValue)?, key: String) {
+        if let value {
+            values[key] = (value, name)
+        } else {
+            values.removeValue(forKey: key)
+        }
+
 //        self.valuesDidChange.send()
-//    }
+    }
 
 
     // MARK: - Working with other Snapshots

@@ -41,6 +41,9 @@ final class FlagContainerMacroTests: XCTestCase {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
+                 func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
+                    nil
+                }
             }
             """,
             macros: [
@@ -69,6 +72,9 @@ final class FlagContainerMacroTests: XCTestCase {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
+                public func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
+                    nil
+                }
             }
             """,
             macros: [
@@ -96,6 +102,9 @@ final class FlagContainerMacroTests: XCTestCase {
                  func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
+                }
+                 func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
+                    nil
                 }
             }
             """,
@@ -147,6 +156,16 @@ final class FlagContainerMacroTests: XCTestCase {
                         visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
                     }
                     visitor.endGroup(keyPath: _flagKeyPath)
+                }
+             func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
+                    switch keyPath {
+                    case \\TestFlags.first:
+                        return _flagKeyPath.append("first")
+                    case \\TestFlags.second:
+                        return _flagKeyPath.append("second")
+                    default:
+                        return nil
+                    }
                 }
             }
             """,

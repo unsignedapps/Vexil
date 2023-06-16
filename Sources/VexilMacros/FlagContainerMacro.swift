@@ -24,21 +24,34 @@ extension FlagContainerMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
+        guard let typeIdentifier = declaration.asProtocol(IdentifiedDeclSyntax.self)?.identifier else {
+            return []
+        }
+
         // Find the scope modifier if we have one
         let scope = declaration.modifiers?.scope
         return [
+
+            // Properties
+
             """
             private let _flagKeyPath: FlagKeyPath
             """,
             """
             private let _flagLookup: any FlagLookup
             """,
+
+            // Initialisation
+
             """
             \(raw: scope ?? "") init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
                 self._flagKeyPath = _flagKeyPath
                 self._flagLookup = _flagLookup
             }
             """,
+
+            // Flag Hierarchy Walking
+
             try DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func walk(visitor: any FlagVisitor)") {
                 "visitor.beginGroup(keyPath: _flagKeyPath)"
                 for variable in declaration.memberBlock.variables {
@@ -50,6 +63,31 @@ extension FlagContainerMacro: MemberMacro {
                 }
                 "visitor.endGroup(keyPath: _flagKeyPath)"
             }),
+
+            // Flag Key Path Lookup
+
+            try DeclSyntax(FunctionDeclSyntax("\(raw: scope ?? "") func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath?") {
+                let variables = declaration.memberBlock.variables
+                if variables.isEmpty == false {
+                    "switch keyPath {"
+                    for variable in variables {
+                        if let flag = variable.asFlag(in: context) {
+                            CodeBlockItemSyntax(stringLiteral:
+                                """
+                                case \\\(typeIdentifier.text).\(flag.propertyName):
+                                    return \(flag.key)
+                                """
+                            )
+                        }
+                    }
+                    "default: return nil"
+                    "}"
+
+                } else {
+                    "nil"
+                }
+            }),
+
         ]
     }
 

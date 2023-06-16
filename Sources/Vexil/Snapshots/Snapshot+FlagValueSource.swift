@@ -12,17 +12,17 @@
 //===----------------------------------------------------------------------===//
 
 extension Snapshot: FlagValueSource {
-    
+
     public var name: String {
         displayName ?? "Snapshot \(id.uuidString)"
     }
-    
+
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         values[key]?.value as? Value
     }
-    
+
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
-//        set(value, key: key)
+        set(value, key: key)
     }
 
 }
