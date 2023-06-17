@@ -40,7 +40,9 @@ public struct FlagMacro {
         guard let defaultExprSyntax = argument[label: "default"] else {
             throw Diagnostic.missingDefaultValue
         }
-        guard let descriptionExprSyntax = argument[label: "description"] else {
+
+        // Either the `description:` or `display:` arguments should be specified, we handle them together.
+        guard let optionExprSyntax = argument[label: "description"] ?? argument[label: "display"] else {
             throw Diagnostic.missingDescription
         }
 
@@ -63,12 +65,12 @@ public struct FlagMacro {
         }
 
         if
-            let descriptionMemberAccess = descriptionExprSyntax.expression.as(MemberAccessExprSyntax.self),
-            descriptionMemberAccess.name == .identifier("hidden")
+            let descriptionMemberAccess = optionExprSyntax.expression.as(MemberAccessExprSyntax.self),
+            descriptionMemberAccess.name.text == "hidden"
         {
             self.description = nil
         } else {
-            self.description = descriptionExprSyntax.expression
+            self.description = optionExprSyntax.expression
         }
 
         self.propertyName = identifier.text
@@ -138,11 +140,12 @@ extension FlagMacro: PeerMacro {
             let macro = try FlagMacro(node: node, declaration: declaration, context: context)
             return [
                 """
-                var $\(raw: macro.propertyName): WigWag<\(macro.type)> {
-                    WigWag(
+                var $\(raw: macro.propertyName): Wigwag<\(macro.type)> {
+                    Wigwag(
                         keyPath: \(macro.key),
                         name: \(macro.name ?? "nil"),
-                        description: \(macro.description ?? "nil")
+                        description: \(macro.description ?? "nil"),
+                        displayOption: \(macro.description == nil ? ".init(.hidden)" : "nil")
                     )
                 }
                 """,

@@ -34,6 +34,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "Test Flag Group",
+                        displayOption: .navigation
+                    )
+                }
             }
             """,
             macros: [
@@ -42,6 +50,135 @@ final class FlagGroupMacroTests: XCTestCase {
         )
     }
 
+    // MARK: - Flag Group Detail Tests
+
+    func testExpandsName() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @FlagGroup(name: "Test Group", keyStrategy: .default, description: "meow")
+                var testSubgroup: SubgroupFlags
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testSubgroup: SubgroupFlags {
+                    get {
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                    }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: "Test Group",
+                        description: "meow",
+                        displayOption: .navigation
+                    )
+                }
+            }
+            """,
+            macros: [
+                "FlagGroup": FlagGroupMacro.self,
+            ]
+        )
+    }
+
+    func testHidden() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @FlagGroup(keyStrategy: .default, description: "meow", display: .hidden)
+                var testSubgroup: SubgroupFlags
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testSubgroup: SubgroupFlags {
+                    get {
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                    }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .hidden
+                    )
+                }
+            }
+            """,
+            macros: [
+                "FlagGroup": FlagGroupMacro.self,
+            ]
+        )
+    }
+
+    func testDisplayNavigation() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @FlagGroup(keyStrategy: .default, description: "meow", display: .navigation)
+                var testSubgroup: SubgroupFlags
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testSubgroup: SubgroupFlags {
+                    get {
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                    }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
+                }
+            }
+            """,
+            macros: [
+                "FlagGroup": FlagGroupMacro.self,
+            ]
+        )
+    }
+
+    func testDisplaySection() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @FlagGroup(keyStrategy: .default, description: "meow", display: .section)
+                var testSubgroup: SubgroupFlags
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testSubgroup: SubgroupFlags {
+                    get {
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                    }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .section
+                    )
+                }
+            }
+            """,
+            macros: [
+                "FlagGroup": FlagGroupMacro.self,
+            ]
+        )
+    }
 
     // MARK: - Key Strategy Detection Tests
 
@@ -60,6 +197,14 @@ final class FlagGroupMacroTests: XCTestCase {
                     get {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
                 }
             }
             """,
@@ -84,6 +229,14 @@ final class FlagGroupMacroTests: XCTestCase {
                     get {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
                 }
             }
             """,
@@ -112,6 +265,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
+                }
             }
             """,
             macros: [
@@ -135,6 +296,14 @@ final class FlagGroupMacroTests: XCTestCase {
                     get {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
                 }
             }
             """,
@@ -160,6 +329,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test_subgroup"), _flagLookup: _flagLookup)
                     }
                 }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test_subgroup"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
+                }
             }
             """,
             macros: [
@@ -184,6 +361,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath, _flagLookup: _flagLookup)
                     }
                 }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath,
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
+                }
             }
             """,
             macros: [
@@ -207,6 +392,14 @@ final class FlagGroupMacroTests: XCTestCase {
                     get {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test"), _flagLookup: _flagLookup)
                     }
+                }
+                var $testSubgroup: Wigwag<SubgroupFlags> {
+                    Wigwag(
+                        keyPath: _flagKeyPath.append("test"),
+                        name: nil,
+                        description: "meow",
+                        displayOption: .navigation
+                    )
                 }
             }
             """,

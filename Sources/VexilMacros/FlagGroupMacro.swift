@@ -21,6 +21,9 @@ public struct FlagGroupMacro {
 
     let propertyName: String
     let key: ExprSyntax
+    let name: ExprSyntax?
+    let description: ExprSyntax?
+    let displayOption: ExprSyntax?
     let type: TypeSyntax
 
 
@@ -49,6 +52,10 @@ public struct FlagGroupMacro {
         self.propertyName = identifier.text
         self.key = strategy.createKey(propertyName)
         self.type = type
+
+        self.name = argument[label: "name"]?.expression
+        self.description = argument[label: "description"]?.expression
+        self.displayOption = argument[label: "display"]?.expression
     }
 
 
@@ -84,6 +91,38 @@ extension FlagGroupMacro: AccessorMacro {
     }
 
 }
+
+
+// MARK: - Peer Macro Creation
+
+extension FlagGroupMacro: PeerMacro {
+
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingPeersOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        do {
+            let macro = try FlagGroupMacro(node: node, declaration: declaration, context: context)
+            return [
+                """
+                var $\(raw: macro.propertyName): Wigwag<\(macro.type)> {
+                    Wigwag(
+                        keyPath: \(macro.key),
+                        name: \(macro.name ?? "nil"),
+                        description: \(macro.description ?? "nil"),
+                        displayOption: \(macro.displayOption ?? ".navigation")
+                    )
+                }
+                """,
+            ]
+        } catch {
+            return []
+        }
+    }
+
+}
+
 
 // MARK: - Diagnostics
 

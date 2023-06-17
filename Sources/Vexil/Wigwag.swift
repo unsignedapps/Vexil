@@ -13,12 +13,12 @@
 
 /// Wigwags are a type of signalling using flags, also known as aerial telegraphy.
 ///
-/// A Wigwag in Vexil supports observing flag values for changes via an AsyncSequence. On Apple platforms
-/// it also natively supports publishing via Combine.
+/// A Wigwag in Vexil supports observing flag values or containers for changes via an AsyncSequence.
+/// On Apple platforms it also natively supports publishing via Combine.
 ///
 /// For more information on Wigwags see https://en.wikipedia.org/wiki/Wigwag_(flag_signals)
 ///
-public struct WigWag<Value> where Value: FlagValue {
+public struct Wigwag<Output> {
 
     // MARK: - Properties
 
@@ -35,17 +35,21 @@ public struct WigWag<Value> where Value: FlagValue {
     public let name: String?
 
     /// A description of this flag. Only visible in flag editors like Vexillographer.
-    /// If this is nil the flag will be hidden.
+    /// If this is nil the flag or flag group will be hidden.
     public let description: String?
+
+    /// Options affecting the display of this flag or flag group
+    public let displayOption: VexilDisplayOption?
 
 
     // MARK: - Initialisation
 
     /// Creates a Wigwag with the provided configuration.
-    public init(keyPath: FlagKeyPath, name: String?, description: String?) {
+    public init(keyPath: FlagKeyPath, name: String?, description: String?, displayOption: VexilDisplayOption?) {
         self.keyPath = keyPath
         self.name = name
         self.description = description
+        self.displayOption = displayOption
     }
 
 }

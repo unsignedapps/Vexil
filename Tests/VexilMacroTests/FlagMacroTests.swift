@@ -36,11 +36,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -67,11 +68,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? 123.456
                     }
                 }
-                var $testProperty: WigWag<Double> {
-                    WigWag(
+                var $testProperty: Wigwag<Double> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -98,11 +100,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? "alpha"
                     }
                 }
-                var $testProperty: WigWag<String> {
-                    WigWag(
+                var $testProperty: Wigwag<String> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -129,11 +132,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? .testCase
                     }
                 }
-                var $testProperty: WigWag<SomeEnum> {
-                    WigWag(
+                var $testProperty: Wigwag<SomeEnum> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -151,7 +155,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: "meow")
+                @Flag(name: "Super Test!", default: false, display: "meow")
                 var testProperty: Bool
             }
             """,
@@ -163,11 +167,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: "Super Test!",
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -182,7 +187,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: .hidden)
+                @Flag(name: "Super Test!", default: false, display: .hidden)
                 var testProperty: Bool
             }
             """,
@@ -194,11 +199,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: "Super Test!",
-                        description: .hidden
+                        description: nil,
+                        displayOption: .init(.hidden)
                     )
                 }
             }
@@ -225,11 +231,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: "Super Test!",
-                        description: FlagDescription.hidden
+                        description: nil,
+                        displayOption: .init(.hidden)
                     )
                 }
             }
@@ -259,11 +266,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -290,11 +298,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -324,11 +333,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -355,11 +365,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test-property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -386,11 +397,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test_property")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test_property"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -417,11 +429,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: _flagKeyPath.append("test")) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: _flagKeyPath.append("test"),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }
@@ -448,11 +461,12 @@ final class FlagMacroTests: XCTestCase {
                         _flagLookup.value(for: FlagKeyPath("test", separator: _flagKeyPath.separator)) ?? false
                     }
                 }
-                var $testProperty: WigWag<Bool> {
-                    WigWag(
+                var $testProperty: Wigwag<Bool> {
+                    Wigwag(
                         keyPath: FlagKeyPath("test", separator: _flagKeyPath.separator),
                         name: nil,
-                        description: "meow"
+                        description: "meow",
+                        displayOption: nil
                     )
                 }
             }

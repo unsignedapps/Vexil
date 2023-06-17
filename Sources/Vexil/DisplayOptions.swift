@@ -11,13 +11,28 @@
 //
 //===----------------------------------------------------------------------===//
 
-import VexilMacros
+public enum VexilDisplayOption: Equatable {
 
-@attached(accessor)
-@attached(peer, names: prefixed(`$`))
-public macro FlagGroup(
-    name: StaticString? = nil,
-    keyStrategy: VexilConfiguration.GroupKeyStrategy = .default,
-    description: StaticString,
-    display: VexilDisplayOption = .navigation
-) = #externalMacro(module: "VexilMacros", type: "FlagGroupMacro")
+    case hidden
+    case navigation
+    case section
+
+
+    // MARK: - Conversion
+
+    public init(_ flagDisplayOption: FlagDisplayOption) {
+        switch flagDisplayOption {
+        case .hidden:                       self = .hidden
+        }
+    }
+
+}
+
+
+// MARK: - Flag Display Options
+
+public enum FlagDisplayOption {
+
+    case hidden
+
+}
