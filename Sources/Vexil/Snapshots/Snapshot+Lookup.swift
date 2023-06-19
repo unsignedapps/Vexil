@@ -28,15 +28,8 @@ extension Snapshot: FlagLookup {
         return (value, name)
     }
 
-    // #if !os(Linux)
-//
-//    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-//        valuesDidChange
-//            .compactMap { [weak self] _ in
-//                self?.values[key] as? Value
-//            }
-//            .eraseToAnyPublisher()
-//    }
-//
-    // #endif
+    public var changeStream: EmptyFlagChangeStream {
+        .init()
+    }
+
 }

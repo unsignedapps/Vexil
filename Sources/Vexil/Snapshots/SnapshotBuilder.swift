@@ -72,8 +72,12 @@ extension Snapshot.Builder: FlagLookup {
     }
 
     // Not used while walking the flag hierarchy
-    func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue {
+    func value<Value>(for keyPath: FlagKeyPath, in source: any FlagValueSource) -> Value? where Value: FlagValue {
         nil
+    }
+
+    var changeStream: EmptyFlagChangeStream {
+        .init()
     }
 
 }

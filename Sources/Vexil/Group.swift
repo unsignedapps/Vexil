@@ -11,6 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// swiftformat:disable redundantBackticks
+
 import VexilMacros
 
 @attached(accessor)

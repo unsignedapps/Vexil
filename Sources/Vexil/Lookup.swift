@@ -19,18 +19,19 @@ import Foundation
 
 public protocol FlagLookup: AnyObject {
 
+    associatedtype ChangeStream: AsyncSequence & Sendable where ChangeStream.Element == FlagChange
+
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue
 
-//    @inlinable
-//    func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue
+    //    @inlinable
+    //    func value<Value>(for keyPath: FlagKeyPath, in source: any FlagValueSource) -> Value? where Value: FlagValue
 
     @inlinable
     func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue
 
-#if !os(Linux)
-//    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue
-#endif
+    var changeStream: ChangeStream { get }
+
 }
 
 extension FlagPole: FlagLookup {
@@ -42,7 +43,7 @@ extension FlagPole: FlagLookup {
     /// that key, returning the first non-nil value it finds.
     ///
     @inlinable
-    public func value<Value>(for keyPath: FlagKeyPath, in source: FlagValueSource) -> Value? where Value: FlagValue {
+    public func value<Value>(for keyPath: FlagKeyPath, in source: any FlagValueSource) -> Value? where Value: FlagValue {
         source.flagValue(key: keyPath.key)
     }
 
@@ -61,16 +62,5 @@ extension FlagPole: FlagLookup {
         return nil
     }
 
-#if !os(Linux)
-
-    /// Retrieves a publsiher from the FlagPole that is bound to updates of a specific key
-    ///
-//    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-//        publisher
-//            .compactMap { $0.flagValue(key: key) }
-//            .eraseToAnyPublisher()
-//    }
-
-#endif
 }
 

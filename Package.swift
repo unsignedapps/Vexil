@@ -21,6 +21,7 @@ let package = Package(
     ],
 
     dependencies: [
+        .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.12"),
         .package(url: "https://github.com/apple/swift-syntax.git", branch: "release/5.9"),
     ],
@@ -30,6 +31,7 @@ let package = Package(
             name: "Vexil",
             dependencies: [
                 .target(name: "VexilMacros"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             ]
         ),
         .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),

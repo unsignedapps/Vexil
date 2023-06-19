@@ -70,7 +70,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     // MARK: - Properties
 
     /// All `Snapshot`s are `Identifiable`
-    public let id = UUID()
+    public let id = UUID().uuidString
 
     /// An optional display name to use in flag editors like Vexillographer.
     public var displayName: String?
@@ -181,9 +181,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     /// The source that we are to copy flag values from, if any
     enum Source {
         case pole
-        case source(FlagValueSource)
+        case source(any FlagValueSource)
 
-        var flagValueSource: FlagValueSource? {
+        var flagValueSource: (any FlagValueSource)? {
             switch self {
             case .pole:                     return nil
             case let .source(source):       return source

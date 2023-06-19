@@ -14,7 +14,7 @@
 extension Snapshot: FlagValueSource {
 
     public var name: String {
-        displayName ?? "Snapshot \(id.uuidString)"
+        displayName ?? "Snapshot \(id)"
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
