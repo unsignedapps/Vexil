@@ -166,7 +166,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
                 get: { Value(manager.flagValue(key: key)) },
                 set: { newValue in
                     do {
-                        try manager.setFlagValue(newValue.wrapped, key: key)
+                        try manager.setFlagValue(newValue, key: key)
 
                     } catch {
                         print("[Vexilographer] Could not set flag with key \"\(key)\" to \"\(newValue)\"")
