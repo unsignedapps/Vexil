@@ -17,7 +17,7 @@ import Vexillographer
 
 struct MyView: View {
 
-    let flagPole = FlagPole(hoist: AppFlags.swift)
+    let flagPole = FlagPole(hoist: AppFlags.self)
     
     var body: some View {
         NavigationView {
