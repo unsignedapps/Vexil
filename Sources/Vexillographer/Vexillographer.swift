@@ -22,10 +22,13 @@ import Vexil
 public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
 
     // MARK: - Properties
-
+#if os(macOS) && compiler(>=5.3.1)
     @ObservedObject
     var manager: FlagValueManager<RootGroup>
-
+#else
+    @State
+    var manager: FlagValueManager<RootGroup>
+#endif
 
     // MARK: - Initialisation
 
