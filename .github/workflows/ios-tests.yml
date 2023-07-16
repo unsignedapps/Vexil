@@ -75,7 +75,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
+        run: |
+          DEVICE_ID=`xcrun simctl list --json devices available iPhone | jq -r '.devices | to_entries | map(select(.value | add)) | sort_by(.key) | last.value | first.udid'`
+          swift package generate-xcodeproj
+          xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,id=$DEVICE_ID"
 
   build-ios-macos-12:
     runs-on: ubuntu-latest
