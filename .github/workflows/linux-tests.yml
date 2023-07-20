@@ -34,8 +34,8 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        swift: [ "5.2.5", "5.3.3", "5.4.3", "5.5.3", "5.6.3", "5.7.3" ]
-        os: [ amazonlinux2, bionic, centos7, focal, jammy ]
+        swift: [ "5.2.5", "5.3.3", "5.4.3", "5.5.3", "5.6.3", "5.7.3", "5.8.1" ]
+        os: [ amazonlinux2, bionic, centos7, focal, jammy, rhel-ubi9 ]
         exclude:
           - swift: 5.2.5
             os: jammy
@@ -49,6 +49,18 @@ jobs:
             os: jammy
           - swift: 5.7.3
             os: centos7
+          - swift: 5.2.5
+            os: rhel-ubi9
+          - swift: 5.3.3
+            os: rhel-ubi9
+          - swift: 5.4.3
+            os: rhel-ubi9
+          - swift: 5.5.3
+            os: rhel-ubi9
+          - swift: 5.6.3
+            os: rhel-ubi9
+          - swift: 5.7.3
+            os: rhel-ubi9
 
     container:
       image: swift:${{ matrix.swift }}-${{ matrix.os }}

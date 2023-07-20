@@ -34,7 +34,7 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2.1" ]
+        xcode: [ "12.4", "12.5.1", "13.0", "13.1", "13.2.1" ]
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -85,4 +85,36 @@ jobs:
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-watchos-macos-12-matrix.result == 'failure' }}
+        run: exit 1
+
+  #####################
+  # macOS 13 Versions #
+  #####################
+
+  build-watchos-macos-13-matrix:
+    name: watchOS Matrix - macOS 13
+    runs-on: macos-13
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
+    strategy:
+      matrix:
+        xcode: [ "14.1", "14.2", "14.3", "14.3.1" ]
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and Test
+        run: swift package generate-xcodeproj && xcrun xcodebuild build -scheme "Vexil-Package" -destination "generic/platform=watchos"
+
+  build-watchos-macos-13:
+    runs-on: ubuntu-latest
+    name: watchOS Build - macOS 13
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: build-watchos-macos-13-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-watchos-macos-13-matrix.result == 'failure' }}
         run: exit 1
