@@ -28,4 +28,13 @@ protocol UnfurledFlagItem {
     var isLink: Bool { get }
 }
 
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
+struct UnfurledFlagItemView: View {
+    var item: UnfurledFlagItem
+
+    var body: some View {
+        item.unfurledView.id(item.id)
+    }
+}
+
 #endif

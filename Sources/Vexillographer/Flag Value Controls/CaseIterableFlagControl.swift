@@ -34,9 +34,6 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     @Binding
     var showDetail: Bool
 
-    @Binding
-    var showPicker: Bool
-
     // MARK: - View Body
 
     var content: some View {
@@ -52,7 +49,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     var body: some View {
         HStack {
             if self.isEditable {
-                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
+                NavigationLink(destination: self.selector) {
                     self.content
                 }
             } else {
@@ -63,7 +60,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     }
 
     var selector: some View {
-        return self.selectorList
+        SelectorList(value: self.$value)
             .navigationBarTitle(Text(self.label), displayMode: .inline)
     }
 
@@ -104,52 +101,58 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
 #endif
 
-    var selectorList: some View {
-        Form {
-            ForEach(Value.allCases, id: \.self) { value in
-                Button(
-                    action: {
-                        self.value = value
-                        self.showPicker = false
-                    },
-                    label: {
-                        HStack {
-                            FlagDisplayValueView(value: value)
-                                .foregroundColor(.primary)
-                            Spacer()
+    struct SelectorList: View {
+        @Binding
+        var value: Value
 
-                            if value == self.value {
-                                self.checkmark
+        @Environment(\.presentationMode)
+        private var presentationMode
+
+        var body: some View {
+            Form {
+                ForEach(Value.allCases, id: \.self) { value in
+                    Button(
+                        action: {
+                            self.value = value
+                            self.presentationMode.wrappedValue.dismiss()
+                        },
+                        label: {
+                            HStack {
+                                FlagDisplayValueView(value: value)
+                                    .foregroundColor(.primary)
+                                Spacer()
+
+                                if value == self.value {
+                                    self.checkmark
+                                }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
-    }
 
 #if os(macOS)
 
-    var checkmark: some View {
-        return Text("✓")
-    }
+        var checkmark: some View {
+            return Text("✓")
+        }
 
 #else
 
-    var checkmark: some View {
-        return Image(systemName: "checkmark")
-    }
+        var checkmark: some View {
+            return Image(systemName: "checkmark")
+        }
 
 #endif
-
+    }
 }
-
 
 // MARK: - Creating CaseIterableFlagControls
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol CaseIterableEditableFlag {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
@@ -157,7 +160,7 @@ extension UnfurledFlag: CaseIterableEditableFlag
     where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
     Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable
 {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         return CaseIterableFlagControl<Value>(
             label: label,
             value: Binding(
@@ -168,8 +171,7 @@ extension UnfurledFlag: CaseIterableEditableFlag
             ),
             hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
-            showDetail: showDetail,
-            showPicker: showPicker
+            showDetail: showDetail
         )
         .eraseToAnyView()
     }

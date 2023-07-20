@@ -63,7 +63,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
                 Section {
                     // Filter out all links. They won't work on the mac flag group view.
                     ForEach(self.group.allItems().filter { $0.isLink == false }, id: \.id) { item in
-                        item.unfurledView
+                        UnfurledFlagItemView(item: item)
                     }
                 }
             }
@@ -98,7 +98,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     var flags: some View {
         ForEach(self.group.allItems(), id: \.id) { item in
-            item.unfurledView
+            UnfurledFlagItemView(item: item)
         }
     }
 

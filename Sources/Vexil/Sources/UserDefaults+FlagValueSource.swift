@@ -46,7 +46,11 @@ extension UserDefaults: FlagValueSource {
             return
         }
 
-        set(value.boxedFlagValue.object, forKey: key)
+        if value.boxedFlagValue.object == NSNull() {
+            set(Data(), forKey: key)
+        } else {
+            set(value.boxedFlagValue.object, forKey: key)
+        }
 
     }
 

@@ -68,7 +68,7 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 
     private var content: some View {
         ForEach(self.group.allItems(), id: \.id) { item in
-            item.unfurledView
+            UnfurledFlagItemView(item: item)
         }
     }
 
