@@ -125,7 +125,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     // MARK: - Flag Management
 
     var rootKeyPath: FlagKeyPath {
-        .root(separator: _configuration.separator)
+        let root = FlagKeyPath.root(separator: _configuration.separator)
+        if let prefix = _configuration.prefix {
+            return root.append(prefix)
+        } else {
+            return root
+        }
     }
 
     var rootGroup: RootGroup {
@@ -146,15 +151,15 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     /// A sequence of `FlagChange` elements are returned which describe changes to flags.
     ///
-    public var changeStream: FilteredFlagChangeStream {
-        FilteredFlagChangeStream(filter: .all, base: stream.stream)
+    public var changeStream: FlagChangeStream {
+        stream.stream
     }
 
     /// An `AsyncSequence` that can be used to monitor flag value changes in real-time.
     ///
     /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to change changed.
     ///
-    public var flagStream: AsyncChain2Sequence<AsyncSyncSequence<[RootGroup]>, AsyncMapSequence<FilteredFlagChangeStream, RootGroup>> {
+    public var flagStream: AsyncChain2Sequence<AsyncSyncSequence<[RootGroup]>, AsyncMapSequence<FlagChangeStream, RootGroup>> {
         let flagStream = changeStream
             .map { _ in
                 self.rootGroup
@@ -170,7 +175,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// A sequence of `FlagChange`  elements are emitted which describe changes to flags.
     ///
     public var changePublisher: some Combine.Publisher<FlagChange, Never> {
-        Publisher(changeStream)
+        FlagPublisher(changeStream)
     }
 
     /// A `Publisher` that can be used to monitor flag value changes in real-time.
@@ -334,10 +339,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:           The `Snapshot` to save to the source. Only the values included in the snapshot will be saved.
     ///   - to:                 The `FlagValueSource` to save the snapshot to.
     ///
-//    public func save(snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
-//        try snapshot.changedFlags()
-//            .forEach { try $0.save(to: source) }
-//    }
+    public func save(snapshot: Snapshot<RootGroup>, to source: any FlagValueSource) throws {
+        try snapshot.save(to: source)
+    }
 
 
     // MARK: - Mutating Flag Values
@@ -354,10 +358,10 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// try flagPole.copy(from: defaults, to: dictionary)
     /// ```
     ///
-//    public func copyFlagValues(from source: FlagValueSource?, to destination: FlagValueSource) throws {
-//        let snapshot = self.snapshot(of: source)
-//        try self.save(snapshot: snapshot, to: destination)
-//    }
+    public func copyFlagValues(from source: (any FlagValueSource)?, to destination: any FlagValueSource) throws {
+        let snapshot = snapshot(of: source)
+        try save(snapshot: snapshot, to: destination)
+    }
 
     /// Removes all of the flag values from the specified flag value source.
     ///
@@ -365,17 +369,17 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// method is called. This is useful if you want to provide a button or the capability
     /// to "reset" a source back to its defaults, or clear any overrides in the given source.
     ///
-//    public func removeFlagValues(in source: FlagValueSource) throws {
-//        let flagsInSource = FlagValueDictionary()
-//        try self.copyFlagValues(from: source, to: flagsInSource)
-//
-//        for key in flagsInSource.keys {
-//
-//            // setFlagValue<Value> needs to specialise the generic, so we picked `Bool` at
-//            // random so we can pass in the nil
-//            try source.setFlagValue(Bool?.none, key: key)
-//        }
-//    }
+    public func removeFlagValues(in source: any FlagValueSource) throws {
+        let flagsInSource = FlagValueDictionary()
+        try copyFlagValues(from: source, to: flagsInSource)
+
+        for key in flagsInSource.keys {
+
+            // setFlagValue<Value> needs to specialise the generic, so we picked `Bool` at
+            // random so we can pass in the nil
+            try source.setFlagValue(Bool?.none, key: key)
+        }
+    }
 
 }
 

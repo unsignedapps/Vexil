@@ -54,7 +54,7 @@ public class MutableFlagContainer<Container> where Container: FlagContainer {
             container[keyPath: dynamicMember]
         }
         set {
-            if let keyPath = container.flagKeyPath(for: dynamicMember) {
+            if let keyPath = container._allFlagKeyPaths[dynamicMember] {
                 // We know the source is a Snapshot, and snapshot.setFlagValue() does not throw
                 try! source.setFlagValue(newValue, key: keyPath.key)
             }

@@ -31,18 +31,18 @@ public struct FlagMacro {
 
     /// Create a FlagMacro from the given attribute/declaration
     init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
-        guard node.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "Flag" else {
+        guard node.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "Flag" else {
             throw Diagnostic.notFlagMacro
         }
-        guard let argument = node.argument else {
-            throw Diagnostic.missingArgument
+        guard let arguments = node.arguments else {
+            throw Diagnostic.missingArguments
         }
-        guard let defaultExprSyntax = argument[label: "default"] else {
+        guard let defaultExprSyntax = arguments[label: "default"] else {
             throw Diagnostic.missingDefaultValue
         }
 
         // Either the `description:` or `display:` arguments should be specified, we handle them together.
-        guard let optionExprSyntax = argument[label: "description"] ?? argument[label: "display"] else {
+        guard let optionExprSyntax = arguments[label: "description"] ?? arguments[label: "display"] else {
             throw Diagnostic.missingDescription
         }
 
@@ -51,14 +51,14 @@ public struct FlagMacro {
             let binding = property.bindings.first,
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
             let type = binding.typeAnnotation?.type,
-            binding.accessor == nil
+            binding.accessorBlock == nil
         else {
             throw Diagnostic.onlySimpleVariableSupported
         }
 
-        let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
+        let strategy = KeyStrategy(exprSyntax: arguments[label: "keyStrategy"]?.expression) ?? .default
 
-        if let nameExprSyntax = argument[label: "name"] {
+        if let nameExprSyntax = arguments[label: "name"] {
             self.name = nameExprSyntax.expression
         } else {
             self.name = nil
@@ -66,7 +66,7 @@ public struct FlagMacro {
 
         if
             let descriptionMemberAccess = optionExprSyntax.expression.as(MemberAccessExprSyntax.self),
-            descriptionMemberAccess.name.text == "hidden"
+            descriptionMemberAccess.declName.baseName.text == "hidden"
         {
             self.description = nil
         } else {
@@ -140,12 +140,14 @@ extension FlagMacro: PeerMacro {
             let macro = try FlagMacro(node: node, declaration: declaration, context: context)
             return [
                 """
-                var $\(raw: macro.propertyName): Wigwag<\(macro.type)> {
-                    Wigwag(
+                var $\(raw: macro.propertyName): FlagWigwag<\(macro.type)> {
+                    FlagWigwag(
                         keyPath: \(macro.key),
                         name: \(macro.name ?? "nil"),
+                        defaultValue: \(macro.defaultValue),
                         description: \(macro.description ?? "nil"),
-                        displayOption: \(macro.description == nil ? ".init(.hidden)" : "nil")
+                        displayOption: \(raw: macro.description == nil ? ".init(.hidden)" : "nil"),
+                        lookup: _flagLookup
                     )
                 }
                 """,
@@ -164,7 +166,7 @@ extension FlagMacro {
 
     enum Diagnostic: Error {
         case notFlagMacro
-        case missingArgument
+        case missingArguments
         case missingDefaultValue
         case missingDescription
         case onlySimpleVariableSupported
@@ -186,7 +188,7 @@ extension FlagMacro {
 
         init?(exprSyntax: ExprSyntax?) {
             if let memberAccess = exprSyntax?.as(MemberAccessExprSyntax.self) {
-                switch memberAccess.name.text {
+                switch memberAccess.declName.baseName.text {
                 case "default":             self = .default
                 case "kebabcase":           self = .kebabcase
                 case "snakecase":           self = .snakecase
@@ -196,10 +198,10 @@ extension FlagMacro {
             } else if
                 let functionCall = exprSyntax?.as(FunctionCallExprSyntax.self),
                 let memberAccess = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
-                let stringLiteral = functionCall.argumentList.first?.expression.as(StringLiteralExprSyntax.self),
+                let stringLiteral = functionCall.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                 let string = stringLiteral.segments.first?.as(StringSegmentSyntax.self)
             {
-                switch memberAccess.name.text {
+                switch memberAccess.declName.baseName.text {
                 case "customKey":           self = .customKey(string.content.text)
                 case "customKeyPath":       self = .customKeyPath(string.content.text)
                 default:                    return nil

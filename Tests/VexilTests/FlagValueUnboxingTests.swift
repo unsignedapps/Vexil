@@ -67,6 +67,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         AssertNoThrow {
             let expected = Date()
             let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [ .withInternetDateTime, .withFractionalSeconds ]
             let boxed = BoxedFlagValue.string(formatter.string(from: expected))
 
             let calendar = Calendar(identifier: .gregorian)

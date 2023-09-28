@@ -12,20 +12,25 @@
 //===----------------------------------------------------------------------===//
 
 @attached(
+    extension,
+    conformances: FlagContainer,
+    names:
+        named(_allFlagKeyPaths),
+        named(walk(visitor:))
+)
+@attached(
     member,
     names:
-    named(_keyPath),
-    named(_flagKeyPath),
-    named(_flagLookup),
-    named(init(_flagKeyPath:_flagLookup:)),
-    named(walk(visitor:)),
-    named(flagKeyPath(for:))
+        named(_flagKeyPath),
+        named(_flagLookup),
+        named(init(_flagKeyPath:_flagLookup:))
 )
-@attached(conformance)
-public macro FlagContainer() = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
+public macro FlagContainer(
+    
+) = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
 
 public protocol FlagContainer {
     init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)
     func walk(visitor: any FlagVisitor)
-    func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath?
+    var _allFlagKeyPaths: [PartialKeyPath<Self>: FlagKeyPath] { get }
 }

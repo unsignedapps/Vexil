@@ -34,12 +34,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "Test Flag Group",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -68,12 +70,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: "Test Group",
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -100,12 +104,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .hidden
+                        displayOption: .hidden,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -132,12 +138,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -164,12 +172,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .section
+                        displayOption: .section,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -198,12 +208,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -230,12 +242,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -265,12 +279,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -297,12 +313,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test-subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -329,12 +347,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test_subgroup"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test_subgroup"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -361,12 +381,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath, _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath,
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }
@@ -393,12 +415,14 @@ final class FlagGroupMacroTests: XCTestCase {
                         SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test"), _flagLookup: _flagLookup)
                     }
                 }
-                var $testSubgroup: Wigwag<SubgroupFlags> {
-                    Wigwag(
+
+                var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
                         keyPath: _flagKeyPath.append("test"),
                         name: nil,
                         description: "meow",
-                        displayOption: .navigation
+                        displayOption: .navigation,
+                        lookup: _flagLookup
                     )
                 }
             }

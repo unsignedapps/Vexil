@@ -31,9 +31,7 @@ extension FlagValueDictionary: Collection {
             } else {
                 storage.removeValue(forKey: key)
             }
-#if !os(Linux)
-            valueDidChange.send([ key ])
-#endif
+            stream.send(.some([ FlagKeyPath(key) ]))
         }
     }
 

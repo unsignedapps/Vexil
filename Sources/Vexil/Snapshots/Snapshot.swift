@@ -86,6 +86,8 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
     }
 
+    let stream = StreamManager.Stream()
+
 
     // MARK: - Initialisation
 
@@ -120,9 +122,18 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             rootGroup[keyPath: dynamicMember]
         }
         set {
-            if let keyPath = rootGroup.flagKeyPath(for: dynamicMember) {
+            if let keyPath = rootGroup._allFlagKeyPaths[dynamicMember] {
                 values[keyPath.key] = (value: newValue, sourceName: name)
             }
+        }
+    }
+
+    func save(to source: any FlagValueSource) throws {
+        let keys = Set(values.keys.map({ FlagKeyPath($0, separator: rootKeyPath.separator) }))
+        let saver = FlagSaver(source: source, flags: keys)
+        rootGroup.walk(visitor: saver)
+        if let error = saver.error {
+            throw error
         }
     }
 
@@ -151,7 +162,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             values.removeValue(forKey: key)
         }
 
-//        self.valuesDidChange.send()
+        stream.send(.some([ FlagKeyPath(key, separator: rootKeyPath.separator) ]))
     }
 
 
@@ -162,11 +173,6 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 //            self.values.updateValue(value.value, forKey: value.key)
 //        }
 //    }
-
-
-    // MARK: - Real Time Flag Changes
-
-//    internal private(set) var valuesDidChange = SnapshotValueChanged()
 
 
     // MARK: - Errors
@@ -211,18 +217,3 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
 
 }
-
-
-#if !os(Linux)
-
-typealias SnapshotValueChanged = PassthroughSubject<Void, Never>
-
-#else
-
-typealias SnapshotValueChanged = NotificationSink
-
-struct NotificationSink {
-    func send() {}
-}
-
-#endif

@@ -62,6 +62,7 @@ final class FlagValueBoxingTests: XCTestCase {
     func testDateFlagValue() {
         let input = Date()
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [ .withInternetDateTime, .withFractionalSeconds ]
         let expected = BoxedFlagValue.string(formatter.string(from: input))
 
         XCTAssertEqual(input.boxedFlagValue, expected)

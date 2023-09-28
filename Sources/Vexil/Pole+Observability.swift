@@ -32,24 +32,20 @@ private extension Optional {
 
 #if canImport(Combine)
 
-public extension FlagPole {
+/// A Publisher that iterates over a provided `AsyncSequence`, emitting each element
+/// in the sequence in turn.
+///
+/// Each subscriber to the `Publisher` will iterate over the sequence independently,
+/// use `.multicast()` or `.shared()` if you want to share the iterator.
+///
+struct FlagPublisher<Elements> where Elements: _Concurrency.AsyncSequence {
 
-    /// A Publisher that iterates over a provided `AsyncSequence`, emitting each element
-    /// in the sequence in turn.
-    ///
-    /// Each subscriber to the `Publisher` will iterate over the sequence independently,
-    /// use `.multicast()` or `.shared()` if you want to share the iterator.
-    ///
-    struct Publisher<Elements> where Elements: _Concurrency.AsyncSequence {
+    /// The `AsyncSequence` that we are publishing elements from
+    let sequence: Elements
 
-        /// The `AsyncSequence` that we are publishing elements from
-        let sequence: Elements
-
-        /// Creates a new publisher from this `AsyncSequence`
-        init(_ sequence: Elements) {
-            self.sequence = sequence
-        }
-
+    /// Creates a new publisher from this `AsyncSequence`
+    init(_ sequence: Elements) {
+        self.sequence = sequence
     }
 
 }
@@ -57,12 +53,12 @@ public extension FlagPole {
 
 // MARK: - Publisher Conformance
 
-extension FlagPole.Publisher: Publisher {
+extension FlagPublisher: Publisher {
 
-    public typealias Output = Elements.Element
-    public typealias Failure = Never
+    typealias Output = Elements.Element
+    typealias Failure = Never
 
-    public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Elements.Element == S.Input {
+    func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Elements.Element == S.Input {
         let subscription = Subscription(sequence: sequence, downstream: subscriber)
         subscriber.receive(subscription: subscription)
     }
@@ -72,7 +68,7 @@ extension FlagPole.Publisher: Publisher {
 
 // MARK: - Subscription
 
-extension FlagPole.Publisher {
+extension FlagPublisher {
 
     final class Subscription {
 
@@ -138,7 +134,7 @@ extension FlagPole.Publisher {
 
 // MARK: - Downstream -> Sequence Messaging
 
-extension FlagPole.Publisher.Subscription: Subscription {
+extension FlagPublisher.Subscription: Subscription {
 
     func request(_ demand: Subscribers.Demand) {
         self.demand += demand

@@ -13,9 +13,9 @@
 
 import SwiftSyntax
 
-extension AttributeSyntax.Argument {
+extension AttributeSyntax.Arguments {
 
-    subscript(label label: String) -> TupleExprElementSyntax? {
+    subscript(label label: String) -> LabeledExprSyntax? {
         guard case let .argumentList(list) = self else {
             return nil
         }

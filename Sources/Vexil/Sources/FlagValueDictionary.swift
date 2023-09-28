@@ -37,9 +37,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
 
     internal var storage: DictionaryType
 
-#if !os(Linux)
-    internal private(set) var valueDidChange = PassthroughSubject<Set<String>, Never>()
-#endif
+    let stream = StreamManager.Stream()
 
 
     // MARK: - Initialisation

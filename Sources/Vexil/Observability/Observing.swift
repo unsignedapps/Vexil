@@ -25,17 +25,18 @@ public enum FlagChange: Sendable {
 
 }
 
+public typealias FlagChangeStream = AsyncStream<FlagChange>
+
 
 // MARK: - Filtered Change Stream
 
 public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
 
     public typealias Element = FlagChange
-    typealias Base = AsyncStream<FlagChange>
 
-    let sequence: AsyncFilterSequence<Base>
+    let sequence: AsyncFilterSequence<FlagChangeStream>
 
-    init(filter: FlagChange, base: Base) {
+    init(filter: FlagChange, base: FlagChangeStream) {
         self.sequence = base.filter { change in
 
             // If either our filter or the changes suggest all flags have changed we just pass it through
@@ -45,11 +46,10 @@ public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
 
             // Only let it through if the flags that changed are in our list
             return filtered.intersection(changed).isEmpty == false
-
         }
     }
 
-    public func makeAsyncIterator() -> AsyncFilterSequence<AsyncStream<FlagChange>>.AsyncIterator {
+    public func makeAsyncIterator() -> AsyncFilterSequence<FlagChangeStream>.AsyncIterator {
         sequence.makeAsyncIterator()
     }
 

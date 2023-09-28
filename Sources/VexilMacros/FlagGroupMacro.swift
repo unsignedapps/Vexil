@@ -30,11 +30,11 @@ public struct FlagGroupMacro {
     // MARK: - Initialisation
 
     init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
-        guard node.attributeName.as(SimpleTypeIdentifierSyntax.self)?.name.text == "FlagGroup" else {
+        guard node.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "FlagGroup" else {
             throw Diagnostic.notFlagGroupMacro
         }
-        guard let argument = node.argument else {
-            throw Diagnostic.missingArgument
+        guard let arguments = node.arguments else {
+            throw Diagnostic.missingArguments
         }
 
         guard
@@ -42,20 +42,20 @@ public struct FlagGroupMacro {
             let binding = property.bindings.first,
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
             let type = binding.typeAnnotation?.type,
-            binding.accessor == nil
+            binding.accessorBlock == nil
         else {
             throw Diagnostic.onlySimpleVariableSupported
         }
 
-        let strategy = KeyStrategy(exprSyntax: argument[label: "keyStrategy"]?.expression) ?? .default
+        let strategy = KeyStrategy(exprSyntax: arguments[label: "keyStrategy"]?.expression) ?? .default
 
         self.propertyName = identifier.text
         self.key = strategy.createKey(propertyName)
         self.type = type
 
-        self.name = argument[label: "name"]?.expression
-        self.description = argument[label: "description"]?.expression
-        self.displayOption = argument[label: "display"]?.expression
+        self.name = arguments[label: "name"]?.expression
+        self.description = arguments[label: "description"]?.expression
+        self.displayOption = arguments[label: "display"]?.expression
     }
 
 
@@ -106,12 +106,13 @@ extension FlagGroupMacro: PeerMacro {
             let macro = try FlagGroupMacro(node: node, declaration: declaration, context: context)
             return [
                 """
-                var $\(raw: macro.propertyName): Wigwag<\(macro.type)> {
-                    Wigwag(
+                var $\(raw: macro.propertyName): FlagGroupWigwag<\(macro.type)> {
+                    FlagGroupWigwag(
                         keyPath: \(macro.key),
                         name: \(macro.name ?? "nil"),
                         description: \(macro.description ?? "nil"),
-                        displayOption: \(macro.displayOption ?? ".navigation")
+                        displayOption: \(macro.displayOption ?? ".navigation"),
+                        lookup: _flagLookup
                     )
                 }
                 """,
@@ -130,7 +131,7 @@ extension FlagGroupMacro {
 
     enum Diagnostic: Error {
         case notFlagGroupMacro
-        case missingArgument
+        case missingArguments
         case onlySimpleVariableSupported
     }
 
@@ -150,7 +151,7 @@ private extension FlagGroupMacro {
 
         init?(exprSyntax: ExprSyntax?) {
             if let memberAccess = exprSyntax?.as(MemberAccessExprSyntax.self) {
-                switch memberAccess.name.text {
+                switch memberAccess.declName.baseName.text {
                 case "default":             self = .default
                 case "kebabcase":           self = .kebabcase
                 case "snakecase":           self = .snakecase
@@ -161,10 +162,10 @@ private extension FlagGroupMacro {
             } else if
                 let functionCall = exprSyntax?.as(FunctionCallExprSyntax.self),
                 let memberAccess = functionCall.calledExpression.as(MemberAccessExprSyntax.self),
-                let stringLiteral = functionCall.argumentList.first?.expression.as(StringLiteralExprSyntax.self),
+                let stringLiteral = functionCall.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                 let string = stringLiteral.segments.first?.as(StringSegmentSyntax.self)
             {
-                switch memberAccess.name.text {
+                switch memberAccess.declName.baseName.text {
                 case "customKey":           self = .customKey(string.content.text)
                 default:                    return nil
                 }

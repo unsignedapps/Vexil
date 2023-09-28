@@ -16,7 +16,7 @@ import SwiftSyntaxMacrosTestSupport
 import VexilMacros
 import XCTest
 
-// This macro also adds a conformance to `FlagContainer` but its impossible to test
+// This macro also adds an conformance to `FlagContainer` but its impossible to test
 // that with SwiftSyntax at the moment for some reason.
 
 final class FlagContainerMacroTests: XCTestCase {
@@ -31,18 +31,24 @@ final class FlagContainerMacroTests: XCTestCase {
             expandedSource: """
 
             struct TestFlags {
-                private let _flagKeyPath: FlagKeyPath
-                private let _flagLookup: any FlagLookup
-                 init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+
+                fileprivate let _flagKeyPath: FlagKeyPath
+
+                fileprivate let _flagLookup: any FlagLookup
+
+                init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
                 }
-                 func walk(visitor: any FlagVisitor) {
+            }
+
+            extension TestFlags: FlagContainer {
+                func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
-                 func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
-                    nil
+                var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
+                    [:]
                 }
             }
             """,
@@ -62,18 +68,24 @@ final class FlagContainerMacroTests: XCTestCase {
             expandedSource: """
 
             public struct TestFlags {
-                private let _flagKeyPath: FlagKeyPath
-                private let _flagLookup: any FlagLookup
+
+                fileprivate let _flagKeyPath: FlagKeyPath
+
+                fileprivate let _flagLookup: any FlagLookup
+
                 public init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
                 }
-                public func walk(visitor: any FlagVisitor) {
+            }
+
+            public extension TestFlags: FlagContainer {
+                func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
-                public func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
-                    nil
+                var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
+                    [:]
                 }
             }
             """,
@@ -93,18 +105,24 @@ final class FlagContainerMacroTests: XCTestCase {
             expandedSource: """
 
             struct TestFlags: FlagContainer {
-                private let _flagKeyPath: FlagKeyPath
-                private let _flagLookup: any FlagLookup
-                 init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+
+                fileprivate let _flagKeyPath: FlagKeyPath
+
+                fileprivate let _flagLookup: any FlagLookup
+
+                init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
                     self._flagKeyPath = _flagKeyPath
                     self._flagLookup = _flagLookup
                 }
-                 func walk(visitor: any FlagVisitor) {
+            }
+
+            extension TestFlags: FlagContainer {
+                func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
-                 func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
-                    nil
+                var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
+                    [:]
                 }
             }
             """,
@@ -136,13 +154,19 @@ final class FlagContainerMacroTests: XCTestCase {
                 var flagGroup: GroupOfFlags
                 @Flag(default: false, description: "Flag 2")
                 var second: Bool
-                private let _flagKeyPath: FlagKeyPath
-                private let _flagLookup: any FlagLookup
-             init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
-                self._flagKeyPath = _flagKeyPath
-                self._flagLookup = _flagLookup
+
+                fileprivate let _flagKeyPath: FlagKeyPath
+
+                fileprivate let _flagLookup: any FlagLookup
+
+                init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+                    self._flagKeyPath = _flagKeyPath
+                    self._flagLookup = _flagLookup
                 }
-             func walk(visitor: any FlagVisitor) {
+            }
+
+            extension TestFlags: FlagContainer {
+                func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     do {
                         let keyPath = _flagKeyPath.append("first")
@@ -157,15 +181,11 @@ final class FlagContainerMacroTests: XCTestCase {
                     }
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
-             func flagKeyPath(for keyPath: AnyKeyPath) -> FlagKeyPath? {
-                    switch keyPath {
-                    case \\TestFlags.first:
-                        return _flagKeyPath.append("first")
-                    case \\TestFlags.second:
-                        return _flagKeyPath.append("second")
-                    default:
-                        return nil
-                    }
+                var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
+                    [
+                        \\TestFlags.first: _flagKeyPath.append("first"),
+                        \\TestFlags.second: _flagKeyPath.append("second"),
+                        ]
                 }
             }
             """,

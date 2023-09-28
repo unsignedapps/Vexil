@@ -16,33 +16,27 @@ import Combine
 #endif
 
 extension FlagValueDictionary: FlagValueSource {
-
+    
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         guard let value = storage[key] else {
             return nil
         }
         return Value(boxedFlagValue: value)
     }
-
+    
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         if let value {
             storage.updateValue(value.boxedFlagValue, forKey: key)
         } else {
             storage.removeValue(forKey: key)
         }
-
-#if !os(Linux)
-        valueDidChange.send([ key ])
-#endif
-
+        
+        stream.send(.some([ FlagKeyPath(key) ]))
+        
+    }
+    
+    public var changeStream: FlagChangeStream {
+        stream.stream
     }
 
-#if !os(Linux)
-
-    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        valueDidChange
-            .eraseToAnyPublisher()
-    }
-
-#endif
 }

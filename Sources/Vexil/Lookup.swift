@@ -19,8 +19,6 @@ import Foundation
 
 public protocol FlagLookup: AnyObject {
 
-    associatedtype ChangeStream: AsyncSequence & Sendable where ChangeStream.Element == FlagChange
-
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue
 
@@ -30,7 +28,7 @@ public protocol FlagLookup: AnyObject {
     @inlinable
     func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue
 
-    var changeStream: ChangeStream { get }
+    var changeStream: FlagChangeStream { get }
 
 }
 

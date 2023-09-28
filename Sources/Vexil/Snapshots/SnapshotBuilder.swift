@@ -76,8 +76,10 @@ extension Snapshot.Builder: FlagLookup {
         nil
     }
 
-    var changeStream: EmptyFlagChangeStream {
-        .init()
+    var changeStream: FlagChangeStream {
+        AsyncStream {
+            $0.finish()
+        }
     }
 
 }

@@ -28,8 +28,8 @@ extension Snapshot: FlagLookup {
         return (value, name)
     }
 
-    public var changeStream: EmptyFlagChangeStream {
-        .init()
+    public var changeStream: FlagChangeStream {
+        stream.stream
     }
 
 }
