@@ -129,8 +129,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     }
 
     func save(to source: any FlagValueSource) throws {
-        let keys = Set(values.keys.map({ FlagKeyPath($0, separator: rootKeyPath.separator) }))
-        let saver = FlagSaver(source: source, flags: keys)
+        let saver = FlagSaver(source: source, flags: Set(values.keys))
         rootGroup.walk(visitor: saver)
         if let error = saver.error {
             throw error

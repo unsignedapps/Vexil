@@ -169,13 +169,13 @@ final class FlagContainerMacroTests: XCTestCase {
                 func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
                     do {
-                        let keyPath = _flagKeyPath.append("first")
+                        let keyPath = _flagKeyPath.append(.automatic("first"))
                         let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
                         visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
                     }
                     flagGroup.walk(visitor: visitor)
                     do {
-                        let keyPath = _flagKeyPath.append("second")
+                        let keyPath = _flagKeyPath.append(.automatic("second"))
                         let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
                         visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
                     }
@@ -183,8 +183,8 @@ final class FlagContainerMacroTests: XCTestCase {
                 }
                 var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
                     [
-                        \\TestFlags.first: _flagKeyPath.append("first"),
-                        \\TestFlags.second: _flagKeyPath.append("second"),
+                        \\TestFlags.first: _flagKeyPath.append(.automatic("first")),
+                        \\TestFlags.second: _flagKeyPath.append(.automatic("second")),
                         ]
                 }
             }

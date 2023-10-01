@@ -214,17 +214,20 @@ extension FlagMacro {
 
         func createKey(_ propertyName: String) -> ExprSyntax {
             switch self {
-            case .default, .kebabcase:
-                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase(separator: "-"))))"
+            case .default:
+                return "_flagKeyPath.append(.automatic(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase(separator: "-")))))"
+
+            case .kebabcase:
+                return "_flagKeyPath.append(.kebabcase(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase(separator: "-")))))"
 
             case .snakecase:
-                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase())))"
+                return "_flagKeyPath.append(.snakecase(\(StringLiteralExprSyntax(content: propertyName.convertedToSnakeCase()))))"
 
             case let .customKey(key):
-                return "_flagKeyPath.append(\(StringLiteralExprSyntax(content: key)))"
+                return "_flagKeyPath.append(.customKey(\(StringLiteralExprSyntax(content: key))))"
 
             case let .customKeyPath(keyPath):
-                return "FlagKeyPath(\(StringLiteralExprSyntax(content: keyPath)), separator: _flagKeyPath.separator)"
+                return "FlagKeyPath(\(StringLiteralExprSyntax(content: keyPath)), separator: _flagKeyPath.separator, strategy: _flagKeyPath.strategy)"
             }
         }
 

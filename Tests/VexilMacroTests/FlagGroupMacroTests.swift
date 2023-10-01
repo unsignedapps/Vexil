@@ -31,13 +31,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "Test Flag Group",
                         displayOption: .navigation,
@@ -67,13 +67,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: "Test Group",
                         description: "meow",
                         displayOption: .navigation,
@@ -101,13 +101,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .hidden,
@@ -135,13 +135,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -169,13 +169,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .section,
@@ -205,13 +205,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -239,13 +239,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -276,13 +276,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -310,13 +310,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test-subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.kebabcase("test-subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test-subgroup"),
+                        keyPath: _flagKeyPath.append(.kebabcase("test-subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -344,13 +344,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test_subgroup"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.snakecase("test_subgroup")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test_subgroup"),
+                        keyPath: _flagKeyPath.append(.snakecase("test_subgroup")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,
@@ -412,13 +412,13 @@ final class FlagGroupMacroTests: XCTestCase {
             struct TestFlags {
                 var testSubgroup: SubgroupFlags {
                     get {
-                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append("test"), _flagLookup: _flagLookup)
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.customKey("test")), _flagLookup: _flagLookup)
                     }
                 }
 
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
-                        keyPath: _flagKeyPath.append("test"),
+                        keyPath: _flagKeyPath.append(.customKey("test")),
                         name: nil,
                         description: "meow",
                         displayOption: .navigation,

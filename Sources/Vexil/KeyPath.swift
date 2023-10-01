@@ -13,34 +13,70 @@
 
 public struct FlagKeyPath: Hashable, Sendable {
 
+    public enum Key: Hashable, Sendable {
+        case root
+        case automatic(String)
+        case kebabcase(String)
+        case snakecase(String)
+        case customKey(String)
+        case customKeyPath(String)
+    }
+
     // MARK: - Properties
 
-    public let key: String
+    let keyPath: [Key]
     public let separator: String
-
+    public let strategy: VexilConfiguration.CodingKeyStrategy
 
     // MARK: - Initialisation
 
-    public init(_ keyPath: String, separator: String = ".") {
-        self.key = keyPath
+    public init(
+        _ keyPath: [Key],
+        separator: String = ".",
+        strategy: VexilConfiguration.CodingKeyStrategy = .default
+    ) {
+        self.keyPath = keyPath
         self.separator = separator
+        self.strategy = strategy
     }
 
-
-    // MARK: - Creating
-
-    public func append(_ key: String) -> FlagKeyPath {
-        FlagKeyPath(
-            self.key.isEmpty ? key : self.key + separator + key,
-            separator: separator
-        )
+    public init(_ key: String, separator: String = ".", strategy: VexilConfiguration.CodingKeyStrategy = .default) {
+        self.init([ .customKeyPath(key) ], separator: separator, strategy: strategy)
     }
-
 
     // MARK: - Common
 
-    static func root(separator: String) -> FlagKeyPath {
-        FlagKeyPath("", separator: separator)
+    public func append(_ key: Key) -> FlagKeyPath {
+        FlagKeyPath(
+            keyPath + [ key ],
+            separator: separator,
+            strategy: strategy
+        )
+    }
+
+    public var key: String {
+        var toReturn = [String]()
+        for path in keyPath {
+            switch (path, strategy) {
+            case let (.automatic(key), .default), let (.automatic(key), .kebabcase), let (.kebabcase(key), _), let (.customKey(key), _):
+                toReturn.append(key)
+            case let (.automatic(key), .snakecase), let (.snakecase(key), _):
+                toReturn.append(key.replacingOccurrences(of: "-", with: "_"))
+            case let (.customKeyPath(key), _):
+                return key
+            case (.root, _):
+                break
+            }
+        }
+        return toReturn.joined(separator: separator)
+    }
+
+    static func root(separator: String, strategy: VexilConfiguration.CodingKeyStrategy) -> FlagKeyPath {
+        FlagKeyPath(
+            [ .root ],
+            separator: separator,
+            strategy: strategy
+        )
     }
 
 }

@@ -61,7 +61,7 @@ public extension VexilConfiguration {
     /// Each `Flag` and `FlagGroup` can specify its own behaviour. This is the default behaviour
     /// to use when they don't.
     ///
-    enum CodingKeyStrategy {
+    enum CodingKeyStrategy: Hashable, Sendable {
 
         /// Follow the default behaviour. This is basically a synonym for `.kebabcase`
         case `default`
@@ -72,16 +72,8 @@ public extension VexilConfiguration {
         /// Converts the property name into a snake_case string. e.g. myPropertyName becomes my_property_name
         case snakecase
 
-//        internal func codingKey(label: String) -> CodingKeyAction {
-//            switch self {
-//            case .kebabcase, .default:
-//                .append(label.convertedToSnakeCase(separator: "-"))
-//
-//            case .snakecase:
-//                .append(label.convertedToSnakeCase())
-//            }
-//        }
     }
+
 }
 
 
@@ -140,36 +132,6 @@ public extension VexilConfiguration {
         /// This is the absolute key name. It is NOT combined with the keys from the parent groups.
         case customKeyPath(StaticString)
 
-//        internal func codingKey(label: String) -> CodingKeyAction {
-//            switch self {
-//            case .default:                      return .default
-//            case .kebabcase:                    return .append(label.convertedToSnakeCase(separator: "-"))
-//            case .snakecase:                    return .append(label.convertedToSnakeCase())
-//            case let .customKey(custom):        return .append(custom)
-//            case let .customKeyPath(custom):    return .absolute(custom)
-//            }
-//        }
     }
+
 }
-
-
-// MARK: - Coding Key Actions
-
-/// An internal enum to give instructions to the key calculation steps on how a particular strategy should be applied
-/// to the current process
-///
-// internal enum CodingKeyAction: Equatable {
-//
-//    /// Apply the default behaviour according to the current circumstances
-//    case `default`
-//
-//    /// Skip the current component (only applies to groups)
-//    case skip
-//
-//    /// Append the string to the key path
-//    case append(StaticString)
-//
-//    /// Use the string as the absolute key path
-//    case absolute(StaticString)
-//
-// }

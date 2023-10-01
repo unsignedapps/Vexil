@@ -125,9 +125,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     // MARK: - Flag Management
 
     var rootKeyPath: FlagKeyPath {
-        let root = FlagKeyPath.root(separator: _configuration.separator)
+        let root = FlagKeyPath.root(separator: _configuration.separator, strategy: _configuration.codingPathStrategy)
         if let prefix = _configuration.prefix {
-            return root.append(prefix)
+            return root.append(.customKey(prefix))
         } else {
             return root
         }

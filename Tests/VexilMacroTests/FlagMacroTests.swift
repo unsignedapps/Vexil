@@ -33,13 +33,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -68,13 +68,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Double {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? 123.456
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? 123.456
                     }
                 }
 
                 var $testProperty: FlagWigwag<Double> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: 123.456,
                         description: "meow",
@@ -103,13 +103,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: String {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? "alpha"
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? "alpha"
                     }
                 }
 
                 var $testProperty: FlagWigwag<String> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: "alpha",
                         description: "meow",
@@ -138,13 +138,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: SomeEnum {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? .testCase
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? .testCase
                     }
                 }
 
                 var $testProperty: FlagWigwag<SomeEnum> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: .testCase,
                         description: "meow",
@@ -176,13 +176,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: "Super Test!",
                         defaultValue: false,
                         description: "meow",
@@ -211,13 +211,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: "Super Test!",
                         defaultValue: false,
                         description: nil,
@@ -246,13 +246,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: "Super Test!",
                         defaultValue: false,
                         description: nil,
@@ -284,13 +284,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -319,13 +319,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -357,13 +357,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -392,13 +392,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test-property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.kebabcase("test-property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test-property"),
+                        keyPath: _flagKeyPath.append(.kebabcase("test-property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -427,13 +427,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test_property")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.snakecase("test_property"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test_property"),
+                        keyPath: _flagKeyPath.append(.snakecase("test_property")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -462,13 +462,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: _flagKeyPath.append("test")) ?? false
+                        _flagLookup.value(for: _flagKeyPath.append(.customKey("test"))) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: _flagKeyPath.append("test"),
+                        keyPath: _flagKeyPath.append(.customKey("test")),
                         name: nil,
                         defaultValue: false,
                         description: "meow",
@@ -497,13 +497,13 @@ final class FlagMacroTests: XCTestCase {
             struct TestFlags {
                 var testProperty: Bool {
                     get {
-                        _flagLookup.value(for: FlagKeyPath("test", separator: _flagKeyPath.separator)) ?? false
+                        _flagLookup.value(for: FlagKeyPath("test", separator: _flagKeyPath.separator, strategy: _flagKeyPath.strategy)) ?? false
                     }
                 }
 
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
-                        keyPath: FlagKeyPath("test", separator: _flagKeyPath.separator),
+                        keyPath: FlagKeyPath("test", separator: _flagKeyPath.separator, strategy: _flagKeyPath.strategy),
                         name: nil,
                         defaultValue: false,
                         description: "meow",

@@ -14,20 +14,21 @@
 class FlagSaver: FlagVisitor {
 
     let source: any FlagValueSource
-    let flags: Set<FlagKeyPath>
+    let flags: Set<String>
     var error: Error?
 
-    init(source: any FlagValueSource, flags: Set<FlagKeyPath>) {
+    init(source: any FlagValueSource, flags: Set<String>) {
         self.source = source
         self.flags = flags
     }
 
     func visitFlag<Value>(keyPath: FlagKeyPath, value: Value, sourceName: String?) where Value: FlagValue {
-        guard error == nil, flags.contains(keyPath) else {
+        let key = keyPath.key
+        guard error == nil, flags.contains(key) else {
             return
         }
         do {
-            try source.setFlagValue(value, key: keyPath.key)
+            try source.setFlagValue(value, key: key)
         } catch {
             self.error = error
         }
