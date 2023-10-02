@@ -16,12 +16,12 @@ import SwiftSyntaxMacrosTestSupport
 import VexilMacros
 import XCTest
 
-final class FlagContainerMacroTests: XCTestCase {
+final class EquatableFlagContainerMacroTests: XCTestCase {
 
     func testExpandsDefault() throws {
         assertMacroExpansion(
             """
-            @FlagContainer
+            @EquatableFlagContainer
             struct TestFlags {
             }
             """,
@@ -48,9 +48,12 @@ final class FlagContainerMacroTests: XCTestCase {
                     [:]
                 }
             }
+
+            extension TestFlags: Equatable {
+            }
             """,
             macros: [
-                "FlagContainer": FlagContainerMacro.self,
+                "EquatableFlagContainer": FlagContainerMacro.self,
             ]
         )
     }
@@ -58,11 +61,12 @@ final class FlagContainerMacroTests: XCTestCase {
     func testExpandsPublic() throws {
         assertMacroExpansion(
             """
-            @FlagContainer
+            @EquatableFlagContainer
             public struct TestFlags {
             }
             """,
-            expandedSource: """
+            expandedSource:
+            """
 
             public struct TestFlags {
 
@@ -85,9 +89,12 @@ final class FlagContainerMacroTests: XCTestCase {
                     [:]
                 }
             }
+
+            extension TestFlags: Equatable {
+            }
             """,
             macros: [
-                "FlagContainer": FlagContainerMacro.self,
+                "EquatableFlagContainer": FlagContainerMacro.self,
             ]
         )
     }
@@ -95,7 +102,7 @@ final class FlagContainerMacroTests: XCTestCase {
     func testExpandsButAlreadyConforming() throws {
         assertMacroExpansion(
             """
-            @FlagContainer
+            @EquatableFlagContainer
             struct TestFlags: FlagContainer {
             }
             """,
@@ -122,17 +129,20 @@ final class FlagContainerMacroTests: XCTestCase {
                     [:]
                 }
             }
+
+            extension TestFlags: Equatable {
+            }
             """,
             macros: [
-                "FlagContainer": FlagContainerMacro.self,
+                "EquatableFlagContainer": FlagContainerMacro.self,
             ]
         )
     }
 
-    func testExpandsVisitorImplementation() throws {
+    func testExpandsVisitorAndEquatableImplementation() throws {
         assertMacroExpansion(
             """
-            @FlagContainer
+            @EquatableFlagContainer
             struct TestFlags {
                 @Flag(default: false, description: "Flag 1")
                 var first: Bool
@@ -185,11 +195,89 @@ final class FlagContainerMacroTests: XCTestCase {
                         ]
                 }
             }
+
+            extension TestFlags: Equatable {
+                static func == (lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    lhs.first == rhs.first &&
+                    lhs.flagGroup == rhs.flagGroup &&
+                    lhs.second == rhs.second
+                }
+            }
             """,
             macros: [
-                "FlagContainer": FlagContainerMacro.self,
+                "EquatableFlagContainer": FlagContainerMacro.self,
             ]
         )
     }
 
+    func testExpandsVisitorAndEquatablePublicImplementation() throws {
+        assertMacroExpansion(
+            """
+            @EquatableFlagContainer
+            public struct TestFlags {
+                @Flag(default: false, description: "Flag 1")
+                public var first: Bool
+                @FlagGroup(description: "Test Group")
+                public var flagGroup: GroupOfFlags
+                @Flag(default: false, description: "Flag 2")
+                public var second: Bool
+            }
+            """,
+            expandedSource: """
+
+            public struct TestFlags {
+                @Flag(default: false, description: "Flag 1")
+                public var first: Bool
+                @FlagGroup(description: "Test Group")
+                public var flagGroup: GroupOfFlags
+                @Flag(default: false, description: "Flag 2")
+                public var second: Bool
+
+                fileprivate let _flagKeyPath: FlagKeyPath
+
+                fileprivate let _flagLookup: any FlagLookup
+
+                public init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+                    self._flagKeyPath = _flagKeyPath
+                    self._flagLookup = _flagLookup
+                }
+            }
+
+            extension TestFlags: FlagContainer {
+                public func walk(visitor: any FlagVisitor) {
+                    visitor.beginGroup(keyPath: _flagKeyPath)
+                    do {
+                        let keyPath = _flagKeyPath.append(.automatic("first"))
+                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
+                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
+                    }
+                    flagGroup.walk(visitor: visitor)
+                    do {
+                        let keyPath = _flagKeyPath.append(.automatic("second"))
+                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
+                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
+                    }
+                    visitor.endGroup(keyPath: _flagKeyPath)
+                }
+                public var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
+                    [
+                        \\TestFlags.first: _flagKeyPath.append(.automatic("first")),
+                        \\TestFlags.second: _flagKeyPath.append(.automatic("second")),
+                        ]
+                }
+            }
+
+            extension TestFlags: Equatable {
+                public static func == (lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    lhs.first == rhs.first &&
+                    lhs.flagGroup == rhs.flagGroup &&
+                    lhs.second == rhs.second
+                }
+            }
+            """,
+            macros: [
+                "EquatableFlagContainer": FlagContainerMacro.self,
+            ]
+        )
+    }
 }

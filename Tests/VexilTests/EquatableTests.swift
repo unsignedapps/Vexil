@@ -18,55 +18,6 @@ import XCTest
 import Combine
 #endif
 
-// final class EquatableTests: XCTestCase {
-//
-//    // MARK: - Tests
-//
-//    func testSnapshotEqual() {
-//        let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
-//        let first = pole.emptySnapshot()
-//        let second = pole.emptySnapshot()
-//
-//        XCTAssertEqual(first, second)
-//    }
-//
-//    func testSnapshotNotEqual() {
-//        let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
-//        let first = pole.emptySnapshot()
-//        let second = pole.emptySnapshot()
-//        second.thirdLevelFlag = true
-//
-//        XCTAssertNotEqual(first, second)
-//    }
-//
-//    func testGroupEqual() {
-//        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-//        let first = pole.emptySnapshot()
-//        let second = pole.emptySnapshot()
-//
-//        XCTAssertEqual(first.subgroup, second.subgroup)
-//    }
-//
-//    func testGroupNotEqual() {
-//        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-//        let first = pole.emptySnapshot()
-//        let second = pole.emptySnapshot()
-//        second.subgroup.secondLevelFlag = true
-//
-//        XCTAssertNotEqual(first.subgroup, second.subgroup)
-//    }
-//
-//    func testGroupEqualDespiteUnrelatedChange() {
-//        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-//        let first = pole.emptySnapshot()
-//        let second = pole.emptySnapshot()
-//        second.topLevelFlag = true
-//
-//        XCTAssertEqual(first.subgroup, second.subgroup)
-//    }
-//
-//    // MARK: - Publisher-based Tests
-//
 // #if !os(Linux)
 //
 //    // swiftlint:disable:next function_body_length
@@ -144,37 +95,89 @@ import Combine
 //    }
 //
 // #endif
-// }
-//
-//
-//// MARK: - Fixtures
-//
-// private struct TestFlags: FlagContainer, Equatable {
-//
-//    @Flag(default: false, description: "Top level test flag")
-//    var topLevelFlag: Bool
-//
-//    @Flag(description: "Second test flag")
-//    var secondTestFlag = false
-//
-//    @FlagGroup(description: "Subgroup of test flags")
-//    var subgroup: SubgroupFlags
-//
-// }
-//
-// private struct SubgroupFlags: FlagContainer, Equatable {
-//
-//    @Flag(default: false, description: "Second level test flag")
-//    var secondLevelFlag: Bool
-//
-//    @FlagGroup(description: "Another level of test flags")
-//    var doubleSubgroup: DoubleSubgroupFlags
-//
-// }
-//
-// private struct DoubleSubgroupFlags: FlagContainer, Equatable {
-//
-//    @Flag(description: "Third level test flag")
-//    var thirdLevelFlag = false
-//
-// }
+final class EquatableTests: XCTestCase {
+
+    // MARK: - Tests
+
+    func testSnapshotEqual() {
+        let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
+        let first = pole.emptySnapshot()
+        let second = pole.emptySnapshot()
+
+        XCTAssertEqual(first, second)
+    }
+
+    func testSnapshotNotEqual() {
+        let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
+        let first = pole.emptySnapshot()
+        let second = pole.emptySnapshot()
+        second.thirdLevelFlag = true
+
+        XCTAssertNotEqual(first, second)
+    }
+
+    func testGroupEqual() {
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let first = pole.emptySnapshot()
+        let second = pole.emptySnapshot()
+
+        XCTAssertEqual(first.subgroup, second.subgroup)
+    }
+
+    func testGroupNotEqual() {
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let first = pole.emptySnapshot()
+        let second = pole.emptySnapshot()
+        second.subgroup.secondLevelFlag = true
+
+        XCTAssertNotEqual(first.subgroup, second.subgroup)
+    }
+
+    func testGroupEqualDespiteUnrelatedChange() {
+        let pole = FlagPole(hoist: TestFlags.self, sources: [])
+        let first = pole.emptySnapshot()
+        let second = pole.emptySnapshot()
+        second.topLevelFlag = true
+
+        XCTAssertEqual(first.subgroup, second.subgroup)
+    }
+
+    // MARK: - Publisher-based Tests
+
+}
+
+
+// MARK: - Fixtures
+
+@EquatableFlagContainer
+private struct TestFlags {
+
+    @Flag(default: false, description: "Top level test flag")
+    var topLevelFlag: Bool
+
+    @Flag(default: false, description: "Second test flag")
+    var secondTestFlag: Bool
+
+    @FlagGroup(description: "Subgroup of test flags")
+    var subgroup: SubgroupFlags
+
+}
+
+@EquatableFlagContainer
+private struct SubgroupFlags {
+
+    @Flag(default: false, description: "Second level test flag")
+    var secondLevelFlag: Bool
+
+    @FlagGroup(description: "Another level of test flags")
+    var doubleSubgroup: DoubleSubgroupFlags
+
+}
+
+@EquatableFlagContainer
+private struct DoubleSubgroupFlags {
+
+    @Flag(default: false, description: "Third level test flag")
+    var thirdLevelFlag: Bool
+
+}

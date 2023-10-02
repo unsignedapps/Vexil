@@ -60,13 +60,17 @@ extension FlagContainerMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
+        let shouldGenerateConformance = protocols.isEmpty && ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            ? node.shouldGenerateConformance
+            : protocols.shouldGenerateConformance
+
         // Check that conformance doesn't already exist, or that we are inside a unit test.
         // The latter is a workaround for https://github.com/apple/swift-syntax/issues/2031
-        guard protocols.isEmpty == false || ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil else {
+        guard shouldGenerateConformance.flagContainer  else {
             return []
         }
 
-        return [
+        var decls = [
             try ExtensionDeclSyntax(
                 extendedType: type,
                 inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "FlagContainer")) ])
@@ -74,7 +78,7 @@ extension FlagContainerMacro: ExtensionMacro {
 
                 // Flag Hierarchy Walking
 
-                try DeclSyntax(FunctionDeclSyntax("func walk(visitor: any FlagVisitor)") {
+                try FunctionDeclSyntax("func walk(visitor: any FlagVisitor)") {
                     "visitor.beginGroup(keyPath: _flagKeyPath)"
                     for variable in declaration.memberBlock.variables {
                         if let flag = variable.asFlag(in: context) {
@@ -84,11 +88,12 @@ extension FlagContainerMacro: ExtensionMacro {
                         }
                     }
                     "visitor.endGroup(keyPath: _flagKeyPath)"
-                })
+                }
+                .with(\.modifiers, declaration.modifiers.scopeSyntax)
 
                 // Flag Key Paths
 
-                try DeclSyntax(VariableDeclSyntax("var _allFlagKeyPaths: [PartialKeyPath<\(type)>: FlagKeyPath]") {
+                try VariableDeclSyntax("var _allFlagKeyPaths: [PartialKeyPath<\(type)>: FlagKeyPath]") {
                     let variables = declaration.memberBlock.variables
                     if variables.isEmpty == false {
                         DictionaryExprSyntax(leftSquare: .leftSquareToken(trailingTrivia: .newline)) {
@@ -116,11 +121,40 @@ extension FlagContainerMacro: ExtensionMacro {
                     } else {
                         "[:]"
                     }
-                })
+                }
+                .with(\.modifiers, declaration.modifiers.scopeSyntax)
 
             }
-                .with(\.modifiers, declaration.modifiers.scopeSyntax)
         ]
+
+        if shouldGenerateConformance.equatable {
+            decls += [
+                try ExtensionDeclSyntax(
+                    extendedType: type,
+                    inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "Equatable")) ])
+                ) {
+                    var variables = declaration.memberBlock.variables
+                    if variables.isEmpty == false {
+                        try FunctionDeclSyntax("func ==(lhs: \(type), rhs: \(type)) -> Bool") {
+                            if let lastBinding = variables.removeLast().bindings.first?.pattern {
+                                for variable in variables {
+                                    if let binding = variable.bindings.first?.pattern {
+                                        SequenceExprSyntax(elements: [
+                                            ExprSyntax(PostfixOperatorExprSyntax(expression: ExprSyntax("lhs.\(binding)"), operator: .binaryOperator("=="))),
+                                            ExprSyntax(PostfixOperatorExprSyntax(expression: ExprSyntax("rhs.\(binding)"), operator: .binaryOperator("&&"))),
+                                        ])
+                                    }
+                                }
+                                ExprSyntax("lhs.\(lastBinding) == rhs.\(lastBinding)")
+                            }
+                        }
+                        .with(\.modifiers, Array(declaration.modifiers.scopeSyntax) + [ DeclModifierSyntax(name: .keyword(.static)) ])
+                    }
+                }
+            ]
+        }
+
+        return decls
     }
 
 }
@@ -151,4 +185,40 @@ private extension TypeSyntax {
         }
         return nil
     }
+}
+
+
+// MARK: - Helpers
+
+private extension [TypeSyntax] {
+
+    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool) {
+        reduce(into: (false, false)) { result, type in
+            if type.identifier == "FlagContainer" {
+                result = (true, result.1)
+            } else if type.identifier == "Equatable" {
+                result = (result.0, true)
+
+            // For some reason Swift 5.9 concatenates these into a single `IdentifierTypeSyntax`
+            // instead of providing them as array items
+            } else if type.identifier == "FlagContainerEquatable" {
+                result = (true, true)
+            }
+        }
+    }
+
+}
+
+private extension AttributeSyntax {
+
+    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool) {
+        if attributeName.identifier == "FlagContainer" {
+            return (true, false)
+        } else if attributeName.identifier == "EquatableFlagContainer" {
+            return (true, true)
+        } else {
+            return (false, false)
+        }
+    }
+
 }
