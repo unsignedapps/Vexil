@@ -168,19 +168,35 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
         return chain([ rootGroup ].async, flagStream)
     }
 
+    public var snapshotStream: AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>> {
+        let snapshotStream = changeStream
+            .map { [weak self] change in
+                self?.snapshot(including: change)
+            }
+            .prefix(while: { $0 != nil })               // close the stream when we get nil back
+            .compactMap { $0 }
+
+        return chain([ snapshot() ].async, snapshotStream)
+    }
+
 #if canImport(Combine)
 
     /// A `Publisher` that can be used to monitor flag changes in real-time.
     ///
-    /// A sequence of `FlagChange`  elements are emitted which describe changes to flags.
+    /// A sequence of `FlagChange`  elements are emitted which describe changes to flags. ``FlagChange/all``
+    /// indicates an assumption that all flag values MAY have changed, and ``FlagChange/some(_:)``
+    /// will list the keys of the flags that are known to have changed.
     ///
     public var changePublisher: some Combine.Publisher<FlagChange, Never> {
         FlagPublisher(changeStream)
     }
 
-    /// A `Publisher` that can be used to monitor flag value changes in real-time.
+    /// A `Publisher` that will emit every time one or more flag values have changed.
     ///
     /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to have changed.
+    /// Because `RootGroup` looks up flags live they are not guaranteed to be stable between emitted
+    /// values. If you need them to be stable use ``snapshotPublisher`` instead, which takes a snapshot
+    /// of the `RootGroup` and emits that whenever flag values change.
     ///
     public var flagPublisher: some Combine.Publisher<RootGroup, Never> {
         changePublisher
@@ -190,13 +206,39 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
             .prepend(rootGroup)
     }
 
-    /// A `Publisher` that can be used to monitor flag value changes in real-time.
+    /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
     ///
-    /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to have changed.
+    /// A new ``Snapshot`` is emitted _immediately_, and then every time flag values are believed to have changed.
+    /// Snapshotted values are guaranteed not to change, but comes at the performance cost of performing a
+    /// lookup on every changed flag value every time they change, even if you don't use those values in the
+    /// emitted snapshot. If you don't need that guarantee you should try ``flagPublisher`` which merely
+    /// provides a new `RootGroup` whenever flag values have changed without the implicit lookup.
     ///
-    @available(*, deprecated, renamed: "flagPublisher", message: "Will be removed in a future version")
-    public var publisher: some Combine.Publisher<RootGroup, Never> {
-        flagPublisher
+    /// - Note: This publisher will be shared between callers so that only one snapshot will need to be
+    /// taken per flag change, not one per flag change per subscriber.
+    ///
+    public private(set) lazy var snapshotPublisher: some Combine.Publisher<Snapshot<RootGroup>, Never> = {
+        let current = snapshot()
+        return FlagPublisher(snapshotStream)
+            .dropFirst()                            // this could be out of date compared to the snapshot we just took
+            .multicast { CurrentValueSubject(current) }
+            .autoconnect()
+    }()
+
+    /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
+    ///
+    /// A new ``Snapshot`` is emitted _immediately_, and then every time flag values are believed to have changed.
+    /// Snapshotted values are guaranteed not to change, but comes at the performance cost of performing a
+    /// lookup on every changed flag value every time they change, even if you don't use those values in the
+    /// emitted snapshot. If you don't need that guarantee you should try ``flagPublisher`` which merely
+    /// provides a new `RootGroup` whenever flag values have changed without the implicit lookup.
+    ///
+    /// - Note: This publisher will be shared between callers so that only one snapshot will need to be
+    /// taken per flag change, not one per flag change per subscriber.
+    ///
+    @available(*, deprecated, renamed: "snapshotPublisher", message: "Will be removed in a future version. Renamed to `FlagPole.snapshotPublisher` but you should consider `FlagPole.flagPublisher` instead for better performance.")
+    public var publisher: some Combine.Publisher<Snapshot<RootGroup>, Never> {
+        snapshotPublisher
     }
 
 #endif
@@ -257,11 +299,14 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
     ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
     ///                     into the snapshot instead.
+    ///   - change:         A ``FlagChange`` (as emitted from ``changeStream`` or ``changePublisher``).
+    ///                     Only changes described by the `change` will be included in the snapshot.
     ///
-    public func snapshot(of source: (any FlagValueSource)? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
+    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
         Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
+            change: change,
             diagnosticsEnabled: enableDiagnostics || diagnosticsEnabled
         )
     }

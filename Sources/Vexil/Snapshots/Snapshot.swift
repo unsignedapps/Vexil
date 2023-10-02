@@ -82,7 +82,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     internal private(set) var values: [String: LocatedFlag] = [:]
 
-    private var rootGroup: RootGroup {
+    var rootGroup: RootGroup {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
     }
 
@@ -97,6 +97,20 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
         if let source {
             populateValuesFrom(source, flagPole: flagPole, keys: keys)
+        }
+    }
+
+    internal init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange, diagnosticsEnabled: Bool = false) {
+        self.diagnosticsEnabled = diagnosticsEnabled
+        self.rootKeyPath = flagPole.rootKeyPath
+
+        if let source {
+            switch change {
+            case .all:
+                populateValuesFrom(source, flagPole: flagPole, keys: nil)
+            case .some(let keys):
+                populateValuesFrom(source, flagPole: flagPole, keys: Set(keys.map({ $0.key })))
+            }
         }
     }
 
