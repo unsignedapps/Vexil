@@ -78,7 +78,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     internal var diagnosticsEnabled: Bool
     private var rootKeyPath: FlagKeyPath
 
-    internal private(set) var values: [String: Any] = [:]
+    internal private(set) var values: [String: any FlagValue] = [:]
 
     var rootGroup: RootGroup {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)

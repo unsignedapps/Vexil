@@ -243,52 +243,6 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
 #endif
 
-    // MARK: - Diagnostics
-
-//
-//    /// Returns the current diagnostic state of all flags managed by this FlagPole.
-//    ///
-//    /// This method is intended to be called from the debugger
-//    ///
-//    public func makeDiagnostics() -> [FlagPoleDiagnostic] {
-//        .init(current: self.snapshot(enableDiagnostics: true))
-//    }
-
-#if !os(Linux)
-
-//    private lazy var diagnosticSubject = PassthroughSubject<[FlagPoleDiagnostic], Never>()
-//
-//    /// A `Publisher` that can be used to monitor diagnostic outputs
-//    ///
-//    /// An array of `Diagnostic` messages is emitted every time a flag value changes. It can be one of two types:
-//    ///
-//    ///  - The value of every flag on the `FlagPole` at the time of subscribing, and which `FlagValueSource` it was resolved by
-//    ///  - An array of the flag values that were changed, which `FlagValueSource` they were changed by, and their resolved value/source
-//    ///
-//    public func makeDiagnosticsPublisher() -> AnyPublisher<[FlagPoleDiagnostic], Never> {
-//        let wasAlreadyEnabled = _diagnosticsEnabled
-//        _diagnosticsEnabled = true
-//
-//        var snapshot = self.latestSnapshot.value
-//
-//        // if publishing hasn't been started yet (ie they've accessed `_diagnosticsPublisher` before `publisher`)
-//        if self.shouldSetupSnapshotPublishing == false {
-//            self.shouldSetupSnapshotPublishing = true
-//            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
-//
-//            // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
-//        } else if wasAlreadyEnabled == false {
-//            snapshot = self.snapshot()
-//            self.latestSnapshot.send(snapshot)
-//        }
-//
-//        return diagnosticSubject
-//            .prepend(.init(current: snapshot))
-//            .eraseToAnyPublisher()
-//    }
-
-#endif // !os(Linux)
-
 
     // MARK: - Snapshots
 
@@ -431,16 +385,16 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
 // MARK: - Debugging
 
-// extension FlagPole: CustomDebugStringConvertible {
-//    public var debugDescription: String {
-//        "FlagPole<\(String(describing: RootGroup.self))>("
-//            + Mirror(reflecting: _rootGroup).children
-//            .map { _, value -> String in
-//                (value as? CustomDebugStringConvertible)?.debugDescription
-//                    ?? (value as? CustomStringConvertible)?.description
-//                    ?? String(describing: value)
-//            }
-//            .joined(separator: "; ")
-//            + ")"
-//    }
-// }
+extension FlagPole: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "FlagPole<\(String(describing: RootGroup.self))>("
+            + Mirror(reflecting: rootGroup).children
+                .map { _, value -> String in
+                    (value as? CustomDebugStringConvertible)?.debugDescription
+                    ?? (value as? CustomStringConvertible)?.description
+                    ?? String(describing: value)
+                }
+                .joined(separator: "; ")
+            + ")"
+    }
+}

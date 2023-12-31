@@ -23,7 +23,7 @@ extension Snapshot {
         private let rootKeyPath: FlagKeyPath
         private let keys: Set<String>?
 
-        private var flags: [String: Any] = [:]
+        private var flags: [String: any FlagValue] = [:]
 
 
         // MARK: - Initialisation
@@ -38,7 +38,7 @@ extension Snapshot {
 
         // MARK: - Building
 
-        func build() -> [String: Any] {
+        func build() -> [String: any FlagValue] {
             let hierarchy = RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
             hierarchy.walk(visitor: self)
             return flags
