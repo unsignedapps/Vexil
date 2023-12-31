@@ -150,7 +150,7 @@ final class EquatableTests: XCTestCase {
 
 // MARK: - Fixtures
 
-@EquatableFlagContainer
+@FlagContainer
 private struct TestFlags {
 
     @Flag(default: false, description: "Top level test flag")
@@ -164,7 +164,7 @@ private struct TestFlags {
 
 }
 
-@EquatableFlagContainer
+@FlagContainer
 private struct SubgroupFlags {
 
     @Flag(default: false, description: "Second level test flag")
@@ -175,7 +175,7 @@ private struct SubgroupFlags {
 
 }
 
-@EquatableFlagContainer
+@FlagContainer
 private struct DoubleSubgroupFlags {
 
     @Flag(default: false, description: "Third level test flag")

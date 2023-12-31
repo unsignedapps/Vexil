@@ -219,13 +219,13 @@ private struct DataTestFlags {
     var flag: Data
 }
 
-@FlagContainer
+@FlagContainer(generateEquatable: false)
 private struct IntTestFlags<Value> where Value: FlagValue & ExpressibleByIntegerLiteral {
     @Flag(default: 123, description: "Test flag")
     var flag: Value
 }
 
-@FlagContainer
+@FlagContainer(generateEquatable: false)
 private struct FloatTestFlags<Value> where Value: FlagValue & ExpressibleByFloatLiteral {
     @Flag(default: 123.23, description: "Test flag")
     var flag: Value

@@ -13,36 +13,16 @@
 
 @attached(
     extension,
-    conformances: FlagContainer,
-    names:
-        named(_allFlagKeyPaths),
-        named(walk(visitor:))
-)
-@attached(
-    member,
-    names:
-        named(_flagKeyPath),
-        named(_flagLookup),
-        named(init(_flagKeyPath:_flagLookup:))
-)
-public macro FlagContainer() = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
-
-@attached(
-    extension,
     conformances: FlagContainer, Equatable,
-    names:
-        named(_allFlagKeyPaths),
-        named(walk(visitor:)),
-        named(==)
+    names: named(_allFlagKeyPaths), named(walk(visitor:)), named(==)
 )
 @attached(
     member,
-    names:
-        named(_flagKeyPath),
-        named(_flagLookup),
-        named(init(_flagKeyPath:_flagLookup:))
+    names: named(_flagKeyPath), named(_flagLookup), named(init(_flagKeyPath:_flagLookup:))
 )
-public macro EquatableFlagContainer() = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
+public macro FlagContainer(
+    generateEquatable: any ExpressibleByBooleanLiteral = true
+) = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
 
 public protocol FlagContainer {
     init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)

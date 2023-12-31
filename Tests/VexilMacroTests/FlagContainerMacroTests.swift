@@ -195,6 +195,14 @@ final class FlagContainerMacroTests: XCTestCase {
                         ]
                 }
             }
+
+            extension TestFlags: Equatable {
+                static func == (lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    lhs.first == rhs.first &&
+                    lhs.flagGroup == rhs.flagGroup &&
+                    lhs.second == rhs.second
+                }
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,

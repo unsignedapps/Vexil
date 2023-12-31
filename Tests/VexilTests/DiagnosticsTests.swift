@@ -13,13 +13,13 @@
 
 // swiftlint:disable function_body_length
 
-#if canImport(Combine)
-
-// import Combine
-// import Vexil
-// import XCTest
+//#if canImport(Combine)
 //
-// final class DiagnosticsTests: XCTestCase {
+//import Combine
+//import Vexil
+//import XCTest
+//
+//final class DiagnosticsTests: XCTestCase {
 //
 //    func testEmitsExpectedDiagnostics() throws {
 //
@@ -102,12 +102,13 @@
 //        XCTAssertNotNil(cancellable)
 //    }
 //
-// }
+//}
 //
 //
 //// MARK: - Fixtures
 //
-// private struct TestFlags: FlagContainer {
+//@FlagContainer
+//private struct TestFlags {
 //
 //    @Flag(default: false, description: "Top level test flag")
 //    var topLevelFlag: Bool
@@ -118,9 +119,10 @@
 //    @FlagGroup(description: "Subgroup of test flags")
 //    var subgroup: SubgroupFlags
 //
-// }
+//}
 //
-// private struct SubgroupFlags: FlagContainer {
+//@FlagContainer
+//private struct SubgroupFlags {
 //
 //    @Flag(default: false, description: "Second level test flag")
 //    var secondLevelFlag: Bool
@@ -128,13 +130,14 @@
 //    @FlagGroup(description: "Another level of test flags")
 //    var doubleSubgroup: DoubleSubgroupFlags
 //
-// }
+//}
 //
-// private struct DoubleSubgroupFlags: FlagContainer {
+//@FlagContainer
+//private struct DoubleSubgroupFlags {
 //
 //    @Flag(default: false, description: "Third level test flag")
 //    var thirdLevelFlag: Bool
 //
-// }
-
-#endif // canImport(Combine)
+//}
+//
+//#endif // canImport(Combine)

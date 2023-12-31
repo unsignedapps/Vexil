@@ -28,5 +28,5 @@ final class FlagPoleTests: XCTestCase {
 
 // MARK: - Fixtures
 
-@FlagContainer
+@FlagContainer(generateEquatable: false)
 private struct TestFlags {}
