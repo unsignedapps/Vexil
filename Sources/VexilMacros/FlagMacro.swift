@@ -90,11 +90,12 @@ public struct FlagMacro {
 
     func makeVisitExpression() -> CodeBlockItemSyntax {
         """
-        do {
-            let keyPath = \(key)
-            let located = _flagLookup.locate(keyPath: keyPath, of: \(type).self)
-            visitor.visitFlag(keyPath: keyPath, value: located?.value ?? \(defaultValue), sourceName: located?.sourceName)
-        }
+        visitor.visitFlag(
+            keyPath: \(key),
+            value: { [self] in _flagLookup.value(for: \(key)) },
+            defaultValue: \(defaultValue),
+            wigwag: { [self] in $\(raw: propertyName) }
+        )
         """
     }
 

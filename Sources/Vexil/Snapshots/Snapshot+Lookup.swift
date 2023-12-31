@@ -18,14 +18,7 @@
 extension Snapshot: FlagLookup {
 
     public func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
-        values[keyPath.key]?.value as? Value
-    }
-
-    public func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue {
-        guard let value = values[keyPath.key]?.value as? Value else {
-            return nil
-        }
-        return (value, name)
+        values[keyPath.key] as? Value
     }
 
     public var changeStream: FlagChangeStream {

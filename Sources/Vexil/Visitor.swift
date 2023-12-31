@@ -15,7 +15,12 @@ public protocol FlagVisitor {
 
     func beginGroup(keyPath: FlagKeyPath)
     func endGroup(keyPath: FlagKeyPath)
-    func visitFlag<Value>(keyPath: FlagKeyPath, value: Value, sourceName: String?) where Value: FlagValue
+    func visitFlag<Value>(
+        keyPath: FlagKeyPath,
+        value: () -> Value?,
+        defaultValue: Value,
+        wigwag: () -> FlagWigwag<Value>
+    ) where Value: FlagValue
 
 }
 

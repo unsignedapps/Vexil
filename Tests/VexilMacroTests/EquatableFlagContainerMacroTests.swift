@@ -175,17 +175,27 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: FlagContainer {
                 func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
-                    do {
-                        let keyPath = _flagKeyPath.append(.automatic("first"))
-                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
-                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
-                    }
+                    visitor.visitFlag(
+                        keyPath: _flagKeyPath.append(.automatic("first")),
+                        value: { [self] in
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("first")))
+                        },
+                        defaultValue: false,
+                        wigwag: { [self] in
+                            $first
+                        }
+                    )
                     flagGroup.walk(visitor: visitor)
-                    do {
-                        let keyPath = _flagKeyPath.append(.automatic("second"))
-                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
-                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
-                    }
+                    visitor.visitFlag(
+                        keyPath: _flagKeyPath.append(.automatic("second")),
+                        value: { [self] in
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("second")))
+                        },
+                        defaultValue: false,
+                        wigwag: { [self] in
+                            $second
+                        }
+                    )
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
                 var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
@@ -246,17 +256,27 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: FlagContainer {
                 public func walk(visitor: any FlagVisitor) {
                     visitor.beginGroup(keyPath: _flagKeyPath)
-                    do {
-                        let keyPath = _flagKeyPath.append(.automatic("first"))
-                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
-                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
-                    }
+                    visitor.visitFlag(
+                        keyPath: _flagKeyPath.append(.automatic("first")),
+                        value: { [self] in
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("first")))
+                        },
+                        defaultValue: false,
+                        wigwag: { [self] in
+                            $first
+                        }
+                    )
                     flagGroup.walk(visitor: visitor)
-                    do {
-                        let keyPath = _flagKeyPath.append(.automatic("second"))
-                        let located = _flagLookup.locate(keyPath: keyPath, of: Bool.self)
-                        visitor.visitFlag(keyPath: keyPath, value: located?.value ?? false, sourceName: located?.sourceName)
-                    }
+                    visitor.visitFlag(
+                        keyPath: _flagKeyPath.append(.automatic("second")),
+                        value: { [self] in
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("second")))
+                        },
+                        defaultValue: false,
+                        wigwag: { [self] in
+                            $second
+                        }
+                    )
                     visitor.endGroup(keyPath: _flagKeyPath)
                 }
                 public var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {

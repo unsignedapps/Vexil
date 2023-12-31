@@ -65,8 +65,6 @@ import Foundation
 @dynamicMemberLookup
 public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
-    typealias LocatedFlag = (value: Any, sourceName: String?)
-
     // MARK: - Properties
 
     /// All `Snapshot`s are `Identifiable`
@@ -80,7 +78,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     internal var diagnosticsEnabled: Bool
     private var rootKeyPath: FlagKeyPath
 
-    internal private(set) var values: [String: LocatedFlag] = [:]
+    internal private(set) var values: [String: Any] = [:]
 
     var rootGroup: RootGroup {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
@@ -137,7 +135,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
         set {
             if let keyPath = rootGroup._allFlagKeyPaths[dynamicMember] {
-                values[keyPath.key] = (value: newValue, sourceName: name)
+                values[keyPath.key] = newValue
             }
         }
     }
@@ -164,13 +162,9 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         values = builder.build()
     }
 
-    public func visitFlag(keyPath: FlagKeyPath, value: some Any, sourceName: String?) {
-        values[keyPath.key] = (value, sourceName)
-    }
-
     internal func set(_ value: (some FlagValue)?, key: String) {
         if let value {
-            values[key] = (value, name)
+            values[key] = value
         } else {
             values.removeValue(forKey: key)
         }

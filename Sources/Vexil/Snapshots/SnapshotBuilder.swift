@@ -23,7 +23,7 @@ extension Snapshot {
         private let rootKeyPath: FlagKeyPath
         private let keys: Set<String>?
 
-        private var flags: [String: LocatedFlag] = [:]
+        private var flags: [String: Any] = [:]
 
 
         // MARK: - Initialisation
@@ -38,7 +38,7 @@ extension Snapshot {
 
         // MARK: - Building
 
-        func build() -> [String: LocatedFlag] {
+        func build() -> [String: Any] {
             let hierarchy = RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
             hierarchy.walk(visitor: self)
             return flags
@@ -54,21 +54,16 @@ extension Snapshot {
 extension Snapshot.Builder: FlagLookup {
 
     /// Provides lookup capabilities to the flag hierarchy for our visit.
-    func locate<Value>(keyPath: FlagKeyPath, of valueType: Value.Type) -> (value: Value, sourceName: String)? where Value: FlagValue {
+    func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
         if let flagPole {
-            return flagPole.locate(keyPath: keyPath, of: valueType)
+            return flagPole.value(for: keyPath)
 
         } else if let source, let value: Value = source.flagValue(key: keyPath.key) {
-            return (value, source.name)
+            return value
 
         } else {
             return nil
         }
-    }
-
-    // Not used while walking the flag hierarchy
-    func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
-        nil
     }
 
     // Not used while walking the flag hierarchy
@@ -89,18 +84,18 @@ extension Snapshot.Builder: FlagLookup {
 
 extension Snapshot.Builder: FlagVisitor {
 
-    func visitFlag(keyPath: FlagKeyPath, value: some Any, sourceName: String?) {
+    func visitFlag<Value>(
+        keyPath: FlagKeyPath,
+        value: () -> Value?,
+        defaultValue: Value,
+        wigwag: () -> FlagWigwag<Value>
+    ) where Value: FlagValue {
         let key = keyPath.key
-        guard keys == nil || keys?.contains(key) == true else {
+        guard keys == nil || keys?.contains(key) == true, let value = value() else {
             return
         }
 
-        // if we are copying from a specific source but we got the default back exclude it
-        if source != nil, sourceName == nil {
-            return
-        }
-
-        flags[key] = (value, sourceName)
+        flags[key] = value
     }
 
 }

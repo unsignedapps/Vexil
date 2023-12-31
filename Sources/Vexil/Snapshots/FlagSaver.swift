@@ -22,13 +22,18 @@ class FlagSaver: FlagVisitor {
         self.flags = flags
     }
 
-    func visitFlag<Value>(keyPath: FlagKeyPath, value: Value, sourceName: String?) where Value: FlagValue {
+    func visitFlag<Value>(
+        keyPath: FlagKeyPath,
+        value: () -> Value?,
+        defaultValue: Value,
+        wigwag: () -> FlagWigwag<Value>
+    ) where Value: FlagValue {
         let key = keyPath.key
         guard error == nil, flags.contains(key) else {
             return
         }
         do {
-            try source.setFlagValue(value, key: key)
+            try source.setFlagValue(value(), key: key)
         } catch {
             self.error = error
         }
