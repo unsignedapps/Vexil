@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -89,6 +89,6 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     }
 }
 
-#endif
+#endif // os(macOS) && compiler(>=5.3.1)
 
-#endif
+#endif // os(iOS) || os(macOS) || os(visionOS)

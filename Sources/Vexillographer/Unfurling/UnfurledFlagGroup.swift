@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import Foundation
 import SwiftUI
@@ -85,7 +85,7 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     private var unfurledNavigationLink: AnyView {
         var destination = UnfurledFlagGroupView(group: self, manager: manager).eraseToAnyView()
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
         destination = destination
             .navigationBarTitle(Text(info.name), displayMode: .inline)

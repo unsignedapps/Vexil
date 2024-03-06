@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -39,7 +39,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     // MARK: - View Body
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var body: some View {
         self.content

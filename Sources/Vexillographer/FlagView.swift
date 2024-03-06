@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -76,7 +76,7 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
         return EmptyView().eraseToAnyView()
     }
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var detailView: some View {
         NavigationView {
@@ -108,4 +108,4 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
 
 }
 
-#endif
+#endif // os(iOS) || os(macOS) || os(visionOS)

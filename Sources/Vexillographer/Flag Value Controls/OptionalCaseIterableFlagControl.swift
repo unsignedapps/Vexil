@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -60,7 +60,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
         }
     }
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var selector: some View {
         SelectorList(value: self.$value)

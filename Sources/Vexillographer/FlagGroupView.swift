@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -36,7 +36,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
 
     // MARK: - View Body
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var body: some View {
         Form {

@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -124,7 +124,7 @@ extension String: OptionalDefaultValue {
     }
 }
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
 private extension View {
     func flagValueKeyboard<Value>(type: Value.Type) -> some View where Value: FlagValue {

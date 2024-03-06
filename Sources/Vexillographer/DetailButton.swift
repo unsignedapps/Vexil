@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 
@@ -33,7 +33,7 @@ struct DetailButton: View {
 
     // MARK: - View
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var body: some View {
         Image(systemName: self.hasChanges ? "info.circle.fill" : "info.circle")

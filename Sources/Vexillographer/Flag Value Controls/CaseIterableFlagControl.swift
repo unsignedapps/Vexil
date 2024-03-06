@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 
 import SwiftUI
 import Vexil
@@ -44,7 +44,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
         }
     }
 
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 
     var body: some View {
         HStack {
