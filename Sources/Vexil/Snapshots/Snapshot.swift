@@ -75,7 +75,6 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Internal Properties
 
-    var diagnosticsEnabled: Bool
     private var rootKeyPath: FlagKeyPath
 
     private(set) var values: [String: any FlagValue] = [:]
@@ -89,8 +88,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
-        self.diagnosticsEnabled = diagnosticsEnabled
+    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil) {
         self.rootKeyPath = flagPole.rootKeyPath
 
         if let source {
@@ -98,8 +96,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange, diagnosticsEnabled: Bool = false) {
-        self.diagnosticsEnabled = diagnosticsEnabled
+    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange) {
         self.rootKeyPath = flagPole.rootKeyPath
 
         if let source {
@@ -113,7 +110,6 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     }
 
     init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
-        self.diagnosticsEnabled = flagPole.diagnosticsEnabled
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = snapshot.values
     }
@@ -172,22 +168,6 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     }
 
 
-    // MARK: - Working with other Snapshots
-
-//    internal func merge(_ other: Snapshot<RootGroup>) {
-//        for value in other.values {
-//            self.values.updateValue(value.value, forKey: value.key)
-//        }
-//    }
-
-
-    // MARK: - Errors
-
-//    enum Error: Swift.Error {
-//        case flagKeyNotFound(String)
-//    }
-
-
     // MARK: - Source
 
     /// The source that we are to copy flag values from, if any
@@ -202,24 +182,5 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             }
         }
     }
-
-
-    // MARK: - Diagnostics
-
-    /// Returns the current diagnostic state of all flags copied into this Snapshot.
-    ///
-    /// This method is intended to be called from the debugger
-    ///
-    /// - Important: You must enable diagnostics by setting `enableDiagnostics` to true in your ``VexilConfiguration``
-    /// when initialising your FlagPole. Otherwise this method will throw a ``FlagPoleDiagnostic/Error/notEnabledForSnapshot`` error.
-    ///
-//    public func makeDiagnostics() throws -> [FlagPoleDiagnostic] {
-//        guard self.diagnosticsEnabled == true else {
-//            throw FlagPoleDiagnostic.Error.notEnabledForSnapshot
-//        }
-//
-//        return .init(current: self)
-//    }
-
 
 }

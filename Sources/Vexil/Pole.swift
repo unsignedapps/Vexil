@@ -52,9 +52,6 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// The configuration information supplied to the `FlagPole` during initialisation.
     public let _configuration: VexilConfiguration
 
-    /// Whether diagnostics have been enabled for this FlagPole.
-    var diagnosticsEnabled = false
-
     /// Primary storage
     let manager: Lock<StreamManager>
 
@@ -256,12 +253,11 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - change:         A ``FlagChange`` (as emitted from ``changeStream`` or ``changePublisher``).
     ///                     Only changes described by the `change` will be included in the snapshot.
     ///
-    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
+    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all) -> Snapshot<RootGroup> {
         Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
-            change: change,
-            diagnosticsEnabled: enableDiagnostics || diagnosticsEnabled
+            change: change
         )
     }
 
