@@ -35,7 +35,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
     /// Our internal dictionary type
     public typealias DictionaryType = [String: BoxedFlagValue]
 
-    internal var storage: DictionaryType
+    var storage: DictionaryType
 
     let stream = StreamManager.Stream()
 

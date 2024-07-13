@@ -109,7 +109,7 @@ private final class LegacyUnfairLock<State>: ManagedBuffer<os_unfair_lock, State
     typealias UnfairState = State
 
     static func create(initialState: State) -> Self {
-        Self.create(minimumCapacity: 1) { buffer in
+        create(minimumCapacity: 1) { buffer in
             buffer.withUnsafeMutablePointers { lockPointer, statePointer in
                 lockPointer.initialize(to: os_unfair_lock())
                 statePointer.initialize(to: initialState)

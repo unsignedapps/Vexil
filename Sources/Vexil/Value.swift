@@ -460,6 +460,6 @@ public extension Encodable where Self: FlagValue, Self: Decodable {
 }
 
 // Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
-internal struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
     var wrapped: Wrapped
 }

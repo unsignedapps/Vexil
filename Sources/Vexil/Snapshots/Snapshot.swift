@@ -75,10 +75,10 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Internal Properties
 
-    internal var diagnosticsEnabled: Bool
+    var diagnosticsEnabled: Bool
     private var rootKeyPath: FlagKeyPath
 
-    internal private(set) var values: [String: any FlagValue] = [:]
+    private(set) var values: [String: any FlagValue] = [:]
 
     var rootGroup: RootGroup {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
@@ -89,7 +89,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    internal init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
+    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil, diagnosticsEnabled: Bool = false) {
         self.diagnosticsEnabled = diagnosticsEnabled
         self.rootKeyPath = flagPole.rootKeyPath
 
@@ -98,7 +98,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    internal init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange, diagnosticsEnabled: Bool = false) {
+    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange, diagnosticsEnabled: Bool = false) {
         self.diagnosticsEnabled = diagnosticsEnabled
         self.rootKeyPath = flagPole.rootKeyPath
 
@@ -112,7 +112,7 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    internal init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
+    init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
         self.diagnosticsEnabled = flagPole.diagnosticsEnabled
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = snapshot.values
@@ -152,17 +152,16 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     // MARK: - Population
 
     private func populateValuesFrom(_ source: Source, flagPole: FlagPole<RootGroup>, keys: Set<String>?) {
-        let builder: Snapshot.Builder
-        switch source {
+        let builder: Snapshot.Builder = switch source {
         case .pole:
-            builder = Builder(flagPole: flagPole, source: nil, rootKeyPath: flagPole.rootKeyPath, keys: keys)
+            Builder(flagPole: flagPole, source: nil, rootKeyPath: flagPole.rootKeyPath, keys: keys)
         case let .source(flagValueSource):
-            builder = Builder(flagPole: nil, source: flagValueSource, rootKeyPath: flagPole.rootKeyPath, keys: keys)
+            Builder(flagPole: nil, source: flagValueSource, rootKeyPath: flagPole.rootKeyPath, keys: keys)
         }
         values = builder.build()
     }
 
-    internal func set(_ value: (some FlagValue)?, key: String) {
+    func set(_ value: (some FlagValue)?, key: String) {
         if let value {
             values[key] = value
         } else {
@@ -198,8 +197,8 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
         var flagValueSource: (any FlagValueSource)? {
             switch self {
-            case .pole:                     return nil
-            case let .source(source):       return source
+            case .pole:                     nil
+            case let .source(source):       source
             }
         }
     }

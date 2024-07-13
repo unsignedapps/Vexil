@@ -30,9 +30,7 @@ extension FlagValue {
         case let .float(value):         return value as? BoxedValueType
         case let .integer(value):       return value as? BoxedValueType
         case let .string(value):        return value as? BoxedValueType
-
         case .none:                     return BoxedValueType?.none
-
         // unsupported
         case .array, .dictionary:       return nil
         }

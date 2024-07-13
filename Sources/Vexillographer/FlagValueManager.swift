@@ -71,10 +71,10 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
 
     func hasValueInSource<Value>(flag: Flag<Value>) -> Bool {
         if let _: Value = source?.flagValue(key: flag.key) {
-            return true
+            true
 
         } else {
-            return false
+            false
         }
     }
 

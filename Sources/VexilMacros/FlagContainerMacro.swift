@@ -178,9 +178,9 @@ private extension DeclModifierListSyntax {
     var scopeSyntax: DeclModifierListSyntax {
         filter { modifier in
             if case let .keyword(keyword) = modifier.name.tokenKind, keyword == .public {
-                return true
+                true
             } else {
-                return false
+                false
             }
         }
     }
@@ -226,9 +226,9 @@ private extension AttributeSyntax {
 
     var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool) {
         if attributeName.identifier == "FlagContainer" {
-            return (true, true)
+            (true, true)
         } else {
-            return (false, false)
+            (false, false)
         }
     }
 

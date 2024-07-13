@@ -125,9 +125,9 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
 
     func description(source: FlagValueSource) -> some View {
         if let value = flagValue(source: source) {
-            return FlagDisplayValueView(value: value).eraseToAnyView()
+            FlagDisplayValueView(value: value).eraseToAnyView()
         } else {
-            return Text("not set").italic().eraseToAnyView()
+            Text("not set").italic().eraseToAnyView()
         }
     }
 

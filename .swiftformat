@@ -17,6 +17,7 @@
 --disable blankLinesAtStartOfScope
 
 # Enabling optional rules
+--enable blankLineAfterSwitchCase
 --enable blankLinesBetweenImports
 --enable blockComments
 --enable isEmpty

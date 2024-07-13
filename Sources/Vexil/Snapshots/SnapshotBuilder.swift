@@ -56,13 +56,13 @@ extension Snapshot.Builder: FlagLookup {
     /// Provides lookup capabilities to the flag hierarchy for our visit.
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
         if let flagPole {
-            return flagPole.value(for: keyPath)
+            flagPole.value(for: keyPath)
 
         } else if let source, let value: Value = source.flagValue(key: keyPath.key) {
-            return value
+            value
 
         } else {
-            return nil
+            nil
         }
     }
 

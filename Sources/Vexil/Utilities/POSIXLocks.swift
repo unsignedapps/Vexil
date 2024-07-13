@@ -92,7 +92,7 @@ private final class POSIXMutex<State>: ManagedBuffer<pthread_mutex_t, State>, @u
         uncheckedState initialState: State,
         mutexInitializer: (UnsafeMutablePointer<pthread_mutex_t>) -> Void
     ) -> Self {
-        Self.create(minimumCapacity: 1) { buffer in
+        create(minimumCapacity: 1) { buffer in
             buffer.withUnsafeMutablePointers { mutex, state in
                 state.initialize(to: initialState)
                 mutexInitializer(mutex)

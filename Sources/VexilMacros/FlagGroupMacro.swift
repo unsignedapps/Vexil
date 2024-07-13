@@ -178,15 +178,15 @@ private extension FlagGroupMacro {
         func createKey(_ propertyName: String) -> ExprSyntax {
             switch self {
             case .default:
-                return "_flagKeyPath.append(.automatic(\"\(raw: propertyName.convertedToSnakeCase(separator: "-"))\"))"
+                "_flagKeyPath.append(.automatic(\"\(raw: propertyName.convertedToSnakeCase(separator: "-"))\"))"
             case .kebabcase:
-                return "_flagKeyPath.append(.kebabcase(\"\(raw: propertyName.convertedToSnakeCase(separator: "-"))\"))"
+                "_flagKeyPath.append(.kebabcase(\"\(raw: propertyName.convertedToSnakeCase(separator: "-"))\"))"
             case .snakecase:
-                return "_flagKeyPath.append(.snakecase(\"\(raw: propertyName.convertedToSnakeCase())\"))"
+                "_flagKeyPath.append(.snakecase(\"\(raw: propertyName.convertedToSnakeCase())\"))"
             case .skip:
-                return "_flagKeyPath"
+                "_flagKeyPath"
             case let .customKey(key):
-                return "_flagKeyPath.append(.customKey(\"\(raw: key)\"))"
+                "_flagKeyPath.append(.customKey(\"\(raw: key)\"))"
             }
         }
 

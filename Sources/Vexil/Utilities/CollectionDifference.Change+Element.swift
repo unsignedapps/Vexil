@@ -15,8 +15,8 @@ extension CollectionDifference.Change {
 
     var element: ChangeElement {
         switch self {
-        case .insert(offset: _, element: let element, associatedWith: _):           return element
-        case .remove(offset: _, element: let element, associatedWith: _):           return element
+        case .insert(offset: _, element: let element, associatedWith: _):           element
+        case .remove(offset: _, element: let element, associatedWith: _):           element
         }
     }
 
