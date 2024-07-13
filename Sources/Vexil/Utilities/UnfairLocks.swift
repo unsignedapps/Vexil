@@ -47,7 +47,7 @@ struct UnfairLock<State>: Mutex {
     ///
     init(uncheckedState initialState: State) {
         if #available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *) {
-            mutexValue = OSAllocatedUnfairLock<State>(initialState: initialState)
+            mutexValue = OSAllocatedUnfairLock<State>(uncheckedState: initialState)
         } else {
             self.mutexValue = LegacyUnfairLock.create(initialState: initialState)
         }

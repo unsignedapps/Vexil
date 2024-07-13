@@ -11,15 +11,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-class FlagSaver: FlagVisitor {
+final class FlagSetter: FlagVisitor {
 
     let source: any FlagValueSource
-    let flags: Set<String>
-    var error: Error?
+    let keys: Set<String>
+    var caughtError: (any Error)?
 
-    init(source: any FlagValueSource, flags: Set<String>) {
+    init(source: any FlagValueSource, keys: Set<String>) {
         self.source = source
-        self.flags = flags
+        self.keys = keys
     }
 
     func visitFlag<Value>(
@@ -29,13 +29,21 @@ class FlagSaver: FlagVisitor {
         wigwag: () -> FlagWigwag<Value>
     ) where Value: FlagValue {
         let key = keyPath.key
-        guard error == nil, flags.contains(key) else {
+        guard keys.contains(key), caughtError == nil, let value = value() else {
             return
         }
+
         do {
-            try source.setFlagValue(value(), key: key)
+            try source.setFlagValue(value, key: key)
         } catch {
-            self.error = error
+            caughtError = error
+        }
+    }
+
+    func apply(to container: some FlagContainer) throws {
+        container.walk(visitor: self)
+        if let caughtError {
+            throw caughtError
         }
     }
 

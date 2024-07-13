@@ -18,19 +18,22 @@ import Combine
 extension FlagValueDictionary: FlagValueSource {
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        guard let value = storage[key] else {
-            return nil
+        storage.withLock { storage in
+            guard let value = storage[key] else {
+                return nil
+            }
+            return Value(boxedFlagValue: value)
         }
-        return Value(boxedFlagValue: value)
     }
 
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
-        if let value {
-            storage.updateValue(value.boxedFlagValue, forKey: key)
-        } else {
-            storage.removeValue(forKey: key)
+        _ = storage.withLock { storage in
+            if let value {
+                storage.updateValue(value.boxedFlagValue, forKey: key)
+            } else {
+                storage.removeValue(forKey: key)
+            }
         }
-
         stream.send(.some([ FlagKeyPath(key) ]))
     }
 

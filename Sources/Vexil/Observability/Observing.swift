@@ -63,6 +63,10 @@ public struct EmptyFlagChangeStream: AsyncSequence, Sendable {
 
     public typealias Element = FlagChange
 
+    public init() {
+        // Intentionally left blank
+    }
+
     public func makeAsyncIterator() -> AsyncIterator {
         AsyncIterator()
     }

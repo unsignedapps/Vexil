@@ -18,8 +18,7 @@ import Combine
 import Foundation
 
 /// Provides support for using `UserDefaults` as a `FlagValueSource`
-///
-extension UserDefaults: FlagValueSource {
+extension UserDefaults: NonSendableFlagValueSource {
 
     /// The name of the Flag Value Source
     public var name: String {
@@ -48,6 +47,10 @@ extension UserDefaults: FlagValueSource {
 
         set(value.boxedFlagValue.object, forKey: key)
 
+    }
+
+    public var changeStream: EmptyFlagChangeStream {
+        .init()
     }
 
 #if os(watchOS)
@@ -83,12 +86,14 @@ extension UserDefaults: FlagValueSource {
 
 import UIKit
 
+@MainActor
 private let ApplicationDidBecomeActive = UIApplication.didBecomeActiveNotification
 
 #elseif canImport(Cocoa)
 
 import Cocoa
 
+@MainActor
 private let ApplicationDidBecomeActive = NSApplication.didBecomeActiveNotification
 
 #endif

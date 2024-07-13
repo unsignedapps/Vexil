@@ -57,7 +57,7 @@ final class FlagValueCompilationTests: XCTestCase {
     }
 
     func testDateFlagValue() {
-        class TestSource: FlagValueSource {
+        class TestSource: NonSendableFlagValueSource {
             let name = "Test"
             let value = Date.now
             func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
@@ -67,10 +67,14 @@ final class FlagValueCompilationTests: XCTestCase {
             func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
                 fatalError()
             }
+
+            var changeStream: EmptyFlagChangeStream {
+                .init()
+            }
         }
 
         let source = TestSource()
-        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ source ])
+        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ FlagValueSourceCoordinator(source: source) ])
         XCTAssertEqual(pole.flag.timeIntervalSinceReferenceDate, source.value.timeIntervalSinceReferenceDate, accuracy: 0.1)
     }
 

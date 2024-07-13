@@ -17,7 +17,7 @@ import Combine
 
 import Foundation
 
-public protocol FlagLookup: AnyObject {
+public protocol FlagLookup: Sendable {
 
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue

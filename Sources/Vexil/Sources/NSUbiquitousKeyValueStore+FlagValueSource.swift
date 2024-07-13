@@ -16,9 +16,9 @@
 import Combine
 import Foundation
 
-/// Provides support for using `NSUbiquitousKeyValueStore` as a `FlagValueSource`
+/// Provides support for using `NSUbiquitousKeyValueStore` as a `NonSendableFlagValueSource`
 ///
-extension NSUbiquitousKeyValueStore: FlagValueSource {
+extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
     /// The name of the Flag Value Source
     public var name: String {
@@ -53,6 +53,10 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
     }
 
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
+
+    public var changeStream: EmptyFlagChangeStream {
+        .init()
+    }
 
     /// A Publisher that emits events when the flag values it manages changes
     public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {

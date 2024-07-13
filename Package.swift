@@ -32,9 +32,20 @@ let package = Package(
             dependencies: [
                 .target(name: "VexilMacros"),
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
-        .testTarget(name: "VexilTests", dependencies: [ "Vexil" ]),
+        .testTarget(
+            name: "VexilTests",
+            dependencies: [
+                .target(name: "Vexil"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
 
         .macro(
             name: "VexilMacros",
@@ -43,6 +54,9 @@ let package = Package(
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
@@ -50,6 +64,9 @@ let package = Package(
             dependencies: [
                 .target(name: "VexilMacros"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
 

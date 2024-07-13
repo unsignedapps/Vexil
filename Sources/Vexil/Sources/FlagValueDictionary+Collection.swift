@@ -16,31 +16,51 @@ extension FlagValueDictionary: Collection {
     public typealias Index = DictionaryType.Index
     public typealias Element = DictionaryType.Element
 
-    public var startIndex: Index { storage.startIndex }
-    public var endIndex: Index { storage.endIndex }
+    public var startIndex: Index {
+        storage.withLock { storage in
+            storage.startIndex
+        }
+    }
+    public var endIndex: Index {
+        storage.withLock { storage in
+            storage.endIndex
+        }
+    }
 
     public subscript(index: Index) -> Iterator.Element {
-        storage[index]
+        storage.withLock { storage in
+            storage[index]
+        }
     }
 
     public subscript(key: Key) -> Value? {
-        get { storage[key] }
+        get {
+            storage.withLock { storage in
+                storage[key]
+            }
+        }
         set {
-            if let value = newValue {
-                storage.updateValue(value, forKey: key)
-            } else {
-                storage.removeValue(forKey: key)
+            _ = storage.withLock { storage in
+                if let value = newValue {
+                    storage.updateValue(value, forKey: key)
+                } else {
+                    storage.removeValue(forKey: key)
+                }
             }
             stream.send(.some([ FlagKeyPath(key) ]))
         }
     }
 
     public func index(after i: Index) -> Index {
-        storage.index(after: i)
+        storage.withLock { storage in
+            storage.index(after: i)
+        }
     }
 
     public var keys: DictionaryType.Keys {
-        storage.keys
+        storage.withLock { storage in
+            storage.keys
+        }
     }
 
 }

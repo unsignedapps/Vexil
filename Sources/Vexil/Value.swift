@@ -23,7 +23,7 @@ import Foundation
 /// See the full documentation for information and examples on using custom types
 /// with Vexil.
 ///
-public protocol FlagValue {
+public protocol FlagValue: Sendable {
 
     /// The type that this `FlagValue` would be boxed into.
     /// Used by `FlagValueSource`s to provide interop with different providers
@@ -37,7 +37,7 @@ public protocol FlagValue {
     /// be able to unbox and initialise itself. Return nil if you cannot successfully
     /// unbox the flag value, or if it is an incompatible type.
     ///
-    init? (boxedFlagValue: BoxedFlagValue)
+    init?(boxedFlagValue: BoxedFlagValue)
 
     /// Your conforming type must return an instance of the BoxedFlagValue
     /// with the boxed type included. This type should match the type
@@ -67,7 +67,7 @@ public protocol FlagDisplayValue {
 ///
 /// Any custom type you conform to `FlagValue` must be able to be represented using one of these types
 ///
-public enum BoxedFlagValue: Equatable {
+public enum BoxedFlagValue: Equatable & Sendable {
     case array([BoxedFlagValue])
     case bool(Bool)
     case dictionary([String: BoxedFlagValue])

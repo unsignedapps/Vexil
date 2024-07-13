@@ -17,12 +17,24 @@ import Combine
 
 import Foundation
 
-/// A simple protocol that describes a source of `FlagValue`s
+/// A simple protocol that describes a non-sendable source of `FlagValue`s.
+///
+/// This protocol is used with types that cannot be made to be `Sendable`, like
+/// `UserDefaults`. You can add it to a ``FlagPole`` by wrapping it in a
+/// ``FlagValueSourceCoordinator``:
+///
+/// ```swift
+/// let coordinator = FlagValueSourceCoordinator(source: UserDefaults.standard)
+/// let pole = FlagPole(hoist: MyFlag.self, sources: [ coordinator ])
+/// ```
+///
+/// - Note: If your flag value source is `Sendable` you should conform directly
+/// to ``FlagValueSource`` and skip the coordinator.
 ///
 /// For more information and examples on creating custom `FlagValueSource`s please
 /// see the full documentation.
 ///
-public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID == String {
+public protocol NonSendableFlagValueSource: Identifiable where ID == String {
 
     associatedtype ChangeStream: AsyncSequence & Sendable where ChangeStream.Element == FlagChange
 
@@ -37,15 +49,14 @@ public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID ==
     ///
     /// It is expected if the value passed in is `nil` then the flag value would be cleared.
     ///
-    func setFlagValue(_ value: (some FlagValue)?, key: String) throws
+    mutating func setFlagValue(_ value: (some FlagValue)?, key: String) throws
 
     /// Return an `AsyncSequence` that emits ``FlagChange`` values any time flag values have changed.
-    /// If your implementation does not support real-time flag value monitoring you can return an ``EmptyFlagChangeStream``.
     var changeStream: ChangeStream { get }
 
 }
 
-public extension FlagValueSource {
+public extension NonSendableFlagValueSource {
 
     var id: String {
         name

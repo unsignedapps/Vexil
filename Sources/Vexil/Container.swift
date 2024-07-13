@@ -13,7 +13,7 @@
 
 @attached(
     extension,
-    conformances: FlagContainer, Equatable,
+    conformances: FlagContainer, Equatable, Sendable,
     names: named(_allFlagKeyPaths), named(walk(visitor:)), named(==)
 )
 @attached(
@@ -24,7 +24,7 @@ public macro FlagContainer(
     generateEquatable: any ExpressibleByBooleanLiteral = true
 ) = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
 
-public protocol FlagContainer {
+public protocol FlagContainer: Sendable {
     init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)
     func walk(visitor: any FlagVisitor)
     var _allFlagKeyPaths: [PartialKeyPath<Self>: FlagKeyPath] { get }

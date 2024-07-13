@@ -16,18 +16,6 @@ import Combine
 #endif
 
 
-// MARK: - Helpers
-
-private extension Optional {
-
-    mutating func take() -> Optional {
-        defer { self = nil }
-        return self
-    }
-
-}
-
-
 // MARK: - Publisher
 
 #if canImport(Combine)
@@ -38,7 +26,7 @@ private extension Optional {
 /// Each subscriber to the `Publisher` will iterate over the sequence independently,
 /// use `.multicast()` or `.shared()` if you want to share the iterator.
 ///
-struct FlagPublisher<Elements> where Elements: _Concurrency.AsyncSequence {
+struct FlagPublisher<Elements>: Sendable where Elements: _Concurrency.AsyncSequence & Sendable, Elements.Element: Sendable {
 
     /// The `AsyncSequence` that we are publishing elements from
     let sequence: Elements
@@ -70,63 +58,94 @@ extension FlagPublisher: Publisher {
 
 extension FlagPublisher {
 
-    final class Subscription {
+    final class Subscription: Sendable {
 
-        private var sequence: Elements?
-        var iterator: Elements.AsyncIterator?
+        private struct State {
+            var task: Task<Void, Never>?
+            var demand = Subscribers.Demand.none
+            var downstream: AnySubscriber<Elements.Element, Failure>?
+        }
 
-        let task: Lock<Task<Void, Never>?>
-
-        private var demand: Subscribers.Demand = .none
-        private var downstream: AnySubscriber<Elements.Element, Failure>?
+        let sequence: Elements
+        private let state: Lock<State>
 
         init<Downstream>(sequence: Elements, downstream: Downstream) where Downstream: Subscriber, Downstream.Input == Elements.Element, Downstream.Failure == Failure {
             self.sequence = sequence
-            self.iterator = sequence.makeAsyncIterator()
-            self.downstream = AnySubscriber(downstream)
-            self.task = Lock(uncheckedState: nil)
+            self.state = .init(uncheckedState: State(downstream: AnySubscriber(downstream)))
         }
 
-        private func start() {
-            task.withLock { task in
-                guard demand > 0, task == nil else {
+        private func start(additionalDemand: Subscribers.Demand = .none) {
+            state.withLock { state in
+                state.demand += additionalDemand
+
+                guard state.demand > 0, state.task == nil else {
                     return
                 }
-                task = Task<Void, Never> {
-                    await iterate()
+                state.task = Task<Void, Never> {
+                    await send()
                 }
             }
         }
 
-        private func iterate() async {
-            guard let subscriber = downstream else {
-                cancel()
+        private func send() async {
+            guard let (subscriber, demand) = getSubscriberAndDemand(), demand > 0, Task.isCancelled == false else {
                 return
             }
 
             do {
-                try Task.checkCancellation()
-                while demand > 0 {
-
-                    // AsyncIteratprProtocol returns nil when we've reached the end
-                    guard let element = try await iterator?.next() else {
-                        subscriber.receive(completion: .finished)
-                        cancel()
+                for try await element in sequence {
+                    // If we were cancelled just bail out
+                    if Task.isCancelled {
                         return
                     }
-                    let additional = subscriber.receive(element)
-                    demand -= 1
-                    demand += additional
-                }
 
-            } catch is CancellationError {
-                // Intentionally left blank
+                    // Send the value to the receiver
+                    let additionalDemand = subscriber.receive(element)
+
+                    // Calculate current demand
+                    let stillHasDemand = state.withLock { state in
+                        state.demand -= 1
+                        state.demand += additionalDemand
+                        return state.demand > 0
+                    }
+
+                    // If we don't have any demand finish the current task
+                    if stillHasDemand == false {
+                        state.withLock {
+                            $0.task = nil
+                        }
+                        return
+                    }
+                }
 
             } catch {
                 subscriber.receive(completion: .finished)
-                cancel()
+                cleanup()
             }
         }
+
+        private func getSubscriberAndDemand() -> (AnySubscriber<Elements.Element, Failure>, Subscribers.Demand)? {
+            state.withLockUnchecked { state in
+                guard let subscriber = state.downstream else {
+                    cleanup(state: &state)
+                    return nil
+                }
+                return (subscriber, state.demand)
+            }
+         }
+
+        private func cleanup() {
+            state.withLock {
+                cleanup(state: &$0)
+            }
+        }
+        private func cleanup(state: inout State) {
+            state.task?.cancel()
+            state.task = nil
+            state.demand = .none
+            state.downstream = nil
+        }
+
     }
 
 }
@@ -136,20 +155,12 @@ extension FlagPublisher {
 
 extension FlagPublisher.Subscription: Subscription {
 
-    func request(_ demand: Subscribers.Demand) {
-        self.demand += demand
-        start()
+    nonisolated func request(_ demand: Subscribers.Demand) {
+        start(additionalDemand: demand)
     }
 
-    func cancel() {
-        sequence = nil
-        iterator = nil
-        task.withLock {
-            $0?.cancel()
-            $0 = nil
-        }
-        demand = .none
-        downstream = nil
+    nonisolated func cancel() {
+        cleanup()
     }
 
 }

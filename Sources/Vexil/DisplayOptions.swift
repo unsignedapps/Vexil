@@ -11,7 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum VexilDisplayOption: Equatable {
+public enum VexilDisplayOption: Equatable, Sendable {
 
     case hidden
     case navigation

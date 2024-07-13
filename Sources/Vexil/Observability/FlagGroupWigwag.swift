@@ -24,7 +24,7 @@ import Combine
 ///
 /// For more information on Wigwags see https://en.wikipedia.org/wiki/Wigwag_(flag_signals)
 ///
-public struct FlagGroupWigwag<Output> where Output: FlagContainer {
+public struct FlagGroupWigwag<Output>: Sendable where Output: FlagContainer {
 
     // MARK: - Properties
 

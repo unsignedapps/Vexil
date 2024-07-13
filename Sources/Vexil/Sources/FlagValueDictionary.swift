@@ -20,7 +20,7 @@ import Foundation
 /// A simple dictionary-backed FlagValueSource that can be useful for testing
 /// and other purposes.
 ///
-open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Codable {
+public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Codable, Sendable {
 
     // MARK: - Properties
 
@@ -35,7 +35,7 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
     /// Our internal dictionary type
     public typealias DictionaryType = [String: BoxedFlagValue]
 
-    var storage: DictionaryType
+    let storage: Lock<DictionaryType>
 
     let stream = StreamManager.Stream()
 
@@ -45,31 +45,29 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
     /// Private (but for @testable) memeberwise initialiser
     init(id: String, storage: DictionaryType) {
         self.id = id
-        self.storage = storage
+        self.storage = .init(initialState: storage)
     }
 
     /// Initialises an empty `FlagValueDictionary`
     public init() {
         self.id = UUID().uuidString
-        self.storage = [:]
+        self.storage = .init(initialState: [:])
     }
 
     /// Initialises a `FlagValueDictionary` with the specified dictionary
-    ///
-    public required init(_ sequence: some Sequence<(key: String, value: BoxedFlagValue)>) {
+    public init(_ sequence: some Sequence<(key: String, value: BoxedFlagValue)>) {
         self.id = UUID().uuidString
-        self.storage = sequence.reduce(into: [:]) { dict, pair in
+        self.storage = .init(initialState: sequence.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.value, forKey: pair.key)
-        }
+        })
     }
 
     /// Initialises a `FlagValueDictionary` using a dictionary literal
-    ///
-    public required init(dictionaryLiteral elements: (String, BoxedFlagValue)...) {
+    public init(dictionaryLiteral elements: (String, BoxedFlagValue)...) {
         self.id = UUID().uuidString
-        self.storage = elements.reduce(into: [:]) { dict, pair in
+        self.storage = .init(initialState: elements.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.1, forKey: pair.0)
-        }
+        })
     }
 
     // MARK: - Codable Support
@@ -79,12 +77,26 @@ open class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLiteral, Co
         case storage
     }
 
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.storage = try .init(initialState: container.decode(DictionaryType.self, forKey: .storage))
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(storage.withLock { $0 }, forKey: .storage)
+    }
+
 }
 
 // MARK: - Equatable Support
 
 extension FlagValueDictionary: Equatable {
     public static func == (lhs: FlagValueDictionary, rhs: FlagValueDictionary) -> Bool {
-        lhs.id == rhs.id && lhs.storage == rhs.storage
+        let left = lhs.storage.withLock { $0 }
+        let right = rhs.storage.withLock { $0 }
+        return lhs.id == rhs.id && left == right
     }
 }

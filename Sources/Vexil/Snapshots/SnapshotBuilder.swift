@@ -13,24 +13,27 @@
 
 extension Snapshot {
 
-    final class Builder {
+    final class Builder: Sendable {
+
+        private struct State {
+            let source: (any FlagValueSource)?
+            var flags = [String: any FlagValue]()
+        }
 
         // MARK: - Properties
 
         private let flagPole: FlagPole<RootGroup>?
-        private let source: (any FlagValueSource)?
+        private let state: Lock<State>
 
         private let rootKeyPath: FlagKeyPath
         private let keys: Set<String>?
-
-        private var flags: [String: any FlagValue] = [:]
 
 
         // MARK: - Initialisation
 
         init(flagPole: FlagPole<RootGroup>?, source: (any FlagValueSource)?, rootKeyPath: FlagKeyPath, keys: Set<String>?) {
             self.flagPole = flagPole
-            self.source = source
+            self.state = Lock(uncheckedState: State(source: source))
             self.rootKeyPath = rootKeyPath
             self.keys = keys
         }
@@ -41,7 +44,7 @@ extension Snapshot {
         func build() -> [String: any FlagValue] {
             let hierarchy = RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
             hierarchy.walk(visitor: self)
-            return flags
+            return state.withLock { $0.flags }
         }
 
     }
@@ -55,14 +58,16 @@ extension Snapshot.Builder: FlagLookup {
 
     /// Provides lookup capabilities to the flag hierarchy for our visit.
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
-        if let flagPole {
-            flagPole.value(for: keyPath)
+        state.withLock { state in
+            if let flagPole {
+                flagPole.value(for: keyPath)
 
-        } else if let source, let value: Value = source.flagValue(key: keyPath.key) {
-            value
+            } else if let source = state.source, let value: Value = source.flagValue(key: keyPath.key) {
+                value
 
-        } else {
-            nil
+            } else {
+                nil
+            }
         }
     }
 
@@ -95,7 +100,9 @@ extension Snapshot.Builder: FlagVisitor {
             return
         }
 
-        flags[key] = value
+        state.withLock { state in
+            state.flags[key] = value
+        }
     }
 
 }

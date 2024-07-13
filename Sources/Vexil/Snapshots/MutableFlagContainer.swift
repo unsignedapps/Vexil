@@ -21,7 +21,7 @@ public class MutableFlagContainer<Container> where Container: FlagContainer {
     // MARK: - Properties
 
     private let container: Container
-    private let source: any FlagValueSource
+    private var source: any FlagValueSource
 
 
     // MARK: - Dynamic Member Lookup

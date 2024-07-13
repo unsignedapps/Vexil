@@ -18,7 +18,9 @@ extension Snapshot: FlagValueSource {
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        values[key] as? Value
+        values.withLock {
+            $0[key] as? Value
+        }
     }
 
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {

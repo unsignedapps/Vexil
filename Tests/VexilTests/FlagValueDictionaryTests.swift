@@ -41,8 +41,8 @@ final class FlagValueDictionaryTests: XCTestCase {
         snapshot.oneFlagGroup.secondLevelFlag = false
         try flagPole.save(snapshot: snapshot, to: source)
 
-        XCTAssertEqual(source.storage["top-level-flag"], .bool(true))
-        XCTAssertEqual(source.storage["one-flag-group.second-level-flag"], .bool(false))
+        XCTAssertEqual(source["top-level-flag"], .bool(true))
+        XCTAssertEqual(source["one-flag-group.second-level-flag"], .bool(false))
     }
 
     // MARK: - Equatable Tests

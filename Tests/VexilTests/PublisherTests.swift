@@ -191,7 +191,7 @@ private struct TestFlags {
 }
 
 private final class TestSource: FlagValueSource {
-    var name = "Test Source"
+    let name = "Test Source"
 
     let stream: AsyncStream<FlagChange>
     let continuation: AsyncStream<FlagChange>.Continuation

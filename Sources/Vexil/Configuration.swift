@@ -15,7 +15,7 @@ import Foundation
 
 /// A configuration struct passed into the `FlagPole` to configure it.
 ///
-public struct VexilConfiguration {
+public struct VexilConfiguration: Sendable {
 
     /// The strategy to use when calculating the keys of all `Flag`s within the `FlagPole`.
     var codingPathStrategy: CodingKeyStrategy

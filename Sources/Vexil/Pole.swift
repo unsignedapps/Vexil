@@ -45,7 +45,7 @@ import Foundation
 ///         so as not to conflict with the dynamic member properties on your `FlagContainer`.
 ///
 @dynamicMemberLookup
-public class FlagPole<RootGroup> where RootGroup: FlagContainer {
+public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer {
 
     // MARK: - Properties
 
@@ -67,12 +67,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     public var _sources: [any FlagValueSource] {
         get {
-            manager.withLock {
+            manager.withLockUnchecked {
                 $0.sources
             }
         }
         set {
-            manager.withLock { manager in
+            manager.withLockUnchecked { manager in
                 let oldValue = manager.sources
                 manager.sources = newValue
                 subscribeChannel(oldSources: oldValue, newSources: newValue, on: &manager)
@@ -87,7 +87,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     public static var defaultSources: [any FlagValueSource] {
         [
-            UserDefaults.standard,
+            FlagValueSourceCoordinator(source: UserDefaults.standard),
         ]
     }
 
@@ -197,11 +197,17 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     public var flagPublisher: some Combine.Publisher<RootGroup, Never> {
         changePublisher
-            .map { _ in
-                self.rootGroup
+            .map { [weak self] _ -> AnyPublisher<RootGroup, Never> in
+                guard let self else {
+                    return Empty(completeImmediately: true).eraseToAnyPublisher()
+                }
+                return Just(rootGroup).eraseToAnyPublisher()
             }
+            .switchToLatest()
             .prepend(rootGroup)
     }
+
+    private let _snapshotPublisher =  UnfairLock<Publishers.Autoconnect<Publishers.Multicast<Publishers.Drop<FlagPublisher<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>>>, CurrentValueSubject<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>.Element, Never>>>?>(uncheckedState: nil)
 
     /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
     ///
@@ -214,13 +220,20 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// - Note: This publisher will be shared between callers so that only one snapshot will need to be
     /// taken per flag change, not one per flag change per subscriber.
     ///
-    public private(set) lazy var snapshotPublisher: some Combine.Publisher<Snapshot<RootGroup>, Never> = {
-        let current = snapshot()
-        return FlagPublisher(snapshotStream)
-            .dropFirst()                            // this could be out of date compared to the snapshot we just took
-            .multicast { CurrentValueSubject(current) }
-            .autoconnect()
-    }()
+    public var snapshotPublisher: some Combine.Publisher<Snapshot<RootGroup>, Never> {
+        _snapshotPublisher.withLockUnchecked { cached in
+            if let cached {
+                return cached
+            }
+            let current = snapshot()
+            let publisher = FlagPublisher(snapshotStream)
+                .dropFirst()                            // this could be out of date compared to the snapshot we just took
+                .multicast { CurrentValueSubject(current) }
+                .autoconnect()
+            cached = publisher
+            return publisher
+        }
+    }
 
     /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
     ///
@@ -252,12 +265,14 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///                     into the snapshot instead.
     ///   - change:         A ``FlagChange`` (as emitted from ``changeStream`` or ``changePublisher``).
     ///                     Only changes described by the `change` will be included in the snapshot.
+    ///   - displayName:    An optional display name for the snapshot that gets shown in editors like Vexillographer.
     ///
-    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all) -> Snapshot<RootGroup> {
+    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all, displayName: String? = nil) -> Snapshot<RootGroup> {
         Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
-            change: change
+            change: change,
+            displayName: displayName
         )
     }
 
@@ -266,8 +281,11 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// The snapshot itself will be empty and access to any flags
     /// within the snapshot will return the flag's `defaultValue`.
     ///
-    public func emptySnapshot() -> Snapshot<RootGroup> {
-        Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
+    /// - Parameters:
+    ///   - displayName:    An optional display name for the snapshot that gets shown in editors like Vexillographer.
+    ///
+    public func emptySnapshot(displayName: String? = nil) -> Snapshot<RootGroup> {
+        Snapshot(flagPole: self, copyingFlagValuesFrom: nil, displayName: displayName)
     }
 
     /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
@@ -334,12 +352,25 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:           The `Snapshot` to save to the source. Only the values included in the snapshot will be saved.
     ///   - to:                 The `FlagValueSource` to save the snapshot to.
     ///
-    public func save(snapshot: Snapshot<RootGroup>, to source: any FlagValueSource) throws {
+    public func save(snapshot: Snapshot<RootGroup>, to source: some FlagValueSource) throws {
         try snapshot.save(to: source)
     }
 
 
     // MARK: - Mutating Flag Values
+
+    /// Copies the flag values from the current `FlagPole` to some `FlagValueSource`.
+    ///
+    /// ```swift
+    /// /// Copies all flags on the flag pole into the provided dictionary
+    /// let dictionary = FlagValueDictionary()
+    /// try flagPole.copyFlagValues(to: dictionary)
+    /// ```
+    ///
+    public func copyFlagValues(to destination: some FlagValueSource) throws {
+        let snapshot = snapshot()
+        try save(snapshot: snapshot, to: destination)
+    }
 
     /// Copies the flag values from one `FlagValueSource` to another.
     ///
@@ -350,10 +381,10 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// /// Copies any flags currently saved in the `UserDefaults` to a `FlagValueDictionary`
     /// let defaults = UserDefaults.standard
     /// let dictionary = FlagValueDictionary()
-    /// try flagPole.copy(from: defaults, to: dictionary)
+    /// try flagPole.copyFlagValues(from: defaults, to: dictionary)
     /// ```
     ///
-    public func copyFlagValues(from source: (any FlagValueSource)?, to destination: any FlagValueSource) throws {
+    public func copyFlagValues(from source: some FlagValueSource, to destination: some FlagValueSource) throws {
         let snapshot = snapshot(of: source)
         try save(snapshot: snapshot, to: destination)
     }
@@ -364,16 +395,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// method is called. This is useful if you want to provide a button or the capability
     /// to "reset" a source back to its defaults, or clear any overrides in the given source.
     ///
-    public func removeFlagValues(in source: any FlagValueSource) throws {
-        let flagsInSource = FlagValueDictionary()
-        try copyFlagValues(from: source, to: flagsInSource)
-
-        for key in flagsInSource.keys {
-
-            // setFlagValue<Value> needs to specialise the generic, so we picked `Bool` at
-            // random so we can pass in the nil
-            try source.setFlagValue(Bool?.none, key: key)
-        }
+    public func removeFlagValues(in source: some FlagValueSource) throws {
+        let remover = FlagRemover(source: source)
+        try remover.apply(to: rootGroup)
     }
 
 }

@@ -63,7 +63,7 @@ import Foundation
 /// ```
 ///
 @dynamicMemberLookup
-public class Snapshot<RootGroup> where RootGroup: FlagContainer {
+public final class Snapshot<RootGroup>: Sendable where RootGroup: FlagContainer {
 
     // MARK: - Properties
 
@@ -71,13 +71,13 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
     public let id = UUID().uuidString
 
     /// An optional display name to use in flag editors like Vexillographer.
-    public var displayName: String?
+    public let displayName: String?
 
     // MARK: - Internal Properties
 
-    private var rootKeyPath: FlagKeyPath
+    private let rootKeyPath: FlagKeyPath
 
-    private(set) var values: [String: any FlagValue] = [:]
+    let values: Lock<[String: any FlagValue]>
 
     var rootGroup: RootGroup {
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
@@ -88,16 +88,25 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
 
     // MARK: - Initialisation
 
-    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, keys: Set<String>? = nil) {
+    init(
+        flagPole: FlagPole<RootGroup>,
+        copyingFlagValuesFrom source: Source?,
+        keys: Set<String>? = nil,
+        displayName: String? = nil
+    ) {
         self.rootKeyPath = flagPole.rootKeyPath
+        self.values = .init(initialState: [:])
+        self.displayName = displayName
 
         if let source {
             populateValuesFrom(source, flagPole: flagPole, keys: keys)
         }
     }
 
-    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange) {
+    init(flagPole: FlagPole<RootGroup>, copyingFlagValuesFrom source: Source?, change: FlagChange, displayName: String? = nil) {
         self.rootKeyPath = flagPole.rootKeyPath
+        self.values = .init(initialState: [:])
+        self.displayName = displayName
 
         if let source {
             switch change {
@@ -109,9 +118,10 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
     }
 
-    init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>) {
+    init(flagPole: FlagPole<RootGroup>, snapshot: Snapshot<RootGroup>, displayName: String? = nil) {
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = snapshot.values
+        self.displayName = displayName
     }
 
 
@@ -131,17 +141,18 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         }
         set {
             if let keyPath = rootGroup._allFlagKeyPaths[dynamicMember] {
-                values[keyPath.key] = newValue
+                values.withLock {
+                    $0[keyPath.key] = newValue
+                }
             }
         }
     }
 
-    func save(to source: any FlagValueSource) throws {
-        let saver = FlagSaver(source: source, flags: Set(values.keys))
-        rootGroup.walk(visitor: saver)
-        if let error = saver.error {
-            throw error
-        }
+    func save(to source: some FlagValueSource) throws {
+        // Walking the root group requires looking up values so don't wrap the rest in the lock
+        let keys = values.withLock { Set($0.keys) }
+        let setter = FlagSetter(source: source, keys: keys)
+        try setter.apply(to: rootGroup)
     }
 
 
@@ -154,14 +165,18 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
         case let .source(flagValueSource):
             Builder(flagPole: nil, source: flagValueSource, rootKeyPath: flagPole.rootKeyPath, keys: keys)
         }
-        values = builder.build()
+        values.withLock {
+            $0 = builder.build()
+        }
     }
 
     func set(_ value: (some FlagValue)?, key: String) {
-        if let value {
-            values[key] = value
-        } else {
-            values.removeValue(forKey: key)
+        values.withLock {
+            if let value {
+                $0[key] = value
+            } else {
+                $0.removeValue(forKey: key)
+            }
         }
 
         stream.send(.some([ FlagKeyPath(key, separator: rootKeyPath.separator) ]))

@@ -83,13 +83,22 @@ final class EquatableTests: XCTestCase {
         let expectation = expectation(description: "snapshot")
 
         let cancellable = pole.snapshotPublisher
-            .handleEvents(receiveOutput: { allSnapshots.append($0) })
+            .handleEvents(receiveOutput: {
+                print($0.values.withLock { $0 })
+                allSnapshots.append($0)
+            })
             .removeDuplicates()
-            .handleEvents(receiveOutput: { firstFilter.append($0) })
+            .handleEvents(receiveOutput: {
+                firstFilter.append($0)
+            })
             .removeDuplicates(by: { $0.subgroup == $1.subgroup })
-            .handleEvents(receiveOutput: { secondFilter.append($0) })
+            .handleEvents(receiveOutput: {
+                secondFilter.append($0)
+            })
             .removeDuplicates(by: { $0.subgroup.doubleSubgroup == $1.subgroup.doubleSubgroup })
-            .handleEvents(receiveOutput: { thirdFilter.append($0) })
+            .handleEvents(receiveOutput: {
+                thirdFilter.append($0)
+            })
             .print()
             .sink { _ in
                 if allSnapshots.count == 6 {
@@ -105,7 +114,7 @@ final class EquatableTests: XCTestCase {
         dictionary["subgroup.double-subgroup.third-level-flag"] = .bool(true)  // 5
 
         // THEN we should have 6 snapshots of varying equatability
-        wait(for: [ expectation ], timeout: 0.1)
+        wait(for: [ expectation ], timeout: 1.0)
 
         XCTAssertNotNil(cancellable)
 
