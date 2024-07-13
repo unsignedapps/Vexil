@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -97,7 +97,7 @@ final class PublisherTests: XCTestCase {
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source1, source2 ])
 
         let cancellable = pole.flagPublisher
-            .sink { snapshot in
+            .sink { _ in
                 expectation.fulfill()
             }
 

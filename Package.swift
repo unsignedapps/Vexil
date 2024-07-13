@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import CompilerPluginSupport
@@ -23,7 +23,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.51.12"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.0"),
     ],
 
     targets: [

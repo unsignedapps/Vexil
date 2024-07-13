@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -106,8 +106,8 @@ public class Snapshot<RootGroup> where RootGroup: FlagContainer {
             switch change {
             case .all:
                 populateValuesFrom(source, flagPole: flagPole, keys: nil)
-            case .some(let keys):
-                populateValuesFrom(source, flagPole: flagPole, keys: Set(keys.map({ $0.key })))
+            case let .some(keys):
+                populateValuesFrom(source, flagPole: flagPole, keys: Set(keys.map(\.key)))
             }
         }
     }

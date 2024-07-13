@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -46,14 +46,14 @@ struct StreamManager {
 // MARK: - Stream Setup: Subject -> Sources
 
 extension FlagPole {
-    
+
     var stream: StreamManager.Stream {
         manager.withLock { manager in
             // Streaming already started
             if let stream = manager.stream {
                 return stream
             }
-            
+
             // Setup streaming
             let stream = StreamManager.Stream()
             manager.stream = stream
@@ -61,7 +61,7 @@ extension FlagPole {
             return stream
         }
     }
-    
+
     func subscribeChannel(oldSources: [any FlagValueSource], newSources: [any FlagValueSource], on manager: inout StreamManager, isInitialSetup: Bool = false) {
         let difference = newSources.difference(from: oldSources, by: { $0.id == $1.id })
         var didChange = false

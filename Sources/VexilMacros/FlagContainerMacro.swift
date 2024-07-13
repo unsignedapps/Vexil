@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -25,7 +25,7 @@ extension FlagContainerMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        [
+        try [
 
             // Properties
 
@@ -38,12 +38,12 @@ extension FlagContainerMacro: MemberMacro {
 
             // Initialisation
 
-            try DeclSyntax(
+            DeclSyntax(
                 InitializerDeclSyntax("init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)") {
                     ExprSyntax("self._flagKeyPath = _flagKeyPath")
                     ExprSyntax("self._flagLookup = _flagLookup")
                 }
-                    .with(\.modifiers, declaration.modifiers.scopeSyntax)
+                .with(\.modifiers, declaration.modifiers.scopeSyntax)
             ),
 
         ]
@@ -73,7 +73,7 @@ extension FlagContainerMacro: ExtensionMacro {
         }
 
         // We also can't generate Equatable conformance if there is no variables to generate them
-        if shouldGenerateConformance.equatable && declaration.memberBlock.variables.isEmpty {
+        if shouldGenerateConformance.equatable, declaration.memberBlock.variables.isEmpty {
             shouldGenerateConformance.equatable = false
         }
 
@@ -83,8 +83,8 @@ extension FlagContainerMacro: ExtensionMacro {
             return []
         }
 
-        var decls = [
-            try ExtensionDeclSyntax(
+        var decls = try [
+            ExtensionDeclSyntax(
                 extendedType: type,
                 inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "FlagContainer")) ])
             ) {
@@ -120,7 +120,7 @@ extension FlagContainerMacro: ExtensionMacro {
                                                 .init(
                                                     period: .periodToken(),
                                                     component: .property(.init(declName: .init(baseName: .identifier(flag.propertyName))))
-                                                )
+                                                ),
                                             ]
                                         ),
                                         value: flag.key,
@@ -137,12 +137,12 @@ extension FlagContainerMacro: ExtensionMacro {
                 }
                 .with(\.modifiers, declaration.modifiers.scopeSyntax)
 
-            }
+            },
         ]
 
         if shouldGenerateConformance.equatable {
-            decls += [
-                try ExtensionDeclSyntax(
+            try decls += [
+                ExtensionDeclSyntax(
                     extendedType: type,
                     inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "Equatable")) ])
                 ) {
@@ -163,7 +163,7 @@ extension FlagContainerMacro: ExtensionMacro {
                         }
                         .with(\.modifiers, Array(declaration.modifiers.scopeSyntax) + [ DeclModifierSyntax(name: .keyword(.static)) ])
                     }
-                }
+                },
             ]
         }
 
@@ -212,8 +212,8 @@ private extension [TypeSyntax] {
             } else if type.identifier == "Equatable" {
                 result = (result.0, true)
 
-            // For some reason Swift 5.9 concatenates these into a single `IdentifierTypeSyntax`
-            // instead of providing them as array items
+                // For some reason Swift 5.9 concatenates these into a single `IdentifierTypeSyntax`
+                // instead of providing them as array items
             } else if type.identifier == "FlagContainerEquatable" {
                 result = (true, true)
             }

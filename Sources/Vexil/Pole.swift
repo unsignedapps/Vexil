@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -389,12 +389,12 @@ extension FlagPole: CustomDebugStringConvertible {
     public var debugDescription: String {
         "FlagPole<\(String(describing: RootGroup.self))>("
             + Mirror(reflecting: rootGroup).children
-                .map { _, value -> String in
-                    (value as? CustomDebugStringConvertible)?.debugDescription
+            .map { _, value -> String in
+                (value as? CustomDebugStringConvertible)?.debugDescription
                     ?? (value as? CustomStringConvertible)?.description
                     ?? String(describing: value)
-                }
-                .joined(separator: "; ")
+            }
+            .joined(separator: "; ")
             + ")"
     }
 }

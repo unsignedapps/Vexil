@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,19 +11,19 @@
 //
 //===----------------------------------------------------------------------===//
 
- extension Snapshot: Identifiable {}
+extension Snapshot: Identifiable {}
 
- extension Snapshot: Equatable where RootGroup: Equatable {
+extension Snapshot: Equatable where RootGroup: Equatable {
     public static func == (lhs: Snapshot, rhs: Snapshot) -> Bool {
         lhs.rootGroup == rhs.rootGroup
     }
- }
+}
 
- extension Snapshot: Hashable where RootGroup: Hashable {
+extension Snapshot: Hashable where RootGroup: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(rootGroup)
     }
- }
+}
 
 // extension Snapshot: CustomDebugStringConvertible {
 //    public var debugDescription: String {
