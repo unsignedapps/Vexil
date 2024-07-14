@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: xcrun xcodebuild test -workspace . -scheme "Vexil-Package" -destination "platform=watchOS Simulator,name=Any watchOS Simulator Device"
+        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -destination "platform=watchOS Simulator,name=Any watchOS Simulator Device"
 
   build-watchos:
     runs-on: ubuntu-latest
