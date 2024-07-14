@@ -1,4 +1,4 @@
-name: macOS Tests
+name: visionOS Tests
 
 on:
   push:
@@ -20,11 +20,11 @@ jobs:
         with:
           filters: |
             changed:
-              - '.github/workflows/macos-tests.yml'
+              - '.github/workflows/visionos-tests.yml'
               - '**/*.swift'
 
-  build-macos-matrix:
-    name: macOS Metrix
+  build-visionos-matrix:
+    name: visionOS Metrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
@@ -40,14 +40,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift test
+        run: xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=visionOS Simulator,name=Any visionOS Simulator Device"
 
-  build-macos:
+  build-visionos:
     runs-on: ubuntu-latest
-    name: macOS Tests
+    name: visionOS Tests
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-macos-matrix
+    needs: build-visionos-matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build-macos-matrix.result == 'failure' }}
+        if: ${{ needs.build-visionos-matrix.result == 'failure' }}
         run: exit 1

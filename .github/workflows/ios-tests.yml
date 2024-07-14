@@ -23,18 +23,15 @@ jobs:
               - '.github/workflows/ios-tests.yml'
               - '**/*.swift'
 
-  #####################
-  # macOS 11 Versions #
-  #####################
-
-  build-ios-macos-11-matrix:
-    name: iOS Metrix - macOS 11
-    runs-on: macos-11.0
+  build-ios-matrix:
+    name: iOS Metrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2.1" ]
+        xcode: [ "15.4", "16.0" ]
+        os: [ macos-14, macos-14-large ]
+    runs-on: {{ $matrix.os }}
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -43,49 +40,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=iPhone 8"
+        run: xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,name=Any iOS Simulator Device"
 
-  build-ios-macos-11:
+  build-ios:
     runs-on: ubuntu-latest
-    name: iOS Tests - macOS 11
+    name: iOS Tests
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-ios-macos-11-matrix
+    needs: build-ios-matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build-ios-macos-11-matrix.result == 'failure' }}
-        run: exit 1
-
-  #####################
-  # macOS 12 Versions #
-  #####################
-
-  build-ios-macos-12-matrix:
-    name: iOS Matrix - macOS 12
-    runs-on: macos-12
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: check-changes
-    strategy:
-      matrix:
-        xcode: [ "13.1", "13.2.1", "13.3.1", "13.4.1", "14.0.1", "14.1", "14.2" ]
-
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: |
-          DEVICE_ID=`xcrun simctl list --json devices available iPhone | jq -r '.devices | to_entries | map(select(.value | add)) | sort_by(.key) | last.value | first.udid'`
-          swift package generate-xcodeproj
-          xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=iOS Simulator,id=$DEVICE_ID"
-
-  build-ios-macos-12:
-    runs-on: ubuntu-latest
-    name: iOS Tests - macOS 12
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-ios-macos-12-matrix
-    steps:
-      - name: Check build matrix status
-        if: ${{ needs.build-ios-macos-12-matrix.result == 'failure' }}
+        if: ${{ needs.build-ios-matrix.result == 'failure' }}
         run: exit 1
