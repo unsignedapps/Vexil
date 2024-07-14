@@ -136,9 +136,14 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
-    ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
         rootGroup[keyPath: dynamicMember]
+    }
+
+    /// Walks the provided ``FlagVisitor`` across the flag hierarchy. Your visitor is informed
+    /// of every FlagGroup or Flag visited, allowing you to inspect the hierarchy and react as required.
+    public func walk(visitor: any FlagVisitor) {
+        rootGroup.walk(visitor: visitor)
     }
 
 
