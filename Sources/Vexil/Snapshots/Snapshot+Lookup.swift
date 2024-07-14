@@ -23,7 +23,7 @@ extension Snapshot: FlagLookup {
         }
     }
 
-    public var changeStream: FlagChangeStream {
+    public var changes: FlagChangeStream {
         stream.stream
     }
 

@@ -22,19 +22,11 @@ public protocol FlagLookup: Sendable {
     @inlinable
     func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue
 
-    //    @inlinable
-    //    func value<Value>(for keyPath: FlagKeyPath, in source: any FlagValueSource) -> Value? where Value: FlagValue
-
-    var changeStream: FlagChangeStream { get }
+    var changes: FlagChangeStream { get }
 
 }
 
 extension FlagPole: FlagLookup {
-
-    @inlinable
-    public func value<Value>(for keyPath: FlagKeyPath, in source: any FlagValueSource) -> Value? where Value: FlagValue {
-        source.flagValue(key: keyPath.key)
-    }
 
     /// This is the primary lookup function in a `FlagPole`. When you access the `Flag.wrappedValue`
     /// this lookup function is called.

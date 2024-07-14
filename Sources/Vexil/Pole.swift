@@ -153,7 +153,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///
     /// A sequence of `FlagChange` elements are returned which describe changes to flags.
     ///
-    public var changeStream: FlagChangeStream {
+    public var changes: FlagChangeStream {
         stream.stream
     }
 
@@ -161,8 +161,8 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///
     /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to change changed.
     ///
-    public var flagStream: AsyncChain2Sequence<AsyncSyncSequence<[RootGroup]>, AsyncMapSequence<FlagChangeStream, RootGroup>> {
-        let flagStream = changeStream
+    public var flags: AsyncChain2Sequence<AsyncSyncSequence<[RootGroup]>, AsyncMapSequence<FlagChangeStream, RootGroup>> {
+        let flagStream = changes
             .map { _ in
                 self.rootGroup
             }
@@ -170,8 +170,8 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
         return chain([ rootGroup ].async, flagStream)
     }
 
-    public var snapshotStream: AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>> {
-        let snapshotStream = changeStream
+    public var snapshots: AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>> {
+        let snapshotStream = changes
             .map { [weak self] change in
                 self?.snapshot(including: change)
             }
@@ -190,7 +190,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     /// will list the keys of the flags that are known to have changed.
     ///
     public var changePublisher: some Combine.Publisher<FlagChange, Never> {
-        FlagPublisher(changeStream)
+        FlagPublisher(changes)
     }
 
     /// A `Publisher` that will emit every time one or more flag values have changed.
@@ -231,7 +231,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
                 return cached
             }
             let current = snapshot()
-            let publisher = FlagPublisher(snapshotStream)
+            let publisher = FlagPublisher(snapshots)
                 .dropFirst()                            // this could be out of date compared to the snapshot we just took
                 .multicast { CurrentValueSubject(current) }
                 .autoconnect()
@@ -268,7 +268,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
     ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
     ///                     into the snapshot instead.
-    ///   - change:         A ``FlagChange`` (as emitted from ``changeStream`` or ``changePublisher``).
+    ///   - change:         A ``FlagChange`` (as emitted from ``changes`` or ``changePublisher``).
     ///                     Only changes described by the `change` will be included in the snapshot.
     ///   - displayName:    An optional display name for the snapshot that gets shown in editors like Vexillographer.
     ///

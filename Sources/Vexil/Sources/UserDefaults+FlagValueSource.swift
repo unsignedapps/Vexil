@@ -58,7 +58,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<NotificationCenter.Notifications, FlagChange>
 
-    public var changeStream: ChangeStream {
+    public var changes: ChangeStream {
         NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self)
             .map { _ in
                 FlagChange.all
@@ -69,7 +69,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changeStream: ChangeStream {
+    public var changes: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
 
@@ -85,7 +85,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changeStream: ChangeStream {
+    public var changes: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
 
@@ -100,7 +100,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 #else
 
     /// No support for real-time flag publishing with `UserDefaults` on Linux
-    public var changeStream: EmptyFlagChangeStream {
+    public var changes: EmptyFlagChangeStream {
         .init()
     }
 

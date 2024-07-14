@@ -41,7 +41,7 @@ public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID ==
 
     /// Return an `AsyncSequence` that emits ``FlagChange`` values any time flag values have changed.
     /// If your implementation does not support real-time flag value monitoring you can return an ``EmptyFlagChangeStream``.
-    var changeStream: ChangeStream { get }
+    var changes: ChangeStream { get }
 
 }
 

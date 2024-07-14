@@ -101,7 +101,7 @@ extension FlagPole {
     private func makeSubscribeTask(for source: some FlagValueSource) -> Task<Void, Never> {
         .detached(priority: .low) { [manager] in
             do {
-                for try await change in source.changeStream {
+                for try await change in source.changes {
                     manager.withLock {
                         $0.stream?.send(change)
                     }

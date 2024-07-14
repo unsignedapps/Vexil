@@ -68,7 +68,7 @@ final class FlagValueCompilationTests: XCTestCase {
                 fatalError()
             }
 
-            var changeStream: EmptyFlagChangeStream {
+            var changes: EmptyFlagChangeStream {
                 .init()
             }
         }

@@ -208,7 +208,7 @@ private final class TestSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var changeStream: AsyncStream<FlagChange> {
+    var changes: AsyncStream<FlagChange> {
         stream
     }
 

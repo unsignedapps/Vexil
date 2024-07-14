@@ -84,8 +84,8 @@ extension FlagWigwag: AsyncSequence {
 
     public typealias Sequence = AsyncChain2Sequence<AsyncSyncSequence<[Output]>, AsyncMapSequence<FilteredFlagChangeStream, Output>>
 
-    public var changeStream: FilteredFlagChangeStream {
-        FilteredFlagChangeStream(filter: .some([ keyPath ]), base: lookup.changeStream)
+    public var changes: FilteredFlagChangeStream {
+        FilteredFlagChangeStream(filter: .some([ keyPath ]), base: lookup.changes)
     }
 
     private func getOutput() -> Output {
@@ -95,7 +95,7 @@ extension FlagWigwag: AsyncSequence {
     private func makeAsyncSequence() -> Sequence {
         chain(
             [ getOutput() ].async,
-            changeStream.map { _ in getOutput() }
+            changes.map { _ in getOutput() }
         )
     }
 
