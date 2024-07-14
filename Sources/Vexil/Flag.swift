@@ -17,14 +17,6 @@ public macro Flag<Value: FlagValue>(
     name: StaticString? = nil,
     keyStrategy: VexilConfiguration.FlagKeyStrategy = .default,
     default initialValue: Value,
-    description: StaticString
-) = #externalMacro(module: "VexilMacros", type: "FlagMacro")
-
-@attached(accessor)
-@attached(peer, names: prefixed(`$`))
-public macro Flag<Value: FlagValue>(
-    name: StaticString? = nil,
-    keyStrategy: VexilConfiguration.FlagKeyStrategy = .default,
-    default initialValue: Value,
-    display: FlagDisplayOption
+    description: StaticString,
+    display: FlagDisplayOption = .default
 ) = #externalMacro(module: "VexilMacros", type: "FlagMacro")

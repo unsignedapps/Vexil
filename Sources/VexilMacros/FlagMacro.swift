@@ -23,7 +23,8 @@ public struct FlagMacro {
     let key: ExprSyntax
     let name: ExprSyntax?
     let defaultValue: ExprSyntax
-    let description: ExprSyntax?
+    let description: ExprSyntax
+    let display: ExprSyntax?
     let type: TypeSyntax
 
 
@@ -42,7 +43,7 @@ public struct FlagMacro {
         }
 
         // Either the `description:` or `display:` arguments should be specified, we handle them together.
-        guard let optionExprSyntax = arguments[label: "description"] ?? arguments[label: "display"] else {
+        guard let description = arguments[label: "description"] else {
             throw Diagnostic.missingDescription
         }
 
@@ -64,19 +65,12 @@ public struct FlagMacro {
             self.name = nil
         }
 
-        if
-            let descriptionMemberAccess = optionExprSyntax.expression.as(MemberAccessExprSyntax.self),
-            descriptionMemberAccess.declName.baseName.text == "hidden"
-        {
-            self.description = nil
-        } else {
-            self.description = optionExprSyntax.expression
-        }
-
         self.propertyName = identifier.text
         self.key = strategy.createKey(identifier.text)
         self.defaultValue = defaultExprSyntax.expression
         self.type = type
+        self.description = description.expression
+        self.display = arguments[label: "display"]?.expression
     }
 
 
@@ -146,8 +140,8 @@ extension FlagMacro: PeerMacro {
                         keyPath: \(macro.key),
                         name: \(macro.name ?? "nil"),
                         defaultValue: \(macro.defaultValue),
-                        description: \(macro.description ?? "nil"),
-                        displayOption: \(raw: macro.description == nil ? ".init(.hidden)" : "nil"),
+                        description: \(macro.description),
+                        displayOption: \(macro.display ?? ".default"),
                         lookup: _flagLookup
                     )
                 }

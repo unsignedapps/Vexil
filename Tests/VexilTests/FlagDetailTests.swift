@@ -29,12 +29,12 @@ final class FlagDetailTests: XCTestCase {
 
         XCTAssertEqual(pole.subgroup.$secondLevelFlag.key, "subgroup.second-level-flag")
         XCTAssertNil(pole.subgroup.$secondLevelFlag.name)
-        XCTAssertNil(pole.subgroup.$secondLevelFlag.description)
+        XCTAssertEqual(pole.subgroup.$secondLevelFlag.description, "Second Level Flag")
         XCTAssertEqual(pole.subgroup.$secondLevelFlag.displayOption, .hidden)
 
         XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.key, "subgroup.double-subgroup.third-level-flag")
         XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.name, "meow")
-        XCTAssertNil(pole.subgroup.doubleSubgroup.$thirdLevelFlag.description)
+        XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.description, "Third Level Flag")
         XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.displayOption, .hidden)
     }
 
@@ -60,7 +60,7 @@ private struct TestFlags {
 @FlagContainer
 private struct SubgroupFlags {
 
-    @Flag(default: false, display: .hidden)
+    @Flag(default: false, description: "Second Level Flag", display: .hidden)
     var secondLevelFlag: Bool
 
     @FlagGroup(description: "Another level of test flags")
@@ -71,7 +71,7 @@ private struct SubgroupFlags {
 @FlagContainer
 private struct DoubleSubgroupFlags {
 
-    @Flag(name: "meow", default: false, display: FlagDisplayOption.hidden)
+    @Flag(name: "meow", default: false, description: "Third Level Flag", display: FlagDisplayOption.hidden)
     var thirdLevelFlag: Bool
 
 }

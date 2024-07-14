@@ -45,7 +45,7 @@ public struct FlagGroupWigwag<Output>: Sendable where Output: FlagContainer {
     public let description: String?
 
     /// Options affecting the display of this flag or flag group
-    public let displayOption: VexilDisplayOption?
+    public let displayOption: FlagGroupDisplayOption?
 
     /// How we can lookup flag value changes
     let lookup: any FlagLookup
@@ -58,7 +58,7 @@ public struct FlagGroupWigwag<Output>: Sendable where Output: FlagContainer {
         keyPath: FlagKeyPath,
         name: String?,
         description: String?,
-        displayOption: VexilDisplayOption?,
+        displayOption: FlagGroupDisplayOption?,
         lookup: any FlagLookup
     ) {
         self.keyPath = keyPath

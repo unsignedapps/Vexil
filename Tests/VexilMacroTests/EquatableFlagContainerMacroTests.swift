@@ -79,7 +79,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "Some Flag",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -154,7 +154,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "Some Flag",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -228,7 +228,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "Some Flag",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }

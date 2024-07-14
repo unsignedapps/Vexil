@@ -43,7 +43,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -78,7 +78,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: 123.456,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -113,7 +113,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: "alpha",
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -148,7 +148,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: .testCase,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -167,7 +167,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, display: "meow")
+                @Flag(name: "Super Test!", default: false, description: "meow")
                 var testProperty: Bool
             }
             """,
@@ -186,7 +186,7 @@ final class FlagMacroTests: XCTestCase {
                         name: "Super Test!",
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -202,7 +202,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, display: .hidden)
+                @Flag(name: "Super Test!", default: false, description: "Test", display: .hidden)
                 var testProperty: Bool
             }
             """,
@@ -220,8 +220,8 @@ final class FlagMacroTests: XCTestCase {
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: "Super Test!",
                         defaultValue: false,
-                        description: nil,
-                        displayOption: .init(.hidden),
+                        description: "Test",
+                        displayOption: .hidden,
                         lookup: _flagLookup
                     )
                 }
@@ -237,7 +237,7 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: FlagDescription.hidden)
+                @Flag(name: "Super Test!", default: false, description: "Test", display: FlagDisplayOption.hidden)
                 var testProperty: Bool
             }
             """,
@@ -255,8 +255,8 @@ final class FlagMacroTests: XCTestCase {
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
                         name: "Super Test!",
                         defaultValue: false,
-                        description: nil,
-                        displayOption: .init(.hidden),
+                        description: "Test",
+                        displayOption: FlagDisplayOption.hidden,
                         lookup: _flagLookup
                     )
                 }
@@ -294,7 +294,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -329,7 +329,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -367,7 +367,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -402,7 +402,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -437,7 +437,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -472,7 +472,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }
@@ -507,7 +507,7 @@ final class FlagMacroTests: XCTestCase {
                         name: nil,
                         defaultValue: false,
                         description: "meow",
-                        displayOption: nil,
+                        displayOption: .default,
                         lookup: _flagLookup
                     )
                 }

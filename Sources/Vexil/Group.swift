@@ -17,5 +17,5 @@ public macro FlagGroup(
     name: StaticString? = nil,
     keyStrategy: VexilConfiguration.GroupKeyStrategy = .default,
     description: StaticString,
-    display: VexilDisplayOption = .navigation
+    display: FlagGroupDisplayOption = .navigation
 ) = #externalMacro(module: "VexilMacros", type: "FlagGroupMacro")

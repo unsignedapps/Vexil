@@ -11,28 +11,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-public enum VexilDisplayOption: Equatable, Sendable {
+public enum FlagGroupDisplayOption: Equatable, Sendable {
 
     case hidden
     case navigation
     case section
-
-
-    // MARK: - Conversion
-
-    public init(_ flagDisplayOption: FlagDisplayOption) {
-        switch flagDisplayOption {
-        case .hidden:                       self = .hidden
-        }
-    }
 
 }
 
 
 // MARK: - Flag Display Options
 
-public enum FlagDisplayOption {
+public enum FlagDisplayOption: Equatable, Sendable {
 
+    case `default`
     case hidden
 
 }
