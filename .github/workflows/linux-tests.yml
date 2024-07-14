@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         swift: [ "5.10.1" ]
-        os: [ amazonlinux2, bookworm, centos7, focal, jammy, rhel-ubi9, mantic, noble  ]
+        os: [ amazonlinux2, bookworm, focal, jammy, rhel-ubi9, mantic, noble  ]
 
     container:
       image: swift:${{ matrix.swift }}-${{ matrix.os }}
