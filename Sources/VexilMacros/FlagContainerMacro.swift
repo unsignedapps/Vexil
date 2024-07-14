@@ -189,11 +189,8 @@ private extension DeclModifierListSyntax {
 private extension TypeSyntax {
     var identifier: String? {
         for token in tokens(viewMode: .all) {
-            switch token.tokenKind {
-            case let .identifier(identifier):
+            if case let .identifier(identifier) = token.tokenKind {
                 return identifier
-            default:
-                break
             }
         }
         return nil

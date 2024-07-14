@@ -165,9 +165,10 @@ private extension FlagGroupMacro {
                 let stringLiteral = functionCall.arguments.first?.expression.as(StringLiteralExprSyntax.self),
                 let string = stringLiteral.segments.first?.as(StringSegmentSyntax.self)
             {
-                switch memberAccess.declName.baseName.text {
-                case "customKey":           self = .customKey(string.content.text)
-                default:                    return nil
+                if case "customKey" = memberAccess.declName.baseName.text {
+                    self = .customKey(string.content.text)
+                } else {
+                    return nil
                 }
 
             } else {

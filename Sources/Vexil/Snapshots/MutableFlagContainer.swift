@@ -86,16 +86,13 @@ extension MutableFlagContainer: Hashable where Container: Hashable {
 
 // MARK: - Debugging
 
-// extension MutableFlagContainer: CustomDebugStringConvertible {
-//    public var debugDescription: String {
-//        "\(String(describing: Group.self))("
-//        + Mirror(reflecting: group).children
-//            .map { _, value -> String in
-//                (value as? CustomDebugStringConvertible)?.debugDescription
-//                ?? (value as? CustomStringConvertible)?.description
-//                ?? String(describing: value)
-//            }
-//            .joined(separator: ", ")
-//        + ")"
-//    }
-// }
+extension MutableFlagContainer: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let describer = FlagDescriber()
+        container.walk(visitor: describer)
+        return "\(String(describing: Container.self))("
+            + describer.descriptions.joined(separator: ", ")
+            + ")"
+    }
+}
+

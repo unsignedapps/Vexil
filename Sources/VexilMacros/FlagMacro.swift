@@ -104,7 +104,7 @@ private extension AttributeSyntax.Arguments {
         }
 
         // Support for the single description property overload, ie @Flag("description")
-        if case .argumentList(let list) = self, list.count == 1, let argument = list.first, argument.label == nil {
+        if case let .argumentList(list) = self, list.count == 1, let argument = list.first, argument.label == nil {
             return argument
         }
 

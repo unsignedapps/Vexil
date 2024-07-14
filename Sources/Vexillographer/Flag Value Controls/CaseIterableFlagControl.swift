@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -38,9 +38,9 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     var content: some View {
         HStack {
-            Text(self.label).font(.headline)
+            Text(label).font(.headline)
             Spacer()
-            FlagDisplayValueView(value: self.value)
+            FlagDisplayValueView(value: value)
         }
     }
 
@@ -48,38 +48,38 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     var body: some View {
         HStack {
-            if self.isEditable {
-                NavigationLink(destination: self.selector) {
-                    self.content
+            if isEditable {
+                NavigationLink(destination: selector) {
+                    content
                 }
             } else {
-                self.content
+                content
             }
-            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
+            DetailButton(hasChanges: hasChanges, showDetail: $showDetail)
         }
     }
 
     var selector: some View {
-        SelectorList(value: self.$value)
-            .navigationBarTitle(Text(self.label), displayMode: .inline)
+        SelectorList(value: $value)
+            .navigationBarTitle(Text(label), displayMode: .inline)
     }
 
 #elseif os(macOS)
 
     var body: some View {
         Group {
-            if self.isEditable {
-                self.picker
+            if isEditable {
+                picker
             } else {
-                self.content
+                content
             }
         }
     }
 
     var picker: some View {
         let picker = Picker(
-            selection: self.$value,
-            label: Text(self.label),
+            selection: $value,
+            label: Text(label),
             content: {
                 ForEach(Value.allCases, id: \.self) { value in
                     FlagDisplayValueView(value: value)
@@ -114,7 +114,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                     Button(
                         action: {
                             self.value = value
-                            self.presentationMode.wrappedValue.dismiss()
+                            presentationMode.wrappedValue.dismiss()
                         },
                         label: {
                             HStack {
@@ -123,7 +123,7 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
                                 Spacer()
 
                                 if value == self.value {
-                                    self.checkmark
+                                    checkmark
                                 }
                             }
                         }
@@ -135,13 +135,13 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 #if os(macOS)
 
         var checkmark: some View {
-            return Text("✓")
+            Text("✓")
         }
 
 #else
 
         var checkmark: some View {
-            return Image(systemName: "checkmark")
+            Image(systemName: "checkmark")
         }
 
 #endif
@@ -160,8 +160,8 @@ extension UnfurledFlag: CaseIterableEditableFlag
     where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
     Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable
 {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return CaseIterableFlagControl<Value>(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        CaseIterableFlagControl<Value>(
             label: label,
             value: Binding(
                 key: flag.key,

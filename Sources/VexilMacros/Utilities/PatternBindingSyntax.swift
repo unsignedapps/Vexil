@@ -34,15 +34,17 @@ extension PatternBindingSyntax {
             } else if let function = initializer.value.as(FunctionCallExprSyntax.self) {
                 if let identifier = function.calledExpression.as(DeclReferenceExprSyntax.self) {
                     return TypeSyntax(IdentifierTypeSyntax(name: identifier.baseName))
-                } else if let memberAccess = function.calledExpression.as(MemberAccessExprSyntax.self) {
-                    if let identifier = memberAccess.base?.as(DeclReferenceExprSyntax.self) {
-                        return TypeSyntax(IdentifierTypeSyntax(name: identifier.baseName))
-                    }
-                }
-            } else if let memberAccess = initializer.value.as(MemberAccessExprSyntax.self) {
-                if let identifier = memberAccess.base?.as(DeclReferenceExprSyntax.self) {
+                } else if
+                    let memberAccess = function.calledExpression.as(MemberAccessExprSyntax.self),
+                    let identifier = memberAccess.base?.as(DeclReferenceExprSyntax.self)
+                {
                     return TypeSyntax(IdentifierTypeSyntax(name: identifier.baseName))
                 }
+            } else if
+                let memberAccess = initializer.value.as(MemberAccessExprSyntax.self),
+                let identifier = memberAccess.base?.as(DeclReferenceExprSyntax.self)
+            {
+                return TypeSyntax(IdentifierTypeSyntax(name: identifier.baseName))
             }
         }
 

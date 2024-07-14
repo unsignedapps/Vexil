@@ -25,16 +25,13 @@ extension Snapshot: Hashable where RootGroup: Hashable {
     }
 }
 
-// extension Snapshot: CustomDebugStringConvertible {
-//    public var debugDescription: String {
-//        "Snapshot<\(String(describing: RootGroup.self)), \(values.count) overrides>("
-//            + Mirror(reflecting: rootGroup).children
-//            .map { _, value -> String in
-//                (value as? CustomDebugStringConvertible)?.debugDescription
-//                    ?? (value as? CustomStringConvertible)?.description
-//                    ?? String(describing: value)
-//            }
-//            .joined(separator: "; ")
-//            + ")"
-//    }
-// }
+extension Snapshot: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        let describer = FlagDescriber()
+        rootGroup.walk(visitor: describer)
+        let count = values.withLock { $0.count }
+        return "Snapshot<\(String(describing: RootGroup.self)), \(count) overrides>("
+            + describer.descriptions.joined(separator: "; ")
+            + ")"
+    }
+}

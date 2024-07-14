@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -41,36 +41,36 @@ struct OptionalCaseIterableFlagControl<Value>: View
 
     var content: some View {
         HStack {
-            Text(self.label).font(.headline)
+            Text(label).font(.headline)
             Spacer()
-            FlagDisplayValueView(value: self.value.wrapped)
+            FlagDisplayValueView(value: value.wrapped)
         }
     }
 
     var body: some View {
         HStack {
-            if self.isEditable {
-                NavigationLink(destination: self.selector) {
-                    self.content
+            if isEditable {
+                NavigationLink(destination: selector) {
+                    content
                 }
             } else {
-                self.content
+                content
             }
-            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
+            DetailButton(hasChanges: hasChanges, showDetail: $showDetail)
         }
     }
 
 #if os(iOS)
 
     var selector: some View {
-        SelectorList(value: self.$value)
-            .navigationBarTitle(Text(self.label), displayMode: .inline)
+        SelectorList(value: $value)
+            .navigationBarTitle(Text(label), displayMode: .inline)
     }
 
 #else
 
     var selector: some View {
-        SelectorList(value: self.$value)
+        SelectorList(value: $value)
     }
 
 #endif
@@ -87,7 +87,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
                 Section {
                     Button(
                         action: {
-                            self.valueSelected(nil)
+                            valueSelected(nil)
                         },
                         label: {
                             HStack {
@@ -95,8 +95,8 @@ struct OptionalCaseIterableFlagControl<Value>: View
                                     .foregroundColor(.primary)
                                 Spacer()
 
-                                if self.value.wrapped == nil {
-                                    self.checkmark
+                                if value.wrapped == nil {
+                                    checkmark
                                 }
                             }
                         }
@@ -106,7 +106,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
                 ForEach(Value.WrappedFlagValue.allCases, id: \.self) { value in
                     Button(
                         action: {
-                            self.valueSelected(value)
+                            valueSelected(value)
                         },
                         label: {
                             HStack {
@@ -115,7 +115,7 @@ struct OptionalCaseIterableFlagControl<Value>: View
                                 Spacer()
 
                                 if value == self.value.wrapped {
-                                    self.checkmark
+                                    checkmark
                                 }
                             }
                         }
@@ -127,13 +127,13 @@ struct OptionalCaseIterableFlagControl<Value>: View
 #if os(macOS)
 
         var checkmark: some View {
-            return Text("✓")
+            Text("✓")
         }
 
 #else
 
         var checkmark: some View {
-            return Image(systemName: "checkmark")
+            Image(systemName: "checkmark")
         }
 
 #endif
@@ -157,7 +157,7 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
     Value.WrappedFlagValue.AllCases: RandomAccessCollection, Value.WrappedFlagValue: RawRepresentable,
     Value.WrappedFlagValue.RawValue: FlagValue, Value.WrappedFlagValue: Hashable
 {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
         let key = info.key
 
         return OptionalCaseIterableFlagControl<Value>(
