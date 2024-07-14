@@ -161,6 +161,149 @@ final class FlagMacroTests: XCTestCase {
     }
 
 
+    // MARK: - Property Initialisation Tests
+
+    func testExpandsBoolPropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = false
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
+                    }
+                }
+
+                var $testProperty: FlagWigwag<Bool> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: nil,
+                        defaultValue: false,
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testExpandsDoublePropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = 123.456
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? 123.456
+                    }
+                }
+
+                var $testProperty: FlagWigwag<Double> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: nil,
+                        defaultValue: 123.456,
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testExpandsStringPropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = "alpha"
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? "alpha"
+                    }
+                }
+
+                var $testProperty: FlagWigwag<String> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: nil,
+                        defaultValue: "alpha",
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testExpandsEnumPropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = SomeEnum.testCase
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? SomeEnum.testCase
+                    }
+                }
+
+                var $testProperty: FlagWigwag<SomeEnum> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: nil,
+                        defaultValue: SomeEnum.testCase,
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+
     // MARK: - Argument Tests
 
     func testExpandsName() throws {

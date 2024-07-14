@@ -38,12 +38,9 @@ public struct FlagMacro {
         guard let arguments = node.arguments else {
             throw Diagnostic.missingArguments
         }
-        guard let defaultExprSyntax = arguments[label: "default"] else {
-            throw Diagnostic.missingDefaultValue
-        }
 
-        // Either the `description:` or `display:` arguments should be specified, we handle them together.
-        guard let description = arguments[label: "description"] else {
+        // Description can have an explicit or omitted label
+        guard let description = arguments.descriptionArgument  else {
             throw Diagnostic.missingDescription
         }
 
@@ -51,10 +48,14 @@ public struct FlagMacro {
             let property = declaration.as(VariableDeclSyntax.self),
             let binding = property.bindings.first,
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
-            let type = binding.typeAnnotation?.type,
+            let type = binding.typeAnnotation?.type ?? binding.inferredType,
             binding.accessorBlock == nil
         else {
             throw Diagnostic.onlySimpleVariableSupported
+        }
+
+        guard let defaultExprSyntax = arguments[label: "default"]?.expression ?? binding.initializer?.value else {
+            throw Diagnostic.missingDefaultValue
         }
 
         let strategy = KeyStrategy(exprSyntax: arguments[label: "keyStrategy"]?.expression) ?? .default
@@ -67,10 +68,10 @@ public struct FlagMacro {
 
         self.propertyName = identifier.text
         self.key = strategy.createKey(identifier.text)
-        self.defaultValue = defaultExprSyntax.expression
-        self.type = type
-        self.description = description.expression
-        self.display = arguments[label: "display"]?.expression
+        self.defaultValue = defaultExprSyntax.trimmed
+        self.type = type.trimmed
+        self.description = description.expression.trimmed
+        self.display = arguments[label: "display"]?.expression.trimmed
     }
 
 
@@ -95,6 +96,23 @@ public struct FlagMacro {
 
 }
 
+private extension AttributeSyntax.Arguments {
+
+    var descriptionArgument: LabeledExprSyntax? {
+        if let argument = self[label: "description"] {
+            return argument
+        }
+
+        // Support for the single description property overload, ie @Flag("description")
+        if case .argumentList(let list) = self, list.count == 1, let argument = list.first, argument.label == nil {
+            return argument
+        }
+
+        // Not found
+        return nil
+    }
+
+}
 
 // MARK: - Accessor Macro Creation
 

@@ -46,8 +46,8 @@ final class FlagDetailTests: XCTestCase {
 @FlagContainer
 private struct TestFlags {
 
-    @Flag(default: false, description: "Top level test flag")
-    var topLevelFlag: Bool
+    @Flag("Top level test flag")
+    var topLevelFlag = false
 
     @Flag(name: "Super Test!", default: false, description: "Second test flag")
     var secondTestFlag: Bool
