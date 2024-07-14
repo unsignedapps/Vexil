@@ -12,7 +12,6 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import os.lock
 
 /// Describes a type that can be used as a lock, mutex or general
 /// synchronisation primitive. It can enforce limited access to a

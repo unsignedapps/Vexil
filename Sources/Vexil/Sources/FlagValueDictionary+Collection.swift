@@ -21,6 +21,7 @@ extension FlagValueDictionary: Collection {
             storage.startIndex
         }
     }
+
     public var endIndex: Index {
         storage.withLock { storage in
             storage.endIndex

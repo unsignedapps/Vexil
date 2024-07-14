@@ -11,10 +11,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// swiftformat:disable redundantBackticks
-
-import VexilMacros
-
 @attached(accessor)
 @attached(peer, names: prefixed(`$`))
 public macro FlagGroup(

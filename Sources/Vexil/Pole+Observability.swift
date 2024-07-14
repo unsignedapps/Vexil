@@ -132,13 +132,14 @@ extension FlagPublisher {
                 }
                 return (subscriber, state.demand)
             }
-         }
+        }
 
         private func cleanup() {
             state.withLock {
                 cleanup(state: &$0)
             }
         }
+
         private func cleanup(state: inout State) {
             state.task?.cancel()
             state.task = nil

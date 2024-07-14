@@ -5,7 +5,8 @@
 --ifdef outdent
 --funcattributes prev-line
 --typeattributes prev-line
---varattributes prev-line
+--storedvarattrs prev-line
+--computedvarattrs prev-line
 --stripunusedargs closure-only
 
 # Disabling default rules

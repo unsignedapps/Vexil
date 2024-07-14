@@ -16,6 +16,7 @@ import AppKit
 #endif
 
 import AsyncAlgorithms
+import Foundation
 
 #if canImport(UIKit)
 import UIKit
@@ -57,7 +58,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<NotificationCenter.Notifications, FlagChange>
 
-    public var changeStream: some Sendable & AsyncSequence {
+    public var changeStream: ChangeStream {
         NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self)
             .map { _ in
                 FlagChange.all
@@ -84,7 +85,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changeStream: some Sendable & AsyncSequence {
+    public var changeStream: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
 
@@ -94,6 +95,13 @@ extension UserDefaults: NonSendableFlagValueSource {
         .map { _ in
             FlagChange.all
         }
+    }
+
+#else
+
+    /// No support for real-time flag publishing with `UserDefaults` on Linux
+    public var changeStream: EmptyFlagChangeStream {
+        .init()
     }
 
 #endif

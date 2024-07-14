@@ -43,13 +43,13 @@ extension FlagValueSourceCoordinator: FlagValueSource {
             $0.name
         }
     }
-    
-    public func flagValue<Value>(key: String) -> Value? where Value : FlagValue {
+
+    public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
         source.withLock {
             $0.flagValue(key: key)
         }
     }
-    
+
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         try source.withLock {
             try $0.setFlagValue(value, key: key)
