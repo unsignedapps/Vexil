@@ -13,7 +13,7 @@
 
 #if !os(Linux) && !os(watchOS)
 
-import Combine
+import AsyncAlgorithms
 import Foundation
 
 /// Provides support for using `NSUbiquitousKeyValueStore` as a `NonSendableFlagValueSource`
@@ -54,21 +54,16 @@ extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
 
-    public var changeStream: EmptyFlagChangeStream {
-        .init()
-    }
+    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    /// A Publisher that emits events when the flag values it manages changes
-    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        Publishers.Merge(
-            NotificationCenter.default.publisher(for: Self.didChangeExternallyNotification, object: self).map { _ in () },
-            NotificationCenter.default.publisher(for: Self.didChangeInternallyNotification, object: self).map { _ in () }
+    public var changeStream: ChangeStream {
+        chain(
+            NotificationCenter.default.notifications(named: Self.didChangeExternallyNotification, object: self),
+            NotificationCenter.default.notifications(named: Self.didChangeInternallyNotification, object: self)
         )
         .map { _ in
-            self.synchronize()
-            return []
+            FlagChange.all
         }
-        .eraseToAnyPublisher()
     }
 
 }

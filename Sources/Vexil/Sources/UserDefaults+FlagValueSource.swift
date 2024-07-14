@@ -11,11 +11,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !os(Linux)
-import Combine
+#if canImport(AppKit)
+import AppKit
 #endif
 
-import Foundation
+import AsyncAlgorithms
+
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Provides support for using `UserDefaults` as a `FlagValueSource`
 extension UserDefaults: NonSendableFlagValueSource {
@@ -49,51 +53,48 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     }
 
-    public var changeStream: EmptyFlagChangeStream {
-        .init()
-    }
-
 #if os(watchOS)
 
-    /// A Publisher that emits events when the flag values it manages changes
-    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
-            .filter { ($0.object as AnyObject) === self }
-            .map { _ in [] }
-            .eraseToAnyPublisher()
+    public typealias ChangeStream = AsyncMapSequence<NotificationCenter.Notifications, FlagChange>
+
+    public var changeStream: some Sendable & AsyncSequence {
+        NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self)
+            .map { _ in
+                FlagChange.all
+            }
     }
 
-#elseif !os(Linux)
+#elseif os(macOS)
 
-    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        Publishers.Merge(
-            NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
-                .filter { ($0.object as AnyObject) === self }
-                .map { _ in () },
-            NotificationCenter.default.publisher(for: ApplicationDidBecomeActive).map { _ in () }
+    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
+
+    public var changeStream: ChangeStream {
+        chain(
+            NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
+
+            // We use the raw value here because the class property is painfully @MainActor
+            NotificationCenter.default.notifications(named: .init("NSApplicationDidBecomeActiveNotification"))
         )
-        .map { _ in [] }
-        .eraseToAnyPublisher()
+        .map { _ in
+            FlagChange.all
+        }
+    }
+
+#elseif canImport(UIKit)
+
+    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
+
+    public var changeStream: some Sendable & AsyncSequence {
+        chain(
+            NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
+
+            // We use the raw value here because the class property is painfully @MainActor
+            NotificationCenter.default.notifications(named: .init("UIApplicationDidBecomeActiveNotification"))
+        )
+        .map { _ in
+            FlagChange.all
+        }
     }
 
 #endif
 }
-
-
-// MARK: - Application Active Notifications
-
-#if canImport(UIKit) && !os(watchOS)
-
-import UIKit
-
-@MainActor
-private let ApplicationDidBecomeActive = UIApplication.didBecomeActiveNotification
-
-#elseif canImport(Cocoa)
-
-import Cocoa
-
-@MainActor
-private let ApplicationDidBecomeActive = NSApplication.didBecomeActiveNotification
-
-#endif

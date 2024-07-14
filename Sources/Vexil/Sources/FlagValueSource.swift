@@ -24,7 +24,7 @@ import Foundation
 ///
 public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID == String {
 
-    associatedtype ChangeStream: AsyncSequence & Sendable where ChangeStream.Element == FlagChange
+    associatedtype ChangeStream: AsyncSequence where ChangeStream.Element == FlagChange
 
     /// The name of the source. Used by flag editors like Vexillographer
     var name: String { get }

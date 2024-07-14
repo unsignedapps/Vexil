@@ -57,7 +57,7 @@ extension FlagValueSourceCoordinator: FlagValueSource {
     }
 
     public var changeStream: Source.ChangeStream {
-        source.withLock {
+        source.withLockUnchecked {
             $0.changeStream
         }
     }
