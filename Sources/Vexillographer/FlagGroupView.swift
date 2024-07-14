@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2023 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -41,10 +41,10 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     var body: some View {
         Form {
             Section {
-                description
+                self.description
             }
             .padding([.top, .bottom], 4)
-            flags
+            self.flags
         }
     }
 
@@ -53,7 +53,7 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                description
+                self.description
                     .padding(.bottom, 8)
                 Divider()
             }
@@ -62,24 +62,24 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
             Form {
                 Section {
                     // Filter out all links. They won't work on the mac flag group view.
-                    ForEach(group.allItems().filter { $0.isLink == false }, id: \.id) { item in
-                        item.unfurledView
+                    ForEach(self.group.allItems().filter { $0.isLink == false }, id: \.id) { item in
+                        UnfurledFlagItemView(item: item)
                     }
                 }
             }
             .padding([.leading, .trailing, .bottom], 30)
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }
-        .navigationTitle(group.info.name)
+        .navigationTitle(self.group.info.name)
     }
 
 #else
 
     var body: some View {
         Form {
-            description
+            self.description
             Section {
-                flags
+                self.flags
             }
         }
     }
@@ -89,16 +89,16 @@ struct UnfurledFlagGroupView<Group, Root>: View where Group: FlagContainer, Root
     var description: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Description").font(.headline)
-            Text(group.info.description)
+            Text(self.group.info.description)
         }
         .contextMenu {
-            CopyButton(action: group.info.description.copyToPasteboard)
+            CopyButton(action: self.group.info.description.copyToPasteboard)
         }
     }
 
     var flags: some View {
-        ForEach(group.allItems(), id: \.id) { item in
-            item.unfurledView
+        ForEach(self.group.allItems(), id: \.id) { item in
+            UnfurledFlagItemView(item: item)
         }
     }
 
