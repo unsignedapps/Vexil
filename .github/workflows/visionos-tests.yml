@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -destination "platform=visionOS Simulator,name=Any visionOS Simulator Device"
+        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -destination "platform=visionOS Simulator,name=Apple Vision Pro"
 
   build-visionos:
     runs-on: ubuntu-latest
