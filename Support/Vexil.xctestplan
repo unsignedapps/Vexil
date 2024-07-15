@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "FCB9DB7E-793E-45C8-AF9C-F117D013A883",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "VexilTests",
+        "name" : "VexilTests"
+      }
+    }
+  ],
+  "version" : 1
+}

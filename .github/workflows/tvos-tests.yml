@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)"
+        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -testPlan "Vexil" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)"
 
   build-tvos:
     runs-on: ubuntu-latest
