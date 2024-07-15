@@ -11,6 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(VexilMacros)
+
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import VexilMacros
@@ -663,3 +665,5 @@ final class FlagMacroTests: XCTestCase {
     }
 
 }
+
+#endif // canImport(VexilMacros)
