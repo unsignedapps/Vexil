@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -18,7 +18,7 @@ import Vexil
 
 extension Binding {
     @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
-    init<Transformer, RootGroup, FValue>(key: String, manager: FlagValueManager<RootGroup>, defaultValue: FValue, transformer: Transformer.Type) where RootGroup: FlagContainer, Transformer: BoxedFlagValueTransformer, FValue: FlagValue, Transformer.EditingValue == Value, FValue.BoxedValueType == Transformer.OriginalValue {
+    init<Transformer, FValue>(key: String, manager: FlagValueManager<some FlagContainer>, defaultValue: FValue, transformer: Transformer.Type) where Transformer: BoxedFlagValueTransformer, FValue: FlagValue, Transformer.EditingValue == Value, FValue.BoxedValueType == Transformer.OriginalValue {
         self.init(
             get: {
                 let value: FValue.BoxedValueType? = manager.boxedValue(key: key, type: FValue.self) ?? defaultValue.unwrappedBoxedValue()
@@ -37,7 +37,7 @@ extension Binding {
     }
 
     @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
-    init<Transformer, RootGroup>(key: String, manager: FlagValueManager<RootGroup>, defaultValue: Transformer.OriginalValue, transformer: Transformer.Type) where RootGroup: FlagContainer, Transformer: FlagValueTransformer, Transformer.EditingValue == Value {
+    init<Transformer>(key: String, manager: FlagValueManager<some FlagContainer>, defaultValue: Transformer.OriginalValue, transformer: Transformer.Type) where Transformer: FlagValueTransformer, Transformer.EditingValue == Value {
         self.init(
             get: {
                 let value: Transformer.OriginalValue = manager.flagValue(key: key) ?? defaultValue

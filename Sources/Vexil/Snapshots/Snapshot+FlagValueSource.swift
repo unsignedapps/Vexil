@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -12,15 +12,19 @@
 //===----------------------------------------------------------------------===//
 
 extension Snapshot: FlagValueSource {
+
     public var name: String {
-        return displayName ?? "Snapshot \(id.uuidString)"
+        displayName ?? "Snapshot \(id)"
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return values[key]?.value as? Value
+        values.withLock {
+            $0[key] as? Value
+        }
     }
 
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         set(value, key: key)
     }
+
 }

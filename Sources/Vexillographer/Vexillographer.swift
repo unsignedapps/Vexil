@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -43,7 +43,7 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     // MARK: - Body
 
     public var body: some View {
-        List(self.manager.allItems(), id: \.id, children: \.childLinks) { item in
+        List(manager.allItems(), id: \.id, children: \.childLinks) { item in
             UnfurledFlagItemView(item: item)
         }
         .listStyle(SidebarListStyle())
@@ -82,10 +82,10 @@ public struct Vexillographer<RootGroup>: View where RootGroup: FlagContainer {
     }
 
     public var body: some View {
-        ForEach(self.manager.allItems(), id: \.id) { item in
+        ForEach(manager.allItems(), id: \.id) { item in
             UnfurledFlagItemView(item: item)
         }
-        .environmentObject(self.manager)
+        .environmentObject(manager)
     }
 }
 

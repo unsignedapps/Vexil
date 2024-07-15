@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -23,7 +23,7 @@ import Foundation
 /// See the full documentation for information and examples on using custom types
 /// with Vexil.
 ///
-public protocol FlagValue {
+public protocol FlagValue: Sendable {
 
     /// The type that this `FlagValue` would be boxed into.
     /// Used by `FlagValueSource`s to provide interop with different providers
@@ -37,7 +37,7 @@ public protocol FlagValue {
     /// be able to unbox and initialise itself. Return nil if you cannot successfully
     /// unbox the flag value, or if it is an incompatible type.
     ///
-    init? (boxedFlagValue: BoxedFlagValue)
+    init?(boxedFlagValue: BoxedFlagValue)
 
     /// Your conforming type must return an instance of the BoxedFlagValue
     /// with the boxed type included. This type should match the type
@@ -67,7 +67,7 @@ public protocol FlagDisplayValue {
 ///
 /// Any custom type you conform to `FlagValue` must be able to be represented using one of these types
 ///
-public enum BoxedFlagValue: Equatable {
+public enum BoxedFlagValue: Equatable & Sendable {
     case array([BoxedFlagValue])
     case bool(Bool)
     case dictionary([String: BoxedFlagValue])
@@ -97,7 +97,7 @@ extension Bool: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .bool(self)
+        .bool(self)
     }
 }
 
@@ -112,9 +112,11 @@ extension String: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .string(self)
+        .string(self)
     }
 }
+
+#if !os(Linux)
 
 extension URL: FlagValue {
     public typealias BoxedValueType = String
@@ -127,9 +129,28 @@ extension URL: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .string(absoluteString)
+        .string(absoluteString)
     }
 }
+
+#else
+
+extension URL: FlagValue, @unchecked Sendable {
+    public typealias BoxedValueType = String
+
+    public init? (boxedFlagValue: BoxedFlagValue) {
+        guard case let .string(value) = boxedFlagValue else {
+            return nil
+        }
+        self.init(string: value)
+    }
+
+    public var boxedFlagValue: BoxedFlagValue {
+        .string(absoluteString)
+    }
+}
+
+#endif
 
 extension Date: FlagValue {
     public typealias BoxedValueType = String
@@ -140,6 +161,7 @@ extension Date: FlagValue {
         }
 
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [ .withInternetDateTime, .withFractionalSeconds ]
         guard let date = formatter.date(from: value) else {
             return nil
         }
@@ -149,6 +171,7 @@ extension Date: FlagValue {
 
     public var boxedFlagValue: BoxedFlagValue {
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [ .withInternetDateTime, .withFractionalSeconds ]
         return .string(formatter.string(from: self))
     }
 }
@@ -164,7 +187,7 @@ extension Data: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .data(self)
+        .data(self)
     }
 }
 
@@ -182,7 +205,7 @@ extension Double: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .double(self)
+        .double(self)
     }
 }
 
@@ -200,7 +223,7 @@ extension Float: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .float(self)
+        .float(self)
     }
 }
 
@@ -216,7 +239,7 @@ extension Int: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(self)
+        .integer(self)
     }
 }
 
@@ -231,7 +254,7 @@ extension Int8: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -246,7 +269,7 @@ extension Int16: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -261,7 +284,7 @@ extension Int32: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -276,7 +299,7 @@ extension Int64: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -291,7 +314,7 @@ extension UInt: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -306,7 +329,7 @@ extension UInt8: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -321,7 +344,7 @@ extension UInt16: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -336,7 +359,7 @@ extension UInt32: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -351,7 +374,7 @@ extension UInt64: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .integer(Int(self))
+        .integer(Int(self))
     }
 }
 
@@ -369,7 +392,7 @@ public extension RawRepresentable where Self: FlagValue, RawValue: FlagValue {
     }
 
     var boxedFlagValue: BoxedFlagValue {
-        return rawValue.boxedFlagValue
+        rawValue.boxedFlagValue
     }
 }
 
@@ -389,7 +412,7 @@ extension Optional: FlagValue where Wrapped: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return self?.boxedFlagValue ?? .none
+        self?.boxedFlagValue ?? .none
     }
 }
 
@@ -404,7 +427,7 @@ extension Array: FlagValue where Element: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .array(map { $0.boxedFlagValue })
+        .array(map(\.boxedFlagValue))
     }
 }
 
@@ -419,7 +442,7 @@ extension Dictionary: FlagValue where Key == String, Value: FlagValue {
     }
 
     public var boxedFlagValue: BoxedFlagValue {
-        return .dictionary(mapValues { $0.boxedFlagValue })
+        .dictionary(mapValues { $0.boxedFlagValue })
     }
 }
 
@@ -458,6 +481,6 @@ public extension Encodable where Self: FlagValue, Self: Decodable {
 }
 
 // Because we can't encode/decode a JSON fragment in Swift 5.2 on Linux we wrap it in this.
-internal struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
+struct Wrapper<Wrapped>: Codable where Wrapped: Codable {
     var wrapped: Wrapped
 }

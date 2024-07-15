@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -30,9 +30,7 @@ extension FlagValue {
         case let .float(value):         return value as? BoxedValueType
         case let .integer(value):       return value as? BoxedValueType
         case let .string(value):        return value as? BoxedValueType
-
         case .none:                     return BoxedValueType?.none
-
         // unsupported
         case .array, .dictionary:       return nil
         }
@@ -61,7 +59,7 @@ extension FlagValue {
             self.init(boxedFlagValue: .string(wrapped))
 
         } else {
-            return nil
+            nil
         }
     }
 }

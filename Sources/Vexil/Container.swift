@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,12 +11,21 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Foundation
+@attached(
+    extension,
+    conformances: FlagContainer, Equatable, Sendable,
+    names: named(_allFlagKeyPaths), named(walk(visitor:)), named(==)
+)
+@attached(
+    member,
+    names: named(_flagKeyPath), named(_flagLookup), named(init(_flagKeyPath:_flagLookup:))
+)
+public macro FlagContainer(
+    generateEquatable: any ExpressibleByBooleanLiteral = true
+) = #externalMacro(module: "VexilMacros", type: "FlagContainerMacro")
 
-/// A `FlagContainer` is a type that encapsulates your `Flag` and `FlagGroup`
-/// types. The only requirement of a `FlagContainer` is that it can be initialised
-/// with an empty `init()`.
-///
-public protocol FlagContainer {
-    init()
+public protocol FlagContainer: Sendable {
+    init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup)
+    func walk(visitor: any FlagVisitor)
+    var _allFlagKeyPaths: [PartialKeyPath<Self>: FlagKeyPath] { get }
 }

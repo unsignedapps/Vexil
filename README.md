@@ -26,6 +26,17 @@
 
 In addition to this README, which covers basic usage and installation, you can find more documentation on our website: https://vexil.unsignedapps.com/
 
+## Vexil 3 Migration
+
+Vexil 3 is currently under active development and is a full rewrite using
+ [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/)
+and the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern) to reduce usage of
+[Mirror]https://developer.apple.com/documentation/Swift/Mirror and memory usage as well as
+improving the overall performance.
+
+The document below describes current the current stable 2.x version. If you'd like to learn more about Vexil 3 see
+the [Migrating Guide](https://swiftpackageindex.com/unsignedapps/vexil/v3.0.0-alpha.1/documentation/vexil/migration2-3).
+
 ## Usage
 
 ### Defining Flags

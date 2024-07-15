@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,20 +11,22 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Vexil
+@testable import Vexil
 import XCTest
 
 final class FlagValueSourceTests: XCTestCase {
 
     func testSourceIsChecked() {
-        var accessedKeys = [String]()
+        let accessedKeys = Lock(initialState: [String]())
         let values = [
             "test-flag": true,
             "second-test-flag": false,
         ]
 
-        let source = TestGetSource(values: values) {
-            accessedKeys.append($0)
+        let source = TestGetSource(values: values) { key in
+            accessedKeys.withLock {
+                $0.append(key)
+            }
         }
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
@@ -33,15 +35,18 @@ final class FlagValueSourceTests: XCTestCase {
         XCTAssertFalse(pole.secondTestFlag)
         XCTAssertTrue(pole.testFlag)
 
-        XCTAssertEqual(accessedKeys.count, 2)
-        XCTAssertEqual(accessedKeys.first, "second-test-flag")
-        XCTAssertEqual(accessedKeys.last, "test-flag")
+        let keys = accessedKeys.withLock { $0 }
+        XCTAssertEqual(keys.count, 2)
+        XCTAssertEqual(keys.first, "second-test-flag")
+        XCTAssertEqual(keys.last, "test-flag")
     }
 
     func testSourceSets() throws {
-        var events = [TestSetSource.Event]()
-        let source = TestSetSource {
-            events.append($0)
+        let setEvents = Lock(initialState: [TestSetSource.Event]())
+        let source = TestSetSource { event in
+            setEvents.withLock {
+                $0.append(event)
+            }
         }
 
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
@@ -52,6 +57,7 @@ final class FlagValueSourceTests: XCTestCase {
 
         try pole.save(snapshot: snapshot, to: source)
 
+        let events = setEvents.withLock { $0 }
         XCTAssertEqual(events.count, 2)
         XCTAssertEqual(events.first?.0, "test-flag")
         XCTAssertEqual(events.first?.1, true)
@@ -101,8 +107,8 @@ final class FlagValueSourceTests: XCTestCase {
 
 // MARK: - Fixtures
 
-
-private struct TestFlags: FlagContainer {
+@FlagContainer
+private struct TestFlags {
 
     @Flag(default: false, description: "This is a test flag")
     var testFlag: Bool
@@ -114,7 +120,8 @@ private struct TestFlags: FlagContainer {
     var subgroup: Subgroup
 }
 
-private struct Subgroup: FlagContainer {
+@FlagContainer
+private struct Subgroup {
 
     @Flag(default: false, description: "A test flag in a subgroup")
     var testFlag: Bool
@@ -124,10 +131,10 @@ private struct Subgroup: FlagContainer {
 private final class TestGetSource: FlagValueSource {
 
     let name = "Test Source"
-    var subject: (String) -> Void
-    var values: [String: Bool]
+    let subject: @Sendable (String) -> Void
+    let values: [String: Bool]
 
-    init(values: [String: Bool], subject: @escaping (String) -> Void) {
+    init(values: [String: Bool], subject: @escaping @Sendable (String) -> Void) {
         self.values = values
         self.subject = subject
     }
@@ -137,7 +144,11 @@ private final class TestGetSource: FlagValueSource {
         return values[key] as? Value
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {}
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
+
+    var changes: EmptyFlagChangeStream {
+        .init()
+    }
 
 }
 
@@ -147,21 +158,25 @@ private final class TestSetSource: FlagValueSource {
     typealias Event = (String, Bool)
 
     let name = "Test Source"
-    var subject: (Event) -> Void
+    let subject: @Sendable (Event) -> Void
 
-    init(subject: @escaping (Event) -> Void) {
+    init(subject: @escaping @Sendable (Event) -> Void) {
         self.subject = subject
     }
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        return nil
+        nil
     }
 
-    func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
+    func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         guard let value = value as? Bool else {
             return
         }
         subject((key, value))
+    }
+
+    var changes: EmptyFlagChangeStream {
+        .init()
     }
 
 }

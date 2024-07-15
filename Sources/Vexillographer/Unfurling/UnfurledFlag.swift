@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -29,11 +29,11 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     private let manager: FlagValueManager<RootGroup>
 
     var id: UUID {
-        return flag.id
+        flag.id
     }
 
     var isEditable: Bool {
-        return self is BooleanEditableFlag
+        self is BooleanEditableFlag
             || self is CaseIterableEditableFlag
             || self is StringEditableFlag
             || self is OptionalBooleanEditableFlag
@@ -42,11 +42,11 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     }
 
     var childLinks: [UnfurledFlagItem]? {
-        return nil
+        nil
     }
 
     var isLink: Bool {
-        return false
+        false
     }
 
     // MARK: - Initialisation
@@ -61,7 +61,7 @@ struct UnfurledFlag<Value, RootGroup>: UnfurledFlagItem, Identifiable where Valu
     // MARK: - Unfurled Flag Item Conformance
 
     var unfurledView: AnyView {
-        return AnyView(UnfurledFlagView(flag: self, manager: manager))
+        AnyView(UnfurledFlagView(flag: self, manager: manager))
     }
 
 }

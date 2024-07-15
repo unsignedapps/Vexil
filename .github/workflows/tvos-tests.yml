@@ -23,18 +23,15 @@ jobs:
               - '.github/workflows/tvos-tests.yml'
               - '**/*.swift'
 
-  #####################
-  # macOS 11 Versions #
-  #####################
-
-  build-tvos-macos-11-matrix:
-    name: tvOS Matrix - macOS 11
-    runs-on: macos-11.0
+  build-tvos-matrix:
+    name: tvOS Matrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
       matrix:
-        xcode: [ "11.7", "12.4", "12.5.1", "13.0", "13.1", "13.2.1" ]
+        xcode: [ "15.4" ]
+        os: [ macos-14 ]
+    runs-on: ${{ matrix.os }}
 
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
@@ -43,46 +40,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K"
+        run: |
+          set -o pipefail && \
+          NSUnbufferedIO=YES \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" \
+          | xcbeautify --renderer github-actions
 
-  build-tvos-macos-11:
+  build-tvos:
     runs-on: ubuntu-latest
-    name: tvOS Tests - macOS 11
+    name: tvOS Tests
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-tvos-macos-11-matrix
+    needs: build-tvos-matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build-tvos-macos-11-matrix.result == 'failure' }}
-        run: exit 1
-
-  #####################
-  # macOS 12 Versions #
-  #####################
-
-  build-tvos-macos-12-matrix:
-    name: tvOS Matrix - macOS 12
-    runs-on: macos-12
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: check-changes
-    strategy:
-      matrix:
-        xcode: [ "13.1", "13.2.1", "13.3.1", "13.4.1", "14.0.1", "14.1", "14.2" ]
-
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build and Test
-        run: swift package generate-xcodeproj && xcrun xcodebuild test -scheme "Vexil-Package" -destination "platform=tvOS Simulator,name=Apple TV 4K (2nd generation)"
-
-  build-tvos-macos-12:
-    runs-on: ubuntu-latest
-    name: tvOS Tests - macOS 12
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-tvos-macos-12-matrix
-    steps:
-      - name: Check build matrix status
-        if: ${{ needs.build-tvos-macos-12-matrix.result == 'failure' }}
+        if: ${{ needs.build-tvos-matrix.result == 'failure' }}
         run: exit 1

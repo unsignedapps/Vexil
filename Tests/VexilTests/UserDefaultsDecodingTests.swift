@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -110,7 +110,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
         defaults.set(value, forKey: #function)
         let result: Double? = defaults.flagValue(key: #function)
         XCTAssertNotNil(result)
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, value, accuracy: 0.000001)
         }
     }
@@ -121,7 +121,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
         defaults.set(value, forKey: #function)
         let result: Float? = defaults.flagValue(key: #function)
         XCTAssertNotNil(result)
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, value, accuracy: 0.000001)
         }
     }
@@ -132,7 +132,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
         defaults.set(value, forKey: #function)
         let result: Double? = defaults.flagValue(key: #function)
         XCTAssertNotNil(result)
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, 1.0, accuracy: 0.000001)
         }
     }
@@ -143,7 +143,7 @@ final class UserDefaultsDecodingTests: XCTestCase {
         defaults.set(value, forKey: #function)
         let result: Double? = defaults.flagValue(key: #function)
         XCTAssertNotNil(result)
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, 1.23456789, accuracy: 0.000001)
         }
     }

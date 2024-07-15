@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -12,20 +12,23 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import Vexil
+@testable import Vexil
 import XCTest
 
 final class FlagPoleTests: XCTestCase {
 
-    func testSetsDefaultSources() {
+    func testSetsDefaultSources() throws {
         let pole = FlagPole(hoist: TestFlags.self)
 
         XCTAssertEqual(pole._sources.count, 1)
-        XCTAssertTrue(pole._sources.first as AnyObject === UserDefaults.standard)
+        try XCTUnwrap(pole._sources.first as? FlagValueSourceCoordinator<UserDefaults>).source.withLock {
+            XCTAssertTrue($0 === UserDefaults.standard)
+        }
     }
 
 }
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {}
+@FlagContainer(generateEquatable: false)
+private struct TestFlags {}

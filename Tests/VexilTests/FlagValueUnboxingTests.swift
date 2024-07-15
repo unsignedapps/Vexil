@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -67,6 +67,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         AssertNoThrow {
             let expected = Date()
             let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [ .withInternetDateTime, .withFractionalSeconds ]
             let boxed = BoxedFlagValue.string(formatter.string(from: expected))
 
             let calendar = Calendar(identifier: .gregorian)
@@ -176,7 +177,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Float(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
 
@@ -190,7 +191,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Float(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
     }
@@ -202,7 +203,7 @@ final class FlagValueUnboxingTests: XCTestCase {
         let result = Double(boxedFlagValue: boxed)
         XCTAssertNotNil(result)
 
-        if let result = result {
+        if let result {
             XCTAssertEqual(result, expected, accuracy: 0.0001)
         }
 

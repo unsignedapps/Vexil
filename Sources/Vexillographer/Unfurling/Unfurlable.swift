@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -31,7 +31,7 @@ extension Flag: Unfurlable where Value: FlagValue {
 
     /// Creates an `UnfurledFlag` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }
@@ -45,7 +45,7 @@ extension FlagGroup: Unfurlable {
 
     /// Creates an `UnfurledFlagGroup` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }

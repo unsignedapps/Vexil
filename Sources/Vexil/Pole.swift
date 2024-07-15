@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -10,6 +10,8 @@
 // SPDX-License-Identifier: MIT
 //
 //===----------------------------------------------------------------------===//
+
+import AsyncAlgorithms
 
 #if !os(Linux)
 import Combine
@@ -43,12 +45,15 @@ import Foundation
 ///         so as not to conflict with the dynamic member properties on your `FlagContainer`.
 ///
 @dynamicMemberLookup
-public class FlagPole<RootGroup> where RootGroup: FlagContainer {
+public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer {
 
-    // MARK: - Configuration
+    // MARK: - Properties
 
     /// The configuration information supplied to the `FlagPole` during initialisation.
     public let _configuration: VexilConfiguration
+
+    /// Primary storage
+    let manager: Lock<StreamManager>
 
 
     // MARK: - Sources
@@ -60,22 +65,18 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///
     /// The order of this Array is the order used when looking up flag values.
     ///
-    public var _sources: [FlagValueSource] {
-        didSet {
-#if !os(Linux)
-
-            if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-                let oldSourceNames = oldValue.map(\.name)
-                let newSourceNames = _sources.map(\.name)
-
-                self.setupSnapshotPublishing(
-                    keys: self.allFlagKeys,
-                    sendImmediately: true,
-                    changedSources: oldSourceNames.difference(from: newSourceNames).map(\.element)
-                )
+    public var _sources: [any FlagValueSource] {
+        get {
+            manager.withLockUnchecked {
+                $0.sources
             }
-
-#endif
+        }
+        set {
+            manager.withLockUnchecked { manager in
+                let oldValue = manager.sources
+                manager.sources = newValue
+                subscribeChannel(oldSources: oldValue, newSources: newValue, on: &manager)
+            }
         }
     }
 
@@ -84,9 +85,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// The current default sources include:
     ///   - `UserDefaults.standard`
     ///
-    public static var defaultSources: [FlagValueSource] {
-        return [
-            UserDefaults.standard,
+    public static var defaultSources: [any FlagValueSource] {
+        [
+            FlagValueSourceCoordinator(source: UserDefaults.standard),
         ]
     }
 
@@ -103,194 +104,159 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - configuration:      An optional configuration describing how `Flag` keys should be calculated. Defaults to `VexilConfiguration.default`
     ///   - sources:            An optional Array of `FlagValueSource`s to use as the flag pole's source hierarchy. Defaults to `FlagPole.defaultSources`
     ///
-    public convenience init(hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
-        self.init(hoisting: RootGroup(), configuration: configuration, sources: sources)
+    public init(hoist: RootGroup.Type, configuration: VexilConfiguration = .default, sources: [any FlagValueSource]? = nil) {
+        self._configuration = configuration
+        self.manager = Lock(uncheckedState: StreamManager(sources: sources ?? Self.defaultSources))
     }
 
-    internal init(hoisting: RootGroup, configuration: VexilConfiguration = .default, sources: [FlagValueSource]? = nil) {
-        self._rootGroup = hoisting
-        self._configuration = configuration
-        self._sources = sources ?? Self.defaultSources
-        self.decorateRootGroup()
-
-#if !os(Linux)
-
-        if #available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
-            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
+    deinit {
+        manager.withLock { manager in
+            for task in manager.tasks {
+                task.1.cancel()
+            }
+            manager.stream?.finish()
         }
-
-#endif
     }
 
 
     // MARK: - Flag Management
 
-    /// The "Root Group" that  contains your Flag tree/hierarchy.
-    public var _rootGroup: RootGroup
+    var rootKeyPath: FlagKeyPath {
+        let root = FlagKeyPath.root(separator: _configuration.separator, strategy: _configuration.codingPathStrategy)
+        if let prefix = _configuration.prefix {
+            return root.append(.customKey(prefix))
+        } else {
+            return root
+        }
+    }
 
-    /// A reference to all flags declared within the RootGroup
-    internal lazy var allFlags: [AnyFlag] = Mirror(reflecting: self._rootGroup)
-        .children
-        .lazy
-        .map { $0.value }
-        .allFlags()
-
-    /// A reference to all flag keys declared within the RootGroup
-    internal lazy var allFlagKeys: Set<String> = Set(self.allFlags.map { $0.key })
+    var rootGroup: RootGroup {
+        RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
+    }
 
     /// A `@dynamicMemberLookup` implementation that allows you to access the `Flag` and `FlagGroup`s contained
     /// within `self._rootGroup`
-    ///
     public subscript<Value>(dynamicMember dynamicMember: KeyPath<RootGroup, Value>) -> Value {
-        return self._rootGroup[keyPath: dynamicMember]
+        rootGroup[keyPath: dynamicMember]
     }
 
-    /// Starts the decoration process. Called during `init()` to make sure that
-    /// all `Flag` and `FlagGroup`s contained within `RootGroup` have their keys calcualted
-    /// and sets a weak reference to ourselves that they can use to lookup the flag values.
-    ///
-    private func decorateRootGroup() {
-
-        var codingPath: [String] = []
-        if let prefix = _configuration.prefix {
-            codingPath.append(prefix)
-        }
-
-        Mirror(reflecting: self._rootGroup)
-            .children
-            .lazy
-            .decorated
-            .forEach {
-                $0.value.decorate(lookup: self, label: $0.label, codingPath: codingPath, config: self._configuration)
-            }
+    /// Walks the provided ``FlagVisitor`` across the flag hierarchy. Your visitor is informed
+    /// of every FlagGroup or Flag visited, allowing you to inspect the hierarchy and react as required.
+    public func walk(visitor: any FlagVisitor) {
+        rootGroup.walk(visitor: visitor)
     }
 
 
     // MARK: - Real Time Changes
 
-#if !os(Linux)
-
-    /// An internal state variable used so we don't setup the `Publisher` infrastructure
-    /// until someone has accessed `self.publisher`
-    private var shouldSetupSnapshotPublishing = false
-
-    /// An internal reference to the latest snapshot as emitted by our `FlagValueSource`s
-    private lazy var latestSnapshot: CurrentValueSubject<Snapshot<RootGroup>, Never> = CurrentValueSubject(self.snapshot())
-
-    /// A `Publisher` that can be used to monitor flag value changes in real-time.
+    /// An `AsyncSequence` that can be used to monitor flag changes in real-time.
     ///
-    /// A new `Snapshot` is emitted every time a flag value changes. The snapshot
-    /// contains the latest state of all flag values in the tree.
+    /// A sequence of `FlagChange` elements are returned which describe changes to flags.
     ///
-    public var publisher: AnyPublisher<Snapshot<RootGroup>, Never> {
-        let snapshot = self.latestSnapshot
-        if self.shouldSetupSnapshotPublishing == false {
-            self.shouldSetupSnapshotPublishing = true
-            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
-        }
-        return snapshot.eraseToAnyPublisher()
+    public var changes: FlagChangeStream {
+        stream.stream
     }
 
-    private lazy var cancellables = Set<AnyCancellable>()
-
-    private func setupSnapshotPublishing(keys: Set<String>, sendImmediately: Bool, changedSources: [String]? = nil) {
-        guard self.shouldSetupSnapshotPublishing else {
-            return
-        }
-
-        // cancel our existing one
-        self.cancellables.forEach { $0.cancel() }
-        self.cancellables.removeAll()
-
-        let upstream = self._sources
-            .compactMap { source -> AnyPublisher<(String, Set<String>), Never>? in
-                let maybePublisher = source.valuesDidChange(keys: keys)
-                    ?? source.valuesDidChange?.map { _ in [] }.eraseToAnyPublisher()   // backwards compatibility
-
-                guard let publisher = maybePublisher else {
-                    return nil
-                }
-
-                let name = source.name
-                return publisher
-                    .map { (name, $0) }
-                    .eraseToAnyPublisher()
+    /// An `AsyncSequence` that can be used to monitor flag value changes in real-time.
+    ///
+    /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to change changed.
+    ///
+    public var flags: AsyncChain2Sequence<AsyncSyncSequence<[RootGroup]>, AsyncMapSequence<FlagChangeStream, RootGroup>> {
+        let flagStream = changes
+            .map { _ in
+                self.rootGroup
             }
 
-        Publishers.MergeMany(upstream)
-            .sink { [weak self] source, keys in
-                guard let self = self else {
-                    return
-                }
+        return chain([ rootGroup ].async, flagStream)
+    }
 
-                let snapshot = Snapshot(flagPole: self, snapshot: self.latestSnapshot.value)
-                let changed = Snapshot(flagPole: self, copyingFlagValuesFrom: .pole, keys: keys.isEmpty == true ? nil : keys, diagnosticsEnabled: self._diagnosticsEnabled)
-                snapshot.merge(changed)
-                self.latestSnapshot.send(snapshot)
-
-                if self._diagnosticsEnabled == true {
-                    self.diagnosticSubject.send(.init(changed: changed, sources: [source]))
-                }
+    public var snapshots: AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>> {
+        let snapshotStream = changes
+            .map { [weak self] change in
+                self?.snapshot(including: change)
             }
-            .store(in: &self.cancellables)
+            .prefix(while: { $0 != nil })               // close the stream when we get nil back
+            .compactMap { $0 }
 
-        if sendImmediately {
-            let snapshot = self.snapshot()
-            self.latestSnapshot.send(snapshot)
-            if self._diagnosticsEnabled == true {
-                self.diagnosticSubject.send(.init(changed: snapshot, sources: changedSources))
+        return chain([ snapshot() ].async, snapshotStream)
+    }
+
+#if canImport(Combine)
+
+    /// A `Publisher` that can be used to monitor flag changes in real-time.
+    ///
+    /// A sequence of `FlagChange`  elements are emitted which describe changes to flags. ``FlagChange/all``
+    /// indicates an assumption that all flag values MAY have changed, and ``FlagChange/some(_:)``
+    /// will list the keys of the flags that are known to have changed.
+    ///
+    public var changePublisher: some Combine.Publisher<FlagChange, Never> {
+        FlagPublisher(changes)
+    }
+
+    /// A `Publisher` that will emit every time one or more flag values have changed.
+    ///
+    /// A new `RootGroup` is emitted _immediately_, and then every time flags are believed to have changed.
+    /// Because `RootGroup` looks up flags live they are not guaranteed to be stable between emitted
+    /// values. If you need them to be stable use ``snapshotPublisher`` instead, which takes a snapshot
+    /// of the `RootGroup` and emits that whenever flag values change.
+    ///
+    public var flagPublisher: some Combine.Publisher<RootGroup, Never> {
+        changePublisher
+            .map { [weak self] _ -> AnyPublisher<RootGroup, Never> in
+                guard let self else {
+                    return Empty(completeImmediately: true).eraseToAnyPublisher()
+                }
+                return Just(rootGroup).eraseToAnyPublisher()
             }
+            .switchToLatest()
+            .prepend(rootGroup)
+    }
+
+    private let _snapshotPublisher =  UnfairLock<Publishers.Autoconnect<Publishers.Multicast<Publishers.Drop<FlagPublisher<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>>>, CurrentValueSubject<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>.Element, Never>>>?>(uncheckedState: nil)
+
+    /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
+    ///
+    /// A new ``Snapshot`` is emitted _immediately_, and then every time flag values are believed to have changed.
+    /// Snapshotted values are guaranteed not to change, but comes at the performance cost of performing a
+    /// lookup on every changed flag value every time they change, even if you don't use those values in the
+    /// emitted snapshot. If you don't need that guarantee you should try ``flagPublisher`` which merely
+    /// provides a new `RootGroup` whenever flag values have changed without the implicit lookup.
+    ///
+    /// - Note: This publisher will be shared between callers so that only one snapshot will need to be
+    /// taken per flag change, not one per flag change per subscriber.
+    ///
+    public var snapshotPublisher: some Combine.Publisher<Snapshot<RootGroup>, Never> {
+        _snapshotPublisher.withLockUnchecked { cached in
+            if let cached {
+                return cached
+            }
+            let current = snapshot()
+            let publisher = FlagPublisher(snapshots)
+                .dropFirst()                            // this could be out of date compared to the snapshot we just took
+                .multicast { CurrentValueSubject(current) }
+                .autoconnect()
+            cached = publisher
+            return publisher
         }
     }
 
-#endif // !os(Linux)
-
-    // MARK: - Diagnostics
-
-    var _diagnosticsEnabled = false
-
-    /// Returns the current diagnostic state of all flags managed by this FlagPole.
+    /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
     ///
-    /// This method is intended to be called from the debugger
+    /// A new ``Snapshot`` is emitted _immediately_, and then every time flag values are believed to have changed.
+    /// Snapshotted values are guaranteed not to change, but comes at the performance cost of performing a
+    /// lookup on every changed flag value every time they change, even if you don't use those values in the
+    /// emitted snapshot. If you don't need that guarantee you should try ``flagPublisher`` which merely
+    /// provides a new `RootGroup` whenever flag values have changed without the implicit lookup.
     ///
-    public func makeDiagnostics() -> [FlagPoleDiagnostic] {
-        return .init(current: self.snapshot(enableDiagnostics: true))
+    /// - Note: This publisher will be shared between callers so that only one snapshot will need to be
+    /// taken per flag change, not one per flag change per subscriber.
+    ///
+    @available(*, deprecated, renamed: "snapshotPublisher", message: "Will be removed in a future version. Renamed to `FlagPole.snapshotPublisher` but you should consider `FlagPole.flagPublisher` instead for better performance.")
+    public var publisher: some Combine.Publisher<Snapshot<RootGroup>, Never> {
+        snapshotPublisher
     }
 
-#if !os(Linux)
-
-    private lazy var diagnosticSubject = PassthroughSubject<[FlagPoleDiagnostic], Never>()
-
-    /// A `Publisher` that can be used to monitor diagnostic outputs
-    ///
-    /// An array of `Diagnostic` messages is emitted every time a flag value changes. It can be one of two types:
-    ///
-    ///  - The value of every flag on the `FlagPole` at the time of subscribing, and which `FlagValueSource` it was resolved by
-    ///  - An array of the flag values that were changed, which `FlagValueSource` they were changed by, and their resolved value/source
-    ///
-    public func makeDiagnosticsPublisher() -> AnyPublisher<[FlagPoleDiagnostic], Never> {
-        let wasAlreadyEnabled = _diagnosticsEnabled
-        _diagnosticsEnabled = true
-
-        var snapshot = self.latestSnapshot.value
-
-        // if publishing hasn't been started yet (ie they've accessed `_diagnosticsPublisher` before `publisher`)
-        if self.shouldSetupSnapshotPublishing == false {
-            self.shouldSetupSnapshotPublishing = true
-            self.setupSnapshotPublishing(keys: self.allFlagKeys, sendImmediately: false)
-
-            // if publishing has already been started, but diagnostics were not previously enabled, we setup again to make sure they are available
-        } else if wasAlreadyEnabled == false {
-            snapshot = self.snapshot()
-            self.latestSnapshot.send(snapshot)
-        }
-
-        return diagnosticSubject
-            .prepend(.init(current: snapshot))
-            .eraseToAnyPublisher()
-    }
-
-#endif // !os(Linux)
+#endif
 
 
     // MARK: - Snapshots
@@ -302,12 +268,16 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - source:         An optional `FlagValueSource` to copy values from. If this is omitted
     ///                     or nil then the values of each `Flag` within the `FlagPole` is copied
     ///                     into the snapshot instead.
+    ///   - change:         A ``FlagChange`` (as emitted from ``changes`` or ``changePublisher``).
+    ///                     Only changes described by the `change` will be included in the snapshot.
+    ///   - displayName:    An optional display name for the snapshot that gets shown in editors like Vexillographer.
     ///
-    public func snapshot(of source: FlagValueSource? = nil, enableDiagnostics: Bool = false) -> Snapshot<RootGroup> {
-        return Snapshot(
+    public func snapshot(of source: (any FlagValueSource)? = nil, including change: FlagChange = .all, displayName: String? = nil) -> Snapshot<RootGroup> {
+        Snapshot(
             flagPole: self,
             copyingFlagValuesFrom: source.flatMap(Snapshot.Source.source) ?? .pole,
-            diagnosticsEnabled: enableDiagnostics || self._diagnosticsEnabled
+            change: change,
+            displayName: displayName
         )
     }
 
@@ -316,8 +286,11 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// The snapshot itself will be empty and access to any flags
     /// within the snapshot will return the flag's `defaultValue`.
     ///
-    public func emptySnapshot() -> Snapshot<RootGroup> {
-        return Snapshot(flagPole: self, copyingFlagValuesFrom: nil)
+    /// - Parameters:
+    ///   - displayName:    An optional display name for the snapshot that gets shown in editors like Vexillographer.
+    ///
+    public func emptySnapshot(displayName: String? = nil) -> Snapshot<RootGroup> {
+        Snapshot(flagPole: self, copyingFlagValuesFrom: nil, displayName: displayName)
     }
 
     /// Inserts a `Snapshot` into the `FlagPole`s source hierarchy at the specified index.
@@ -333,8 +306,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - at:             The index at which to insert the `Snapshot`.
     ///
     public func insert(snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
-        self._sources.insert(snapshot, at: index)
-
+        _sources.insert(snapshot, at: index)
     }
 
     /// Appends a `Snapshot` to the end of the `FlagPole`s source hierarchy.
@@ -345,7 +317,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:       The `Snapshot` to be added to the source hierarchy.
     ///
     public func append(snapshot: Snapshot<RootGroup>) {
-        self._sources.append(snapshot)
+        _sources.append(snapshot)
     }
 
     /// Removes a `Snapshot` from the `FlagPole`s source hierarchy.
@@ -356,7 +328,7 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
     ///
     public func remove(snapshot: Snapshot<RootGroup>) {
-        self._sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
+        _sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
     }
 
 
@@ -385,13 +357,25 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     ///   - snapshot:           The `Snapshot` to save to the source. Only the values included in the snapshot will be saved.
     ///   - to:                 The `FlagValueSource` to save the snapshot to.
     ///
-    public func save(snapshot: Snapshot<RootGroup>, to source: FlagValueSource) throws {
-        try snapshot.changedFlags()
-            .forEach { try $0.save(to: source) }
+    public func save(snapshot: Snapshot<RootGroup>, to source: some FlagValueSource) throws {
+        try snapshot.save(to: source)
     }
 
 
     // MARK: - Mutating Flag Values
+
+    /// Copies the flag values from the current `FlagPole` to some `FlagValueSource`.
+    ///
+    /// ```swift
+    /// /// Copies all flags on the flag pole into the provided dictionary
+    /// let dictionary = FlagValueDictionary()
+    /// try flagPole.copyFlagValues(to: dictionary)
+    /// ```
+    ///
+    public func copyFlagValues(to destination: some FlagValueSource) throws {
+        let snapshot = snapshot()
+        try save(snapshot: snapshot, to: destination)
+    }
 
     /// Copies the flag values from one `FlagValueSource` to another.
     ///
@@ -402,12 +386,12 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// /// Copies any flags currently saved in the `UserDefaults` to a `FlagValueDictionary`
     /// let defaults = UserDefaults.standard
     /// let dictionary = FlagValueDictionary()
-    /// try flagPole.copy(from: defaults, to: dictionary)
+    /// try flagPole.copyFlagValues(from: defaults, to: dictionary)
     /// ```
     ///
-    public func copyFlagValues(from source: FlagValueSource?, to destination: FlagValueSource) throws {
-        let snapshot = self.snapshot(of: source)
-        try self.save(snapshot: snapshot, to: destination)
+    public func copyFlagValues(from source: some FlagValueSource, to destination: some FlagValueSource) throws {
+        let snapshot = snapshot(of: source)
+        try save(snapshot: snapshot, to: destination)
     }
 
     /// Removes all of the flag values from the specified flag value source.
@@ -416,16 +400,9 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
     /// method is called. This is useful if you want to provide a button or the capability
     /// to "reset" a source back to its defaults, or clear any overrides in the given source.
     ///
-    public func removeFlagValues(in source: FlagValueSource) throws {
-        let flagsInSource = FlagValueDictionary()
-        try self.copyFlagValues(from: source, to: flagsInSource)
-
-        for key in flagsInSource.keys {
-
-            // setFlagValue<Value> needs to specialise the generic, so we picked `Bool` at
-            // random so we can pass in the nil
-            try source.setFlagValue(Bool?.none, key: key)
-        }
+    public func removeFlagValues(in source: some FlagValueSource) throws {
+        let remover = FlagRemover(source: source)
+        try remover.apply(to: rootGroup)
     }
 
 }
@@ -435,8 +412,8 @@ public class FlagPole<RootGroup> where RootGroup: FlagContainer {
 
 extension FlagPole: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "FlagPole<\(String(describing: RootGroup.self))>("
-            + Mirror(reflecting: _rootGroup).children
+        "FlagPole<\(String(describing: RootGroup.self))>("
+            + Mirror(reflecting: rootGroup).children
             .map { _, value -> String in
                 (value as? CustomDebugStringConvertible)?.debugDescription
                     ?? (value as? CustomStringConvertible)?.description

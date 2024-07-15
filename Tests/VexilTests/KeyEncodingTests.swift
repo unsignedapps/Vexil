@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -72,7 +72,8 @@ final class KeyEncodingTests: XCTestCase {
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {
+@FlagContainer
+private struct TestFlags {
 
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
@@ -82,18 +83,20 @@ private struct TestFlags: FlagContainer {
 
 }
 
-private struct OneFlags: FlagContainer {
+@FlagContainer
+private struct OneFlags {
 
-    @FlagGroup(codingKeyStrategy: .customKey("two"), description: "Test Two")
+    @FlagGroup(keyStrategy: .customKey("two"), description: "Test Two")
     var twoFlagGroup: TwoFlags
 
     @Flag(default: false, description: "Second level test flag")
     var secondLevelFlag: Bool
 }
 
-private struct TwoFlags: FlagContainer {
+@FlagContainer
+private struct TwoFlags {
 
-    @FlagGroup(codingKeyStrategy: .skip, description: "Skipping test 3")
+    @FlagGroup(keyStrategy: .skip, description: "Skipping test 3")
     var flagGroupThree: ThreeFlags
 
     @Flag(default: false, description: "Third level test flag")
@@ -104,12 +107,13 @@ private struct TwoFlags: FlagContainer {
 
 }
 
-private struct ThreeFlags: FlagContainer {
+@FlagContainer
+private struct ThreeFlags {
 
-    @Flag(codingKeyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
+    @Flag(keyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
     var custom: Bool
 
-    @Flag(codingKeyStrategy: .customKeyPath("customKeyPath"), default: false, description: "Test flag with custom key path")
+    @Flag(keyStrategy: .customKeyPath("customKeyPath"), default: false, description: "Test flag with custom key path")
     var full: Bool
 
     @Flag(default: true, description: "Standard Flag")

@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -116,7 +116,8 @@ final class SnapshotTests: XCTestCase {
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {
+@FlagContainer
+private struct TestFlags {
 
     @Flag(default: false, description: "Top level test flag")
     var topLevelFlag: Bool
@@ -129,7 +130,8 @@ private struct TestFlags: FlagContainer {
 
 }
 
-private struct SubgroupFlags: FlagContainer {
+@FlagContainer
+private struct SubgroupFlags {
 
     @Flag(default: false, description: "Second level test flag")
     var secondLevelFlag: Bool
@@ -139,7 +141,8 @@ private struct SubgroupFlags: FlagContainer {
 
 }
 
-private struct DoubleSubgroupFlags: FlagContainer {
+@FlagContainer
+private struct DoubleSubgroupFlags {
 
     @Flag(default: false, description: "Third level test flag")
     var thirdLevelFlag: Bool

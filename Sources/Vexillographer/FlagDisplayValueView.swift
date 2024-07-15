@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -37,10 +37,10 @@ struct FlagDisplayValueView<Value>: View where Value: FlagValue {
 
     var body: some View {
         Group {
-            if self.string != nil {
+            if string != nil {
                 Text(string!)
                     .contextMenu {
-                        CopyButton(action: self.string!.copyToPasteboard)
+                        CopyButton(action: string!.copyToPasteboard)
                     }
 
             } else {
