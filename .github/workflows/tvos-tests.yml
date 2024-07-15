@@ -40,7 +40,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -testPlan "Vexil" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)"
+        run: |
+          set -o pipefail && \
+          NSUnbufferedIO=YES \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" \
+          | xcbeautify --renderer github-actions
 
   build-tvos:
     runs-on: ubuntu-latest
