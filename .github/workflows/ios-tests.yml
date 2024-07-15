@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -testPlan "Vexil" -destination "platform=iOS Simulator,name=iPhone 15"
+        run: xcrun xcodebuild test -workspace . -scheme "Vexil" -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 15"
 
   build-ios:
     runs-on: ubuntu-latest
