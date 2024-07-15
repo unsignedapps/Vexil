@@ -24,7 +24,7 @@ jobs:
               - '**/*.swift'
 
   build-tvos-matrix:
-    name: tvOS Metrix
+    name: tvOS Matrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:

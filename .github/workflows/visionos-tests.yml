@@ -24,7 +24,7 @@ jobs:
               - '**/*.swift'
 
   build-visionos-matrix:
-    name: visionOS Metrix
+    name: visionOS Matrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:

@@ -24,7 +24,7 @@ jobs:
               - '**/*.swift'
 
   build-ios-matrix:
-    name: iOS Metrix
+    name: iOS Matrix
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
