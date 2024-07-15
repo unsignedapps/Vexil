@@ -31,7 +31,7 @@ In addition to this README, which covers basic usage and installation, you can f
 Vexil 3 is currently under active development and is a full rewrite using
  [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/)
 and the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern) to reduce usage of
-[Mirror]https://developer.apple.com/documentation/Swift/Mirror and memory usage as well as
+[Mirror](https://developer.apple.com/documentation/Swift/Mirror) and memory usage as well as
 improving the overall performance.
 
 The document below describes current the current stable 2.x version. If you'd like to learn more about Vexil 3 see
