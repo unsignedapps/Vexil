@@ -48,8 +48,8 @@ public protocol FlagValueSource: AnyObject & Sendable {
 
 }
 
-extension FlagValueSource where Self: Identifiable, ID == String {
-    public var flagValueSourceID: String {
+public extension FlagValueSource where Self: Identifiable, ID == String {
+    var flagValueSourceID: String {
         id
     }
 }

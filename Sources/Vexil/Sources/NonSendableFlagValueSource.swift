@@ -59,8 +59,8 @@ public protocol NonSendableFlagValueSource {
 
 }
 
-extension NonSendableFlagValueSource where Self: Identifiable, ID == String {
-    public var flagValueSourceID: String {
+public extension NonSendableFlagValueSource where Self: Identifiable, ID == String {
+    var flagValueSourceID: String {
         id
     }
 }
