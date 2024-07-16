@@ -11,31 +11,45 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Testing
 import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class FlagDetailTests: XCTestCase {
+final class FlagDetailTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(FlagDetailTests.self, hostedBy: self)
+    }
+}
 
-    func testCapturesFlagDetails() throws {
+#endif
+
+@Suite("Flag Details")
+struct FlagDetailTests {
+
+    @Test("Captures details")
+    func capturesFlagDetails() throws {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
-        XCTAssertEqual(pole.$topLevelFlag.key, "top-level-flag")
-        XCTAssertNil(pole.$topLevelFlag.name)
-        XCTAssertEqual(pole.$topLevelFlag.description, "Top level test flag")
+        #expect(pole.$topLevelFlag.key == "top-level-flag")
+        #expect(pole.$topLevelFlag.name == nil)
+        #expect(pole.$topLevelFlag.description == "Top level test flag")
 
-        XCTAssertEqual(pole.$secondTestFlag.key, "second-test-flag")
-        XCTAssertEqual(pole.$secondTestFlag.name, "Super Test!")
-        XCTAssertEqual(pole.$secondTestFlag.description, "Second test flag")
+        #expect(pole.$secondTestFlag.key == "second-test-flag")
+        #expect(pole.$secondTestFlag.name == "Super Test!")
+        #expect(pole.$secondTestFlag.description == "Second test flag")
 
-        XCTAssertEqual(pole.subgroup.$secondLevelFlag.key, "subgroup.second-level-flag")
-        XCTAssertNil(pole.subgroup.$secondLevelFlag.name)
-        XCTAssertEqual(pole.subgroup.$secondLevelFlag.description, "Second Level Flag")
-        XCTAssertEqual(pole.subgroup.$secondLevelFlag.displayOption, .hidden)
+        #expect(pole.subgroup.$secondLevelFlag.key == "subgroup.second-level-flag")
+        #expect(pole.subgroup.$secondLevelFlag.name == nil)
+        #expect(pole.subgroup.$secondLevelFlag.description == "Second Level Flag")
+        #expect(pole.subgroup.$secondLevelFlag.displayOption == .hidden)
 
-        XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.key, "subgroup.double-subgroup.third-level-flag")
-        XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.name, "meow")
-        XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.description, "Third Level Flag")
-        XCTAssertEqual(pole.subgroup.doubleSubgroup.$thirdLevelFlag.displayOption, .hidden)
+        #expect(pole.subgroup.doubleSubgroup.$thirdLevelFlag.key == "subgroup.double-subgroup.third-level-flag")
+        #expect(pole.subgroup.doubleSubgroup.$thirdLevelFlag.name == "meow")
+        #expect(pole.subgroup.doubleSubgroup.$thirdLevelFlag.description == "Third Level Flag")
+        #expect(pole.subgroup.doubleSubgroup.$thirdLevelFlag.displayOption == .hidden)
     }
 
 }

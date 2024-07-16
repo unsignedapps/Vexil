@@ -11,8 +11,21 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+import Testing
 @testable import Vexil
+
+#if compiler(<6)
+
 import XCTest
+
+final class FlagValueCompilationTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(FlagValueCompilationTests.self, hostedBy: self)
+    }
+}
+
+#endif
 
 /// A series of trivial equality tests
 ///
@@ -26,43 +39,54 @@ import XCTest
 ///  from `Bool` we'd expect to see the second line of
 ///  `testBooleanFlagValue` fail to compile
 ///
-final class FlagValueCompilationTests: XCTestCase {
+@Suite("Flag Value Compilation", .tags(.pole))
+struct FlagValueCompilationTests {
 
     // MARK: - Boolean Flag Values
 
-    func testBooleanFlagValue() {
+    @Test("Compiles boolean")
+    func booleanFlagValue() {
         let pole = FlagPole(hoist: BooleanTestFlags.self, sources: [])
-        XCTAssertTrue(pole.flag)
+        #expect(pole.flag)
     }
 
 
     // MARK: - String Flag Values
 
-    func testStringFlagValue() {
+    @Test("Compiles string")
+    func stringFlagValue() {
         let pole = FlagPole(hoist: StringTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, "Test")
+        #expect(pole.flag == "Test")
     }
 
-    func testURLFlagValue() {
+    @Test("Compiles URL")
+    func urlFlagValue() {
         let pole = FlagPole(hoist: URLTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, URL(string: "https://google.com/")!)
+        #expect(pole.flag == URL(string: "https://google.com/")!)
     }
 
 
     // MARK: - Data and Date Flag Values
 
-    func testDataFlagValue() {
+    @Test("Compiles data")
+    func dataFlagValue() {
         let pole = FlagPole(hoist: DataTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, Data("hello".utf8))
+        #expect(pole.flag == Data("hello".utf8))
     }
 
-    func testDateFlagValue() {
+    @Test("Compiles date", .tags(.source))
+    func dateFlagValue() {
+        // We need to use a source here to ensure that the expected value is *exactly* what it was
+        let source = TestSource()
+        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ source ])
+        #expect(pole.flag.timeIntervalSinceReferenceDate == source.value.timeIntervalSinceReferenceDate)
+
         final class TestSource: FlagValueSource {
             let flagValueSourceID = UUID().uuidString
             let flagValueSourceName: String = "Test"
             let value = Date.now
             func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-                Value(boxedFlagValue: value.boxedFlagValue)
+                value as? Value
             }
 
             func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
@@ -73,117 +97,129 @@ final class FlagValueCompilationTests: XCTestCase {
                 .init()
             }
         }
-
-        let source = TestSource()
-        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ source ])
-        XCTAssertEqual(pole.flag.timeIntervalSinceReferenceDate, source.value.timeIntervalSinceReferenceDate, accuracy: 0.1)
     }
 
 
     // MARK: - Integer Flag Values
 
-    func testIntFlagValue() {
+    @Test("Compiles integer")
+    func intFlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<Int>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testInt8FlagValue() {
+    @Test("Compiles 8-bit integer")
+    func int8FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<Int8>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testInt16FlagValue() {
+    @Test("Compiles 16-bit integer")
+    func int16FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<Int16>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testInt32FlagValue() {
+    @Test("Compiles 32-bit integer")
+    func int32FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<Int32>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testInt64FlagValue() {
+    @Test("Compiles 64-bit integer")
+    func int64FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<Int64>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
+    @Test("Compiles unsigned integer")
     func testUIntFlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<UInt>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testUInt8FlagValue() {
+    @Test("Compiles 8-bit unsigned integer")
+    func uint8FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<UInt8>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testUInt16FlagValue() {
+    @Test("Compiles 16-bit unsigned integer")
+    func uint16FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<UInt16>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testUInt32FlagValue() {
+    @Test("Compiles 32-bit unsigned integer")
+    func uint32FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<UInt32>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
-    func testUInt64FlagValue() {
+    @Test("Compiles 64-bit unsigned integer")
+    func uint64FlagValue() {
         let pole = FlagPole(hoist: IntTestFlags<UInt64>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123)
+        #expect(pole.flag == 123)
     }
 
 
     // MARK: - Floating Point Flag Values
 
-    func testFloatFlagValue() {
+    @Test("Compiles float")
+    func floatFlagValue() {
         let pole = FlagPole(hoist: FloatTestFlags<Float>.self, sources: [])
-        XCTAssertEqual(pole.flag, 123.23, accuracy: 0.01)
+        #expect(pole.flag == 123.23)
     }
 
-    func testDoubleFlagValue() {
-        func testFloatFlagValue() {
-            let pole = FlagPole(hoist: FloatTestFlags<Double>.self, sources: [])
-            XCTAssertEqual(pole.flag, 123.23, accuracy: 0.01)
-        }
+    @Test("Compiles double")
+    func doubleFlagValue() {
+        let pole = FlagPole(hoist: FloatTestFlags<Double>.self, sources: [])
+        #expect(pole.flag == 123.23)
     }
 
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentableFlagValue() {
+    @Test("Compiles raw representable")
+    func rawRepresentableFlagValue() {
         let pole = FlagPole(hoist: RawRepresentableTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, RawRepresentableTestStruct(rawValue: "Test"))
+        #expect(pole.flag == RawRepresentableTestStruct(rawValue: "Test"))
     }
 
-    func testOptionalFlagValue() {
+    @Test("Compiles optional")
+    func optionalFlagValue() {
         let pole = FlagPole(hoist: OptionalValueTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, "Test")
+        #expect(pole.flag == "Test")
     }
 
-    func testOptionalNoFlagValue() {
+    @Test("Compiles nil")
+    func optionalNoFlagValue() {
         let pole = FlagPole(hoist: OptionalNoValueTestFlags.self, sources: [])
-        XCTAssertNil(pole.flag)
+        #expect(pole.flag == nil)
     }
 
 
     // MARK: - Collection Types
 
-    func testArrayFlagValue() {
+    @Test("Compiles array")
+    func arrayFlagValue() {
         let pole = FlagPole(hoist: ArrayTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, [ 123, 456, 789 ])
+        #expect(pole.flag == [ 123, 456, 789 ])
     }
 
-    func testDictionaryFlagValue() {
+    @Test("Compiles dictionary")
+    func dictionaryFlagValue() {
         let pole = FlagPole(hoist: DictionaryTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, [ "First": 123, "Second": 456, "Third": 789 ])
+        #expect(pole.flag == [ "First": 123, "Second": 456, "Third": 789 ])
     }
 
 
     // MARK: - Codable Types
 
-    func testCodableFlagValue() {
+    @Test("Compiles codable")
+    func codableFlagValue() {
         let pole = FlagPole(hoist: CodableTestFlags.self, sources: [])
-        XCTAssertEqual(pole.flag, CodableTestStruct())
+        #expect(pole.flag == CodableTestStruct())
     }
 
 }

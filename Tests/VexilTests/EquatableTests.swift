@@ -11,69 +11,66 @@
 //
 //===----------------------------------------------------------------------===//
 
-@testable import Vexil
-import XCTest
-
 #if !os(Linux)
 import Combine
 #endif
 
-final class EquatableTests: XCTestCase {
+import Testing
+@testable import Vexil
+
+#if compiler(<6)
+
+import XCTest
+
+final class EquatableTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(EquatableTests.self, hostedBy: self)
+    }
+}
+
+#endif
+
+@Suite("Equatable Tests", .tags(.pole))
+struct EquatableTests {
 
     // MARK: - Tests
 
-    func testSnapshotEqual() {
+    @Test("Subsequent snapshots are equal", .tags(.snapshot))
+    func snapshotEqual() {
         let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
-        let first = pole.emptySnapshot()
-        let second = pole.emptySnapshot()
-
-        XCTAssertEqual(first, second)
+        #expect(pole.emptySnapshot() == pole.emptySnapshot())
     }
 
-    func testSnapshotNotEqual() {
+    @Test("Snapshots with different contents are not equal", .tags(.snapshot))
+    func snapshotNotEqual() {
         let pole = FlagPole(hoist: DoubleSubgroupFlags.self, sources: [])
         let first = pole.emptySnapshot()
         let second = pole.emptySnapshot()
         second.thirdLevelFlag = true
-
-        XCTAssertNotEqual(first, second)
+        #expect(first != second)
     }
 
-    func testGroupEqual() {
+    @Test("Computed flag groups are equal")
+    func groupEquality() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
-        let first = pole.emptySnapshot()
-        let second = pole.emptySnapshot()
-
-        XCTAssertEqual(first.subgroup, second.subgroup)
+        #expect(pole.subgroup == pole.subgroup)
     }
 
-    func testGroupNotEqual() {
+    @Test("Computed flags are equal")
+    func flagEquality() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
-        let first = pole.emptySnapshot()
-        let second = pole.emptySnapshot()
-        second.subgroup.secondLevelFlag = true
-
-        XCTAssertNotEqual(first.subgroup, second.subgroup)
-    }
-
-    func testGroupEqualDespiteUnrelatedChange() {
-        let pole = FlagPole(hoist: TestFlags.self, sources: [])
-        let first = pole.emptySnapshot()
-        let second = pole.emptySnapshot()
-        second.topLevelFlag = true
-
-        XCTAssertEqual(first.subgroup, second.subgroup)
+        #expect(pole.topLevelFlag == pole.topLevelFlag)
     }
 
     // MARK: - Publisher-based Tests
 
-#if !os(Linux)
-
-    // swiftlint:disable:next function_body_length
-    func testPublisherEmitsEquatableElements() throws {
-        throw XCTSkip("Temporarily disabled until we can make it more reliable")
-
-        // GIVEN an empty dictionary and flag pole
+    // #if !os(Linux)
+//
+//    // swiftlint:disable:next function_body_length
+//    func testPublisherEmitsEquatableElements() throws {
+//        throw XCTSkip("Temporarily disabled until we can make it more reliable")
+//
+//        // GIVEN an empty dictionary and flag pole
 //        let dictionary = FlagValueDictionary()
 //        let pole = FlagPole(hoist: TestFlags.self, sources: [ dictionary ])
 //
@@ -151,10 +148,10 @@ final class EquatableTests: XCTestCase {
 //        XCTAssertEqual(firstFilter.count, 5)            // dropped the first change
 //        XCTAssertEqual(secondFilter.count, 3)           // dropped 1, 2 and 3
 //        XCTAssertEqual(thirdFilter.count, 2)            // dropped everything except 5
-
-    }
-
-#endif
+//
+//    }
+//
+    // #endif
 }
 
 

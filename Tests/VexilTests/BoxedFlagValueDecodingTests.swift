@@ -11,94 +11,118 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+import Testing
 @testable import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class BoxedFlagValueDecodingTests: XCTestCase {
+final class BoxedFlagValueDecodingTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(BoxedFlagValueDecodingTests.self, hostedBy: self)
+    }
+}
 
-    // MARK: - Properties and Setup
+#endif
 
-    private var decoder: JSONDecoder!
+@Suite("BoxedFlagValue decoding", .tags(.boxing, .codable))
+struct BoxedFlagValueDecodingTests {
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        decoder = JSONDecoder()
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
         decoder.dataDecodingStrategy = .base64
         decoder.dateDecodingStrategy = .secondsSince1970
-    }
+        return decoder
+    }()
 
 
     // MARK: - Boolean Flag Values
 
-    func testBooleanTrueFlagValue() throws {
-        let input = #"{"b":true}"#
-        let expected = BoxedFlagValue.bool(true)
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes boolean true")
+    func booleanTrueFlagValue() throws {
+        let input = #"{"b":true}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .bool(true))
     }
 
-    func testBooleanFalseFlagValue() {
-        let input = #"{"b":false}"#
-        let expected = BoxedFlagValue.bool(false)
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes boolean false")
+    func booleanFalseFlagValue() throws {
+        let input = #"{"b":false}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .bool(false))
     }
 
 
     // MARK: - String Flag Values
 
-    func testStringFlagValue() {
-        let input = #"{"s":"Test String"}"#
-        let expected = BoxedFlagValue.string("Test String")
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes string")
+    func stringFlagValue() throws {
+        let input = #"{"s":"Test String"}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .string("Test String"))
     }
 
 
     // MARK: - Data Values
 
-    func testDataFlagValue() {
-        let input = #"{"d":"VGVzdCBzdHJpbmc="}"#
-        let expected = BoxedFlagValue.data(Data("Test string".utf8))
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes data")
+    func dataFlagValue() throws {
+        let input = #"{"d":"VGVzdCBzdHJpbmc="}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .data(Data("Test string".utf8)))
     }
 
 
     // MARK: - Number Flag Values
 
-    func testIntFlagValue() {
-        let input = #"{"i":1234}"#
-        let expected = BoxedFlagValue.integer(1234)
+    @Test("Decodes integer")
+    func intFlagValue() throws {
+        let input = #"{"i":1234}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .integer(1234))
+    }
 
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes double")
+    func doubleFlagValue() throws {
+        let input = #"{"r":123.456}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .double(123.456))
+    }
+
+    @Test("Decodes float")
+    func floatFlagValue() throws {
+        let input = #"{"f":123.456}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .float(123.456))
     }
 
 
     // MARK: - Wrapping Types
 
-    func testOptionalNoFlagValue() {
-        let input = #"{"n":null}"#
-        let expected = BoxedFlagValue.none
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes nil")
+    func optionalNoFlagValue() throws {
+        let input = #"{"n":null}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .none)
     }
 
 
     // MARK: - Collection Types
 
-    func testArrayFlagValue() {
-        let input = #"{"a":[{"i":123},{"i":456},{"i":789}]}"#
-        let expected = BoxedFlagValue.array([ .integer(123), .integer(456), .integer(789) ])
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes array")
+    func arrayFlagValue() throws {
+        let input = #"{"a":[{"i":123},{"i":456},{"i":789}]}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .array([ .integer(123), .integer(456), .integer(789) ]))
     }
 
-    func testDictionaryFlagValue() {
-        let input = #"{"o":{"one":{"i":123},"three":{"i":789},"two":{"i":456}}}"#
-        let expected = BoxedFlagValue.dictionary([ "one": .integer(123), "two": .integer(456), "three": .integer(789) ])
-
-        XCTAssertEqual(try decoder.decode(BoxedFlagValue.self, from: Data(input.utf8)), expected)
+    @Test("Decodes dictionary")
+    func dictionaryFlagValue() throws {
+        let input = #"{"o":{"one":{"i":123},"three":{"i":789},"two":{"i":456}}}"#.utf8
+        let decoded = try decoder.decode(BoxedFlagValue.self, from: Data(input))
+        #expect(decoded == .dictionary([ "one": .integer(123), "two": .integer(456), "three": .integer(789) ]))
     }
 
 }

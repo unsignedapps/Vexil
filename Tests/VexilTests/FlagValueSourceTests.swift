@@ -11,12 +11,27 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+import Testing
 @testable import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class FlagValueSourceTests: XCTestCase {
+final class FlagValueSourceTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(FlagValueSourceTests.self, hostedBy: self)
+    }
+}
 
-    func testSourceIsChecked() {
+#endif
+
+@Suite("FlagValueSource", .tags(.pole, .source))
+struct FlagValueSourceTests {
+
+    @Test("Reads values from source")
+    func readsFromSource() {
         let accessedKeys = Lock(initialState: [String]())
         let values = [
             "test-flag": true,
@@ -32,16 +47,17 @@ final class FlagValueSourceTests: XCTestCase {
         let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
 
         // test the source has the right values, this triggers the subject above
-        XCTAssertFalse(pole.secondTestFlag)
-        XCTAssertTrue(pole.testFlag)
+        #expect(pole.secondTestFlag == false)
+        #expect(pole.testFlag)
 
         let keys = accessedKeys.withLock { $0 }
-        XCTAssertEqual(keys.count, 2)
-        XCTAssertEqual(keys.first, "second-test-flag")
-        XCTAssertEqual(keys.last, "test-flag")
+        #expect(keys.count == 2)
+        #expect(keys.first == "second-test-flag")
+        #expect(keys.last == "test-flag")
     }
 
-    func testSourceSets() throws {
+    @Test("Writes values to source", .tags(.snapshot))
+    func writesToSource() throws {
         let setEvents = Lock(initialState: [TestSetSource.Event]())
         let source = TestSetSource { event in
             setEvents.withLock {
@@ -58,14 +74,15 @@ final class FlagValueSourceTests: XCTestCase {
         try pole.save(snapshot: snapshot, to: source)
 
         let events = setEvents.withLock { $0 }
-        XCTAssertEqual(events.count, 2)
-        XCTAssertEqual(events.first?.0, "test-flag")
-        XCTAssertEqual(events.first?.1, true)
-        XCTAssertEqual(events.last?.0, "second-test-flag")
-        XCTAssertEqual(events.last?.1, false)
+        #expect(events.count == 2)
+        #expect(events.first?.0 == "test-flag")
+        #expect(events.first?.1 == true)
+        #expect(events.last?.0 == "second-test-flag")
+        #expect(events.last?.1 == false)
     }
 
-    func testSourceCopies() throws {
+    @Test("Copies between sources", .tags(.copying, .dictionary))
+    func copies() throws {
 
         // GIVEN two dictionaries
         let source = FlagValueDictionary([
@@ -79,13 +96,14 @@ final class FlagValueSourceTests: XCTestCase {
         try pole.copyFlagValues(from: source, to: destination)
 
         // THEN we expect those two dictionaries to match
-        XCTAssertEqual(destination.count, 2)
-        XCTAssertEqual(destination["test-flag"], .bool(true))
-        XCTAssertEqual(destination["subgroup.test-flag"], .bool(true))
+        #expect(destination.count == 2)
+        #expect(destination["test-flag"] == .bool(true))
+        #expect(destination["subgroup.test-flag"] == .bool(true))
 
     }
 
-    func testSourceRemovesAllVales() throws {
+    @Test("Removes from source", .tags(.removing))
+    func removesAll() throws {
 
         // GIVEN a dictionary with some values
         let source = FlagValueDictionary([
@@ -98,7 +116,7 @@ final class FlagValueSourceTests: XCTestCase {
         try pole.removeFlagValues(in: source)
 
         // THEN the source should now be empty
-        XCTAssertTrue(source.isEmpty)
+        #expect(source.isEmpty)
 
     }
 
