@@ -55,22 +55,22 @@ struct UnfurledFlagView<Value, RootGroup>: View where Value: FlagValue, RootGrou
     var content: some View {
 
         if let flag = flag as? BooleanEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
 
         } else if let flag = flag as? OptionalBooleanEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
 
         } else if let flag = flag as? CaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
 
         } else if let flag = flag as? OptionalCaseIterableEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
 
         } else if let flag = flag as? StringEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
 
         } else if let flag = flag as? OptionalStringEditableFlag {
-            return flag.control(label: self.flag.info.name, manager: manager, showDetail: $showDetail)
+            return flag.control(label: self.flag.info.flagValueSourceName, manager: manager, showDetail: $showDetail)
         }
 
         return EmptyView().eraseToAnyView()

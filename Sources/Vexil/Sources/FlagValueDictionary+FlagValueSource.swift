@@ -37,7 +37,7 @@ extension FlagValueDictionary: FlagValueSource {
         stream.send(.some([ FlagKeyPath(key) ]))
     }
 
-    public var changes: FlagChangeStream {
+    public var flagValueChanges: FlagChangeStream {
         stream.stream
     }
 

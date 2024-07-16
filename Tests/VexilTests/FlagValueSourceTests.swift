@@ -130,7 +130,8 @@ private struct Subgroup {
 
 private final class TestGetSource: FlagValueSource {
 
-    let name = "Test Source"
+    let flagValueSourceID = UUID().uuidString
+    let flagValueSourceName = "Test Source"
     let subject: @Sendable (String) -> Void
     let values: [String: Bool]
 
@@ -146,7 +147,7 @@ private final class TestGetSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var changes: EmptyFlagChangeStream {
+    var flagValueChanges: EmptyFlagChangeStream {
         .init()
     }
 
@@ -157,7 +158,8 @@ private final class TestSetSource: FlagValueSource {
 
     typealias Event = (String, Bool)
 
-    let name = "Test Source"
+    let flagValueSourceID = UUID().uuidString
+    let flagValueSourceName = "Test Source"
     let subject: @Sendable (Event) -> Void
 
     init(subject: @escaping @Sendable (Event) -> Void) {
@@ -175,7 +177,7 @@ private final class TestSetSource: FlagValueSource {
         subject((key, value))
     }
 
-    var changes: EmptyFlagChangeStream {
+    var flagValueChanges: EmptyFlagChangeStream {
         .init()
     }
 

@@ -84,7 +84,7 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             if manager.source != nil {
                 FlagDetailSection(header: Text("Current Source")) {
                     HStack {
-                        Text(manager.source!.name)
+                        Text(manager.source!.flagValueSourceName)
                             .font(.headline)
                         Spacer()
                         description(source: manager.source!)
@@ -102,13 +102,13 @@ struct FlagDetailView<Value, RootGroup>: View where Value: FlagValue, RootGroup:
             }
 
             FlagDetailSection(header: Text("FlagPole Source Hierarchy")) {
-                ForEach(manager.flagPole._sources, id: \.name) { source in
+                ForEach(manager.flagPole._sources, id: \.flagValueSourceName) { source in
                     HStack {
                         if (source as AnyObject) === (manager.source as AnyObject) {
-                            Text(source.name)
+                            Text(source.flagValueSourceName)
                                 .font(.headline)
                         } else {
-                            Text(source.name)
+                            Text(source.flagValueSourceName)
                         }
                         Spacer()
                         description(source: source)

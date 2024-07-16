@@ -13,7 +13,7 @@
 
 extension Snapshot: FlagValueSource {
 
-    public var name: String {
+    public var flagValueSourceName: String {
         displayName ?? "Snapshot \(id)"
     }
 
@@ -25,6 +25,10 @@ extension Snapshot: FlagValueSource {
 
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
         set(value, key: key)
+    }
+
+    public var flagValueChanges: FlagChangeStream {
+        stream.stream
     }
 
 }

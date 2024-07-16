@@ -88,20 +88,20 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
 #if os(iOS)
 
         destination = destination
-            .navigationBarTitle(Text(info.name), displayMode: .inline)
+            .navigationBarTitle(Text(info.flagValueSourceName), displayMode: .inline)
             .eraseToAnyView()
 
 #elseif compiler(>=5.3.1)
 
         destination = destination
-            .navigationTitle(info.name)
+            .navigationTitle(info.flagValueSourceName)
             .eraseToAnyView()
 
 #endif
 
         return NavigationLink(destination: destination) {
             HStack {
-                Text(info.name)
+                Text(info.flagValueSourceName)
                     .font(.headline)
             }
         }.eraseToAnyView()

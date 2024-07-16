@@ -28,7 +28,7 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
     public let id: String
 
     /// The name of our `FlagValueSource`
-    public var name: String {
+    public var flagValueSourceName: String {
         "\(String(describing: Self.self)): \(id)"
     }
 

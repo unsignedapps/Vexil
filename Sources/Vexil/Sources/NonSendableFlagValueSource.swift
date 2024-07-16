@@ -34,12 +34,15 @@ import Foundation
 /// For more information and examples on creating custom `FlagValueSource`s please
 /// see the full documentation.
 ///
-public protocol NonSendableFlagValueSource: Identifiable where ID == String {
+public protocol NonSendableFlagValueSource {
 
     associatedtype ChangeStream: AsyncSequence where ChangeStream.Element == FlagChange
 
+    /// A unique identifier for the flag value source. Used for identifying subscribers.
+    var flagValueSourceID: String { get }
+
     /// The name of the source. Used by flag editors like Vexillographer
-    var name: String { get }
+    var flagValueSourceName: String { get }
 
     /// Provide a way to fetch values. The ``BoxedFlagValue`` type is there to help with boxing and unboxing of flag values.
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue
@@ -52,14 +55,12 @@ public protocol NonSendableFlagValueSource: Identifiable where ID == String {
     mutating func setFlagValue(_ value: (some FlagValue)?, key: String) throws
 
     /// Return an `AsyncSequence` that emits ``FlagChange`` values any time flag values have changed.
-    var changes: ChangeStream { get }
+    var flagValueChanges: ChangeStream { get }
 
 }
 
-public extension NonSendableFlagValueSource {
-
-    var id: String {
-        name
+public extension NonSendableFlagValueSource where Self: Identifiable, ID == String {
+    var flagValueSourceID: String {
+        id
     }
-
 }

@@ -197,7 +197,8 @@ private struct TestFlags {
 }
 
 private final class TestSource: FlagValueSource {
-    let name = "Test Source"
+    let flagValueSourceID = UUID().uuidString
+    let flagValueSourceName = "Test Source"
 
     let stream: AsyncStream<FlagChange>
     let continuation: AsyncStream<FlagChange>.Continuation
@@ -214,7 +215,7 @@ private final class TestSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var changes: AsyncStream<FlagChange> {
+    var flagValueChanges: AsyncStream<FlagChange> {
         stream
     }
 

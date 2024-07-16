@@ -20,8 +20,13 @@ import Foundation
 ///
 extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
+    /// A unique identifier for the flag value source.
+    public var flagValueSourceID: String {
+        flagValueSourceName
+    }
+
     /// The name of the Flag Value Source
-    public var name: String {
+    public var flagValueSourceName: String {
         "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"
     }
 
@@ -56,7 +61,7 @@ extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changes: ChangeStream {
+    public var flagValueChanges: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: Self.didChangeExternallyNotification, object: self),
             NotificationCenter.default.notifications(named: Self.didChangeInternallyNotification, object: self)

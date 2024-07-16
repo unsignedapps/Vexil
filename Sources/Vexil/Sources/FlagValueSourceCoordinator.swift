@@ -38,9 +38,15 @@ public final class FlagValueSourceCoordinator<Source>: Sendable where Source: No
 
 extension FlagValueSourceCoordinator: FlagValueSource {
 
-    public var name: String {
+    public var flagValueSourceID: String {
         source.withLock {
-            $0.name
+            $0.flagValueSourceID
+        }
+    }
+
+    public var flagValueSourceName: String {
+        source.withLock {
+            $0.flagValueSourceName
         }
     }
 
@@ -56,9 +62,9 @@ extension FlagValueSourceCoordinator: FlagValueSource {
         }
     }
 
-    public var changes: Source.ChangeStream {
+    public var flagValueChanges: Source.ChangeStream {
         source.withLockUnchecked {
-            $0.changes
+            $0.flagValueChanges
         }
     }
 

@@ -25,8 +25,13 @@ import UIKit
 /// Provides support for using `UserDefaults` as a `FlagValueSource`
 extension UserDefaults: NonSendableFlagValueSource {
 
+    /// A unique identifier for the flag value source.
+    public var flagValueSourceID: String {
+        flagValueSourceName
+    }
+
     /// The name of the Flag Value Source
-    public var name: String {
+    public var flagValueSourceName: String {
         "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"
     }
 
@@ -62,7 +67,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<NotificationCenter.Notifications, FlagChange>
 
-    public var changes: ChangeStream {
+    public var flagValueChanges: ChangeStream {
         NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self)
             .map { _ in
                 FlagChange.all
@@ -73,7 +78,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changes: ChangeStream {
+    public var flagValueChanges: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
 
@@ -89,7 +94,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changes: ChangeStream {
+    public var flagValueChanges: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
 
@@ -104,7 +109,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 #else
 
     /// No support for real-time flag publishing with `UserDefaults` on Linux
-    public var changes: EmptyFlagChangeStream {
+    public var flagValueChanges: EmptyFlagChangeStream {
         .init()
     }
 

@@ -34,7 +34,7 @@ struct UnfurledFlagInfo {
 
     init(key: String, info: FlagInfo, defaultName: String) {
         self.key = key
-        self.name = info.name ?? defaultName
+        self.name = info.flagValueSourceName ?? defaultName
         self.description = info.description
     }
 }

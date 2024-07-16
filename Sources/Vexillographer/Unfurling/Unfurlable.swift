@@ -35,7 +35,7 @@ extension Flag: Unfurlable where Value: FlagValue {
         guard info.shouldDisplay == true else {
             return nil
         }
-        let unfurled = UnfurledFlag(name: info.name ?? label.localizedDisplayName, flag: self, manager: manager)
+        let unfurled = UnfurledFlag(name: info.flagValueSourceName ?? label.localizedDisplayName, flag: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }
@@ -49,7 +49,7 @@ extension FlagGroup: Unfurlable {
         guard info.shouldDisplay == true else {
             return nil
         }
-        let unfurled = UnfurledFlagGroup(name: info.name ?? label.localizedDisplayName, group: self, manager: manager)
+        let unfurled = UnfurledFlagGroup(name: info.flagValueSourceName ?? label.localizedDisplayName, group: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }
