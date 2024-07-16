@@ -24,6 +24,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
         .package(url: "https://github.com/nicklockwood/SwiftFormat.git", from: "0.54.1"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.0"),
+        .package(url: "https://github.com/apple/swift-testing.git", exact: "0.7.0"),
     ],
 
     targets: {
@@ -45,9 +46,12 @@ let package = Package(
                 name: "VexilTests",
                 dependencies: [
                     .target(name: "Vexil"),
+                    .product(name: "Testing", package: "swift-testing"),
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),
+                    .define("SWT_TARGET_OS_APPLE", .when(platforms: [.macOS, .iOS, .macCatalyst, .watchOS, .tvOS, .visionOS])),
+                    .define("SWT_NO_FILE_IO", .when(platforms: [.wasi])),
                 ]
             ),
 
