@@ -34,9 +34,12 @@ import Foundation
 /// For more information and examples on creating custom `FlagValueSource`s please
 /// see the full documentation.
 ///
-public protocol NonSendableFlagValueSource: Identifiable where ID == String {
+public protocol NonSendableFlagValueSource {
 
     associatedtype ChangeStream: AsyncSequence where ChangeStream.Element == FlagChange
+
+    /// A unique identifier for the flag value source. Used for identifying subscribers.
+    var flagValueSourceID: String { get }
 
     /// The name of the source. Used by flag editors like Vexillographer
     var name: String { get }
@@ -56,10 +59,8 @@ public protocol NonSendableFlagValueSource: Identifiable where ID == String {
 
 }
 
-public extension NonSendableFlagValueSource {
-
-    var id: String {
-        name
+extension NonSendableFlagValueSource where Self: Identifiable, ID == String {
+    public var flagValueSourceID: String {
+        id
     }
-
 }

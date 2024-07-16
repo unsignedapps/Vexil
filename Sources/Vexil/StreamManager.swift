@@ -63,7 +63,7 @@ extension FlagPole {
     }
 
     func subscribeChannel(oldSources: [any FlagValueSource], newSources: [any FlagValueSource], on manager: inout StreamManager, isInitialSetup: Bool = false) {
-        let difference = newSources.difference(from: oldSources, by: { $0.id == $1.id })
+        let difference = newSources.difference(from: oldSources, by: { $0.flagValueSourceID == $1.flagValueSourceID })
         var didChange = false
 
         // If a source has been removed, cancel any streams using it
@@ -71,7 +71,7 @@ extension FlagPole {
             didChange = true
             for removal in difference.removals {
                 manager.tasks.removeAll { task in
-                    if task.0 == removal.element.id {
+                    if task.0 == removal.element.flagValueSourceID {
                         task.1.cancel()
                         return true
                     } else {
@@ -86,7 +86,7 @@ extension FlagPole {
             didChange = true
             for insertion in difference.insertions {
                 manager.tasks.append(
-                    (insertion.element.id, makeSubscribeTask(for: insertion.element))
+                    (insertion.element.flagValueSourceID, makeSubscribeTask(for: insertion.element))
                 )
             }
         }

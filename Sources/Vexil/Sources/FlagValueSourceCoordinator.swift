@@ -38,6 +38,12 @@ public final class FlagValueSourceCoordinator<Source>: Sendable where Source: No
 
 extension FlagValueSourceCoordinator: FlagValueSource {
 
+    public var flagValueSourceID: String {
+        source.withLock {
+            $0.flagValueSourceID
+        }
+    }
+
     public var name: String {
         source.withLock {
             $0.name

@@ -22,9 +22,12 @@ import Foundation
 /// For more information and examples on creating custom `FlagValueSource`s please
 /// see the full documentation.
 ///
-public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID == String {
+public protocol FlagValueSource: AnyObject & Sendable {
 
     associatedtype ChangeStream: AsyncSequence where ChangeStream.Element == FlagChange
+
+    /// A unique identifier for the flag value source. Used for identifying subscribers.
+    var flagValueSourceID: String { get }
 
     /// The name of the source. Used by flag editors like Vexillographer
     var name: String { get }
@@ -45,10 +48,8 @@ public protocol FlagValueSource: AnyObject & Identifiable & Sendable where ID ==
 
 }
 
-public extension FlagValueSource {
-
-    var id: String {
-        name
+extension FlagValueSource where Self: Identifiable, ID == String {
+    public var flagValueSourceID: String {
+        id
     }
-
 }

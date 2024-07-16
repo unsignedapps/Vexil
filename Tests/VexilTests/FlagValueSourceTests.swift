@@ -130,6 +130,7 @@ private struct Subgroup {
 
 private final class TestGetSource: FlagValueSource {
 
+    let flagValueSourceID = UUID().uuidString
     let name = "Test Source"
     let subject: @Sendable (String) -> Void
     let values: [String: Bool]
@@ -157,6 +158,7 @@ private final class TestSetSource: FlagValueSource {
 
     typealias Event = (String, Bool)
 
+    let flagValueSourceID = UUID().uuidString
     let name = "Test Source"
     let subject: @Sendable (Event) -> Void
 

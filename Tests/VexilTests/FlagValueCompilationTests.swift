@@ -57,8 +57,9 @@ final class FlagValueCompilationTests: XCTestCase {
     }
 
     func testDateFlagValue() {
-        class TestSource: NonSendableFlagValueSource {
-            let name = "Test"
+        final class TestSource: FlagValueSource {
+            let flagValueSourceID = UUID().uuidString
+            let name: String = "Test"
             let value = Date.now
             func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
                 Value(boxedFlagValue: value.boxedFlagValue)
@@ -74,7 +75,7 @@ final class FlagValueCompilationTests: XCTestCase {
         }
 
         let source = TestSource()
-        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ FlagValueSourceCoordinator(source: source) ])
+        let pole = FlagPole(hoist: DateTestFlags.self, sources: [ source ])
         XCTAssertEqual(pole.flag.timeIntervalSinceReferenceDate, source.value.timeIntervalSinceReferenceDate, accuracy: 0.1)
     }
 

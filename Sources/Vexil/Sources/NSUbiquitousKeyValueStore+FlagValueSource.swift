@@ -20,6 +20,11 @@ import Foundation
 ///
 extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
+    /// A unique identifier for the flag value source.
+    public var flagValueSourceID: String {
+        name
+    }
+
     /// The name of the Flag Value Source
     public var name: String {
         "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"

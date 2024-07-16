@@ -25,6 +25,11 @@ import UIKit
 /// Provides support for using `UserDefaults` as a `FlagValueSource`
 extension UserDefaults: NonSendableFlagValueSource {
 
+    /// A unique identifier for the flag value source.
+    public var flagValueSourceID: String {
+        name
+    }
+
     /// The name of the Flag Value Source
     public var name: String {
         "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"

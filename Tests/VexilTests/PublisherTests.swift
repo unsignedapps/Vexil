@@ -197,6 +197,7 @@ private struct TestFlags {
 }
 
 private final class TestSource: FlagValueSource {
+    let flagValueSourceID = UUID().uuidString
     let name = "Test Source"
 
     let stream: AsyncStream<FlagChange>
