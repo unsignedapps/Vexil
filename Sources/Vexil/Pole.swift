@@ -305,7 +305,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - snapshot:       The `Snapshot` to be inserted
     ///   - at:             The index at which to insert the `Snapshot`.
     ///
-    public func insert(snapshot: Snapshot<RootGroup>, at index: Array<FlagValueSource>.Index) {
+    public func insert(snapshot: Snapshot<RootGroup>, at index: Array<any FlagValueSource>.Index) {
         _sources.insert(snapshot, at: index)
     }
 

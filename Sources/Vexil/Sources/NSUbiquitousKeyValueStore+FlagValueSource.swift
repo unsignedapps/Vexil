@@ -59,18 +59,38 @@ extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
 
-    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
+    public typealias ChangeStream = AsyncThrowingMapSequence<
+        AsyncChain2Sequence<
+            AsyncFilterSequence<NotificationCenter.Notifications>,
+            AsyncFilterSequence<NotificationCenter.Notifications>
+        >,
+        FlagChange
+    >
 
     public var flagValueChanges: ChangeStream {
-        chain(
-            NotificationCenter.default.notifications(named: Self.didChangeExternallyNotification, object: self),
-            NotificationCenter.default.notifications(named: Self.didChangeInternallyNotification, object: self)
+        let this = ObjectIdentifier(self)
+        return chain(
+            NotificationCenter.default
+                .notifications(named: Self.didChangeExternallyNotification, object: nil)
+                .filter { $0.object.isIdentical(to: this) },
+            NotificationCenter.default
+                .notifications(named: Self.didChangeInternallyNotification, object: nil)
+                .filter { $0.object.isIdentical(to: this) }
         )
         .map { _ in
             FlagChange.all
         }
     }
 
+}
+
+private extension Any? {
+    func isIdentical(to object: ObjectIdentifier) -> Bool {
+        guard let self = self as? AnyObject else {
+            return false
+        }
+        return ObjectIdentifier(self) == object
+    }
 }
 
 #endif

@@ -65,10 +65,13 @@ extension UserDefaults: NonSendableFlagValueSource {
 
 #if os(watchOS)
 
-    public typealias ChangeStream = AsyncMapSequence<NotificationCenter.Notifications, FlagChange>
+    public typealias ChangeStream = AsyncMapSequence<AsyncFilterSequence<NotificationCenter.Notifications>, FlagChange>
 
     public var flagValueChanges: ChangeStream {
-        NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self)
+        let this = ObjectIdentifier(self)
+        return NotificationCenter.default
+            .notifications(named: UserDefaults.didChangeNotification)
+            .filter { $0.object.isIdentical(to: this) }
             .map { _ in
                 FlagChange.all
             }
@@ -76,11 +79,20 @@ extension UserDefaults: NonSendableFlagValueSource {
 
 #elseif os(macOS)
 
-    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
+    public typealias ChangeStream = AsyncMapSequence<
+        AsyncChain2Sequence<
+            AsyncFilterSequence<NotificationCenter.Notifications>,
+            NotificationCenter.Notifications
+        >,
+        FlagChange
+    >
 
     public var flagValueChanges: ChangeStream {
-        chain(
-            NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
+        let this = ObjectIdentifier(self)
+        return chain(
+            NotificationCenter.default
+                .notifications(named: UserDefaults.didChangeNotification)
+                .filter { $0.object.isIdentical(to: this) },
 
             // We use the raw value here because the class property is painfully @MainActor
             NotificationCenter.default.notifications(named: .init("NSApplicationDidBecomeActiveNotification"))
@@ -92,11 +104,20 @@ extension UserDefaults: NonSendableFlagValueSource {
 
 #elseif canImport(UIKit)
 
-    public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
+    public typealias ChangeStream = AsyncMapSequence<
+        AsyncChain2Sequence<
+            AsyncFilterSequence<NotificationCenter.Notifications>,
+            NotificationCenter.Notifications
+        >,
+        FlagChange
+    >
 
     public var flagValueChanges: ChangeStream {
-        chain(
-            NotificationCenter.default.notifications(named: UserDefaults.didChangeNotification, object: self),
+        let this = ObjectIdentifier(self)
+        return chain(
+            NotificationCenter.default
+                .notifications(named: UserDefaults.didChangeNotification)
+                .filter { $0.object.isIdentical(to: this) },
 
             // We use the raw value here because the class property is painfully @MainActor
             NotificationCenter.default.notifications(named: .init("UIApplicationDidBecomeActiveNotification"))
@@ -114,4 +135,13 @@ extension UserDefaults: NonSendableFlagValueSource {
     }
 
 #endif
+}
+
+private extension Any? {
+    func isIdentical(to object: ObjectIdentifier) -> Bool {
+        guard let self = self as? AnyObject else {
+            return false
+        }
+        return ObjectIdentifier(self) == object
+    }
 }
