@@ -30,7 +30,7 @@ public protocol FlagValueSource: AnyObject & Sendable {
     var flagValueSourceID: String { get }
 
     /// The name of the source. Used by flag editors like Vexillographer
-    var name: String { get }
+    var flagValueSourceName: String { get }
 
     /// Provide a way to fetch values. The ``BoxedFlagValue`` type is there to help with boxing and unboxing of flag values.
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue

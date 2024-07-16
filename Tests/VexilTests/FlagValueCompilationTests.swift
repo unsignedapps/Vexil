@@ -59,7 +59,7 @@ final class FlagValueCompilationTests: XCTestCase {
     func testDateFlagValue() {
         final class TestSource: FlagValueSource {
             let flagValueSourceID = UUID().uuidString
-            let name: String = "Test"
+            let flagValueSourceName: String = "Test"
             let value = Date.now
             func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
                 Value(boxedFlagValue: value.boxedFlagValue)

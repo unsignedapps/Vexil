@@ -13,7 +13,7 @@
 
 extension Snapshot: FlagValueSource {
 
-    public var name: String {
+    public var flagValueSourceName: String {
         displayName ?? "Snapshot \(id)"
     }
 

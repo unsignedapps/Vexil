@@ -44,9 +44,9 @@ extension FlagValueSourceCoordinator: FlagValueSource {
         }
     }
 
-    public var name: String {
+    public var flagValueSourceName: String {
         source.withLock {
-            $0.name
+            $0.flagValueSourceName
         }
     }
 

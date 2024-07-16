@@ -27,11 +27,11 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     /// A unique identifier for the flag value source.
     public var flagValueSourceID: String {
-        name
+        flagValueSourceName
     }
 
     /// The name of the Flag Value Source
-    public var name: String {
+    public var flagValueSourceName: String {
         "UserDefaults\(self == UserDefaults.standard ? ".standard" : "")"
     }
 
