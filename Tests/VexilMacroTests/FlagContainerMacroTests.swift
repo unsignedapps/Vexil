@@ -216,7 +216,7 @@ final class FlagContainerMacroTests: XCTestCase {
         )
     }
 
-    #else
+#else
 
     // MARK: - Swift 5.10 specific tests
 
