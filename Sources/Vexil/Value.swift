@@ -135,7 +135,7 @@ extension URL: FlagValue {
 
 #else
 
-extension URL: FlagValue, @unchecked Sendable {
+extension URL: FlagValue, @retroactive @unchecked Sendable {
     public typealias BoxedValueType = String
 
     public init? (boxedFlagValue: BoxedFlagValue) {

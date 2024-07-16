@@ -22,9 +22,9 @@ import Foundation
 /// - Important: If you're using async/await or Structured Concurrency consider
 /// using an `actor` instead of these locks.
 ///
-struct POSIXThreadLock<State> {
+struct POSIXThreadLock<State>: Sendable {
 
-    private var mutexValue: POSIXMutex<State>
+    private let mutexValue: POSIXMutex<State>
 
     /// Initialise the Mutex with a non-sendable lock-protected `initialState`.
     ///
@@ -37,7 +37,7 @@ struct POSIXThreadLock<State> {
     ///   - initialState: An initial value to store that will be protected under the lock.
     ///
     init(uncheckedState initialState: State) {
-        self.mutexValue = .create(uncheckedState: initialState) { mutex in
+        self.mutexValue = .init(uncheckedState: initialState) { mutex in
             // can't explicitly manipulate the initialized/deinititalized state of
             // the memory, when using pthread_mutex_init. That should be conceptual
             // and a no-op, but if a debug layer ever makes it count for something,
@@ -116,26 +116,25 @@ struct POSIXThreadLock<State> {
 
 // MARK: - POSIX mutex
 
-// `POSIXMutex` exists to help ensure thread-safety, so asserting that is Sendable here is appropriate
+private final class POSIXMutex<State>: @unchecked Sendable {
 
-private final class POSIXMutex<State>: ManagedBuffer<pthread_mutex_t, State>, @unchecked Sendable {
+    let buffer: ManagedBuffer<pthread_mutex_t, State>
 
-    static func create(
+    init(
         uncheckedState initialState: State,
         mutexInitializer: (UnsafeMutablePointer<pthread_mutex_t>) -> Void
-    ) -> Self {
-        create(minimumCapacity: 1) { buffer in
+    ) {
+        self.buffer = .create(minimumCapacity: 1) { buffer in
             buffer.withUnsafeMutablePointers { mutex, state in
                 state.initialize(to: initialState)
                 mutexInitializer(mutex)
                 return mutex.pointee
             }
-            // not sure why a non-final class wouldn't return Self here
-        } as! Self
+        }
     }
 
     deinit {
-        withUnsafeMutablePointers { mutex, state in
+        buffer.withUnsafeMutablePointers { mutex, state in
             state.deinitialize(count: 1)
 
             // can't explicitly manipulate the initialized/deinititalized state of
@@ -147,7 +146,7 @@ private final class POSIXMutex<State>: ManagedBuffer<pthread_mutex_t, State>, @u
     }
 
     func withLockUnchecked<R>(_ closure: (inout State) throws -> R) rethrows -> R {
-        try withUnsafeMutablePointers { mutex, state in
+        try buffer.withUnsafeMutablePointers { mutex, state in
             let result = pthread_mutex_lock(mutex)
             precondition(result == 0, "Error \(result) locking pthread_mutex")
 
@@ -161,7 +160,7 @@ private final class POSIXMutex<State>: ManagedBuffer<pthread_mutex_t, State>, @u
     }
 
     func withLockIfAvailableUnchecked<R>(_ closure: (inout State) throws -> R) rethrows -> R? {
-        try withUnsafeMutablePointers { mutex, state in
+        try buffer.withUnsafeMutablePointers { mutex, state in
             let result = pthread_mutex_trylock(mutex)
             precondition(result == 0 || result == EBUSY, "Error \(result) trying to lock pthread_mutex")
             guard result == 0 else {
