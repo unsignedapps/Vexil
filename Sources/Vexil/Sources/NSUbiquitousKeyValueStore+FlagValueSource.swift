@@ -61,7 +61,7 @@ extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncChain2Sequence<NotificationCenter.Notifications, NotificationCenter.Notifications>, FlagChange>
 
-    public var changes: ChangeStream {
+    public var flagValueChanges: ChangeStream {
         chain(
             NotificationCenter.default.notifications(named: Self.didChangeExternallyNotification, object: self),
             NotificationCenter.default.notifications(named: Self.didChangeInternallyNotification, object: self)

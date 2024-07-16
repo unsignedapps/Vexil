@@ -27,4 +27,8 @@ extension Snapshot: FlagValueSource {
         set(value, key: key)
     }
 
+    public var flagValueChanges: FlagChangeStream {
+        stream.stream
+    }
+
 }

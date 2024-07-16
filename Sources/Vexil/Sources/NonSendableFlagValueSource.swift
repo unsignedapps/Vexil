@@ -55,7 +55,7 @@ public protocol NonSendableFlagValueSource {
     mutating func setFlagValue(_ value: (some FlagValue)?, key: String) throws
 
     /// Return an `AsyncSequence` that emits ``FlagChange`` values any time flag values have changed.
-    var changes: ChangeStream { get }
+    var flagValueChanges: ChangeStream { get }
 
 }
 

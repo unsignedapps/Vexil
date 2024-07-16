@@ -147,7 +147,7 @@ private final class TestGetSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var changes: EmptyFlagChangeStream {
+    var flagValueChanges: EmptyFlagChangeStream {
         .init()
     }
 
@@ -177,7 +177,7 @@ private final class TestSetSource: FlagValueSource {
         subject((key, value))
     }
 
-    var changes: EmptyFlagChangeStream {
+    var flagValueChanges: EmptyFlagChangeStream {
         .init()
     }
 

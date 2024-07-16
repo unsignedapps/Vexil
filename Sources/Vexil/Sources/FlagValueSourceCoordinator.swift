@@ -62,9 +62,9 @@ extension FlagValueSourceCoordinator: FlagValueSource {
         }
     }
 
-    public var changes: Source.ChangeStream {
+    public var flagValueChanges: Source.ChangeStream {
         source.withLockUnchecked {
-            $0.changes
+            $0.flagValueChanges
         }
     }
 
