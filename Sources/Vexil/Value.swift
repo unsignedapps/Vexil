@@ -133,9 +133,26 @@ extension URL: FlagValue {
     }
 }
 
-#else
+#elseif compiler(>=6.0)
 
 extension URL: FlagValue, @retroactive @unchecked Sendable {
+    public typealias BoxedValueType = String
+
+    public init? (boxedFlagValue: BoxedFlagValue) {
+        guard case let .string(value) = boxedFlagValue else {
+            return nil
+        }
+        self.init(string: value)
+    }
+
+    public var boxedFlagValue: BoxedFlagValue {
+        .string(absoluteString)
+    }
+}
+
+#else
+
+extension URL: FlagValue, @unchecked Sendable {
     public typealias BoxedValueType = String
 
     public init? (boxedFlagValue: BoxedFlagValue) {
