@@ -37,11 +37,11 @@ jobs:
         swift: [ "swift:5.10.1", "swiftlang/swift:nightly-6.0" ]
         os: [ amazonlinux2, bookworm, focal, jammy, rhel-ubi9, mantic, noble ]
         exclude:
-          - swift: "nightly-6.0"
+          - swift: "swiftlang/swift:nightly-6.0"
             os: "bookworm"
-          - swift: "nightly-6.0"
+          - swift: "swiftlang/swift:nightly-6.0"
             os: "mantic"
-          - swift: "nightly-6.0"
+          - swift: "swiftlang/swift:nightly-6.0"
             os: "noble"
 
     container:
