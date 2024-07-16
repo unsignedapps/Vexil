@@ -22,7 +22,7 @@ import Foundation
 /// - Important: If you're using async/await or Structured Concurrency consider
 /// using an `actor` instead of these locks.
 ///
-struct POSIXThreadLock<State>: Mutex {
+struct POSIXThreadLock<State> {
 
     private var mutexValue: POSIXMutex<State>
 
@@ -50,6 +50,15 @@ struct POSIXThreadLock<State>: Mutex {
         }
     }
 
+    /// Initialise the Mutex with a lock-protected sendable `initialState`.
+    ///
+    /// - Parameter
+    ///   - initialState: An initial value to store that will be protected under the lock.
+    ///
+    init(initialState: State) where State: Sendable {
+        self.init(uncheckedState: initialState)
+    }
+
     /// Perform a closure while holding this lock.
     ///
     /// This method does not enforce sendability requirement on closure body and its return type.
@@ -65,6 +74,17 @@ struct POSIXThreadLock<State>: Mutex {
         try mutexValue.withLockUnchecked(closure)
     }
 
+    ///  Perform a sendable closure while holding this lock.
+    ///
+    /// - Parameters:
+    ///   - closure:    A sendable closure to invoke while holding this lock.
+    /// - Returns:      The return value of `closure`.
+    /// - Throws:       Anything thrown by `closure`.
+    ///
+    func withLock<R>(_ closure: @Sendable (inout State) throws -> R) rethrows -> R where R: Sendable {
+        try withLockUnchecked(closure)
+    }
+
     /// Attempt to acquire the lock, if successful, perform a closure while holding the lock.
     ///
     /// This method does not enforce sendability requirement on closure body and its return type.
@@ -78,6 +98,18 @@ struct POSIXThreadLock<State>: Mutex {
     ///
     func withLockIfAvailableUnchecked<R>(_ closure: (inout State) throws -> R) rethrows -> R? {
         try mutexValue.withLockIfAvailableUnchecked(closure)
+    }
+
+    ///  Attempt to acquire the lock, if successful, perform a sendable closure while
+    ///  holding the lock.
+    ///
+    /// - Parameters:
+    ///   - closure:    A sendable closure to invoke while holding this lock.
+    /// - Returns:      The return value of `closure`.
+    /// - Throws:       Anything thrown by `closure`.
+    ///
+    func withLockIfAvailable<R>(_ closure: @Sendable (inout State) throws -> R) rethrows -> R? where R: Sendable {
+        try withLockIfAvailableUnchecked(closure)
     }
 
 }
