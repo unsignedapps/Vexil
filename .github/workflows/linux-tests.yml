@@ -34,7 +34,7 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        swift: [ "5.10.1", "nightly-6.0" ]
+        swift: [ "swift:5.10.1", "swiftlang/swift:nightly-6.0" ]
         os: [ amazonlinux2, bookworm, focal, jammy, rhel-ubi9, mantic, noble ]
         exclude:
           - swift: "nightly-6.0"
@@ -45,7 +45,7 @@ jobs:
             os: "noble"
 
     container:
-      image: swift:${{ matrix.swift }}-${{ matrix.os }}
+      image: ${{ matrix.swift }}-${{ matrix.os }}
 
     steps:
       - name: Checkout
