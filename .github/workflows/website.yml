@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-11.0
     steps:
       - name: 🛒 Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: 👷 Build Website
         run: .github/scripts/generate-docs.sh
