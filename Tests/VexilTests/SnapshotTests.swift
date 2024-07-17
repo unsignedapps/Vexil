@@ -11,35 +11,51 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Testing
 import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class SnapshotTests: XCTestCase {
+final class SnapshotTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(SnapshotTests.self, hostedBy: self)
+    }
+}
 
-    func testSnapshotReading() {
+#endif
+
+@Suite("Snapshots", .tags(.pole, .snapshot))
+struct SnapshotTests {
+
+    @Test("Reads from snapshot")
+    func snapshotReading() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let snapshot = pole.emptySnapshot()
 
-        XCTAssertFalse(snapshot.topLevelFlag)
-        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
-        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(snapshot.topLevelFlag == false)
+        #expect(snapshot.subgroup.secondLevelFlag == false)
+        #expect(snapshot.subgroup.doubleSubgroup.thirdLevelFlag == false)
     }
 
-    func testSnapshotWriting() {
+    @Test("Writes to snapshot")
+    func snapshotWriting() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
         let snapshot = pole.emptySnapshot()
         snapshot.topLevelFlag = true
         snapshot.subgroup.secondLevelFlag = true
         snapshot.subgroup.doubleSubgroup.thirdLevelFlag = true
-        XCTAssertTrue(snapshot.topLevelFlag)
-        XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
-        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(snapshot.topLevelFlag)
+        #expect(snapshot.subgroup.secondLevelFlag)
+        #expect(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
     }
 
 
     // MARK: - Taking Snapshots
 
-    func testEmptySnapshot() {
+    @Test("Takes empty snapshot")
+    func emptySnapshot() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
         // craft a snapshot
@@ -54,13 +70,14 @@ final class SnapshotTests: XCTestCase {
         let snapshot = pole.emptySnapshot()
 
         // everything should be reset
-        XCTAssertFalse(snapshot.topLevelFlag)
-        XCTAssertFalse(snapshot.secondTestFlag)
-        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
-        XCTAssertFalse(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(snapshot.topLevelFlag == false)
+        #expect(snapshot.secondTestFlag == false)
+        #expect(snapshot.subgroup.secondLevelFlag == false)
+        #expect(snapshot.subgroup.doubleSubgroup.thirdLevelFlag == false)
     }
 
-    func testCurrentValueSnapshot() {
+    @Test("Snapshots reflect current sources")
+    func currentSources() {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
         // craft a snapshot
@@ -75,23 +92,24 @@ final class SnapshotTests: XCTestCase {
         let snapshot = pole.snapshot()
 
         // everything should be reflect the new source
-        XCTAssertTrue(snapshot.topLevelFlag)
-        XCTAssertTrue(snapshot.secondTestFlag)
-        XCTAssertTrue(snapshot.subgroup.secondLevelFlag)
-        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(snapshot.topLevelFlag)
+        #expect(snapshot.secondTestFlag)
+        #expect(snapshot.subgroup.secondLevelFlag)
+        #expect(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
 
         // remove it again and re-test
         pole.remove(snapshot: source)
-        let empty = pole.emptySnapshot()
+        let empty = pole.snapshot()
 
         // everything should be reset
-        XCTAssertFalse(empty.topLevelFlag)
-        XCTAssertFalse(empty.secondTestFlag)
-        XCTAssertFalse(empty.subgroup.secondLevelFlag)
-        XCTAssertFalse(empty.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(empty.topLevelFlag == false)
+        #expect(empty.secondTestFlag == false)
+        #expect(empty.subgroup.secondLevelFlag == false)
+        #expect(empty.subgroup.doubleSubgroup.thirdLevelFlag == false)
     }
 
-    func testCurrentSourceValueSnapshot() throws {
+    @Test("Snapshots specific source", .tags(.dictionary))
+    func specificSource() throws {
 
         // GIVEN a FlagPole and a dictionary that is not a part it
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
@@ -104,10 +122,10 @@ final class SnapshotTests: XCTestCase {
         let snapshot = pole.snapshot(of: dictionary)
 
         // THEN we expect only the values we've changed to be true
-        XCTAssertTrue(snapshot.topLevelFlag)
-        XCTAssertFalse(snapshot.secondTestFlag)
-        XCTAssertFalse(snapshot.subgroup.secondLevelFlag)
-        XCTAssertTrue(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
+        #expect(snapshot.topLevelFlag)
+        #expect(snapshot.secondTestFlag == false)
+        #expect(snapshot.subgroup.secondLevelFlag == false)
+        #expect(snapshot.subgroup.doubleSubgroup.thirdLevelFlag)
 
     }
 

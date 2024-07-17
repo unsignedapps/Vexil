@@ -11,6 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if !os(Linux)
+
 #if canImport(AppKit)
 import AppKit
 #endif
@@ -145,3 +147,5 @@ private extension Any? {
         return ObjectIdentifier(self) == object
     }
 }
+
+#endif // !os(Linux)

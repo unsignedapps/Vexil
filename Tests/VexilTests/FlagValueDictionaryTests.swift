@@ -12,27 +12,42 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
+import Testing
 @testable import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class FlagValueDictionaryTests: XCTestCase {
+final class FlagValueDictionaryTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(FlagValueDictionaryTests.self, hostedBy: self)
+    }
+}
+
+#endif
+
+@Suite("FlagValueDictionary", .tags(.dictionary))
+struct FlagValueDictionaryTests {
 
     // MARK: - Reading Values
 
-    func testReadsValues() {
+    @Test("Gets flag value when FlagValueSource", .tags(.pole))
+    func readsValues() {
         let source: FlagValueDictionary = [
             "top-level-flag": .bool(true),
         ]
 
-        let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
-        XCTAssertTrue(flagPole.topLevelFlag)
-        XCTAssertFalse(flagPole.oneFlagGroup.secondLevelFlag)
+        let pole = FlagPole(hoist: TestFlags.self, sources: [ source ])
+        #expect(pole.topLevelFlag)
+        #expect(pole.oneFlagGroup.secondLevelFlag == false)
     }
 
 
     // MARK: - Writing Values
 
-    func testWritesValues() throws {
+    @Test("Sets flag value when FlagValueSource", .tags(.pole, .saving))
+    func writesValues() throws {
         let source = FlagValueDictionary()
         let flagPole = FlagPole(hoist: TestFlags.self, sources: [ source ])
 
@@ -41,13 +56,14 @@ final class FlagValueDictionaryTests: XCTestCase {
         snapshot.oneFlagGroup.secondLevelFlag = false
         try flagPole.save(snapshot: snapshot, to: source)
 
-        XCTAssertEqual(source["top-level-flag"], .bool(true))
-        XCTAssertEqual(source["one-flag-group.second-level-flag"], .bool(false))
+        #expect(source["top-level-flag"] == .bool(true))
+        #expect(source["one-flag-group.second-level-flag"] == .bool(false))
     }
 
     // MARK: - Equatable Tests
 
-    func testEquatable() {
+    @Test("Supports Equatable")
+    func equatable() {
 
         let identifier1 = UUID().uuidString
         let original = FlagValueDictionary(
@@ -78,15 +94,16 @@ final class FlagValueDictionaryTests: XCTestCase {
             ]
         )
 
-        XCTAssertEqual(original, same)
-        XCTAssertNotEqual(original, differentContent)
-        XCTAssertNotEqual(original, differentIdentifier)
+        #expect(original == same)
+        #expect(original != differentContent)
+        #expect(original != differentIdentifier)
 
     }
 
     // MARK: - Codable Tests
 
-    func testCodable() throws {
+    @Test("Supports Codable", .tags(.codable))
+    func codable() throws {
         // BoxedFlagValue's Codable support is more heavily tested in it's tests
         let source: FlagValueDictionary = [
             "bool-flag": .bool(true),
@@ -97,16 +114,16 @@ final class FlagValueDictionaryTests: XCTestCase {
         let encoded = try JSONEncoder().encode(source)
         let decoded = try JSONDecoder().decode(FlagValueDictionary.self, from: encoded)
 
-        XCTAssertEqual(source, decoded)
+        #expect(source == decoded)
     }
 
 
     // MARK: - Publishing Tests
 
-#if canImport(Combine)
-
-    func testPublishesValues() throws {
-        throw XCTSkip("Temporarily disabled until we can make it more reliable")
+    // #if canImport(Combine)
+//
+//    func testPublishesValues() throws {
+//        throw XCTSkip("Temporarily disabled until we can make it more reliable")
 //        let expectation = expectation(description: "publisher")
 //        expectation.expectedFulfillmentCount = 3
 //
@@ -124,9 +141,9 @@ final class FlagValueDictionaryTests: XCTestCase {
 //        withExtendedLifetime((cancellable, flagPole)) {
 //            wait(for: [ expectation ], timeout: 1)
 //        }
-    }
-
-#endif
+//    }
+//
+    // #endif
 
 }
 

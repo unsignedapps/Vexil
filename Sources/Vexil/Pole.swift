@@ -86,9 +86,13 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - `UserDefaults.standard`
     ///
     public static var defaultSources: [any FlagValueSource] {
+#if !os(Linux)
         [
             FlagValueSourceCoordinator(source: UserDefaults.standard),
         ]
+#else
+        []
+#endif
     }
 
 
