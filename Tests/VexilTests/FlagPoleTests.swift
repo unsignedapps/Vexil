@@ -30,6 +30,9 @@ final class FlagPoleTestCase: XCTestCase {
 @Suite("Flag Pole")
 struct FlagPoleTests {
 
+
+#if !os(Linux)
+
     @Test("Sets default sources", .tags(.pole))
     func setsDefaultSources() throws {
         let pole = FlagPole(hoist: TestFlags.self)
@@ -40,6 +43,16 @@ struct FlagPoleTests {
             #expect($0 === UserDefaults.standard)
         }
     }
+
+#else
+
+    @Test("Sets default sources", .tags(.pole))
+    func setsDefaultSources() throws {
+        let pole = FlagPole(hoist: TestFlags.self)
+        #expect(pole._sources.isEmpty)
+    }
+
+#endif
 
 }
 
