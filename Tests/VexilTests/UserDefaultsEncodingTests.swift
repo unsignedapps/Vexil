@@ -11,6 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if !os(Linux)
+
 import Foundation
 import Testing
 @testable import Vexil
@@ -244,3 +246,5 @@ final class UserDefaultsEncodingTests {
     }
 
 }
+
+#endif // !os(Linux)

@@ -23,7 +23,7 @@ let package = Package(
     dependencies: .init {
         Package.Dependency.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
         Package.Dependency.package(url: "https://github.com/nicklockwood/SwiftFormat.git", from: "0.54.1")
-        Package.Dependency.package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.0-prerelease-2024-06-12")
+        Package.Dependency.package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "600.0.0-prerelease-2024-06-12")
 
 #if os(Linux)
         // Linux does not come bundled with swift-testing
