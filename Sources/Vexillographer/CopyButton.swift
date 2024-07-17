@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -31,7 +31,7 @@ struct CopyButton: View {
             }.eraseToAnyView()
         }
 #endif
-        return Button("Copy", action: self.action)
+        return Button("Copy", action: action)
             .eraseToAnyView()
     }
 

@@ -5,7 +5,7 @@
 SWIFT := swift
 SWIFTFORMAT := $(SWIFT) package plugin --allow-writing-to-package-directory swiftformat
 DOCKER := docker
-SWIFT_DOCKER_IMAGE = swift:latest
+SWIFT_DOCKER_IMAGE = swiftlang/swift:nightly-6.0-jammy
 
 XCBEAUTIFY := $(shell command -v xcbeautify 2> /dev/null)
 ifndef XCBEAUTIFY

@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -23,11 +23,11 @@ struct BoxedPassthroughTransformer<Value>: BoxedFlagValueTransformer {
     typealias EditingValue = Value
 
     static func toEditingValue(_ value: OriginalValue?) -> Value {
-        return value!
+        value!
     }
 
     static func toOriginalValue(_ value: Value) -> OriginalValue? {
-        return value
+        value
     }
 }
 
@@ -36,11 +36,11 @@ struct PassthroughTransformer<Value>: FlagValueTransformer where Value: FlagValu
     typealias EditingValue = Value
 
     static func toEditingValue(_ value: OriginalValue?) -> Value {
-        return value!
+        value!
     }
 
     static func toOriginalValue(_ value: Value) -> OriginalValue? {
-        return value
+        value
     }
 }
 

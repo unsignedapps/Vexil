@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -40,12 +40,12 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 
     var body: some View {
         GroupBox(
-            label: Text(self.group.info.name),
+            label: Text(group.info.name),
             content: {
                 VStack(alignment: .leading) {
-                    Text(self.group.info.description)
+                    Text(group.info.description)
                     Divider()
-                    self.content
+                    content
                 }.padding(4)
             }
         )
@@ -56,10 +56,10 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 
     var body: some View {
         Section(
-            header: Text(self.group.info.name),
-            footer: Text(self.group.info.description),
+            header: Text(group.info.name),
+            footer: Text(group.info.description),
             content: {
-                self.content
+                content
             }
         )
     }
@@ -67,8 +67,8 @@ struct UnfurledFlagSectionView<Group, Root>: View where Group: FlagContainer, Ro
 #endif
 
     private var content: some View {
-        ForEach(self.group.allItems(), id: \.id) { item in
-            item.unfurledView
+        ForEach(group.allItems(), id: \.id) { item in
+            UnfurledFlagItemView(item: item)
         }
     }
 

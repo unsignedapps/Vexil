@@ -9,15 +9,15 @@ on:
       - '**/*.swift'
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
 
 jobs:
   BuildWebsite:
     name: "Build Docs"
-    runs-on: macos-11.0
+    runs-on: macos-latest
     steps:
       - name: 🛒 Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: 👷 Build Website
         run: .github/scripts/generate-docs.sh

@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,68 +11,87 @@
 //
 //===----------------------------------------------------------------------===//
 
+import Testing
 import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class KeyEncodingTests: XCTestCase {
+final class KeyEncodingTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(KeyEncodingTests.self, hostedBy: self)
+    }
+}
 
-    func testKebabCaseCodingKeyStrategy() {
+#endif
+
+@Suite("Key Encoding", .tags(.pole))
+struct KeyEncodingTests {
+
+    @Test("Encodes with kebab-case")
+    func kebabcase() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: nil, separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
-        XCTAssertEqual(pole.$topLevelFlag.key, "top-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.$secondLevelFlag.key, "one-flag-group.second-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key, "one-flag-group.two.third-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key, "one-flag-group.two.third-level-flag2")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key, "one-flag-group.two.customKey")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key, "customKeyPath")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "one-flag-group.two.standard")
+        #expect(pole.$topLevelFlag.key == "top-level-flag")
+        #expect(pole.oneFlagGroup.$secondLevelFlag.key == "one-flag-group.second-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key == "one-flag-group.two.third-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key == "one-flag-group.two.third-level-flag2")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key == "one-flag-group.two.customKey")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key == "customKeyPath")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key == "one-flag-group.two.standard")
     }
 
-    func testSnakeCaseCodingKeyStrategy() {
+    @Test("Encodes with snake_case")
+    func snakecase() {
         let config = VexilConfiguration(codingPathStrategy: .snakecase, prefix: nil, separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
-        XCTAssertEqual(pole.$topLevelFlag.key, "top_level_flag")
-        XCTAssertEqual(pole.oneFlagGroup.$secondLevelFlag.key, "one_flag_group.second_level_flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key, "one_flag_group.two.third_level_flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key, "one_flag_group.two.third_level_flag2")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key, "one_flag_group.two.customKey")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key, "customKeyPath")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "one_flag_group.two.standard")
+        #expect(pole.$topLevelFlag.key == "top_level_flag")
+        #expect(pole.oneFlagGroup.$secondLevelFlag.key == "one_flag_group.second_level_flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key == "one_flag_group.two.third_level_flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key == "one_flag_group.two.third_level_flag2")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key == "one_flag_group.two.customKey")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key == "customKeyPath")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key == "one_flag_group.two.standard")
     }
 
-    func testPrefixCodingKeyStrategy() {
+    @Test("Encodes with prefix")
+    func prefix() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: "prefix", separator: ".")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
-        XCTAssertEqual(pole.$topLevelFlag.key, "prefix.top-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.$secondLevelFlag.key, "prefix.one-flag-group.second-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key, "prefix.one-flag-group.two.third-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key, "prefix.one-flag-group.two.third-level-flag2")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key, "prefix.one-flag-group.two.customKey")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key, "customKeyPath")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "prefix.one-flag-group.two.standard")
+        #expect(pole.$topLevelFlag.key == "prefix.top-level-flag")
+        #expect(pole.oneFlagGroup.$secondLevelFlag.key == "prefix.one-flag-group.second-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key == "prefix.one-flag-group.two.third-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key == "prefix.one-flag-group.two.third-level-flag2")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key == "prefix.one-flag-group.two.customKey")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key == "customKeyPath")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key == "prefix.one-flag-group.two.standard")
     }
 
-    func testCustomSeparatorCodingKeyStrategy() {
+    @Test("Encodes with custom separator")
+    func customSeparator() {
         let config = VexilConfiguration(codingPathStrategy: .kebabcase, prefix: "prefix", separator: "/")
         let pole = FlagPole(hoist: TestFlags.self, configuration: config, sources: [])
 
-        XCTAssertEqual(pole.$topLevelFlag.key, "prefix/top-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.$secondLevelFlag.key, "prefix/one-flag-group/second-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key, "prefix/one-flag-group/two/third-level-flag")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key, "prefix/one-flag-group/two/third-level-flag2")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key, "prefix/one-flag-group/two/customKey")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key, "customKeyPath")
-        XCTAssertEqual(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key, "prefix/one-flag-group/two/standard")
+        #expect(pole.$topLevelFlag.key == "prefix/top-level-flag")
+        #expect(pole.oneFlagGroup.$secondLevelFlag.key == "prefix/one-flag-group/second-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag.key == "prefix/one-flag-group/two/third-level-flag")
+        #expect(pole.oneFlagGroup.twoFlagGroup.$thirdLevelFlag2.key == "prefix/one-flag-group/two/third-level-flag2")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$custom.key == "prefix/one-flag-group/two/customKey")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$full.key == "customKeyPath")
+        #expect(pole.oneFlagGroup.twoFlagGroup.flagGroupThree.$standard.key == "prefix/one-flag-group/two/standard")
     }
+
 }
 
 
 // MARK: - Fixtures
 
-private struct TestFlags: FlagContainer {
+@FlagContainer
+private struct TestFlags {
 
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
@@ -82,18 +101,20 @@ private struct TestFlags: FlagContainer {
 
 }
 
-private struct OneFlags: FlagContainer {
+@FlagContainer
+private struct OneFlags {
 
-    @FlagGroup(codingKeyStrategy: .customKey("two"), description: "Test Two")
+    @FlagGroup(keyStrategy: .customKey("two"), description: "Test Two")
     var twoFlagGroup: TwoFlags
 
     @Flag(default: false, description: "Second level test flag")
     var secondLevelFlag: Bool
 }
 
-private struct TwoFlags: FlagContainer {
+@FlagContainer
+private struct TwoFlags {
 
-    @FlagGroup(codingKeyStrategy: .skip, description: "Skipping test 3")
+    @FlagGroup(keyStrategy: .skip, description: "Skipping test 3")
     var flagGroupThree: ThreeFlags
 
     @Flag(default: false, description: "Third level test flag")
@@ -104,12 +125,13 @@ private struct TwoFlags: FlagContainer {
 
 }
 
-private struct ThreeFlags: FlagContainer {
+@FlagContainer
+private struct ThreeFlags {
 
-    @Flag(codingKeyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
+    @Flag(keyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
     var custom: Bool
 
-    @Flag(codingKeyStrategy: .customKeyPath("customKeyPath"), default: false, description: "Test flag with custom key path")
+    @Flag(keyStrategy: .customKeyPath("customKeyPath"), default: false, description: "Test flag with custom key path")
     var full: Bool
 
     @Flag(default: true, description: "Standard Flag")

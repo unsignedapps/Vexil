@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -13,16 +13,21 @@
 
 #if !os(Linux) && !os(watchOS)
 
-import Combine
+import AsyncAlgorithms
 import Foundation
 
-/// Provides support for using `NSUbiquitousKeyValueStore` as a `FlagValueSource`
+/// Provides support for using `NSUbiquitousKeyValueStore` as a `NonSendableFlagValueSource`
 ///
-extension NSUbiquitousKeyValueStore: FlagValueSource {
+extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
+
+    /// A unique identifier for the flag value source.
+    public var flagValueSourceID: String {
+        flagValueSourceName
+    }
 
     /// The name of the Flag Value Source
-    public var name: String {
-        return "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"
+    public var flagValueSourceName: String {
+        "NSUbiquitousKeyValueStore\(self == NSUbiquitousKeyValueStore.default ? ".default" : "")"
     }
 
     /// Fetch values for the specified key
@@ -39,8 +44,8 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
     }
 
     /// Sets the value for the specified key
-    public func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {
-        guard let value = value else {
+    public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
+        guard let value else {
             removeObject(forKey: key)
             return
         }
@@ -54,19 +59,38 @@ extension NSUbiquitousKeyValueStore: FlagValueSource {
 
     private static let didChangeInternallyNotification = NSNotification.Name(rawValue: "NSUbiquitousKeyValueStore.didChangeExternallyNotification")
 
-    /// A Publisher that emits events when the flag values it manages changes
-    public func valuesDidChange(keys: Set<String>) -> AnyPublisher<Set<String>, Never>? {
-        return Publishers.Merge(
-            NotificationCenter.default.publisher(for: Self.didChangeExternallyNotification, object: self).map { _ in () },
-            NotificationCenter.default.publisher(for: Self.didChangeInternallyNotification, object: self).map { _ in () }
+    public typealias ChangeStream = AsyncThrowingMapSequence<
+        AsyncChain2Sequence<
+            AsyncFilterSequence<NotificationCenter.Notifications>,
+            AsyncFilterSequence<NotificationCenter.Notifications>
+        >,
+        FlagChange
+    >
+
+    public var flagValueChanges: ChangeStream {
+        let this = ObjectIdentifier(self)
+        return chain(
+            NotificationCenter.default
+                .notifications(named: Self.didChangeExternallyNotification, object: nil)
+                .filter { $0.object.isIdentical(to: this) },
+            NotificationCenter.default
+                .notifications(named: Self.didChangeInternallyNotification, object: nil)
+                .filter { $0.object.isIdentical(to: this) }
         )
         .map { _ in
-            self.synchronize()
-            return []
+            FlagChange.all
         }
-        .eraseToAnyPublisher()
     }
 
+}
+
+private extension Any? {
+    func isIdentical(to object: ObjectIdentifier) -> Bool {
+        guard let self = self as? AnyObject else {
+            return false
+        }
+        return ObjectIdentifier(self) == object
+    }
 }
 
 #endif

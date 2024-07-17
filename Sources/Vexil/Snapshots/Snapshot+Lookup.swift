@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,25 +11,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !os(Linux)
-import Combine
-#endif
+// #if !os(Linux)
+// import Combine
+// #endif
 
-extension Snapshot: Lookup {
-    func lookup<Value>(key: String, in source: FlagValueSource?) -> LookupResult<Value>? where Value: FlagValue {
-        lastAccessedKey = key
-        return values[key]?.toLookupResult()
+extension Snapshot: FlagLookup {
+
+    public func value<Value>(for keyPath: FlagKeyPath) -> Value? where Value: FlagValue {
+        values.withLock {
+            $0[keyPath.key] as? Value
+        }
     }
 
-#if !os(Linux)
-
-    func publisher<Value>(key: String) -> AnyPublisher<Value, Never> where Value: FlagValue {
-        valuesDidChange
-            .compactMap { [weak self] _ in
-                self?.values[key] as? Value
-            }
-            .eraseToAnyPublisher()
+    public var changes: FlagChangeStream {
+        stream.stream
     }
 
-#endif
 }

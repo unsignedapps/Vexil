@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -39,15 +39,15 @@ struct StringFlagControl: View {
 
     var body: some View {
         HStack {
-            Text(self.label)
+            Text(label)
             Spacer()
-            if self.isEditable {
-                TextField("", text: self.$value)
+            if isEditable {
+                TextField("", text: $value)
                     .multilineTextAlignment(.trailing)
             } else {
-                FlagDisplayValueView(value: self.value)
+                FlagDisplayValueView(value: value)
             }
-            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
+            DetailButton(hasChanges: hasChanges, showDetail: $showDetail)
         }
     }
 }
@@ -63,8 +63,8 @@ protocol StringEditableFlag {
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 extension UnfurledFlag: StringEditableFlag where Value.BoxedValueType: LosslessStringConvertible {
 
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return StringFlagControl(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        StringFlagControl(
             label: label,
             value: Binding(
                 key: flag.key,
@@ -95,8 +95,8 @@ extension UnfurledFlag: OptionalStringEditableFlag
     where Value: FlagValue, Value.BoxedValueType: OptionalFlagValue, Value.BoxedValueType.WrappedFlagValue: LosslessStringConvertible
 {
 
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return StringFlagControl(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        StringFlagControl(
             label: label,
             value: Binding(
                 key: flag.key,
@@ -120,7 +120,7 @@ extension String: OptionalDefaultValue {
     }
 
     static var defaultValue: String {
-        return ""
+        ""
     }
 }
 
@@ -128,7 +128,7 @@ extension String: OptionalDefaultValue {
 
 private extension View {
     func flagValueKeyboard<Value>(type: Value.Type) -> some View where Value: FlagValue {
-        return keyboardType(Value.keyboardType)
+        keyboardType(Value.keyboardType)
     }
 }
 
@@ -155,8 +155,8 @@ private extension FlagValue {
 #else
 
 private extension View {
-    func flagValueKeyboard<Value>(type: Value.Type) -> some View where Value: FlagValue {
-        return self
+    func flagValueKeyboard(type: (some FlagValue).Type) -> some View {
+        self
     }
 }
 

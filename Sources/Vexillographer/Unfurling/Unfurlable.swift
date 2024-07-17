@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -31,11 +31,11 @@ extension Flag: Unfurlable where Value: FlagValue {
 
     /// Creates an `UnfurledFlag` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }
-        let unfurled = UnfurledFlag(name: info.name ?? label.localizedDisplayName, flag: self, manager: manager)
+        let unfurled = UnfurledFlag(name: info.flagValueSourceName ?? label.localizedDisplayName, flag: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }
@@ -45,11 +45,11 @@ extension FlagGroup: Unfurlable {
 
     /// Creates an `UnfurledFlagGroup` from the receiver and returns it as a type-erased `UnfurledFlagItem`
     ///
-    func unfurl<RootGroup>(label: String, manager: FlagValueManager<RootGroup>) -> UnfurledFlagItem? where RootGroup: FlagContainer {
+    func unfurl(label: String, manager: FlagValueManager<some FlagContainer>) -> UnfurledFlagItem? {
         guard info.shouldDisplay == true else {
             return nil
         }
-        let unfurled = UnfurledFlagGroup(name: info.name ?? label.localizedDisplayName, group: self, manager: manager)
+        let unfurled = UnfurledFlagGroup(name: info.flagValueSourceName ?? label.localizedDisplayName, group: self, manager: manager)
         return unfurled.isEditable ? unfurled : nil
     }
 }

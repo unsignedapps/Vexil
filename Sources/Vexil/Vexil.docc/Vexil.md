@@ -12,6 +12,17 @@ Vexil (named for Vexillology) is a Swift package for managing feature flags (als
 * Get real-time flag updates using Combine
 * Vexillographer: A simple SwiftUI interface for editing flags
 
+## Vexil 3 Migration
+
+Vexil 3 is currently under active development and is a full rewrite using
+ [Swift Macros](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/macros/)
+and the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern) to reduce usage of
+[Mirror]https://developer.apple.com/documentation/Swift/Mirror and memory usage as well as
+improving the overall performance.
+
+The document below describes current the current stable 2.x version. If you'd like to learn more about Vexil 3 see
+the [Migrating Guide](<doc:Migration2-3>).
+
 ### Defining Flags
 
 If you've ever used [swift-argument-parser] defining flags in Vexil will be a familiar experience.
@@ -129,6 +140,7 @@ let snapshot = flagPole.snapshot()
 
 - ``FlagPole``
 - ``VexilConfiguration``
+- <doc:Migration2-3>
 - <doc:Sources>
 - <doc:FlagPublishing>
 - <doc:FlagKeys>
@@ -136,19 +148,21 @@ let snapshot = flagPole.snapshot()
 ### Flags
 
 - <doc:DefiningFlags>
-- ``Flag``
+- ``Flag(name:keyStrategy:default:description:display:)``
+- ``Flag(name:keyStrategy:description:display:)``
+- ``Flag(_:)``
 - ``FlagValue``
 
 ### Flag Groups
 
-- ``FlagGroup``
-- ``FlagContainer``
+- ``FlagGroup(name:keyStrategy:description:display:)``
+- ``FlagContainer(generateEquatable:)``
 
 ### Snapshots
 
 - <doc:Snapshots>
 - ``Snapshot``
-- ``MutableFlagGroup``
+- ``MutableFlagContainer``
 
 ### Sources
 
@@ -162,11 +176,10 @@ Vexil includes support for a number of sources out of the box, including `UserDe
 ### Supporting Types
 
 - ``FlagDisplayValue``
-- ``FlagInfo``
 
-### Diagnostics
-
-- <doc:Diagnostics>
-- ``FlagPoleDiagnostic``
+<!--### Diagnostics-->
+<!---->
+<!--- <doc:Diagnostics>-->
+<!--- ``FlagPoleDiagnostic``-->
 
 [swift-argument-parser]: https://github.com/apple/swift-argument-parser

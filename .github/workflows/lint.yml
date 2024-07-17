@@ -19,7 +19,7 @@ jobs:
           filters: |
             changed:
               - '.github/workflows/lint.yml'
-              - '..swiftformat'
+              - '.swiftformat'
               - '**/*.swift'
 
   Lint:

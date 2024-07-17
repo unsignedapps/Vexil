@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -34,16 +34,13 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
     @Binding
     var showDetail: Bool
 
-    @Binding
-    var showPicker: Bool
-
     // MARK: - View Body
 
     var content: some View {
         HStack {
-            Text(self.label).font(.headline)
+            Text(label).font(.headline)
             Spacer()
-            FlagDisplayValueView(value: self.value)
+            FlagDisplayValueView(value: value)
         }
     }
 
@@ -51,38 +48,38 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
     var body: some View {
         HStack {
-            if self.isEditable {
-                NavigationLink(destination: self.selector, isActive: self.$showPicker) {
-                    self.content
+            if isEditable {
+                NavigationLink(destination: selector) {
+                    content
                 }
             } else {
-                self.content
+                content
             }
-            DetailButton(hasChanges: self.hasChanges, showDetail: self.$showDetail)
+            DetailButton(hasChanges: hasChanges, showDetail: $showDetail)
         }
     }
 
     var selector: some View {
-        return self.selectorList
-            .navigationBarTitle(Text(self.label), displayMode: .inline)
+        SelectorList(value: $value)
+            .navigationBarTitle(Text(label), displayMode: .inline)
     }
 
 #elseif os(macOS)
 
     var body: some View {
         Group {
-            if self.isEditable {
-                self.picker
+            if isEditable {
+                picker
             } else {
-                self.content
+                content
             }
         }
     }
 
     var picker: some View {
         let picker = Picker(
-            selection: self.$value,
-            label: Text(self.label),
+            selection: $value,
+            label: Text(label),
             content: {
                 ForEach(Value.allCases, id: \.self) { value in
                     FlagDisplayValueView(value: value)
@@ -104,52 +101,58 @@ struct CaseIterableFlagControl<Value>: View where Value: FlagValue, Value: CaseI
 
 #endif
 
-    var selectorList: some View {
-        Form {
-            ForEach(Value.allCases, id: \.self) { value in
-                Button(
-                    action: {
-                        self.value = value
-                        self.showPicker = false
-                    },
-                    label: {
-                        HStack {
-                            FlagDisplayValueView(value: value)
-                                .foregroundColor(.primary)
-                            Spacer()
+    struct SelectorList: View {
+        @Binding
+        var value: Value
 
-                            if value == self.value {
-                                self.checkmark
+        @Environment(\.presentationMode)
+        private var presentationMode
+
+        var body: some View {
+            Form {
+                ForEach(Value.allCases, id: \.self) { value in
+                    Button(
+                        action: {
+                            self.value = value
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        label: {
+                            HStack {
+                                FlagDisplayValueView(value: value)
+                                    .foregroundColor(.primary)
+                                Spacer()
+
+                                if value == self.value {
+                                    checkmark
+                                }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
-    }
 
 #if os(macOS)
 
-    var checkmark: some View {
-        return Text("✓")
-    }
+        var checkmark: some View {
+            Text("✓")
+        }
 
 #else
 
-    var checkmark: some View {
-        return Image(systemName: "checkmark")
-    }
+        var checkmark: some View {
+            Image(systemName: "checkmark")
+        }
 
 #endif
-
+    }
 }
-
 
 // MARK: - Creating CaseIterableFlagControls
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol CaseIterableEditableFlag {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
@@ -157,8 +160,8 @@ extension UnfurledFlag: CaseIterableEditableFlag
     where Value: FlagValue, Value: CaseIterable, Value.AllCases: RandomAccessCollection,
     Value: RawRepresentable, Value.RawValue: FlagValue, Value: Hashable
 {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>, showPicker: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
-        return CaseIterableFlagControl<Value>(
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView {
+        CaseIterableFlagControl<Value>(
             label: label,
             value: Binding(
                 key: flag.key,
@@ -168,8 +171,7 @@ extension UnfurledFlag: CaseIterableEditableFlag
             ),
             hasChanges: manager.hasValueInSource(flag: flag),
             isEditable: manager.isEditable,
-            showDetail: showDetail,
-            showPicker: showPicker
+            showDetail: showDetail
         )
         .eraseToAnyView()
     }

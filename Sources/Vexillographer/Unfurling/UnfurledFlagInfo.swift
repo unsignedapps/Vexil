@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -34,7 +34,7 @@ struct UnfurledFlagInfo {
 
     init(key: String, info: FlagInfo, defaultName: String) {
         self.key = key
-        self.name = info.name ?? defaultName
+        self.name = info.flagValueSourceName ?? defaultName
         self.description = info.description
     }
 }

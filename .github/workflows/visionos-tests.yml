@@ -1,0 +1,57 @@
+name: visionOS Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  check-changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - '.github/workflows/visionos-tests.yml'
+              - '**/*.swift'
+
+  build-visionos-matrix:
+    name: visionOS Matrix
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: check-changes
+    strategy:
+      matrix:
+        xcode: [ "15.4", "16.0" ]
+        os: [ macos-14 ]
+    runs-on: ${{ matrix.os }}
+
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and Test
+        run: |
+          set -o pipefail && \
+          NSUnbufferedIO=YES \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=visionOS Simulator,name=Apple Vision Pro" \
+          | xcbeautify --renderer github-actions
+
+  build-visionos:
+    runs-on: ubuntu-latest
+    name: visionOS Tests
+    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
+    needs: build-visionos-matrix
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.build-visionos-matrix.result == 'failure' }}
+        run: exit 1

@@ -14,7 +14,7 @@ jobs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -34,24 +34,16 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        swift: [ "5.2.5", "5.3.3", "5.4.3", "5.5.3", "5.6.3", "5.7.3" ]
-        os: [ amazonlinux2, bionic, centos7, focal, jammy ]
+        swift: [ "swift:5.10.1", "swiftlang/swift:nightly-6.0" ]
+        os: [ amazonlinux2, focal, jammy, rhel-ubi9, mantic, noble ]
         exclude:
-          - swift: 5.2.5
-            os: jammy
-          - swift: 5.3.3
-            os: jammy
-          - swift: 5.4.3
-            os: jammy
-          - swift: 5.5.3
-            os: jammy
-          - swift: 5.6.3
-            os: jammy
-          - swift: 5.7.3
-            os: centos7
+          - swift: "swiftlang/swift:nightly-6.0"
+            os: "mantic"
+          - swift: "swiftlang/swift:nightly-6.0"
+            os: "noble"
 
     container:
-      image: swift:${{ matrix.swift }}-${{ matrix.os }}
+      image: ${{ matrix.swift }}-${{ matrix.os }}
 
     steps:
       - name: Checkout

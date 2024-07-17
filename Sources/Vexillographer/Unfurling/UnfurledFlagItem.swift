@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -26,6 +26,15 @@ protocol UnfurledFlagItem {
     var unfurledView: AnyView { get }
     var isEditable: Bool { get }
     var isLink: Bool { get }
+}
+
+@available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
+struct UnfurledFlagItemView: View {
+    var item: UnfurledFlagItem
+
+    var body: some View {
+        item.unfurledView.id(item.id)
+    }
 }
 
 #endif

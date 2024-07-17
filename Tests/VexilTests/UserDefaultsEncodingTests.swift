@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -11,279 +11,219 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if !os(Linux)
+
+import Foundation
+import Testing
 @testable import Vexil
+
+#if compiler(<6)
+
 import XCTest
 
-final class UserDefaultsEncodingTests: XCTestCase {
+final class UserDefaultsEncodingTestCase: XCTestCase {
+    func testSwiftTesting() async {
+        await XCTestScaffold.runTestsInSuite(UserDefaultsEncodingTests.self, hostedBy: self)
+    }
+}
 
-    // MARK: - Fixtures
+#endif
 
-    private var defaults: UserDefaults!
+@Suite("UserDefaults Encoding", .tags(.userDefaults))
+final class UserDefaultsEncodingTests {
 
-    override func setUp() {
-        super.setUp()
-        defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")
+    private let defaults: UserDefaults
+
+    init() {
+        self.defaults = UserDefaults(suiteName: "UserDefaultsEncodingTests")!
     }
 
-    override func tearDown() {
-        super.tearDown()
+    deinit {
         defaults.removePersistentDomain(forName: "UserDefaultsEncodingTests")
     }
 
 
     // MARK: - Removing Values
 
-    func testEncodeMissingUnset() {
-        AssertNoThrow {
-            self.defaults.set(true, forKey: #function)
-            XCTAssertNotNil(self.defaults.object(forKey: #function))
+    @Test("Unsets values")
+    func unsets() throws {
+        defaults.set(true, forKey: #function)
+        #expect(defaults.object(forKey: #function) != nil)
 
-            try self.defaults.setFlagValue(Bool?.none, key: #function)         // swiftlint:disable:this syntactic_sugar
-            XCTAssertNil(self.defaults.object(forKey: #function))
-        }
+        try defaults.setFlagValue(Bool?.none, key: #function)
+        #expect(defaults.object(forKey: #function) == nil)
     }
 
 
     // MARK: - Decoding Boolean Types
 
-    func testEncodeBooleanTrue() {
-        AssertNoThrow {
-            let value = true
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.bool(forKey: #function), value)
-        }
+    @Test("Encodes boolean true")
+    func booleanTrue() throws {
+        try defaults.setFlagValue(true, key: #function)
+        #expect(defaults.bool(forKey: #function) == true)
     }
 
-    func testEncodeBooleanFalse() {
-        AssertNoThrow {
-            let value = false
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.bool(forKey: #function), value)
-        }
+    @Test("Encodes boolean false")
+    func booleanFalse() throws {
+        try defaults.setFlagValue(false, key: #function)
+        #expect(defaults.bool(forKey: #function) == false)
     }
 
 
     // MARK: - Decoding String Types
 
-    func testEncodeString() {
-        AssertNoThrow {
-            let value = "abcd1234"
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.string(forKey: #function), value)
-        }
+    @Test("Encodes string")
+    func string() throws {
+        try defaults.setFlagValue("abcd1234", key: #function)
+        #expect(defaults.string(forKey: #function) == "abcd1234")
     }
 
-    func testEncodeURL() {
-        AssertNoThrow {
-            let value = URL(string: "https://google.com/")!
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.string(forKey: #function), value.absoluteString)
-        }
+    @Test("Encodes URL")
+    func url() throws {
+        try defaults.setFlagValue(URL(string: "https://google.com/")!, key: #function)
+        #expect(defaults.string(forKey: #function) == "https://google.com/")
     }
 
 
     // MARK: - Encoding Float / Double Types
 
-    func testEncodeDouble() {
-        AssertNoThrow {
-            let value = Double(1.23456789)
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.double(forKey: #function), value, accuracy: 0.00001)
-        }
+    @Test("Encodes double")
+    func double() throws {
+        try defaults.setFlagValue(123.456, key: #function)
+        #expect(defaults.double(forKey: #function) == 123.456)
     }
 
-    func testEncodeFloat() {
-        AssertNoThrow {
-            let value = Float(1.23456789)
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.float(forKey: #function), value, accuracy: 0.00001)
-        }
+    func float() throws {
+        try defaults.setFlagValue(Float(123.456), key: #function)
+        #expect(defaults.float(forKey: #function) == Float(123.456))
     }
 
 
     // MARK: - Encoding Integer Types
 
-    func testEncodeInt() {
-        AssertNoThrow {
-            let value = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.integer(forKey: #function), value)
-        }
+    @Test("Encodes integer")
+    func int() throws {
+        try defaults.setFlagValue(1234, key: #function)
+        #expect(defaults.integer(forKey: #function) == 1234)
     }
 
-    func testEncodeInt8() {
-        AssertNoThrow {
-            let value: Int8 = 12
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(Int8(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 8-bit integer")
+    func int8() throws {
+        try defaults.setFlagValue(Int8(12), key: #function)
+        #expect(defaults.integer(forKey: #function) == Int8(12))
     }
 
-    func testEncodeInt16() {
-        AssertNoThrow {
-            let value: Int16 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(Int16(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 16-bit integer")
+    func int16() throws {
+        try defaults.setFlagValue(Int16(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == Int16(1234))
     }
 
-    func testEncodeInt32() {
-        AssertNoThrow {
-            let value: Int32 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(Int32(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 32-bit integer")
+    func int32() throws {
+        try defaults.setFlagValue(Int32(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == Int32(1234))
     }
 
-    func testEncodeInt64() {
-        AssertNoThrow {
-            let value: Int64 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(Int64(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 64-bit integer")
+    func int64() throws {
+        try defaults.setFlagValue(Int64(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == Int64(1234))
     }
 
-    func testEncodeUInt() {
-        AssertNoThrow {
-            let value: UInt = 12
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(UInt(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes unsigned integer")
+    func uint() throws {
+        try defaults.setFlagValue(UInt(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == UInt(1234))
     }
 
-    func testEncodeUInt8() {
-        AssertNoThrow {
-            let value: UInt8 = 14
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(UInt8(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 8-bit unsigned integer")
+    func uint8() throws {
+        try defaults.setFlagValue(UInt8(12), key: #function)
+        #expect(defaults.integer(forKey: #function) == UInt8(12))
     }
 
-    func testEncodeUInt16() {
-        AssertNoThrow {
-            let value: UInt16 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(UInt16(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 16-bit unsigned integer")
+    func uint16() throws {
+        try defaults.setFlagValue(UInt16(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == UInt16(1234))
     }
 
-    func testEncodeUInt32() {
-        AssertNoThrow {
-            let value: UInt32 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(UInt32(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 32-bit unsigned integer")
+    func uint32() throws {
+        try defaults.setFlagValue(UInt32(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == UInt32(1234))
     }
 
-    func testEncodeUInt64() {
-        AssertNoThrow {
-            let value: UInt64 = 1234
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(UInt64(self.defaults.integer(forKey: #function)), value)
-        }
+    @Test("Encodes 64-bit unsigned integer")
+    func uint64() throws {
+        try defaults.setFlagValue(UInt64(1234), key: #function)
+        #expect(defaults.integer(forKey: #function) == UInt64(1234))
     }
 
 
     // MARK: - Wrapping Types
 
-    func testRawRepresentable() {
-        AssertNoThrow {
-            let value = TestStruct(rawValue: "Test Value")
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.string(forKey: #function), value.rawValue)
-        }
+    @Test("Encodes raw representable")
+    func rawRepresentable() throws {
+        try defaults.setFlagValue(TestStruct(rawValue: "Test Value"), key: #function)
+        #expect(defaults.string(forKey: #function) == "Test Value")
 
         struct TestStruct: RawRepresentable, FlagValue, Equatable {
             var rawValue: String
         }
     }
 
-    func testOptionalSome() {
-        AssertNoThrow {
-            let value: String? = "Test Value"
+    @Test("Encodes optional")
+    func optional() throws {
+        let value: String? = "Test Value"
 
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.string(forKey: #function), value)
-        }
+        try defaults.setFlagValue(value, key: #function)
+        #expect(defaults.string(forKey: #function) == "Test Value")
     }
 
-    func testOptionalNone() {
-        AssertNoThrow {
-            let value: String? = nil
+    @Test("Encodes nil")
+    func none() throws {
+        let value: String? = nil
 
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.string(forKey: #function), value)
-        }
+        try defaults.setFlagValue(value, key: #function)
+        #expect(defaults.string(forKey: #function) == nil)
     }
 
 
     // MARK: - Array Tests
 
-    func testEncodeStringArray() {
-        AssertNoThrow {
-            let value = [ "abc", "123" ]
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.stringArray(forKey: #function), value)
-        }
+    @Test("Encodes string array")
+    func stringArray() throws {
+        try defaults.setFlagValue([ "abc", "123" ], key: #function)
+        #expect(defaults.stringArray(forKey: #function) == [ "abc", "123" ])
     }
 
-    func testEncodeIntegerArray() {
-        AssertNoThrow {
-            let value = [ 234, -123 ]
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.array(forKey: #function) as? [Int], value)
-        }
+    @Test("Encodes integer array")
+    func integerArray() throws {
+        try defaults.setFlagValue([ 234, -123 ], key: #function)
+        #expect(defaults.array(forKey: #function) as? [Int] == [ 234, -123 ])
     }
 
 
     // MARK: - Dictionary Tests
 
-    func testEncodeStringDictionary() {
-        AssertNoThrow {
-            let value = [
-                "key1": "value1",
-                "key2": "value2",
-            ]
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.dictionary(forKey: #function) as? [String: String], value)
-        }
+    @Test("Encodes string dictionary")
+    func stringDictionary() throws {
+        try defaults.setFlagValue([ "key1": "value1", "key2": "value2" ], key: #function)
+        #expect(defaults.dictionary(forKey: #function) as? [String: String] == [ "key1": "value1", "key2": "value2" ])
     }
 
-    func testEncodeIntegerDictionary() {
-        AssertNoThrow {
-            let value = [
-                "key1": 123,
-                "key2": -987,
-            ]
-
-            try self.defaults.setFlagValue(value, key: #function)
-            XCTAssertEqual(self.defaults.dictionary(forKey: #function) as? [String: Int], value)
-        }
+    @Test("Encodes integer dictionary")
+    func integerDictionary() throws {
+        try defaults.setFlagValue([ "key1": 123, "key2": -987 ], key: #function)
+        #expect(defaults.dictionary(forKey: #function) as? [String: Int] == [ "key1": 123, "key2": -987 ])
     }
 
     // MARK: - Codable Tests
 
-    func testEncodeCodable() {
+    @Test("Encodes codable")
+    func codable() throws {
         struct MyStruct: FlagValue, Codable, Equatable {
             let property1: String
             let property2: Int
@@ -301,10 +241,10 @@ final class UserDefaultsEncodingTests: XCTestCase {
         // manually encoding into json
         let expected = Data(#"{"wrapped":{"property1":"value1","property2":123,"property3":"🤯"}}"#.utf8)
 
-        AssertNoThrow {
-            try self.defaults.setFlagValue(input, key: #function)
-            XCTAssertEqual(self.defaults.data(forKey: #function), expected)
-        }
+        try defaults.setFlagValue(input, key: #function)
+        #expect(defaults.data(forKey: #function) == expected)
     }
 
 }
+
+#endif // !os(Linux)

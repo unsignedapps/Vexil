@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2023 Unsigned Apps and the open source contributors.
+// Copyright (c) 2024 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -36,11 +36,11 @@ struct DetailButton: View {
 #if os(iOS)
 
     var body: some View {
-        Image(systemName: self.hasChanges ? "info.circle.fill" : "info.circle")
+        Image(systemName: hasChanges ? "info.circle.fill" : "info.circle")
             .imageScale(.large)
             .foregroundColor(.accentColor)
-            .opacity(self.isDraggingInside ? 0.3 : 1)
-            .animation(self.isDraggingInside ? .easeOut(duration: 0.15) : .easeIn(duration: 0.2), value: self.isDraggingInside)
+            .opacity(isDraggingInside ? 0.3 : 1)
+            .animation(isDraggingInside ? .easeOut(duration: 0.15) : .easeIn(duration: 0.2), value: isDraggingInside)
             .background(
                 GeometryReader { proxy in
                     Color.clear
@@ -56,14 +56,14 @@ struct DetailButton: View {
     private var selectionGesture: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { data in
-                self.isDraggingInside = CGRect(origin: .zero, size: self.size)
+                isDraggingInside = CGRect(origin: .zero, size: size)
                     .insetBy(dx: -10, dy: -10)
                     .contains(data.location)
             }
             .onEnded { _ in
-                if self.isDraggingInside {
-                    self.showDetail.toggle()
-                    self.isDraggingInside = false
+                if isDraggingInside {
+                    showDetail.toggle()
+                    isDraggingInside = false
                 }
             }
     }
