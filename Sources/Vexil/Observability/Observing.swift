@@ -33,6 +33,7 @@ public typealias FlagChangeStream = AsyncStream<FlagChange>
 public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
 
     public typealias Element = FlagChange
+    public typealias Failure = Never
 
     let sequence: AsyncFilterSequence<FlagChangeStream>
 
@@ -49,8 +50,25 @@ public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
         }
     }
 
-    public func makeAsyncIterator() -> AsyncFilterSequence<FlagChangeStream>.AsyncIterator {
-        sequence.makeAsyncIterator()
+    public struct AsyncIterator: AsyncIteratorProtocol {
+        var iterator: AsyncFilterSequence<FlagChangeStream>.AsyncIterator
+
+        public mutating func next() async -> Element? {
+            await iterator.next()
+        }
+
+#if swift(>=6)
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+        public mutating func next(
+            isolation actor: isolated (any Actor)?
+        ) async -> FlagChange? {
+            await iterator.next(isolation: actor)
+        }
+#endif
+    }
+
+    public func makeAsyncIterator() -> AsyncIterator {
+        AsyncIterator(iterator: sequence.makeAsyncIterator())
     }
 
 }
@@ -62,6 +80,7 @@ public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
 public struct EmptyFlagChangeStream: AsyncSequence, Sendable {
 
     public typealias Element = FlagChange
+    public typealias Failure = Never
 
     public init() {
         // Intentionally left blank
@@ -75,10 +94,18 @@ public struct EmptyFlagChangeStream: AsyncSequence, Sendable {
 
         public typealias Element = FlagChange
 
-        public func next() async throws -> FlagChange? {
+        public func next() async -> FlagChange? {
             nil
         }
 
+#if swift(>=6)
+        @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+        public func next(
+            isolation actor: isolated (any Actor)?
+        ) async -> FlagChange? {
+            nil
+        }
+#endif
     }
 
 }
