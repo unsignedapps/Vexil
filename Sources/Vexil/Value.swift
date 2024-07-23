@@ -67,7 +67,7 @@ public protocol FlagDisplayValue {
 ///
 /// Any custom type you conform to `FlagValue` must be able to be represented using one of these types
 ///
-public enum BoxedFlagValue: Equatable & Sendable {
+public enum BoxedFlagValue: Equatable, Sendable {
     case array([BoxedFlagValue])
     case bool(Bool)
     case dictionary([String: BoxedFlagValue])
