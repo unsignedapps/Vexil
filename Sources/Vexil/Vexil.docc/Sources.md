@@ -10,7 +10,7 @@ The Vexil `FlagPole` supports multiple backend flag sources, and ships with the 
 |------|-------------|
 | `UserDefaults` | Any `UserDefaults` instance automatically conforms to ``FlagValueSource`` |
 | `NSUbiquitousKeyValueStore` | Any `NSUbiquitousKeyValueStore` instance automatically conforms to ``FlagValueSource`` |
-| ``FlagValueDictionary`` | A dictionary-style type that conforms to `Collection` that is great for testing or other integrations. |
+| ``FlagValueDictionary`` | A wrapper for a simple dictionary that is great for testing or other integrations. |
 | ``Snapshot`` | All snapshots taken of a FlagPole can be used as a source. |
 
 ## Initialisation
