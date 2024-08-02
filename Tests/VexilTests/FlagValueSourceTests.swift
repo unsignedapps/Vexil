@@ -96,9 +96,10 @@ struct FlagValueSourceTests {
         try pole.copyFlagValues(from: source, to: destination)
 
         // THEN we expect those two dictionaries to match
-        #expect(destination.count == 2)
-        #expect(destination["test-flag"] == .bool(true))
-        #expect(destination["subgroup.test-flag"] == .bool(true))
+        let destinationValues = destination.allValues
+        #expect(destinationValues.count == 2)
+        #expect(destinationValues["test-flag"] == .bool(true))
+        #expect(destinationValues["subgroup.test-flag"] == .bool(true))
 
     }
 
@@ -116,7 +117,8 @@ struct FlagValueSourceTests {
         try pole.removeFlagValues(in: source)
 
         // THEN the source should now be empty
-        #expect(source.isEmpty)
+        let sourceValues = source.allValues
+        #expect(sourceValues.isEmpty)
 
     }
 
