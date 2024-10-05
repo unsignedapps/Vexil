@@ -1,0 +1,36 @@
+name: Swift Macro Compatibility Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  check-changes:
+    name: Check for Changes
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - '.github/workflows/macro-compatibility-check.yml'
+              - '**/*.swift'
+
+  run-check-macro-compatibility:
+    name: Run Check Macro Compatibility
+    runs-on: macos-latest
+    needs: check-changes
+    steps:
+      - name: Run Swift Macro Compatibility Check
+        uses: Matejkob/swift-macro-compatibility-check@v1
+        with:
+          run-tests: false
+          major-versions-only: true
+
