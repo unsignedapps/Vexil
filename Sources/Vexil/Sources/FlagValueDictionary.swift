@@ -70,6 +70,13 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
         })
     }
 
+    // MARK: - Dictionary Access
+
+    /// Returns a copy of the current values in this source
+    var allValues: DictionaryType {
+        storage.withLock { $0 }
+    }
+
     // MARK: - Codable Support
 
     enum CodingKeys: String, CodingKey {
@@ -89,14 +96,4 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
         try container.encode(storage.withLock { $0 }, forKey: .storage)
     }
 
-}
-
-// MARK: - Equatable Support
-
-extension FlagValueDictionary: Equatable {
-    public static func == (lhs: FlagValueDictionary, rhs: FlagValueDictionary) -> Bool {
-        let left = lhs.storage.withLock { $0 }
-        let right = rhs.storage.withLock { $0 }
-        return lhs.id == rhs.id && left == right
-    }
 }

@@ -56,8 +56,9 @@ struct FlagValueDictionaryTests {
         snapshot.oneFlagGroup.secondLevelFlag = false
         try flagPole.save(snapshot: snapshot, to: source)
 
-        #expect(source["top-level-flag"] == .bool(true))
-        #expect(source["one-flag-group.second-level-flag"] == .bool(false))
+        let allValues = source.allValues
+        #expect(allValues["top-level-flag"] == .bool(true))
+        #expect(allValues["one-flag-group.second-level-flag"] == .bool(false))
     }
 
     // MARK: - Equatable Tests
@@ -94,9 +95,14 @@ struct FlagValueDictionaryTests {
             ]
         )
 
-        #expect(original == same)
-        #expect(original != differentContent)
-        #expect(original != differentIdentifier)
+        let originalValues = original.allValues
+        let sameValues = same.allValues
+        let differentContentValues = differentContent.allValues
+        let differentIdentifierValues = differentIdentifier.allValues
+        #expect(originalValues == sameValues)
+        #expect(originalValues != differentContentValues)
+        #expect(originalValues == differentIdentifierValues)
+        #expect(original.id != differentIdentifier.id)
 
     }
 
@@ -114,7 +120,8 @@ struct FlagValueDictionaryTests {
         let encoded = try JSONEncoder().encode(source)
         let decoded = try JSONDecoder().decode(FlagValueDictionary.self, from: encoded)
 
-        #expect(source == decoded)
+        #expect(source.allValues == decoded.allValues)
+        #expect(source.id == decoded.id)
     }
 
 
