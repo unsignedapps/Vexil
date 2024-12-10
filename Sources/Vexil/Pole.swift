@@ -87,9 +87,11 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///
     public static var defaultSources: [any FlagValueSource] {
 #if !os(Linux)
-        [
-            FlagValueSourceCoordinator(source: UserDefaults.standard),
-        ]
+#if swift(>=6)
+        [ FlagValueSourceCoordinator(source: UserDefaults.standard) ]
+#else
+        [ FlagValueSourceCoordinator(uncheckedSource: UserDefaults.standard) ]
+#endif
 #else
         []
 #endif

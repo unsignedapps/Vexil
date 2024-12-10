@@ -27,9 +27,19 @@ public final class FlagValueSourceCoordinator<Source>: Sendable where Source: No
 
     // MARK: - Initialisation
 
-    public init(source: Source) {
+    /// Create a FlagValueSource from a NonSendableFlagValueSource. If `Source` is a reference type,
+    /// you must not continue to access it (except via this coordinator) after passing it to this
+    /// initializer.
+    public init(uncheckedSource source: Source) {
         self.source = .init(uncheckedState: source)
     }
+
+#if swift(>=6)
+    /// Create a FlagValueSource from a NonSendableFlagValueSource.
+    public init(source: sending Source) {
+        self.source = .init(uncheckedState: source)
+    }
+#endif
 
 }
 
