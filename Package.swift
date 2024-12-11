@@ -24,12 +24,6 @@ let package = Package(
         Package.Dependency.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
         Package.Dependency.package(url: "https://github.com/nicklockwood/SwiftFormat.git", from: "0.54.1")
         Package.Dependency.package(url: "https://github.com/swiftlang/swift-syntax.git", .upToNextMajor(from: "600.0.1"))
-
-#if os(Linux)
-        // Linux does not come bundled with swift-testing
-        Package.Dependency.package(url: "https://github.com/apple/swift-testing.git", exact: "0.11.0")
-#endif
-
     },
 
     targets: .init {
@@ -50,12 +44,6 @@ let package = Package(
             name: "VexilTests",
             dependencies: .init {
                 Target.Dependency.target(name: "Vexil")
-
-#if os(Linux)
-                // Linux does not come bundled with swift-testing
-                Target.Dependency.product(name: "Testing", package: "swift-testing")
-#endif
-
             },
             swiftSettings: [
                 .swiftLanguageMode(.v6),

@@ -28,6 +28,7 @@ jobs:
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
+      fail-fast: false
       matrix:
         xcode: [ "16.0", "16.1" ]
         os: [ macos-14, macos-15 ]
@@ -53,5 +54,5 @@ jobs:
     needs: build-tvos-matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.build-ios-matrix.result != 'success' }}
+        if: ${{ needs.build-tvos-matrix.result != 'success' }}
         run: exit 1

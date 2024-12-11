@@ -33,6 +33,7 @@ jobs:
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
+      fail-fast: false
       matrix:
         swift: [ "swift:6.0.2" ]
         os: [ amazonlinux2, focal, jammy, rhel-ubi9, mantic, noble ]
