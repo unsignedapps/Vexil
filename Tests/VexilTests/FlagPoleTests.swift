@@ -15,18 +15,6 @@ import Foundation
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class FlagPoleTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(FlagPoleTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("Flag Pole")
 struct FlagPoleTests {
 

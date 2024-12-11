@@ -14,18 +14,6 @@
 import Testing
 import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class FlagDetailTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(FlagDetailTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("Flag Details")
 struct FlagDetailTests {
 

@@ -15,18 +15,6 @@ import Foundation
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class BoxedFlagValueDecodingTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(BoxedFlagValueDecodingTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("BoxedFlagValue decoding", .tags(.boxing, .codable))
 struct BoxedFlagValueDecodingTests {
 

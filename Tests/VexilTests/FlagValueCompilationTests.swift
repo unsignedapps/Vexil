@@ -15,18 +15,6 @@ import Foundation
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class FlagValueCompilationTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(FlagValueCompilationTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 /// A series of trivial equality tests
 ///
 /// These are here not because we need to test the setting or

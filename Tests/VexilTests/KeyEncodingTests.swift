@@ -14,18 +14,6 @@
 import Testing
 import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class KeyEncodingTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(KeyEncodingTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("Key Encoding", .tags(.pole))
 struct KeyEncodingTests {
 
