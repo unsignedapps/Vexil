@@ -44,7 +44,7 @@ jobs:
         run: |
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)" \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=watchOS Simulator,name=Apple Watch Series 10 (46mm)" \
           | xcbeautify --renderer github-actions
 
   build-watchos:

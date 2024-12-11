@@ -44,7 +44,7 @@ jobs:
         run: |
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 15" \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 16" \
           | xcbeautify --renderer github-actions
 
   build-ios:

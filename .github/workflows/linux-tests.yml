@@ -36,12 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         swift: [ "swift:6.0.2" ]
-        os: [ amazonlinux2, focal, jammy, rhel-ubi9, mantic, noble ]
-        exclude:
-          - swift: "swiftlang/swift:nightly-6.0"
-            os: "mantic"
-          - swift: "swiftlang/swift:nightly-6.0"
-            os: "noble"
+        os: [ amazonlinux2, focal, jammy, rhel-ubi9, noble ]
 
     container:
       image: ${{ matrix.swift }}-${{ matrix.os }}
