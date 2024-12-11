@@ -34,7 +34,7 @@ jobs:
     needs: check-changes
     strategy:
       matrix:
-        swift: [ "swift:5.10.1", "swiftlang/swift:nightly-6.0" ]
+        swift: [ "swift:6.0.2" ]
         os: [ amazonlinux2, focal, jammy, rhel-ubi9, mantic, noble ]
         exclude:
           - swift: "swiftlang/swift:nightly-6.0"
@@ -58,5 +58,5 @@ jobs:
     needs: matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.matrix.result == 'failure' }}
+        if: ${{ needs.matrix.result != 'success' }}
         run: exit 1
