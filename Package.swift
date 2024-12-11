@@ -23,13 +23,7 @@ let package = Package(
     dependencies: .init {
         Package.Dependency.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
         Package.Dependency.package(url: "https://github.com/nicklockwood/SwiftFormat.git", from: "0.54.1")
-        Package.Dependency.package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "600.0.0-prerelease-2024-06-12")
-
-#if os(Linux)
-        // Linux does not come bundled with swift-testing
-        Package.Dependency.package(url: "https://github.com/apple/swift-testing.git", exact: "0.11.0")
-#endif
-
+        Package.Dependency.package(url: "https://github.com/swiftlang/swift-syntax.git", .upToNextMajor(from: "600.0.1"))
     },
 
     targets: .init {
@@ -43,22 +37,16 @@ let package = Package(
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             ],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .swiftLanguageMode(.v6),
             ]
         )
         Target.testTarget(
             name: "VexilTests",
             dependencies: .init {
                 Target.Dependency.target(name: "Vexil")
-
-#if os(Linux)
-                // Linux does not come bundled with swift-testing
-                Target.Dependency.product(name: "Testing", package: "swift-testing")
-#endif
-
             },
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .swiftLanguageMode(.v6),
             ]
         )
 
@@ -82,7 +70,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             ],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .swiftLanguageMode(.v6),
             ]
         )
 
@@ -96,7 +84,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ],
             swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency"),
+                .swiftLanguageMode(.v6),
             ]
         )
 
@@ -104,7 +92,7 @@ let package = Package(
 
     },
 
-    swiftLanguageVersions: [
+    swiftLanguageModes: [
         .v6,
     ]
 

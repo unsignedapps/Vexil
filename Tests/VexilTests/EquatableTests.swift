@@ -18,18 +18,6 @@ import Combine
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class EquatableTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(EquatableTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("Equatable Tests", .tags(.pole))
 struct EquatableTests {
 

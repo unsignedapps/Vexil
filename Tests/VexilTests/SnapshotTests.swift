@@ -14,18 +14,6 @@
 import Testing
 import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class SnapshotTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(SnapshotTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("Snapshots", .tags(.pole, .snapshot))
 struct SnapshotTests {
 

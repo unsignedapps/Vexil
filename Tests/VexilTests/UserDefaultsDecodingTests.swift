@@ -17,44 +17,25 @@ import Foundation
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class UserDefaultsDecodingTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(UserDefaultsDecodingTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("UserDefaults Decoding", .tags(.userDefaults))
 final class UserDefaultsDecodingTests {
-
-    private let defaults: UserDefaults
-
-    init() {
-        self.defaults = UserDefaults(suiteName: "UserDefaultsDecodingTests")!
-    }
-
-    deinit {
-        defaults.removePersistentDomain(forName: "UserDefaultsDecodingTests")
-    }
-
 
     // MARK: - Decoding Missing Values
 
     @Test("Decodes missing value as nil")
     func missing() {
-        #expect(defaults.flagValue(key: #function) as Bool? == nil)
+        withUserDefaults(#function) { defaults in
+            #expect(defaults.flagValue(key: "test") as Bool? == nil)
+        }
     }
 
     @Test("Decodes unset value as nil")
     func unset() {
-        defaults.set(true, forKey: #function)
-        defaults.removeObject(forKey: #function)
-        #expect(defaults.flagValue(key: #function) as Bool? == nil)
+        withUserDefaults(#function) { defaults in
+            defaults.set(true, forKey: "test")
+            defaults.removeObject(forKey: "test")
+            #expect(defaults.flagValue(key: "test") as Bool? == nil)
+        }
     }
 
 
@@ -62,32 +43,42 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes boolean true")
     func booleanTrue() {
-        defaults.set(true, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == true)
+        withUserDefaults(#function) { defaults in
+            defaults.set(true, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == true)
+        }
     }
 
     @Test("Decodes boolean false")
     func booleanFalse() {
-        defaults.set(false, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == false)
+        withUserDefaults(#function) { defaults in
+            defaults.set(false, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == false)
+        }
     }
 
     @Test("Decodes integer as boolean")
     func booleanInteger() {
-        defaults.set(1, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == true)
+        withUserDefaults(#function) { defaults in
+            defaults.set(1, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == true)
+        }
     }
 
     @Test("Decodes double as boolean")
     func booleanDouble() {
-        defaults.set(1.0, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == true)
+        withUserDefaults(#function) { defaults in
+            defaults.set(1.0, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == true)
+        }
     }
 
     @Test("Decodes string as boolean")
     func booleanString() {
-        defaults.set("t", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == true)
+        withUserDefaults(#function) { defaults in
+            defaults.set("t", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == true)
+        }
     }
 
 
@@ -95,14 +86,18 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes string")
     func string() {
-        defaults.set("abcd1234", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == "abcd1234")
+        withUserDefaults(#function) { defaults in
+            defaults.set("abcd1234", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == "abcd1234")
+        }
     }
 
     @Test("Decodes URL")
     func url() {
-        defaults.set("https://google.com/", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == URL(string: "https://google.com/")!)
+        withUserDefaults(#function) { defaults in
+            defaults.set("https://google.com/", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == URL(string: "https://google.com/")!)
+        }
     }
 
 
@@ -110,26 +105,34 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes double")
     func double() {
-        defaults.set(123.456, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == 123.456)
+        withUserDefaults(#function) { defaults in
+            defaults.set(123.456, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == 123.456)
+        }
     }
 
     @Test("Decodes float")
     func float() {
-        defaults.set(Float(123.456), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Float(123.456))
+        withUserDefaults(#function) { defaults in
+            defaults.set(Float(123.456), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Float(123.456))
+        }
     }
 
     @Test("Decodes integer as double")
     func doubleinteger() {
-        defaults.set(1, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == 1.0)
+        withUserDefaults(#function) { defaults in
+            defaults.set(1, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == 1.0)
+        }
     }
 
     @Test("Decodes string as double")
     func doubleString() {
-        defaults.set("1.23456789", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == 1.23456789)
+        withUserDefaults(#function) { defaults in
+            defaults.set("1.23456789", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == 1.23456789)
+        }
     }
 
 
@@ -137,74 +140,98 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes integer")
     func int() {
-        defaults.set(1234, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == 1234)
+        withUserDefaults(#function) { defaults in
+            defaults.set(1234, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == 1234)
+        }
     }
 
     @Test("Decodes 8-bit integer")
     func int8() {
-        defaults.set(Int8(12), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Int8(12))
+        withUserDefaults(#function) { defaults in
+            defaults.set(Int8(12), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Int8(12))
+        }
     }
 
     @Test("Decodes 16-bit integer")
     func int16() {
-        defaults.set(Int16(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Int16(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(Int16(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Int16(1234))
+        }
     }
 
     @Test("Decodes 32-bit integer")
     func int32() {
-        defaults.set(Int32(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Int32(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(Int32(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Int32(1234))
+        }
     }
 
     @Test("Decodes 64-bit integer")
     func int64() {
-        defaults.set(Int64(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Int64(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(Int64(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Int64(1234))
+        }
     }
 
     @Test("Decodes unsigned integer")
     func uint() {
-        defaults.set(UInt(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(UInt(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt(1234))
+        }
     }
 
     @Test("Decodes 8-bit unsigned integer")
     func uint8() {
-        defaults.set(UInt8(12), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt8(12))
+        withUserDefaults(#function) { defaults in
+            defaults.set(UInt8(12), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt8(12))
+        }
     }
 
     @Test("Decodes 16-bit unsigned integer")
     func uint16() {
-        defaults.set(UInt16(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt16(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(UInt16(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt16(1234))
+        }
     }
 
     @Test("Decodes 32-bit unsigned integer")
     func uint32() {
-        defaults.set(UInt32(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt32(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(UInt32(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt32(1234))
+        }
     }
 
     @Test("Decodes 64-bit unsigned integer")
     func uint64() {
-        defaults.set(UInt64(1234), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt64(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set(UInt64(1234), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt64(1234))
+        }
     }
 
     @Test("Decodes string as integer")
     func intString() {
-        defaults.set("1234", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == 1234)
+        withUserDefaults(#function) { defaults in
+            defaults.set("1234", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == 1234)
+        }
     }
 
     @Test("Decodes string as unsigned integer")
     func uintString() {
-        defaults.set("1234", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == UInt(1234))
+        withUserDefaults(#function) { defaults in
+            defaults.set("1234", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == UInt(1234))
+        }
     }
 
 
@@ -212,21 +239,25 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes raw representable string")
     func rawRepresentableString() {
-        defaults.set("Test Value", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == TestStruct(rawValue: "Test Value"))
+        withUserDefaults(#function) { defaults in
+            defaults.set("Test Value", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == TestStruct(rawValue: "Test Value"))
 
-        struct TestStruct: RawRepresentable, FlagValue, Equatable {
-            var rawValue: String
+            struct TestStruct: RawRepresentable, FlagValue, Equatable {
+                var rawValue: String
+            }
         }
     }
 
     @Test("Decodes raw representable boolean")
     func rawRepresentableBool() {
-        defaults.set(true, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == TestStruct(rawValue: true))
+        withUserDefaults(#function) { defaults in
+            defaults.set(true, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == TestStruct(rawValue: true))
 
-        struct TestStruct: RawRepresentable, FlagValue, Equatable {
-            var rawValue: Bool
+            struct TestStruct: RawRepresentable, FlagValue, Equatable {
+                var rawValue: Bool
+            }
         }
     }
 
@@ -234,40 +265,53 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes optional boolean")
     func optionalBool() {
-        defaults.set(true, forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Bool??.some(true))
+        withUserDefaults(#function) { defaults in
+            defaults.set(true, forKey: "test")
+            #expect(defaults.flagValue(key: "test") == Bool??.some(true))
+        }
     }
 
     @Test("Decodes optional string")
     func optionalString() {
-        defaults.set("Test Value", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == String??.some("Test Value"))
+        withUserDefaults(#function) { defaults in
+            defaults.set("Test Value", forKey: "test")
+            #expect(defaults.flagValue(key: "test") == String??.some("Test Value"))
+        }
     }
 
     @Test("Decodes nil")
     func optionalNil() {
-        defaults.removeObject(forKey: #function)
-        #expect(defaults.flagValue(key: #function) == String??.none)
+        withUserDefaults(#function) { defaults in
+            defaults.removeObject(forKey: "test")
+            #expect(defaults.flagValue(key: "test") == String??.none)
+        }
     }
 
     @Test("Decodes string as optional boolean")
     func testOptionalBoolString() {
-        defaults.set("t", forKey: #function)
-        #expect(defaults.flagValue(key: #function) == Bool??.some(true))
+        withUserDefaults(#function) { defaults in
+            defaults.set("t", forKey: "test")
+            defaults.synchronize()
+            #expect(defaults.flagValue(key: "test") == Bool??.some(true))
+        }
     }
 
     // MARK: - Array Tests
 
     @Test("Decodes string array")
-    func stringARray() {
-        defaults.set([ "abc", "123" ], forKey: #function)
-        #expect(defaults.flagValue(key: #function) == [ "abc", "123" ])
+    func stringArray() {
+        withUserDefaults(#function) { defaults in
+            defaults.set([ "abc", "123" ], forKey: "test")
+            #expect(defaults.flagValue(key: "test") == [ "abc", "123" ])
+        }
     }
 
     @Test("Decodes integer array")
     func integerArray() {
-        defaults.set([ 234, -123 ], forKey: #function)
-        #expect(defaults.flagValue(key: #function) == [ 234, -123 ])
+        withUserDefaults(#function) { defaults in
+            defaults.set([ 234, -123 ], forKey: "test")
+            #expect(defaults.flagValue(key: "test") == [ 234, -123 ])
+        }
     }
 
 
@@ -275,14 +319,18 @@ final class UserDefaultsDecodingTests {
 
     @Test("Decodes string dictionary")
     func stringDictionary() {
-        defaults.set([ "key1": "value1", "key2": "value2" ], forKey: #function)
-        #expect(defaults.flagValue(key: #function) == [ "key1": "value1", "key2": "value2" ])
+        withUserDefaults(#function) { defaults in
+            defaults.set([ "key1": "value1", "key2": "value2" ], forKey: "test")
+            #expect(defaults.flagValue(key: "test") == [ "key1": "value1", "key2": "value2" ])
+        }
     }
 
     @Test("Decodes integer dictionary")
     func integerDictionary() {
-        defaults.set([ "key1": 123, "key2": -987 ], forKey: #function)
-        #expect(defaults.flagValue(key: #function) == [ "key1": 123, "key2": -987 ])
+        withUserDefaults(#function) { defaults in
+            defaults.set([ "key1": 123, "key2": -987 ], forKey: "test")
+            #expect(defaults.flagValue(key: "test") == [ "key1": 123, "key2": -987 ])
+        }
     }
 
 
@@ -316,8 +364,10 @@ final class UserDefaultsDecodingTests {
                 }
             """
 
-        defaults.set(Data(input.utf8), forKey: #function)
-        #expect(defaults.flagValue(key: #function) == expected)
+        withUserDefaults(#function) { defaults in
+            defaults.set(Data(input.utf8), forKey: "test")
+            #expect(defaults.flagValue(key: "test") == expected)
+        }
     }
 
     @Test("Decodes enum")
@@ -327,10 +377,19 @@ final class UserDefaultsDecodingTests {
             case two
         }
 
-        try defaults.setFlagValue(MyEnum.one, key: #function)
-        #expect(defaults.flagValue(key: #function) == MyEnum.one)
+        try withUserDefaults(#function) { defaults in
+            try defaults.setFlagValue(MyEnum.one, key: "test")
+            #expect(defaults.flagValue(key: "test") == MyEnum.one)
+        }
     }
 
+}
+
+/// Swift Testing runs tests inside a TaskGroup, which means sharing UserDefaults across multiple tests is fraught.
+private func withUserDefaults(_ suite: String, _ closure: (UserDefaults) throws -> Void) rethrows {
+    let defaults = UserDefaults(suiteName: suite)!
+    try closure(defaults)
+    defaults.removePersistentDomain(forName: suite)
 }
 
 #endif // !os(Linux)

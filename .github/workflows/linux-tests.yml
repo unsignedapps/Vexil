@@ -33,14 +33,10 @@ jobs:
     if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
     needs: check-changes
     strategy:
+      fail-fast: false
       matrix:
-        swift: [ "swift:5.10.1", "swiftlang/swift:nightly-6.0" ]
-        os: [ amazonlinux2, focal, jammy, rhel-ubi9, mantic, noble ]
-        exclude:
-          - swift: "swiftlang/swift:nightly-6.0"
-            os: "mantic"
-          - swift: "swiftlang/swift:nightly-6.0"
-            os: "noble"
+        swift: [ "swift:6.0.2" ]
+        os: [ amazonlinux2, focal, jammy, rhel-ubi9, noble ]
 
     container:
       image: ${{ matrix.swift }}-${{ matrix.os }}
@@ -58,5 +54,5 @@ jobs:
     needs: matrix
     steps:
       - name: Check build matrix status
-        if: ${{ needs.matrix.result == 'failure' }}
+        if: ${{ needs.matrix.result != 'success' }}
         run: exit 1

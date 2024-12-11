@@ -15,18 +15,6 @@ import Foundation
 import Testing
 @testable import Vexil
 
-#if compiler(<6)
-
-import XCTest
-
-final class FlagValueDictionaryTestCase: XCTestCase {
-    func testSwiftTesting() async {
-        await XCTestScaffold.runTestsInSuite(FlagValueDictionaryTests.self, hostedBy: self)
-    }
-}
-
-#endif
-
 @Suite("FlagValueDictionary", .tags(.dictionary))
 struct FlagValueDictionaryTests {
 
