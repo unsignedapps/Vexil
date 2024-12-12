@@ -95,7 +95,7 @@ private final class Visitor: FlagVisitor {
 
     var events: [Event] = []
 
-    func beginContainer<Container>(keyPath: FlagKeyPath, containerType: Container.Type) {
+    func beginContainer(keyPath: FlagKeyPath, containerType: Any.Type) {
         events.append(.beginContainer(keyPath.key))
     }
 
@@ -103,7 +103,7 @@ private final class Visitor: FlagVisitor {
         events.append(.endContainer(keyPath.key))
     }
 
-    func beginGroup<Container>(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<Container>) where Container: FlagContainer {
+    func beginGroup(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<some FlagContainer>) {
         events.append(.beginGroup(keyPath.key))
     }
 

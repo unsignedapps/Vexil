@@ -78,13 +78,13 @@
 public protocol FlagVisitor {
 
     /// Called when beginning to walk within a ``FlagContainer``
-    func beginContainer<Container>(keyPath: FlagKeyPath, containerType: Container.Type)
+    func beginContainer(keyPath: FlagKeyPath, containerType: Any.Type)
 
     /// Called when finished visiting a ``FlagContainer``.
     func endContainer(keyPath: FlagKeyPath)
 
     /// Called when about to descend into a new ``FlagGroup``
-    func beginGroup<Container>(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<Container>) where Container: FlagContainer
+    func beginGroup(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<some FlagContainer>)
 
     /// Called when finished visiting a ``FlagGroup``
     func endGroup(keyPath: FlagKeyPath)
@@ -115,7 +115,7 @@ public protocol FlagVisitor {
 
 public extension FlagVisitor {
 
-    func beginContainer<Container>(keyPath: FlagKeyPath, containerType: Container.Type) {
+    func beginContainer(keyPath: FlagKeyPath, containerType: Any.Type) {
         // Intentionally left blank
     }
 
@@ -123,7 +123,7 @@ public extension FlagVisitor {
         // Intentionally left blank
     }
 
-    func beginGroup<Container>(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<Container>) where Container: FlagContainer {
+    func beginGroup(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<some FlagContainer>) {
         // Intentionally left blank
     }
 
