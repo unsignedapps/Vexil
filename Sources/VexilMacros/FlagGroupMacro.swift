@@ -69,10 +69,25 @@ public struct FlagGroupMacro {
         """
     }
 
-    func makeVisitExpression() -> CodeBlockItemSyntax {
-        """
-        \(raw: propertyName).walk(visitor: visitor)
-        """
+    func makeVisitExpression() -> CodeBlockItemListSyntax {
+        .init {
+            """
+            visitor.beginGroup(
+                keyPath: \(key),
+                wigwag: {
+                    FlagGroupWigwag<\(type)>(
+                        keyPath: \(key),
+                        name: \(name ?? "nil"),
+                        description: \(description ?? "nil"),
+                        displayOption: \(displayOption ?? ".navigation"),
+                        lookup: _flagLookup
+                    )
+                }
+            )
+            """
+            "\(raw: propertyName).walk(visitor: visitor)"
+            "visitor.endGroup(keyPath: \(key))"
+        }
     }
 
 }
