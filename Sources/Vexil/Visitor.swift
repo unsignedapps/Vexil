@@ -15,10 +15,76 @@
 /// Visitor pattern. Conform your type to this protocol and pass
 /// it to ``FlagPole/walk(visitor:)`` or any container using
 /// ``FlagContainer/walk(visitor:)``.
+///
+/// Walking always starts at a Container, and then walks the children of that container.
+/// When one of the children is a group, a call to ``beginGroup(keyPath:wigwag:)`` is made before
+/// descending into the group's container. That container will then call ``beginContainer(keyPath:container:)``
+/// itself. You can use this to differentiate between the operations you are looking for.
+///
+/// # Example
+///
+/// Given the following flag hierarchy:
+///
+/// ```swift
+/// @FlagContainer
+/// struct TestFlags {
+///
+///     @Flag(...)
+///     var topLevelFlag: Bool
+///
+///     @FlagGroup(...)
+///     var subgroup: SubgroupFlags
+///
+/// }
+///
+/// @FlagContainer
+/// struct SubgroupFlags {
+///
+///     @FlagGroup(...)
+///     var doubleSubgroup: DoubleSubgroupFlags
+///
+/// }
+///
+/// @FlagContainer
+/// struct DoubleSubgroupFlags {
+///
+///     @Flag(...)
+///     var thirdLevelFlag: Bool
+///
+/// }
+/// ```
+///
+/// You should expect to see the following callbacks:
+///
+/// ```swift
+/// visitor.beginContainer("") // root
+/// visitor.visitFlag("top-level-flag")
+/// visitor.beginGroup("subgroup")
+///
+/// visitor.beginContainer("subgroup")
+/// visitor.beginGroup("subgroup.double-subgroup")
+///
+/// visitor.beginContainer("subgroup.double-subgroup")
+/// visitor.visitFlag("subgroup.double-subgroup.third-level-flag")
+/// visitor.endContainer("subgroup.double-subgroup")
+///
+/// visitor.endGroup("subgroup.double-subgroup")
+/// visitor.endContainer("subgroup")
+///
+/// visitor.endGroup("subgroup")
+/// visitor.endContainer("") // root
+/// ```
+///
 public protocol FlagVisitor {
 
-    /// Called when beginning to visit a new ``FlagGroup``
-    func beginGroup(keyPath: FlagKeyPath)
+    /// Called when beginning to walk within a ``FlagContainer``
+    func beginContainer<Container>(keyPath: FlagKeyPath, containerType: Container.Type)
+
+    /// Called when finished visiting a ``FlagContainer``.
+    func endContainer(keyPath: FlagKeyPath)
+
+    /// Called when about to descend into a new ``FlagGroup``
+    func beginGroup<Container>(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<Container>) where Container: FlagContainer
 
     /// Called when finished visiting a ``FlagGroup``
     func endGroup(keyPath: FlagKeyPath)
@@ -49,7 +115,15 @@ public protocol FlagVisitor {
 
 public extension FlagVisitor {
 
-    func beginGroup(keyPath: FlagKeyPath) {
+    func beginContainer<Container>(keyPath: FlagKeyPath, containerType: Container.Type) {
+        // Intentionally left blank
+    }
+
+    func endContainer(keyPath: FlagKeyPath) {
+        // Intentionally left blank
+    }
+
+    func beginGroup<Container>(keyPath: FlagKeyPath, wigwag: () -> FlagGroupWigwag<Container>) where Container: FlagContainer {
         // Intentionally left blank
     }
 

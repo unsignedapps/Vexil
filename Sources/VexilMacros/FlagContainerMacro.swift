@@ -92,7 +92,7 @@ extension FlagContainerMacro: ExtensionMacro {
                 // Flag Hierarchy Walking
 
                 try FunctionDeclSyntax("func walk(visitor: any FlagVisitor)") {
-                    "visitor.beginGroup(keyPath: _flagKeyPath)"
+                    "visitor.beginContainer(keyPath: _flagKeyPath, containerType: \(type).self)"
                     for variable in declaration.memberBlock.variables {
                         if let flag = variable.asFlag(in: context) {
                             flag.makeVisitExpression()
@@ -100,7 +100,7 @@ extension FlagContainerMacro: ExtensionMacro {
                             group.makeVisitExpression()
                         }
                     }
-                    "visitor.endGroup(keyPath: _flagKeyPath)"
+                    "visitor.endContainer(keyPath: _flagKeyPath)"
                 }
                 .with(\.modifiers, declaration.modifiers.scopeSyntax)
 
