@@ -22,6 +22,29 @@ extension MemberBlockSyntax {
         }
     }
 
+    var storedVariables: [VariableDeclSyntax] {
+        variables.filter { variable in
+            // Only simple properties
+            guard variable.bindings.count == 1, let binding = variable.bindings.first else {
+                return false
+            }
+
+            // If it has no accessor block it's stored
+            guard let accessorBlock = binding.accessorBlock else {
+                return true
+            }
+
+            // If there is any kind of getter then its computed
+            switch accessorBlock.accessors {
+            case .getter:
+                return false
+
+            case let .accessors(accessors):
+                return accessors.allSatisfy { $0.accessorSpecifier.tokenKind != .keyword(.get) }
+            }
+        }
+    }
+
 }
 
 extension VariableDeclSyntax {

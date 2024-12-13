@@ -146,7 +146,7 @@ extension FlagContainerMacro: ExtensionMacro {
                     extendedType: type,
                     inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "Equatable")) ])
                 ) {
-                    var variables = declaration.memberBlock.variables
+                    var variables = declaration.memberBlock.storedVariables
                     if variables.isEmpty == false {
                         try FunctionDeclSyntax("func ==(lhs: \(type), rhs: \(type)) -> Bool") {
                             if let lastBinding = variables.removeLast().bindings.first?.pattern {
