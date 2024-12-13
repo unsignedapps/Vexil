@@ -233,6 +233,84 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsPublicExtension() throws {
+        assertMacroExpansion(
+            """
+            public extension SomeContainer {
+                @FlagContainer
+                struct TestFlags {
+                    @Flag(default: false, description: "Some Flag")
+                    var someFlag: Bool
+                }
+            }
+            """,
+            expandedSource:
+            """
+            public extension SomeContainer {
+                struct TestFlags {
+                    var someFlag: Bool {
+                        get {
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag"))) ?? false
+                        }
+                    }
+
+                    var $someFlag: FlagWigwag<Bool> {
+                        FlagWigwag(
+                            keyPath: _flagKeyPath.append(.automatic("some-flag")),
+                            name: nil,
+                            defaultValue: false,
+                            description: "Some Flag",
+                            displayOption: .default,
+                            lookup: _flagLookup
+                        )
+                    }
+
+                    fileprivate let _flagKeyPath: FlagKeyPath
+
+                    fileprivate let _flagLookup: any FlagLookup
+
+                    public init(_flagKeyPath: FlagKeyPath, _flagLookup: any FlagLookup) {
+                        self._flagKeyPath = _flagKeyPath
+                        self._flagLookup = _flagLookup
+                    }
+                }
+            }
+
+            extension SomeContainer.TestFlags: FlagContainer {
+                public func walk(visitor: any FlagVisitor) {
+                    visitor.beginContainer(keyPath: _flagKeyPath, containerType: SomeContainer.TestFlags.self)
+                    visitor.visitFlag(
+                        keyPath: _flagKeyPath.append(.automatic("some-flag")),
+                        value: { [self] in
+                            _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag")))
+                        },
+                        defaultValue: false,
+                        wigwag: { [self] in
+                            $someFlag
+                        }
+                    )
+                    visitor.endContainer(keyPath: _flagKeyPath)
+                }
+                public var _allFlagKeyPaths: [PartialKeyPath<SomeContainer.TestFlags>: FlagKeyPath] {
+                    [
+                        \\SomeContainer.TestFlags.someFlag: _flagKeyPath.append(.automatic("some-flag")),
+                    ]
+                }
+            }
+
+            extension SomeContainer.TestFlags: Equatable {
+                public static func ==(lhs: SomeContainer.TestFlags, rhs: SomeContainer.TestFlags) -> Bool {
+                    lhs.someFlag == rhs.someFlag
+                }
+            }
+            """,
+            macros: [
+                "FlagContainer": FlagContainerMacro.self,
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
     func testExpandsButAlreadyConforming() throws {
         assertMacroExpansion(
             """

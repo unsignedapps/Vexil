@@ -25,7 +25,13 @@ extension FlagContainerMacro: MemberMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        try [
+        // If the declaration doesn't have any scopes attached we might be inheriting scopes from a public extension
+        var scopes = declaration.modifiers.scopeSyntax
+        if scopes.isEmpty, let parent = context.lexicalContext.first?.as(ExtensionDeclSyntax.self) {
+            scopes = parent.modifiers.scopeSyntax
+        }
+
+        return try [
 
             // Properties
 
@@ -43,7 +49,7 @@ extension FlagContainerMacro: MemberMacro {
                     ExprSyntax("self._flagKeyPath = _flagKeyPath")
                     ExprSyntax("self._flagLookup = _flagLookup")
                 }
-                .with(\.modifiers, declaration.modifiers.scopeSyntax)
+                .with(\.modifiers, scopes)
             ),
 
         ]
@@ -79,8 +85,14 @@ extension FlagContainerMacro: ExtensionMacro {
 
         // Check that conformance doesn't already exist, or that we are inside a unit test.
         // The latter is a workaround for https://github.com/apple/swift-syntax/issues/2031
-        guard shouldGenerateConformance.flagContainer  else {
+        guard shouldGenerateConformance.flagContainer else {
             return []
+        }
+
+        // If the declaration doesn't have any scopes attached we might be inheriting scopes from a public extension
+        var scopes = declaration.modifiers.scopeSyntax
+        if scopes.isEmpty, let parent = context.lexicalContext.first?.as(ExtensionDeclSyntax.self) {
+            scopes = parent.modifiers.scopeSyntax
         }
 
         var decls = try [
@@ -102,7 +114,7 @@ extension FlagContainerMacro: ExtensionMacro {
                     }
                     "visitor.endContainer(keyPath: _flagKeyPath)"
                 }
-                .with(\.modifiers, declaration.modifiers.scopeSyntax)
+                .with(\.modifiers, scopes)
 
                 // Flag Key Paths
 
@@ -135,7 +147,7 @@ extension FlagContainerMacro: ExtensionMacro {
                         "[:]"
                     }
                 }
-                .with(\.modifiers, declaration.modifiers.scopeSyntax)
+                .with(\.modifiers, scopes)
 
             },
         ]
@@ -161,7 +173,7 @@ extension FlagContainerMacro: ExtensionMacro {
                                 ExprSyntax("lhs.\(lastBinding) == rhs.\(lastBinding)")
                             }
                         }
-                        .with(\.modifiers, Array(declaration.modifiers.scopeSyntax) + [ DeclModifierSyntax(name: .keyword(.static)) ])
+                        .with(\.modifiers, Array(scopes) + [ DeclModifierSyntax(name: .keyword(.static)) ])
                     }
                 },
             ]
