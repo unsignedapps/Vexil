@@ -64,16 +64,16 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             struct TestFlags {
                 @Flag(default: false, description: "Some Flag")
                 var someFlag: Bool
-            
+
                 var someComputedNotEquatableProperty: (any Error)? {
                     nil
                 }
-            
+
                 var someComputedPropertyWithAGetter: (any Error)? {
                     get { fatalError() }
                     set { fatalError() }
                 }
-            
+
                 var otherStoredProperty: Int {
                     didSet { fatalError() }
                 }
@@ -98,16 +98,16 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         lookup: _flagLookup
                     )
                 }
-            
+
                 var someComputedNotEquatableProperty: (any Error)? {
                     nil
                 }
-            
+
                 var someComputedPropertyWithAGetter: (any Error)? {
                     get { fatalError() }
                     set { fatalError() }
                 }
-            
+
                 var otherStoredProperty: Int {
                     didSet { fatalError() }
                 }

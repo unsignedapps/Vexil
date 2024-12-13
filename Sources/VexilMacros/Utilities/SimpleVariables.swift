@@ -40,7 +40,7 @@ extension MemberBlockSyntax {
                 return false
 
             case let .accessors(accessors):
-                return accessors.allSatisfy({ $0.accessorSpecifier.tokenKind != .keyword(.get) })
+                return accessors.allSatisfy { $0.accessorSpecifier.tokenKind != .keyword(.get) }
             }
         }
     }
