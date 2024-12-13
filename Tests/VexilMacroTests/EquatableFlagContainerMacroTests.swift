@@ -64,6 +64,19 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             struct TestFlags {
                 @Flag(default: false, description: "Some Flag")
                 var someFlag: Bool
+            
+                var someComputedNotEquatableProperty: (any Error)? {
+                    nil
+                }
+            
+                var someComputedPropertyWithAGetter: (any Error)? {
+                    get { fatalError() }
+                    set { fatalError() }
+                }
+            
+                var otherStoredProperty: Int {
+                    didSet { fatalError() }
+                }
             }
             """,
             expandedSource: """
@@ -84,6 +97,19 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         displayOption: .default,
                         lookup: _flagLookup
                     )
+                }
+            
+                var someComputedNotEquatableProperty: (any Error)? {
+                    nil
+                }
+            
+                var someComputedPropertyWithAGetter: (any Error)? {
+                    get { fatalError() }
+                    set { fatalError() }
+                }
+            
+                var otherStoredProperty: Int {
+                    didSet { fatalError() }
                 }
 
                 fileprivate let _flagKeyPath: FlagKeyPath
@@ -120,7 +146,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
 
             extension TestFlags: Equatable {
                 static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
-                    lhs.someFlag == rhs.someFlag
+                    lhs.someFlag == rhs.someFlag &&
+                    lhs.otherStoredProperty == rhs.otherStoredProperty
                 }
             }
             """,
