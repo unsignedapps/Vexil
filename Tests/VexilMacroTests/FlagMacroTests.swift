@@ -162,6 +162,41 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsOptional() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag(description: "meow")
+                var testProperty: Bool?
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty: Bool? {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? nil
+                    }
+                }
+
+                var $testProperty: FlagWigwag<Bool?> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: nil,
+                        defaultValue: nil,
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
 
     // MARK: - Property Initialisation Tests
 

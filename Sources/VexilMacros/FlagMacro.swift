@@ -11,6 +11,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
@@ -33,15 +34,15 @@ public struct FlagMacro {
     /// Create a FlagMacro from the given attribute/declaration
     init(node: AttributeSyntax, declaration: some DeclSyntaxProtocol, context: some MacroExpansionContext) throws {
         guard node.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "Flag" else {
-            throw Diagnostic.notFlagMacro
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.notFlagMacro) ])
         }
         guard let arguments = node.arguments else {
-            throw Diagnostic.missingArguments
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.missingArguments) ])
         }
 
         // Description can have an explicit or omitted label
         guard let description = arguments.descriptionArgument  else {
-            throw Diagnostic.missingDescription
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.missingDescription) ])
         }
 
         guard
@@ -51,11 +52,16 @@ public struct FlagMacro {
             let type = binding.typeAnnotation?.type ?? binding.inferredType,
             binding.accessorBlock == nil
         else {
-            throw Diagnostic.onlySimpleVariableSupported
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.onlySimpleVariableSupported) ])
         }
 
-        guard let defaultExprSyntax = arguments[label: "default"]?.expression ?? binding.initializer?.value else {
-            throw Diagnostic.missingDefaultValue
+        var defaultExprSyntax: ExprSyntax
+        if let defaultExpr = arguments[label: "default"]?.expression ?? binding.initializer?.value {
+            defaultExprSyntax = defaultExpr
+        } else if binding.typeAnnotation?.type.is(OptionalTypeSyntax.self) == true {
+            defaultExprSyntax = ExprSyntax(NilLiteralExprSyntax())
+        } else {
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.missingDefaultValue) ])
         }
 
         let strategy = KeyStrategy(exprSyntax: arguments[label: "keyStrategy"]?.expression) ?? .default
@@ -123,18 +129,14 @@ extension FlagMacro: AccessorMacro {
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AccessorDeclSyntax] {
-        do {
-            let macro = try FlagMacro(node: node, declaration: declaration, context: context)
-            return [
-                """
-                get {
-                    \(macro.makeLookupExpression())
-                }
-                """,
-            ]
-        } catch {
-            return []
-        }
+        let macro = try FlagMacro(node: node, declaration: declaration, context: context)
+        return [
+            """
+            get {
+                \(macro.makeLookupExpression())
+            }
+            """,
+        ]
     }
 
 }
@@ -177,12 +179,36 @@ extension FlagMacro: PeerMacro {
 
 extension FlagMacro {
 
-    enum Diagnostic: Error {
+    enum Diagnostic: DiagnosticMessage {
         case notFlagMacro
         case missingArguments
         case missingDefaultValue
         case missingDescription
         case onlySimpleVariableSupported
+
+        var message: String {
+            switch self {
+            case .notFlagMacro:                 "This is not a @Flag macro..?"
+            case .missingArguments:             "Required arguments have not been provided."
+            case .missingDefaultValue:          "Could not infer the default value. Initialise the property or set the default: parameter."
+            case .missingDescription:           "Description parameter missing."
+            case .onlySimpleVariableSupported:  "Only simple single-binding properties supported."
+            }
+        }
+
+        var diagnosticID: MessageID {
+            switch self {
+            case .notFlagMacro:                 MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "notFlagMacro")
+            case .missingArguments:             MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "missingArguments")
+            case .missingDefaultValue:          MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "missingDefaultValue")
+            case .missingDescription:           MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "missingDescription")
+            case .onlySimpleVariableSupported:  MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "onlySimpleVariableSupported")
+            }
+        }
+
+        var severity: DiagnosticSeverity {
+            .error
+        }
     }
 
 }
