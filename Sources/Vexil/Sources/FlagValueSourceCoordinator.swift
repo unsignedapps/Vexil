@@ -72,9 +72,9 @@ extension FlagValueSourceCoordinator: FlagValueSource {
         }
     }
 
-    public var flagValueChanges: Source.ChangeStream {
+    public func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> Source.ChangeStream {
         source.withLockUnchecked {
-            $0.flagValueChanges
+            $0.flagValueChanges(keyPathMapper: keyPathMapper)
         }
     }
 

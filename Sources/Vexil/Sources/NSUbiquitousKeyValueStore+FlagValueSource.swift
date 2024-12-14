@@ -67,7 +67,7 @@ extension NSUbiquitousKeyValueStore: NonSendableFlagValueSource {
         FlagChange
     >
 
-    public var flagValueChanges: ChangeStream {
+    public func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> ChangeStream {
         let this = ObjectIdentifier(self)
         return chain(
             NotificationCenter.default

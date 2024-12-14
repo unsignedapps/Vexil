@@ -69,7 +69,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 
     public typealias ChangeStream = AsyncMapSequence<AsyncFilterSequence<NotificationCenter.Notifications>, FlagChange>
 
-    public var flagValueChanges: ChangeStream {
+    public func flagValueChanges(keyPathMapper: @escaping (String) -> FlagKeyPath) -> ChangeStream {
         let this = ObjectIdentifier(self)
         return NotificationCenter.default
             .notifications(named: UserDefaults.didChangeNotification)
@@ -89,7 +89,7 @@ extension UserDefaults: NonSendableFlagValueSource {
         FlagChange
     >
 
-    public var flagValueChanges: ChangeStream {
+    public func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> ChangeStream {
         let this = ObjectIdentifier(self)
         return chain(
             NotificationCenter.default
@@ -114,7 +114,7 @@ extension UserDefaults: NonSendableFlagValueSource {
         FlagChange
     >
 
-    public var flagValueChanges: ChangeStream {
+    public func flagValueChanges(keyPathMapper: @escaping (String) -> FlagKeyPath) -> ChangeStream {
         let this = ObjectIdentifier(self)
         return chain(
             NotificationCenter.default
@@ -132,7 +132,7 @@ extension UserDefaults: NonSendableFlagValueSource {
 #else
 
     /// No support for real-time flag publishing with `UserDefaults` on Linux
-    public var flagValueChanges: EmptyFlagChangeStream {
+    public func flagValueChanges(keyPathMapper: @escaping (String) -> FlagKeyPath) -> EmptyFlagChangeStream {
         .init()
     }
 

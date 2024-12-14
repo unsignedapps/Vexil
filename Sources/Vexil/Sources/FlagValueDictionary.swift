@@ -37,7 +37,8 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
 
     let storage: Lock<DictionaryType>
 
-    let stream = StreamManager.Stream()
+    let stream: AsyncStream<String>
+    let continuation: AsyncStream<String>.Continuation
 
 
     // MARK: - Initialisation
@@ -46,12 +47,14 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
     init(id: String, storage: DictionaryType) {
         self.id = id
         self.storage = .init(initialState: storage)
+        (self.stream, self.continuation) = AsyncStream.makeStream()
     }
 
     /// Initialises an empty `FlagValueDictionary`
     public init() {
         self.id = UUID().uuidString
         self.storage = .init(initialState: [:])
+        (self.stream, self.continuation) = AsyncStream.makeStream()
     }
 
     /// Initialises a `FlagValueDictionary` with the specified dictionary
@@ -60,6 +63,7 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
         self.storage = .init(initialState: sequence.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.value, forKey: pair.key)
         })
+        (self.stream, self.continuation) = AsyncStream.makeStream()
     }
 
     /// Initialises a `FlagValueDictionary` using a dictionary literal
@@ -68,6 +72,7 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
         self.storage = .init(initialState: elements.reduce(into: [:]) { dict, pair in
             dict.updateValue(pair.1, forKey: pair.0)
         })
+        (self.stream, self.continuation) = AsyncStream.makeStream()
     }
 
     // MARK: - Dictionary Access
@@ -88,6 +93,7 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.storage = try .init(initialState: container.decode(DictionaryType.self, forKey: .storage))
+        (self.stream, self.continuation) = AsyncStream.makeStream()
     }
 
     public func encode(to encoder: any Encoder) throws {

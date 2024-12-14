@@ -27,7 +27,7 @@ extension Snapshot: FlagValueSource {
         set(value, key: key)
     }
 
-    public var flagValueChanges: FlagChangeStream {
+    public func flagValueChanges(keyPathMapper: (String) -> FlagKeyPath) -> FlagChangeStream {
         stream.stream
     }
 

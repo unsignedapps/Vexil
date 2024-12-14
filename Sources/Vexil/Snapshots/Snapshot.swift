@@ -83,7 +83,7 @@ public final class Snapshot<RootGroup>: Sendable where RootGroup: FlagContainer 
         RootGroup(_flagKeyPath: rootKeyPath, _flagLookup: self)
     }
 
-    let stream = StreamManager.Stream()
+    let stream: StreamManager.Stream
 
 
     // MARK: - Initialisation
@@ -97,6 +97,7 @@ public final class Snapshot<RootGroup>: Sendable where RootGroup: FlagContainer 
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = .init(initialState: [:])
         self.displayName = displayName
+        self.stream = StreamManager.Stream(keyPathMapper: flagPole._configuration.makeKeyPathMapper())
 
         if let source {
             populateValuesFrom(source, flagPole: flagPole, keys: keys)
@@ -107,6 +108,7 @@ public final class Snapshot<RootGroup>: Sendable where RootGroup: FlagContainer 
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = .init(initialState: [:])
         self.displayName = displayName
+        self.stream = StreamManager.Stream(keyPathMapper: flagPole._configuration.makeKeyPathMapper())
 
         if let source {
             switch change {
@@ -122,6 +124,7 @@ public final class Snapshot<RootGroup>: Sendable where RootGroup: FlagContainer 
         self.rootKeyPath = flagPole.rootKeyPath
         self.values = snapshot.values
         self.displayName = displayName
+        self.stream = StreamManager.Stream(keyPathMapper: flagPole._configuration.makeKeyPathMapper())
     }
 
 

@@ -61,6 +61,12 @@ public class MutableFlagContainer<Container> where Container: FlagContainer {
         }
     }
 
+    /// A @dynamicMemberLookup implementation for all other properties (eg extensions). This is get-only.
+    @_disfavoredOverload
+    public subscript<Value>(dynamicMember dynamicMember: KeyPath<Container, Value>) -> Value {
+        container[keyPath: dynamicMember]
+    }
+
     /// Internal initialiser used to create MutableFlagGroups for a given subgroup and snapshot
     init(group: Container, source: any FlagValueSource) {
         self.container = group

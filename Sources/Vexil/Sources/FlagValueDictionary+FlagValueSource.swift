@@ -34,11 +34,13 @@ extension FlagValueDictionary: FlagValueSource {
                 storage.removeValue(forKey: key)
             }
         }
-        stream.send(.some([ FlagKeyPath(key) ]))
+        continuation.yield(key)
     }
 
-    public var flagValueChanges: FlagChangeStream {
-        stream.stream
+    public func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> AsyncMapSequence<AsyncStream<String>, FlagChange> {
+        stream.map {
+            FlagChange.some([ keyPathMapper($0) ])
+        }
     }
 
 }

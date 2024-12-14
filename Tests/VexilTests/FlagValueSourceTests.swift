@@ -155,7 +155,7 @@ private final class TestGetSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var flagValueChanges: EmptyFlagChangeStream {
+    func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> EmptyFlagChangeStream {
         .init()
     }
 
@@ -185,7 +185,7 @@ private final class TestSetSource: FlagValueSource {
         subject((key, value))
     }
 
-    var flagValueChanges: EmptyFlagChangeStream {
+    func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> EmptyFlagChangeStream {
         .init()
     }
 
