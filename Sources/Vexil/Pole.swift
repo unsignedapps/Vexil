@@ -418,14 +418,34 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
 
 extension FlagPole: CustomDebugStringConvertible {
     public var debugDescription: String {
-        "FlagPole<\(String(describing: RootGroup.self))>("
-            + Mirror(reflecting: rootGroup).children
-            .map { _, value -> String in
-                (value as? CustomDebugStringConvertible)?.debugDescription
-                    ?? (value as? CustomStringConvertible)?.description
-                    ?? String(describing: value)
-            }
-            .joined(separator: "; ")
-            + ")"
+        let visitor = DebugDescriptionVisitor()
+        walk(visitor: visitor)
+        return "FlagPole<\(String(describing: RootGroup.self))>(\(visitor.valueDescriptions.joined(separator: "; ")))"
     }
+}
+
+private final class DebugDescriptionVisitor: FlagVisitor {
+
+    var valueDescriptions = [String]()
+
+    func visitFlag<Value>(
+        keyPath: FlagKeyPath,
+        value: () -> Value?,
+        defaultValue: Value,
+        wigwag: () -> FlagWigwag<Value>
+    ) where Value: FlagValue {
+        guard let value = value() else {
+            valueDescriptions.append("\(keyPath.key)=nil")
+            return
+        }
+
+        if let debug = value as? CustomDebugStringConvertible {
+            valueDescriptions.append("\(keyPath.key)=\(debug)")
+        } else if let description = value as? CustomStringConvertible {
+            valueDescriptions.append("\(keyPath.key)=\(description)")
+        } else {
+            valueDescriptions.append("\(keyPath.key)=\(value)")
+        }
+    }
+
 }

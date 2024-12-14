@@ -215,7 +215,7 @@ private final class TestSource: FlagValueSource {
 
     func setFlagValue(_ value: (some FlagValue)?, key: String) throws {}
 
-    var flagValueChanges: AsyncStream<FlagChange> {
+    func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> AsyncStream<FlagChange> {
         stream
     }
 

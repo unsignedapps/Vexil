@@ -81,7 +81,7 @@ struct FlagValueCompilationTests {
                 fatalError()
             }
 
-            var flagValueChanges: EmptyFlagChangeStream {
+            func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> EmptyFlagChangeStream {
                 .init()
             }
         }

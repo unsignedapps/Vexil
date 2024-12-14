@@ -49,6 +49,12 @@ public struct VexilConfiguration: Sendable {
     public static var `default`: VexilConfiguration {
         VexilConfiguration()
     }
+
+    func makeKeyPathMapper() -> @Sendable (String) -> FlagKeyPath {
+        {
+            FlagKeyPath($0, separator: separator, strategy: codingPathStrategy)
+        }
+    }
 }
 
 

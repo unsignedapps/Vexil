@@ -44,7 +44,11 @@ public protocol FlagValueSource: AnyObject & Sendable {
 
     /// Return an `AsyncSequence` that emits ``FlagChange`` values any time flag values have changed.
     /// If your implementation does not support real-time flag value monitoring you can return an ``EmptyFlagChangeStream``.
-    var flagValueChanges: ChangeStream { get }
+    ///
+    /// This method is called with an optional closure you can use to convert String-based key paths
+    /// back into FlagKeyPaths according to the configuration of the receiving FlagPole.
+    ///
+    func flagValueChanges(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) -> ChangeStream
 
 }
 

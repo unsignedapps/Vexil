@@ -55,7 +55,7 @@ extension FlagPole {
             }
 
             // Setup streaming
-            let stream = StreamManager.Stream()
+            let stream = StreamManager.Stream(keyPathMapper: _configuration.makeKeyPathMapper())
             manager.stream = stream
             subscribeChannel(oldSources: [], newSources: manager.sources, on: &manager, isInitialSetup: true)
             return stream
@@ -99,9 +99,9 @@ extension FlagPole {
     }
 
     private func makeSubscribeTask(for source: some FlagValueSource) -> Task<Void, Never> {
-        .detached(priority: .low) { [manager] in
+        .detached { [manager, _configuration] in
             do {
-                for try await change in source.flagValueChanges {
+                for try await change in source.flagValueChanges(keyPathMapper: _configuration.makeKeyPathMapper()) {
                     manager.withLock {
                         $0.stream?.send(change)
                     }
@@ -136,11 +136,13 @@ extension StreamManager {
     struct Stream {
         var stream: AsyncStream<FlagChange>
         var continuation: AsyncStream<FlagChange>.Continuation
+        let keyPathMapper: @Sendable (String) -> FlagKeyPath
 
-        init() {
+        init(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) {
             let (stream, continuation) = AsyncStream<FlagChange>.makeStream()
             self.stream = stream
             self.continuation = continuation
+            self.keyPathMapper = keyPathMapper
         }
 
         func finish() {
@@ -149,6 +151,14 @@ extension StreamManager {
 
         func send(_ change: FlagChange) {
             continuation.yield(change)
+        }
+
+        func send(keys: Set<String>) {
+            if keys.isEmpty {
+                send(.all)
+            } else {
+                send(.some(Set(keys.map(keyPathMapper))))
+            }
         }
     }
 
