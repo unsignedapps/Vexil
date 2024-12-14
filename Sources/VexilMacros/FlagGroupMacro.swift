@@ -93,7 +93,7 @@ public struct FlagGroupMacro {
     }
 
     func makeWigwagDeclaration() throws -> VariableDeclSyntax {
-        return try VariableDeclSyntax("var $\(raw: propertyName): FlagGroupWigwag<\(type)>") {
+        try VariableDeclSyntax("var $\(raw: propertyName): FlagGroupWigwag<\(type)>") {
             """
             FlagGroupWigwag(
                 keyPath: \(key),
@@ -136,8 +136,8 @@ extension FlagGroupMacro: PeerMacro {
     ) throws -> [DeclSyntax] {
         do {
             let macro = try FlagGroupMacro(node: node, declaration: declaration, context: context)
-            return [
-                try DeclSyntax(macro.makeWigwagDeclaration()),
+            return try [
+                DeclSyntax(macro.makeWigwagDeclaration()),
             ]
         } catch {
             return []
