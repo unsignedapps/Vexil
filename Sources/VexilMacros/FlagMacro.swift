@@ -27,6 +27,7 @@ public struct FlagMacro {
     let description: ExprSyntax
     let display: ExprSyntax?
     let type: TypeSyntax
+    let scopes: DeclModifierListSyntax
 
 
     // MARK: - Initialisation
@@ -54,6 +55,7 @@ public struct FlagMacro {
         else {
             throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.onlySimpleVariableSupported) ])
         }
+        self.scopes = property.modifiers.scopeSyntax
 
         var defaultExprSyntax: ExprSyntax
         if let defaultExpr = arguments[label: "default"]?.expression ?? binding.initializer?.value {
@@ -98,6 +100,22 @@ public struct FlagMacro {
             wigwag: { [self] in $\(raw: propertyName) }
         )
         """
+    }
+
+    func makeWigwagDeclaration() throws -> VariableDeclSyntax {
+        try VariableDeclSyntax("var $\(raw: propertyName): FlagWigwag<\(type)>") {
+            """
+            FlagWigwag(
+                keyPath: \(key),
+                name: \(name ?? "nil"),
+                defaultValue: \(defaultValue),
+                description: \(description),
+                displayOption: \(display ?? ".default"),
+                lookup: _flagLookup
+            )
+            """
+        }
+        .with(\.modifiers, scopes)
     }
 
 }
@@ -153,19 +171,8 @@ extension FlagMacro: PeerMacro {
     ) throws -> [DeclSyntax] {
         do {
             let macro = try FlagMacro(node: node, declaration: declaration, context: context)
-            return [
-                """
-                var $\(raw: macro.propertyName): FlagWigwag<\(macro.type)> {
-                    FlagWigwag(
-                        keyPath: \(macro.key),
-                        name: \(macro.name ?? "nil"),
-                        defaultValue: \(macro.defaultValue),
-                        description: \(macro.description),
-                        displayOption: \(macro.display ?? ".default"),
-                        lookup: _flagLookup
-                    )
-                }
-                """,
+            return try [
+                DeclSyntax(macro.makeWigwagDeclaration()),
             ]
         } catch {
             return []

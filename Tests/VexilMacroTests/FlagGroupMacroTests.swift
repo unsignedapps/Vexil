@@ -54,6 +54,41 @@ final class FlagGroupMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsPublic() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @FlagGroup(description: "Test Flag Group")
+                public var testSubgroup: SubgroupFlags
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                public var testSubgroup: SubgroupFlags {
+                    get {
+                        SubgroupFlags(_flagKeyPath: _flagKeyPath.append(.automatic("test-subgroup")), _flagLookup: _flagLookup)
+                    }
+                }
+
+                public var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
+                    FlagGroupWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
+                        name: nil,
+                        description: "Test Flag Group",
+                        displayOption: .navigation,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "FlagGroup": FlagGroupMacro.self,
+            ]
+        )
+    }
+
+
     // MARK: - Flag Group Detail Tests
 
     func testExpandsName() throws {

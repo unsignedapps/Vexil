@@ -25,6 +25,7 @@ public struct FlagGroupMacro {
     let description: ExprSyntax?
     let displayOption: ExprSyntax?
     let type: TypeSyntax
+    let scopes: DeclModifierListSyntax
 
 
     // MARK: - Initialisation
@@ -52,6 +53,7 @@ public struct FlagGroupMacro {
         self.propertyName = identifier.text
         self.key = strategy.createKey(propertyName)
         self.type = type
+        self.scopes = property.modifiers.scopeSyntax
 
         self.name = arguments[label: "name"]?.expression
         self.description = arguments[label: "description"]?.expression
@@ -90,6 +92,21 @@ public struct FlagGroupMacro {
         }
     }
 
+    func makeWigwagDeclaration() throws -> VariableDeclSyntax {
+        try VariableDeclSyntax("var $\(raw: propertyName): FlagGroupWigwag<\(type)>") {
+            """
+            FlagGroupWigwag(
+                keyPath: \(key),
+                name: \(name ?? "nil"),
+                description: \(description ?? "nil"),
+                displayOption: \(displayOption ?? ".navigation"),
+                lookup: _flagLookup
+            )
+            """
+        }
+        .with(\.modifiers, scopes)
+    }
+
 }
 
 extension FlagGroupMacro: AccessorMacro {
@@ -119,18 +136,8 @@ extension FlagGroupMacro: PeerMacro {
     ) throws -> [DeclSyntax] {
         do {
             let macro = try FlagGroupMacro(node: node, declaration: declaration, context: context)
-            return [
-                """
-                var $\(raw: macro.propertyName): FlagGroupWigwag<\(macro.type)> {
-                    FlagGroupWigwag(
-                        keyPath: \(macro.key),
-                        name: \(macro.name ?? "nil"),
-                        description: \(macro.description ?? "nil"),
-                        displayOption: \(macro.displayOption ?? ".navigation"),
-                        lookup: _flagLookup
-                    )
-                }
-                """,
+            return try [
+                DeclSyntax(macro.makeWigwagDeclaration()),
             ]
         } catch {
             return []

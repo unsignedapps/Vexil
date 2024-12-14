@@ -186,7 +186,7 @@ extension FlagContainerMacro: ExtensionMacro {
 
 // MARK: - Scopes
 
-private extension DeclModifierListSyntax {
+extension DeclModifierListSyntax {
     var scopeSyntax: DeclModifierListSyntax {
         filter { modifier in
             if case let .keyword(keyword) = modifier.name.tokenKind, keyword == .public {
