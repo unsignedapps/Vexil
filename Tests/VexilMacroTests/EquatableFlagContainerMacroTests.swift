@@ -91,7 +91,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 var $someFlag: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("some-flag")),
-                        name: nil,
+                        name: "Some Flag",
                         defaultValue: false,
                         description: "Some Flag",
                         displayOption: .default,
@@ -180,7 +180,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 var $someFlag: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("some-flag")),
-                        name: nil,
+                        name: "Some Flag",
                         defaultValue: false,
                         description: "Some Flag",
                         displayOption: .default,
@@ -257,7 +257,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     var $someFlag: FlagWigwag<Bool> {
                         FlagWigwag(
                             keyPath: _flagKeyPath.append(.automatic("some-flag")),
-                            name: nil,
+                            name: "Some Flag",
                             defaultValue: false,
                             description: "Some Flag",
                             displayOption: .default,
@@ -332,7 +332,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 var $someFlag: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("some-flag")),
-                        name: nil,
+                        name: "Some Flag",
                         defaultValue: false,
                         description: "Some Flag",
                         displayOption: .default,
@@ -436,7 +436,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         wigwag: {
                             FlagGroupWigwag<GroupOfFlags>(
                                 keyPath: _flagKeyPath.append(.automatic("flag-group")),
-                                name: nil,
+                                name: "Flag Group",
                                 description: "Test Group",
                                 displayOption: .navigation,
                                 lookup: _flagLookup
@@ -530,7 +530,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                         wigwag: {
                             FlagGroupWigwag<GroupOfFlags>(
                                 keyPath: _flagKeyPath.append(.automatic("flag-group")),
-                                name: nil,
+                                name: "Flag Group",
                                 description: "Test Group",
                                 displayOption: .navigation,
                                 lookup: _flagLookup

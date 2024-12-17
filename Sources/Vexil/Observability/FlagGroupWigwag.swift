@@ -36,9 +36,8 @@ public struct FlagGroupWigwag<Output>: Sendable where Output: FlagContainer {
         keyPath.key
     }
 
-    /// An optional display name to give the flag. Only visible in flag editors like Vexillographer.
-    /// Default is to calculate one based on the property name.
-    public let name: String?
+    /// A human readable name for the flag group. Only visible in flag editors like Vexillographer.
+    public let name: String
 
     /// A description of this flag. Only visible in flag editors like Vexillographer.
     /// If this is nil the flag or flag group will be hidden.
@@ -56,7 +55,7 @@ public struct FlagGroupWigwag<Output>: Sendable where Output: FlagContainer {
     /// Creates a Wigwag with the provided configuration.
     public init(
         keyPath: FlagKeyPath,
-        name: String?,
+        name: String,
         description: String?,
         displayOption: FlagGroupDisplayOption?,
         lookup: any FlagLookup

@@ -184,7 +184,7 @@ final class FlagContainerMacroTests: XCTestCase {
                         wigwag: {
                             FlagGroupWigwag<GroupOfFlags>(
                                 keyPath: _flagKeyPath.append(.automatic("flag-group")),
-                                name: nil,
+                                name: "Flag Group",
                                 description: "Test Group",
                                 displayOption: .navigation,
                                 lookup: _flagLookup

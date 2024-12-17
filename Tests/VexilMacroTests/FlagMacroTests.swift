@@ -42,7 +42,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -77,7 +77,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Double> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: 123.456,
                         description: "meow",
                         displayOption: .default,
@@ -112,7 +112,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<String> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: "alpha",
                         description: "meow",
                         displayOption: .default,
@@ -147,7 +147,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<SomeEnum> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: .testCase,
                         description: "meow",
                         displayOption: .default,
@@ -182,7 +182,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool?> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: nil,
                         description: "meow",
                         displayOption: .default,
@@ -217,7 +217,7 @@ final class FlagMacroTests: XCTestCase {
                 public var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -255,7 +255,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -290,7 +290,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Double> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: 123.456,
                         description: "meow",
                         displayOption: .default,
@@ -325,7 +325,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<String> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: "alpha",
                         description: "meow",
                         displayOption: .default,
@@ -360,7 +360,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<SomeEnum> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: SomeEnum.testCase,
                         description: "meow",
                         displayOption: .default,
@@ -506,7 +506,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -541,7 +541,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -579,7 +579,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -614,7 +614,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.kebabcase("test-property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -649,7 +649,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.snakecase("test_property")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -684,7 +684,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: _flagKeyPath.append(.customKey("test")),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
@@ -719,7 +719,7 @@ final class FlagMacroTests: XCTestCase {
                 var $testProperty: FlagWigwag<Bool> {
                     FlagWigwag(
                         keyPath: FlagKeyPath("test", separator: _flagKeyPath.separator, strategy: _flagKeyPath.strategy),
-                        name: nil,
+                        name: "Test Property",
                         defaultValue: false,
                         description: "meow",
                         displayOption: .default,
