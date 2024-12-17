@@ -40,7 +40,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "Test Flag Group",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -74,7 +74,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 public var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "Test Flag Group",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -145,7 +145,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .hidden,
                         lookup: _flagLookup
@@ -179,7 +179,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -213,7 +213,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .section,
                         lookup: _flagLookup
@@ -249,7 +249,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -283,7 +283,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -320,7 +320,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.automatic("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -354,7 +354,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.kebabcase("test-subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -388,7 +388,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.snakecase("test_subgroup")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -422,7 +422,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath,
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup
@@ -456,7 +456,7 @@ final class FlagGroupMacroTests: XCTestCase {
                 var $testSubgroup: FlagGroupWigwag<SubgroupFlags> {
                     FlagGroupWigwag(
                         keyPath: _flagKeyPath.append(.customKey("test")),
-                        name: nil,
+                        name: "Test Subgroup",
                         description: "meow",
                         displayOption: .navigation,
                         lookup: _flagLookup

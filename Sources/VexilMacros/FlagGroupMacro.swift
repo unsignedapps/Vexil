@@ -79,7 +79,7 @@ public struct FlagGroupMacro {
                 wigwag: {
                     FlagGroupWigwag<\(type)>(
                         keyPath: \(key),
-                        name: \(name ?? "nil"),
+                        name: \(name ?? ExprSyntax(StringLiteralExprSyntax(content: propertyName.displayName))),
                         description: \(description ?? "nil"),
                         displayOption: \(displayOption ?? ".navigation"),
                         lookup: _flagLookup
@@ -97,7 +97,7 @@ public struct FlagGroupMacro {
             """
             FlagGroupWigwag(
                 keyPath: \(key),
-                name: \(name ?? "nil"),
+                name: \(name ?? ExprSyntax(StringLiteralExprSyntax(content: propertyName.displayName))),
                 description: \(description ?? "nil"),
                 displayOption: \(displayOption ?? ".navigation"),
                 lookup: _flagLookup
