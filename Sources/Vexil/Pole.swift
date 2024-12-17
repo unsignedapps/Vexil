@@ -59,23 +59,30 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     // MARK: - Sources
 
     /// An Array of `FlagValueSource`s that are used during flag value lookup.
-    ///
-    /// This array is mutable so you can manipulate it directly whenever your
-    /// need to change the hierarchy of your flag sources.
-    ///
     /// The order of this Array is the order used when looking up flag values.
     ///
+    /// To update the list of sources use ``
+    ///
     public var _sources: [any FlagValueSource] {
-        get {
-            manager.withLockUnchecked {
-                $0.sources
-            }
+        manager.withLockUnchecked {
+            $0.sources
         }
-        set {
-            manager.withLockUnchecked { manager in
-                let oldValue = manager.sources
-                manager.sources = newValue
-                subscribeChannel(oldSources: oldValue, newSources: newValue, on: &manager)
+    }
+
+    /// Updates the list of `FlagValueSource`s using the supplied closure.
+    ///
+    /// - Parameters:
+    ///   - closure:        A closure that is passed a mutable copy of the sources array.
+    ///
+    public func updateSources(_ closure: (inout [any FlagValueSource]) throws -> Void) rethrows {
+        try manager.withLockUnchecked { manager in
+            let oldValue = manager.sources
+            var copy = manager.sources
+            try closure(&copy)
+            manager.sources = copy
+
+            if oldValue.map(\.flagValueSourceID) != copy.map(\.flagValueSourceID) {
+                subscribeChannel(oldSources: oldValue, newSources: copy, on: &manager)
             }
         }
     }
@@ -312,7 +319,9 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - at:             The index at which to insert the `Snapshot`.
     ///
     public func insert(snapshot: Snapshot<RootGroup>, at index: Array<any FlagValueSource>.Index) {
-        _sources.insert(snapshot, at: index)
+        updateSources {
+            $0.insert(snapshot, at: index)
+        }
     }
 
     /// Appends a `Snapshot` to the end of the `FlagPole`s source hierarchy.
@@ -323,7 +332,9 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - snapshot:       The `Snapshot` to be added to the source hierarchy.
     ///
     public func append(snapshot: Snapshot<RootGroup>) {
-        _sources.append(snapshot)
+        updateSources {
+            $0.append(snapshot)
+        }
     }
 
     /// Removes a `Snapshot` from the `FlagPole`s source hierarchy.
@@ -334,7 +345,9 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     ///   - snapshot:       The `Snapshot` to be removed from the source hierarchy.
     ///
     public func remove(snapshot: Snapshot<RootGroup>) {
-        _sources.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
+        updateSources {
+            $0.removeAll(where: { ($0 as? Snapshot<RootGroup>)?.id == snapshot.id })
+        }
     }
 
 
