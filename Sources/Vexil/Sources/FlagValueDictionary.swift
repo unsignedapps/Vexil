@@ -78,7 +78,7 @@ public final class FlagValueDictionary: Identifiable, ExpressibleByDictionaryLit
     // MARK: - Dictionary Access
 
     /// Returns a copy of the current values in this source
-    var allValues: DictionaryType {
+    public var allValues: DictionaryType {
         storage.withLock { $0 }
     }
 

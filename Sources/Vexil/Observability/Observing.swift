@@ -13,7 +13,7 @@
 
 import AsyncAlgorithms
 
-public enum FlagChange: Sendable {
+public enum FlagChange: Sendable, Equatable {
 
     /// All flags _may_ have changed. This change type often occurs when flags could be changed
     /// outside the bounds of the app using Vexil and we are unable to tell if any flags have changed,
@@ -108,4 +108,13 @@ public struct EmptyFlagChangeStream: AsyncSequence, Sendable {
 #endif
     }
 
+}
+
+extension FlagChange: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .all:              "FlagChange.all"
+        case let .some(keys):   "FlagChange.some(\(keys.map(\.key).joined(separator: ", ")))"
+        }
+    }
 }
