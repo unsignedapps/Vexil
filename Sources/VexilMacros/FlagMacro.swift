@@ -107,7 +107,7 @@ public struct FlagMacro {
             """
             FlagWigwag(
                 keyPath: \(key),
-                name: \(name ?? "nil"),
+                name: \(name ?? ExprSyntax(StringLiteralExprSyntax(content: propertyName.displayName))),
                 defaultValue: \(defaultValue),
                 description: \(description),
                 displayOption: \(display ?? ".default"),

@@ -22,7 +22,7 @@ struct FlagDetailTests {
         let pole = FlagPole(hoist: TestFlags.self, sources: [])
 
         #expect(pole.$topLevelFlag.key == "top-level-flag")
-        #expect(pole.$topLevelFlag.name == nil)
+        #expect(pole.$topLevelFlag.name == "Top Level Flag")
         #expect(pole.$topLevelFlag.description == "Top level test flag")
 
         #expect(pole.$secondTestFlag.key == "second-test-flag")
@@ -30,7 +30,7 @@ struct FlagDetailTests {
         #expect(pole.$secondTestFlag.description == "Second test flag")
 
         #expect(pole.subgroup.$secondLevelFlag.key == "subgroup.second-level-flag")
-        #expect(pole.subgroup.$secondLevelFlag.name == nil)
+        #expect(pole.subgroup.$secondLevelFlag.name == "Second Level Flag")
         #expect(pole.subgroup.$secondLevelFlag.description == "Second Level Flag")
         #expect(pole.subgroup.$secondLevelFlag.displayOption == .hidden)
 
