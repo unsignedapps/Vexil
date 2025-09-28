@@ -1,8 +1,6 @@
 name: Linux Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     
@@ -50,8 +48,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Linux Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: matrix
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: [ matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.matrix.result != 'success' }}

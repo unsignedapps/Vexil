@@ -1,8 +1,6 @@
 name: iOS Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -50,8 +48,8 @@ jobs:
   build-ios:
     runs-on: ubuntu-latest
     name: iOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-ios-matrix
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-ios-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-ios-matrix.result != 'success' }}

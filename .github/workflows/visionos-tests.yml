@@ -1,8 +1,6 @@
 name: visionOS Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     
@@ -50,8 +48,8 @@ jobs:
   build-visionos:
     runs-on: ubuntu-latest
     name: visionOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-visionos-matrix
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-visionos-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-visionos-matrix.result != 'success' }}

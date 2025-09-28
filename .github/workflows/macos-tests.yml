@@ -1,8 +1,6 @@
 name: macOS Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     
@@ -50,8 +48,8 @@ jobs:
   build-macos:
     runs-on: ubuntu-latest
     name: macOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-macos-matrix
+    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-macos-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-macos-matrix.result != 'success' }}
