@@ -1,8 +1,6 @@
 name: watchOS Build Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -30,8 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ "16.0", "16.1" ]
-        os: [ macos-14, macos-15 ]
+        xcode: [ "16.3", "16.4" ] # "26.0" is broken with xcodebuild test
+        os: [ macos-15 ]
     runs-on: ${{ matrix.os }}
 
     env:
@@ -50,8 +48,8 @@ jobs:
   build-watchos:
     runs-on: ubuntu-latest
     name: watchOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-watchos-matrix
+    if: ${{ always() && needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-watchos-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-watchos-matrix.result != 'success' }}

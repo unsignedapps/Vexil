@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -63,7 +63,7 @@ struct BooleanFlagControl: View {
 ///
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol BooleanEditableFlag {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
@@ -91,7 +91,7 @@ extension UnfurledFlag: BooleanEditableFlag where Value.BoxedValueType == Bool {
 ///
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)
 protocol OptionalBooleanEditableFlag {
-    func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer
+    func control(label: String, manager: FlagValueManager<some FlagContainer>, showDetail: Binding<Bool>) -> AnyView
 }
 
 @available(OSX 11.0, iOS 13.0, watchOS 7.0, tvOS 13.0, *)

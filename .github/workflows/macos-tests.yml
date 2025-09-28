@@ -1,8 +1,6 @@
 name: macOS Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     
@@ -30,8 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ "16.0", "16.1" ]
-        os: [ macos-14, macos-15 ]
+        xcode: [ "16.3", "16.4", "26.0" ]
+        os: [ macos-15 ]
     runs-on: ${{ matrix.os }}
 
     env:
@@ -50,8 +48,8 @@ jobs:
   build-macos:
     runs-on: ubuntu-latest
     name: macOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-macos-matrix
+    if: ${{ always() && needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-macos-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-macos-matrix.result != 'success' }}

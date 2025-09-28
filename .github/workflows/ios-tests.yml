@@ -1,8 +1,6 @@
 name: iOS Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -30,8 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ "16.0", "16.1" ]
-        os: [ macos-14, macos-15 ]
+        xcode: [ "16.3", "16.4" ] # "26.0" is broken with xcodebuild test
+        os: [ macos-15 ]
     runs-on: ${{ matrix.os }}
 
     env:
@@ -44,14 +42,14 @@ jobs:
         run: |
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 16" \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 16e" \
           | xcbeautify --renderer github-actions
 
   build-ios:
     runs-on: ubuntu-latest
     name: iOS Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: build-ios-matrix
+    if: ${{ always() && needs.check-changes.outputs.changed == 'true' }}
+    needs: [ build-ios-matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.build-ios-matrix.result != 'success' }}

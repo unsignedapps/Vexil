@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -134,23 +134,22 @@ extension StreamManager {
     /// is deinited, which doesn't happen often.
     ///
     struct Stream {
-        var stream: AsyncStream<FlagChange>
-        var continuation: AsyncStream<FlagChange>.Continuation
+        let currentValue: AsyncCurrentValue<FlagChange>
         let keyPathMapper: @Sendable (String) -> FlagKeyPath
 
+        var stream: FlagChangeStream {
+            currentValue.stream
+        }
+
         init(keyPathMapper: @Sendable @escaping (String) -> FlagKeyPath) {
-            let (stream, continuation) = AsyncStream<FlagChange>.makeStream()
-            self.stream = stream
-            self.continuation = continuation
+            self.currentValue = AsyncCurrentValue(.all)
             self.keyPathMapper = keyPathMapper
         }
 
-        func finish() {
-            continuation.finish()
-        }
-
         func send(_ change: FlagChange) {
-            continuation.yield(change)
+            currentValue.update {
+                $0 = change
+            }
         }
 
         func send(keys: Set<String>) {

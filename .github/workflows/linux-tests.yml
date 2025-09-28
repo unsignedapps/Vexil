@@ -1,8 +1,6 @@
 name: Linux Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
     
@@ -35,8 +33,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: [ "swift:6.0.2" ]
-        os: [ amazonlinux2, focal, jammy, rhel-ubi9, noble ]
+        swift: [ "swift:6.1", "swift:6.2" ]
+        os: [ amazonlinux2, jammy, rhel-ubi9, noble ]
 
     container:
       image: ${{ matrix.swift }}-${{ matrix.os }}
@@ -50,8 +48,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Linux Tests
-    if: ${{ github.event_name == 'push' || needs.check-changes.outputs.changed == 'true' }}
-    needs: matrix
+    if: ${{ always() && needs.check-changes.outputs.changed == 'true' }}
+    needs: [ matrix, check-changes ]
     steps:
       - name: Check build matrix status
         if: ${{ needs.matrix.result != 'success' }}

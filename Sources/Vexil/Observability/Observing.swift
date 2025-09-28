@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -24,9 +24,6 @@ public enum FlagChange: Sendable, Equatable {
     case some(Set<FlagKeyPath>)
 
 }
-
-public typealias FlagChangeStream = AsyncStream<FlagChange>
-
 
 // MARK: - Filtered Change Stream
 

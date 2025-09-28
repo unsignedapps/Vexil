@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -77,9 +77,7 @@ extension Snapshot.Builder: FlagLookup {
     }
 
     var changes: FlagChangeStream {
-        AsyncStream {
-            $0.finish()
-        }
+        FlagChangeStream(allocation: nil)
     }
 
 }

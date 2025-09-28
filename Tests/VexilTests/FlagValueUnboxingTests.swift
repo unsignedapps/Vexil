@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -220,7 +220,7 @@ struct FlagValueUnboxingTests {
     // MARK: - Codable Types
 
     @Test("Unboxes codable")
-    private func testCodableFlagValue() throws {
+    private func codableFlagValue() throws {
         let expected = TestCodable()
         let data = try JSONEncoder().encode(Wrapper(wrapped: expected))
 

@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2024 Unsigned Apps and the open source contributors.
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -127,7 +127,6 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
             for task in manager.tasks {
                 task.1.cancel()
             }
-            manager.stream?.finish()
         }
     }
 
@@ -225,7 +224,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
             .prepend(rootGroup)
     }
 
-    private let _snapshotPublisher =  UnfairLock<Publishers.Autoconnect<Publishers.Multicast<Publishers.Drop<FlagPublisher<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>>>, CurrentValueSubject<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>.Element, Never>>>?>(uncheckedState: nil)
+    private let _snapshotPublisher = Lock<Publishers.Autoconnect<Publishers.Multicast<Publishers.Drop<FlagPublisher<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>>>, CurrentValueSubject<AsyncChain2Sequence<AsyncSyncSequence<[Snapshot<RootGroup>]>, AsyncCompactMapSequence<AsyncPrefixWhileSequence<AsyncMapSequence<FlagChangeStream, Snapshot<RootGroup>?>>, Snapshot<RootGroup>>>.Element, Never>>>?>(uncheckedState: nil)
 
     /// A `Publisher` that will emit a snapshot of the flag pole every time flag values have changed.
     ///
