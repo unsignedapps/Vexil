@@ -49,25 +49,25 @@ public final class FlagValueSourceCoordinator<Source>: Sendable where Source: No
 extension FlagValueSourceCoordinator: FlagValueSource {
 
     public var flagValueSourceID: String {
-        source.withLock {
+        source.withLockUnchecked {
             $0.flagValueSourceID
         }
     }
 
     public var flagValueSourceName: String {
-        source.withLock {
+        source.withLockUnchecked {
             $0.flagValueSourceName
         }
     }
 
     public func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        source.withLock {
+        source.withLockUnchecked {
             $0.flagValue(key: key)
         }
     }
 
     public func setFlagValue(_ value: (some FlagValue)?, key: String) throws {
-        try source.withLock {
+        try source.withLockUnchecked {
             try $0.setFlagValue(value, key: key)
         }
     }
