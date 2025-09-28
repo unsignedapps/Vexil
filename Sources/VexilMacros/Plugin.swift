@@ -11,13 +11,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-//
-//  Plugin.swift
-//  Vexil: VexilMacros
-//
-//  Created by Rob Amos on 11/6/2023.
-//
-
 import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
