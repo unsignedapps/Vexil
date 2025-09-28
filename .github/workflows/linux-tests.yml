@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: [ "swift:6.0", "swift:6.1", "swift:6.2" ]
+        swift: [ "swift:6.1", "swift:6.2" ]
         os: [ amazonlinux2, jammy, rhel-ubi9, noble ]
 
     container:
