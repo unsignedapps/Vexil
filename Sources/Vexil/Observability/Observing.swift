@@ -25,9 +25,6 @@ public enum FlagChange: Sendable, Equatable {
 
 }
 
-public typealias FlagChangeStream = AsyncStream<FlagChange>
-
-
 // MARK: - Filtered Change Stream
 
 public struct FilteredFlagChangeStream: AsyncSequence, Sendable {
