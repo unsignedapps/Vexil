@@ -65,14 +65,6 @@ let package = Package(
             ]
         ),
 
-        // We can't disable macro validation using `swift test` so these are guaranteed to fail on Linux
-        .testTarget(
-            name: "VexilMacroTests",
-            dependencies: [
-                .target(name: "VexilMacros"),
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ]
-        ),
 
     ],
 
@@ -81,3 +73,18 @@ let package = Package(
     ]
 
 )
+
+#if !os(Linux)
+
+// We can't disable macro validation using `swift test` so these are guaranteed to fail on Linux
+package.targets.append(
+    .testTarget(
+        name: "VexilMacroTests",
+        dependencies: [
+            .target(name: "VexilMacros"),
+            .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+        ]
+    )
+)
+
+#endif
