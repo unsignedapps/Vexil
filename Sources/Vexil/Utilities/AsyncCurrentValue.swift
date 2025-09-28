@@ -28,6 +28,7 @@ struct AsyncCurrentValue<Wrapped: Sendable>: Sendable {
                 pendingContinuations = []
             }
         }
+
         var pendingContinuations = [(UUID, CheckedContinuation<(Int, Wrapped)?, Never>)]()
     }
 

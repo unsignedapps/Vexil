@@ -19,25 +19,25 @@ import os.lock
 
 struct Mutex<Value: ~Copyable>: ~Copyable, Sendable {
 
-        // Mutex isn't supposed to use an allocation, but the tools we would need to
-        // *avoid* an allocation are not available to us (we'd need to import `Builtin`,
-        // which is forbidden)
-        //
-        // Using an allocation here makes us a reference type, but since Mutex is not
-        // Copyable, it's pretty hard to *observe* that in practice.
-        private let platformLock: PlatformLock<Value>
+    // Mutex isn't supposed to use an allocation, but the tools we would need to
+    // *avoid* an allocation are not available to us (we'd need to import `Builtin`,
+    // which is forbidden)
+    //
+    // Using an allocation here makes us a reference type, but since Mutex is not
+    // Copyable, it's pretty hard to *observe* that in practice.
+    private let platformLock: PlatformLock<Value>
 
-        init(_ initialValue: consuming sending Value) {
-            self.platformLock = PlatformLock(initialValue)
-        }
-
-        borrowing func withLock<Result: ~Copyable>(
-            _ body: (inout sending Value) throws -> sending Result
-        ) rethrows -> sending Result {
-            try platformLock.withLock(body)
-        }
-
+    init(_ initialValue: consuming sending Value) {
+        self.platformLock = PlatformLock(initialValue)
     }
+
+    borrowing func withLock<Result: ~Copyable>(
+        _ body: (inout sending Value) throws -> sending Result
+    ) rethrows -> sending Result {
+        try platformLock.withLock(body)
+    }
+
+}
 
 /// This is a lock that will use the most appropriate platform lock under the hood. On Apple platforms
 /// it is effectively a wrapper around `OSAllocatedUnfairLock`. On non-Apple platforms it'll
