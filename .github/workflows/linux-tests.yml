@@ -48,7 +48,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Linux Tests
-    if: ${{ needs.check-changes.outputs.changed == 'true' }}
+    if: ${{ always() && needs.check-changes.outputs.changed == 'true' }}
     needs: [ matrix, check-changes ]
     steps:
       - name: Check build matrix status
