@@ -17,7 +17,7 @@ let package = Package(
     products: [
         // Automatic
         .library(name: "Vexil", targets: [ "Vexil" ]),
-//        .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
+        .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
     ],
 
     dependencies: [
@@ -46,12 +46,12 @@ let package = Package(
 
         // Vexillographer
 
-//        .target(
-//            name: "Vexillographer",
-//            dependencies: [
-//                .target(name: "Vexil"),
-//            ]
-//        ),
+        .target(
+            name: "Vexillographer",
+            dependencies: [
+                .target(name: "Vexil"),
+            ]
+        ),
 
         // Macros
 
