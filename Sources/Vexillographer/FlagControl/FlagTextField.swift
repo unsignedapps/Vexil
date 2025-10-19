@@ -40,6 +40,8 @@ struct FlagTextField<Value: FlagValue>: View {
                 .multilineTextAlignment(.trailing)
                 .accessibilityLabel(name)
                 .submitLabel(.done)
+                .autocorrectionDisabled()
+                .textContentType(nil)
 #if os(iOS) || os(tvOS)
                 .keyboardType(keyboardType)
 #endif
