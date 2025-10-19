@@ -1,25 +1,31 @@
 import SwiftUI
-import Vexillographer
 import Vexil
+import Vexillographer
 
 struct RootView: View {
+
     var body: some View {
         NavigationView {
-            Vexillographer()
-                .flagPole(
-                    Dependencies.current.flags,
-                    editableSource: Dependencies.current.flags._sources.first
-                )
-        }
-        .task {
-            do {
-                for value in 0... {
-                    try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-                    try RemoteFlags.values.setFlagValue(value, key: "number")
+            List {
+                FlagControl(Dependencies.current.flags.$developerMenuEnabled) { configuration in
+                    Section {
+                        FlagToggle(configuration: configuration)
+                    }
+                    if configuration.value {
+                        NavigationLink("Developer Menu") {
+                            Vexillographer()
+                        }
+                    }
                 }
-            } catch { }
+            }
         }
+        .flagPole(
+            Dependencies.current.flags,
+            editableSource: Dependencies.current.flags._sources.first
+        )
+
     }
+
 }
 
 #Preview {
