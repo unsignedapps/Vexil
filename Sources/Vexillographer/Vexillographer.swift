@@ -30,7 +30,9 @@ private struct FlagList: View {
                 ForEach(visibleItems, id: \.keyPath, content: \.content)
             }
         }
+#if os(iOS)
         .listStyle(.insetGrouped)
+#endif
     }
 
 }

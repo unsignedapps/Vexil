@@ -4,12 +4,14 @@ import Vexil
 extension FlagTextField where Value.BoxedValueType: BinaryInteger {
 
     init(configuration: FlagControlConfiguration<Value>) {
-        self.init(
+        self = Self(
             configuration: configuration,
             formatted: \.asString,
-            keyboardType: .numberPad,
             editingFormat: { $0.filter(\.isNumber) }
         )
+#if os(iOS) || os(tvOS)
+        .keyboardType(.numberPad)
+#endif
     }
 
 }
@@ -39,12 +41,14 @@ extension FlagControlConfiguration: IntegerFlagTextFieldRepresentable where Valu
 extension FlagTextField {
 
     init<Wrapped>(configuration: FlagControlConfiguration<Wrapped?>) where Value == Wrapped?, Wrapped.BoxedValueType: BinaryInteger {
-        self.init(
+        self = Self(
             configuration: configuration,
             formatted: \.asStringOrEmpty,
-            keyboardType: .numberPad,
             editingFormat: { $0.filter(\.isNumber) }
         )
+#if os(iOS) || os(tvOS)
+        .keyboardType(.numberPad)
+#endif
     }
 
 }
@@ -70,8 +74,10 @@ extension FlagControlConfiguration: OptionalIntegerFlagTextFieldRepresentable wh
         FlagTextField(
             configuration: self,
             formatted: \.asStringOrEmpty,
-            keyboardType: .numberPad,
             editingFormat: { $0.filter(\.isNumber) }
         )
+#if os(iOS) || os(tvOS)
+        .keyboardType(.numberPad)
+#endif
     }
 }

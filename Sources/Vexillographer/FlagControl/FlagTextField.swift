@@ -9,47 +9,28 @@ struct FlagTextField<Value: FlagValue>: View {
     private var formatted: WritableKeyPath<Value, String>
     private var format: (String) -> String
     private var editingFormat: (String) -> String
-    #if canImport(UIKit)
-        private var keyboardType: UIKeyboardType
-    #endif
+#if os(iOS) || os(tvOS)
+    private var keyboardType = UIKeyboardType.default
+#endif
 
     @State private var cachedText: String?
 
     @FocusState private var isFocused
 
-    #if canImport(UIKit)
-        init(
-            configuration: FlagControlConfiguration<Value>,
-            formatted: WritableKeyPath<Value, String>,
-            keyboardType: UIKeyboardType = .default,
-            placeholder: String = "",
-            format: @escaping (String) -> String = { $0 },
-            editingFormat: @escaping (String) -> String = { $0 }
-        ) {
-            self.name = configuration.name
-            self._value = configuration.$value
-            self.keyboardType = keyboardType
-            self.placeholder = placeholder
-            self.formatted = formatted
-            self.format = format
-            self.editingFormat = editingFormat
-        }
-    #else
-        init(
-            configuration: FlagControlConfiguration<Value>,
-            formatted: WritableKeyPath<Value, String>,
-            placeholder: String = "",
-            format: @escaping (String) -> String = { $0 },
-            editingFormat: @escaping (String) -> String = { $0 }
-        ) {
-            self.name = configuration.name
-            self._value = configuration.$value
-            self.placeholder = placeholder
-            self.formatted = formatted
-            self.format = format
-            self.editingFormat = editingFormat
-        }
-    #endif
+    init(
+        configuration: FlagControlConfiguration<Value>,
+        formatted: WritableKeyPath<Value, String>,
+        placeholder: String = "",
+        format: @escaping (String) -> String = { $0 },
+        editingFormat: @escaping (String) -> String = { $0 }
+    ) {
+        name = configuration.name
+        _value = configuration.$value
+        self.placeholder = placeholder
+        self.formatted = formatted
+        self.format = format
+        self.editingFormat = editingFormat
+    }
 
     var body: some View {
         HStack {
@@ -58,9 +39,10 @@ struct FlagTextField<Value: FlagValue>: View {
             TextField(placeholder, text: text)
                 .multilineTextAlignment(.trailing)
                 .accessibilityLabel(name)
-            #if canImport(UIKit)
+                .submitLabel(.done)
+#if os(iOS) || os(tvOS)
                 .keyboardType(keyboardType)
-            #endif
+#endif
         }
         .onChange(of: value.boxedFlagValue) { _ in
             cachedText = nil
@@ -89,5 +71,12 @@ struct FlagTextField<Value: FlagValue>: View {
         )
     }
 
-}
+#if os(iOS) || os(tvOS)
+    func keyboardType(_ type: UIKeyboardType) -> Self {
+        var copy = self
+        copy.keyboardType = type
+        return copy
+    }
+#endif
 
+}
