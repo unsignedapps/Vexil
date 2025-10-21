@@ -138,23 +138,23 @@ final class FlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                var first = false
+                @FlagGroup("Test Group")
                 var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                var second: Bool
+                @Flag("Flag 2")
+                var second = false
             }
             """,
             expandedSource: """
 
             struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                var first = false
+                @FlagGroup("Test Group")
                 var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                var second: Bool
+                @Flag("Flag 2")
+                var second = false
 
                 fileprivate let _flagKeyPath: FlagKeyPath
 

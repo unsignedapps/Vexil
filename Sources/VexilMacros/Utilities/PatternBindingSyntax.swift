@@ -21,23 +21,24 @@ extension PatternBindingSyntax {
         }
 
         if let initializer {
-            if initializer.value.is(BooleanLiteralExprSyntax.self) {
+            let value = initializer.value.as(ForceUnwrapExprSyntax.self)?.expression ?? initializer.value
+            if value.is(BooleanLiteralExprSyntax.self) {
                 return "Bool"
-            } else if initializer.value.is(IntegerLiteralExprSyntax.self) {
+            } else if value.is(IntegerLiteralExprSyntax.self) {
                 return "Int"
-            } else if initializer.value.is(StringLiteralExprSyntax.self) {
+            } else if value.is(StringLiteralExprSyntax.self) {
                 return "String"
-            } else if initializer.value.is(FloatLiteralExprSyntax.self) {
+            } else if value.is(FloatLiteralExprSyntax.self) {
                 return "Double"
-            } else if initializer.value.is(RegexLiteralExprSyntax.self) {
+            } else if value.is(RegexLiteralExprSyntax.self) {
                 return "Regex"
-            } else if let function = initializer.value.as(FunctionCallExprSyntax.self) {
+            } else if let function = value.as(FunctionCallExprSyntax.self) {
                 if let identifier = function.calledExpression.as(DeclReferenceExprSyntax.self) {
                     return TypeSyntax(IdentifierTypeSyntax(name: identifier.baseName))
                 } else if let memberAccess = function.calledExpression.as(MemberAccessExprSyntax.self)?.asMemberTypeSyntax() {
                     return TypeSyntax(memberAccess.baseType)
                 }
-            } else if let memberAccess = initializer.value.as(MemberAccessExprSyntax.self)?.asMemberTypeSyntax() {
+            } else if let memberAccess = value.as(MemberAccessExprSyntax.self)?.asMemberTypeSyntax() {
                 return TypeSyntax(memberAccess.baseType)
             }
         }

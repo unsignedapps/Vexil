@@ -73,8 +73,8 @@ print(flagPole.subgroup.secondSubgroup.$myAwesomeFlag.key)
 Sometimes though you want to override how a specific flag calculates its key. Vexil allows you to pass in a ``Flag/CodingKeyStrategy`` when you declare your ``Flag`` to alter how its key is calculated:
 
 ```swift
-@Flag(codingKeyStrategy: .snakecase, default: false, description: "My Awesome Flag")
-var myAwesomeFlag: Bool
+@Flag(codingKeyStrategy: .snakecase, description: "My Awesome Flag")
+var myAwesomeFlag = false
 
 // Key is "subgroup.second-subgroup.my_awesome_flag"
 ```
@@ -86,8 +86,8 @@ That would leave `myAwesomeFlag` calculating its key as `"subgroup.second-subgro
 You can also go for a manually specified key instead of a calculated one using a ``Flag/CodingKeyStrategy`` of `.customKey("my-key")`:
 
 ```swift
-@Flag(codingKeyStrategy: .customKey("my-key"), default: false, description: "My Awesome Flag")
-var myAwesomeFlag: Bool
+@Flag(codingKeyStrategy: .customKey("my-key"), description: "My Awesome Flag")
+var myAwesomeFlag = false
 
 // Key is "subgroup.second-subgroup.my-key"
 ```
@@ -97,8 +97,8 @@ var myAwesomeFlag: Bool
 But sometimes your ``FlagValueSource`` doesn't play nice, or the people naming flags in the backend don't provide the same structure that you want your local flags to be in. You can instead set a manual key path. In this case the ``FlagPole`` will ignore the location of the ``Flag`` in the flag structure and will just use the key you specify.
 
 ```swift
-@Flag(codingKeyStrategy: .customKeyPath("my-key"), default: false, description: "My Awesome Flag")
-var myAwesomeFlag: Bool
+@Flag(codingKeyStrategy: .customKeyPath("my-key"), description: "My Awesome Flag")
+var myAwesomeFlag = false
 
 // Key is "my-key"
 ```
@@ -110,7 +110,7 @@ While a ``FlagGroup`` doesn't have an explicit key of its own, it does form part
 ```swift
 struct MyFlags: FlagContainer {
     
-    @FlagGroup(description: "A subgroup of flags")
+    @FlagGroup("A subgroup of flags")
     var subgroup: Subgroup
     
 }

@@ -84,8 +84,8 @@ private struct TestFlags {
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
 
-    @Flag(default: false, description: "Top level test flag")
-    var topLevelFlag: Bool
+    @Flag("Top level test flag")
+    var topLevelFlag = false
 
 }
 
@@ -95,8 +95,8 @@ private struct OneFlags {
     @FlagGroup(keyStrategy: .customKey("two"), description: "Test Two")
     var twoFlagGroup: TwoFlags
 
-    @Flag(default: false, description: "Second level test flag")
-    var secondLevelFlag: Bool
+    @Flag("Second level test flag")
+    var secondLevelFlag = false
 }
 
 @FlagContainer
@@ -105,24 +105,24 @@ private struct TwoFlags {
     @FlagGroup(keyStrategy: .skip, description: "Skipping test 3")
     var flagGroupThree: ThreeFlags
 
-    @Flag(default: false, description: "Third level test flag")
-    var thirdLevelFlag: Bool
+    @Flag("Third level test flag")
+    var thirdLevelFlag = false
 
-    @Flag(default: false, description: "Second Third level test flag")
-    var thirdLevelFlag2: Bool
+    @Flag("Second Third level test flag")
+    var thirdLevelFlag2 = false
 
 }
 
 @FlagContainer
 private struct ThreeFlags {
 
-    @Flag(keyStrategy: .customKey("customKey"), default: false, description: "Test flag with custom key")
-    var custom: Bool
+    @Flag(keyStrategy: .customKey("customKey"), description: "Test flag with custom key")
+    var custom = false
 
-    @Flag(keyStrategy: .customKeyPath("customKeyPath"), default: false, description: "Test flag with custom key path")
-    var full: Bool
+    @Flag(keyStrategy: .customKeyPath("customKeyPath"), description: "Test flag with custom key path")
+    var full = false
 
-    @Flag(default: true, description: "Standard Flag")
-    var standard: Bool
+    @Flag("Standard Flag")
+    var standard = true
 
 }

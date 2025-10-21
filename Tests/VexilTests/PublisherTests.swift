@@ -182,17 +182,17 @@ final class PublisherTests: XCTestCase {
 @FlagContainer
 private struct TestFlags {
 
-    @Flag(default: false, description: "This is a test flag")
-    var testFlag: Bool
+    @Flag("This is a test flag")
+    var testFlag = false
 
-    @Flag(default: false, description: "This is a test flag")
-    var testFlag2: Bool
+    @Flag("This is a test flag")
+    var testFlag2 = false
 
-    @Flag(default: false, description: "This is a test flag")
-    var testFlag3: Bool
+    @Flag("This is a test flag")
+    var testFlag3 = false
 
-    @Flag(default: false, description: "This is a test flag")
-    var testFlag4: Bool
+    @Flag("This is a test flag")
+    var testFlag4 = false
 
 }
 

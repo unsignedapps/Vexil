@@ -22,151 +22,11 @@ final class FlagMacroTests: XCTestCase {
 
     // MARK: - Type Tests
 
-    func testExpandsBool() throws {
-        assertMacroExpansion(
-            """
-            struct TestFlags {
-                @Flag(default: false, description: "meow")
-                var testProperty: Bool
-            }
-            """,
-            expandedSource:
-            """
-            struct TestFlags {
-                var testProperty: Bool {
-                    get {
-                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? false
-                    }
-                }
-
-                var $testProperty: FlagWigwag<Bool> {
-                    FlagWigwag(
-                        keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: "Test Property",
-                        defaultValue: false,
-                        description: "meow",
-                        displayOption: .default,
-                        lookup: _flagLookup
-                    )
-                }
-            }
-            """,
-            macros: [
-                "Flag": FlagMacro.self,
-            ]
-        )
-    }
-
-    func testExpandsDouble() throws {
-        assertMacroExpansion(
-            """
-            struct TestFlags {
-                @Flag(default: 123.456, description: "meow")
-                var testProperty: Double
-            }
-            """,
-            expandedSource:
-            """
-            struct TestFlags {
-                var testProperty: Double {
-                    get {
-                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? 123.456
-                    }
-                }
-
-                var $testProperty: FlagWigwag<Double> {
-                    FlagWigwag(
-                        keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: "Test Property",
-                        defaultValue: 123.456,
-                        description: "meow",
-                        displayOption: .default,
-                        lookup: _flagLookup
-                    )
-                }
-            }
-            """,
-            macros: [
-                "Flag": FlagMacro.self,
-            ]
-        )
-    }
-
-    func testExpandsString() throws {
-        assertMacroExpansion(
-            """
-            struct TestFlags {
-                @Flag(default: "alpha", description: "meow")
-                var testProperty: String
-            }
-            """,
-            expandedSource:
-            """
-            struct TestFlags {
-                var testProperty: String {
-                    get {
-                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? "alpha"
-                    }
-                }
-
-                var $testProperty: FlagWigwag<String> {
-                    FlagWigwag(
-                        keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: "Test Property",
-                        defaultValue: "alpha",
-                        description: "meow",
-                        displayOption: .default,
-                        lookup: _flagLookup
-                    )
-                }
-            }
-            """,
-            macros: [
-                "Flag": FlagMacro.self,
-            ]
-        )
-    }
-
-    func testExpandsEnum() throws {
-        assertMacroExpansion(
-            """
-            struct TestFlags {
-                @Flag(default: .testCase, description: "meow")
-                var testProperty: SomeEnum
-            }
-            """,
-            expandedSource:
-            """
-            struct TestFlags {
-                var testProperty: SomeEnum {
-                    get {
-                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? .testCase
-                    }
-                }
-
-                var $testProperty: FlagWigwag<SomeEnum> {
-                    FlagWigwag(
-                        keyPath: _flagKeyPath.append(.automatic("test-property")),
-                        name: "Test Property",
-                        defaultValue: .testCase,
-                        description: "meow",
-                        displayOption: .default,
-                        lookup: _flagLookup
-                    )
-                }
-            }
-            """,
-            macros: [
-                "Flag": FlagMacro.self,
-            ]
-        )
-    }
-
     func testExpandsOptional() throws {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(description: "meow")
+                @Flag("meow")
                 var testProperty: Bool?
             }
             """,
@@ -201,8 +61,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(default: false, description: "meow")
-                public var testProperty: Bool
+                @Flag("meow")
+                public var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -375,6 +235,75 @@ final class FlagMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsTypePropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = SomeType(arg1: false)
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? SomeType(arg1: false)
+                    }
+                }
+
+                var $testProperty: FlagWigwag<SomeType> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: "Test Property",
+                        defaultValue: SomeType(arg1: false),
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
+
+    func testExpandsForceUnwrapPropertyInitialization() throws {
+        assertMacroExpansion(
+            """
+            struct TestFlags {
+                @Flag("meow")
+                var testProperty = URL(string: "https://test.com/")!
+            }
+            """,
+            expandedSource:
+            """
+            struct TestFlags {
+                var testProperty {
+                    get {
+                        _flagLookup.value(for: _flagKeyPath.append(.automatic("test-property"))) ?? URL(string: "https://test.com/")!
+                    }
+                }
+
+                var $testProperty: FlagWigwag<URL> {
+                    FlagWigwag(
+                        keyPath: _flagKeyPath.append(.automatic("test-property")),
+                        name: "Test Property",
+                        defaultValue: URL(string: "https://test.com/")!,
+                        description: "meow",
+                        displayOption: .default,
+                        lookup: _flagLookup
+                    )
+                }
+            }
+            """,
+            macros: [
+                "Flag": FlagMacro.self,
+            ]
+        )
+    }
 
     // MARK: - Argument Tests
 
@@ -382,8 +311,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(name: "Super Test!", description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -417,8 +346,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: "Test", display: .hidden)
-                var testProperty: Bool
+                @Flag(name: "Super Test!", description: "Test", display: .hidden)
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -452,8 +381,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(name: "Super Test!", default: false, description: "Test", display: FlagDisplayOption.hidden)
-                var testProperty: Bool
+                @Flag(name: "Super Test!", description: "Test", display: FlagDisplayOption.hidden)
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -490,8 +419,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .default, default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .default, description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -525,8 +454,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: VexilConfiguration.FlagKeyStrategy.default, default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: VexilConfiguration.FlagKeyStrategy.default, description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -563,8 +492,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .default, default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .default, description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -598,8 +527,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .kebabcase, default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .kebabcase, description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -633,8 +562,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .snakecase, default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .snakecase, description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -668,8 +597,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .customKey("test"), default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .customKey("test"), description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:
@@ -703,8 +632,8 @@ final class FlagMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @Flag(keyStrategy: .customKeyPath("test"), default: false, description: "meow")
-                var testProperty: Bool
+                @Flag(keyStrategy: .customKeyPath("test"), description: "meow")
+                var testProperty: Bool = false
             }
             """,
             expandedSource:

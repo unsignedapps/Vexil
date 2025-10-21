@@ -151,15 +151,15 @@ private struct TestFlags {
     @FlagGroup(description: "Test 1")
     var oneFlagGroup: OneFlags
 
-    @Flag(default: false, description: "Top level test flag")
-    var topLevelFlag: Bool
+    @Flag("Top level test flag")
+    var topLevelFlag = false
 
 }
 
 @FlagContainer
 private struct OneFlags {
 
-    @Flag(default: false, description: "Second level test flag")
-    var secondLevelFlag: Bool
+    @Flag("Second level test flag")
+    var secondLevelFlag = false
 
 }

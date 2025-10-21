@@ -51,10 +51,10 @@ private struct TestFlags {
     @Flag("Top level test flag")
     var topLevelFlag = false
 
-    @Flag(name: "Super Test!", default: false, description: "Second test flag")
-    var secondTestFlag: Bool
+    @Flag(name: "Super Test!", description: "Second test flag")
+    var secondTestFlag = false
 
-    @FlagGroup(description: "Subgroup of test flags")
+    @FlagGroup("Subgroup of test flags")
     var subgroup: SubgroupFlags
 
 }
@@ -62,10 +62,10 @@ private struct TestFlags {
 @FlagContainer
 private struct SubgroupFlags {
 
-    @Flag(default: false, description: "Second Level Flag", display: .hidden)
-    var secondLevelFlag: Bool
+    @Flag(description: "Second Level Flag", display: .hidden)
+    var secondLevelFlag = false
 
-    @FlagGroup(description: "Another level of test flags")
+    @FlagGroup("Another level of test flags")
     var doubleSubgroup: DoubleSubgroupFlags
 
 }
@@ -73,7 +73,7 @@ private struct SubgroupFlags {
 @FlagContainer
 private struct DoubleSubgroupFlags {
 
-    @Flag(name: "meow", default: false, description: "Third Level Flag", display: FlagDisplayOption.hidden)
-    var thirdLevelFlag: Bool
+    @Flag(name: "meow", description: "Third Level Flag", display: FlagDisplayOption.hidden)
+    var thirdLevelFlag = false
 
 }
