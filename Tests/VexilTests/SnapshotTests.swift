@@ -125,11 +125,11 @@ struct SnapshotTests {
 @FlagContainer
 private struct TestFlags {
 
-    @Flag(default: false, description: "Top level test flag")
-    var topLevelFlag: Bool
+    @Flag("Top level test flag")
+    var topLevelFlag = false
 
-    @Flag(default: false, description: "Second test flag")
-    var secondTestFlag: Bool
+    @Flag("Second test flag")
+    var secondTestFlag = false
 
     @FlagGroup(description: "Subgroup of test flags")
     var subgroup: SubgroupFlags
@@ -139,8 +139,8 @@ private struct TestFlags {
 @FlagContainer
 private struct SubgroupFlags {
 
-    @Flag(default: false, description: "Second level test flag")
-    var secondLevelFlag: Bool
+    @Flag("Second level test flag")
+    var secondLevelFlag = false
 
     @FlagGroup(description: "Another level of test flags")
     var doubleSubgroup: DoubleSubgroupFlags
@@ -150,7 +150,7 @@ private struct SubgroupFlags {
 @FlagContainer
 private struct DoubleSubgroupFlags {
 
-    @Flag(default: false, description: "Third level test flag")
-    var thirdLevelFlag: Bool
+    @Flag("Third level test flag")
+    var thirdLevelFlag = false
 
 }

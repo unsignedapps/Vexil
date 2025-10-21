@@ -15,7 +15,7 @@ import SwiftSyntax
 
 extension AttributeSyntax.Arguments {
 
-    subscript(label label: String) -> LabeledExprSyntax? {
+    subscript(label label: String?) -> LabeledExprSyntax? {
         guard case let .argumentList(list) = self else {
             return nil
         }

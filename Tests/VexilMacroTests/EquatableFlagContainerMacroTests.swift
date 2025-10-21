@@ -62,8 +62,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             struct TestFlags {
-                @Flag(default: false, description: "Some Flag")
-                var someFlag: Bool
+                @Flag("Some Flag")
+                var someFlag = false
 
                 var someComputedNotEquatableProperty: (any Error)? {
                     nil
@@ -82,7 +82,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             expandedSource: """
 
             struct TestFlags {
-                var someFlag: Bool {
+                var someFlag {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag"))) ?? false
                     }
@@ -163,15 +163,15 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             public struct TestFlags {
-                @Flag(default: false, description: "Some Flag")
-                var someFlag: Bool
+                @Flag("Some Flag")
+                var someFlag = false
             }
             """,
             expandedSource:
             """
 
             public struct TestFlags {
-                var someFlag: Bool {
+                var someFlag {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag"))) ?? false
                     }
@@ -239,8 +239,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             public extension SomeContainer {
                 @FlagContainer
                 struct TestFlags {
-                    @Flag(default: false, description: "Some Flag")
-                    var someFlag: Bool
+                    @Flag("Some Flag")
+                    var someFlag = false
                 }
             }
             """,
@@ -248,7 +248,7 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             public extension SomeContainer {
                 struct TestFlags {
-                    var someFlag: Bool {
+                    var someFlag {
                         get {
                             _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag"))) ?? false
                         }
@@ -316,14 +316,14 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             struct TestFlags: FlagContainer {
-                @Flag(default: false, description: "Some Flag")
-                var someFlag: Bool
+                @Flag("Some Flag")
+                var someFlag = false
             }
             """,
             expandedSource: """
 
             struct TestFlags: FlagContainer {
-                var someFlag: Bool {
+                var someFlag {
                     get {
                         _flagLookup.value(for: _flagKeyPath.append(.automatic("some-flag"))) ?? false
                     }
@@ -390,23 +390,23 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                var first = false
+                @FlagGroup("Test Group")
                 var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                var second: Bool
+                @Flag("Flag 2")
+                var second = false
             }
             """,
             expandedSource: """
 
             struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                var first = false
+                @FlagGroup("Test Group")
                 var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                var second: Bool
+                @Flag("Flag 2")
+                var second = false
 
                 fileprivate let _flagKeyPath: FlagKeyPath
 
@@ -484,23 +484,23 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             """
             @FlagContainer
             public struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                public var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                public var first = false
+                @FlagGroup("Test Group")
                 public var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                public var second: Bool
+                @Flag("Flag 2")
+                public var second = false
             }
             """,
             expandedSource: """
 
             public struct TestFlags {
-                @Flag(default: false, description: "Flag 1")
-                public var first: Bool
-                @FlagGroup(description: "Test Group")
+                @Flag("Flag 1")
+                public var first = false
+                @FlagGroup("Test Group")
                 public var flagGroup: GroupOfFlags
-                @Flag(default: false, description: "Flag 2")
-                public var second: Bool
+                @Flag("Flag 2")
+                public var second = false
 
                 fileprivate let _flagKeyPath: FlagKeyPath
 

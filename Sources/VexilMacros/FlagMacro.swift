@@ -50,15 +50,19 @@ public struct FlagMacro {
             let property = declaration.as(VariableDeclSyntax.self),
             let binding = property.bindings.first,
             let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier,
-            let type = binding.typeAnnotation?.type ?? binding.inferredType,
             binding.accessorBlock == nil
         else {
             throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.onlySimpleVariableSupported) ])
         }
+
+        guard let type = binding.typeAnnotation?.type ?? binding.inferredType else {
+            throw DiagnosticsError(diagnostics: [ .init(node: node, message: Diagnostic.onlySimpleVariableSupported) ])
+        }
+
         self.scopes = property.modifiers.scopeSyntax
 
         var defaultExprSyntax: ExprSyntax
-        if let defaultExpr = arguments[label: "default"]?.expression ?? binding.initializer?.value {
+        if let defaultExpr = binding.initializer?.value {
             defaultExprSyntax = defaultExpr
         } else if binding.typeAnnotation?.type.is(OptionalTypeSyntax.self) == true {
             defaultExprSyntax = ExprSyntax(NilLiteralExprSyntax())
@@ -192,6 +196,7 @@ extension FlagMacro {
         case missingDefaultValue
         case missingDescription
         case onlySimpleVariableSupported
+        case typeCouldNotBeInferred
 
         var message: String {
             switch self {
@@ -200,6 +205,7 @@ extension FlagMacro {
             case .missingDefaultValue:          "Could not infer the default value. Initialise the property or set the default: parameter."
             case .missingDescription:           "Description parameter missing."
             case .onlySimpleVariableSupported:  "Only simple single-binding properties supported."
+            case .typeCouldNotBeInferred:       "Type could not be inferred from the initializer. Specify a type explicitly."
             }
         }
 
@@ -210,6 +216,7 @@ extension FlagMacro {
             case .missingDefaultValue:          MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "missingDefaultValue")
             case .missingDescription:           MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "missingDescription")
             case .onlySimpleVariableSupported:  MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "onlySimpleVariableSupported")
+            case .typeCouldNotBeInferred:       MessageID(domain: "com.unsignedapps.vexil.flagMacro", id: "typeCouldNotBeInferred")
             }
         }
 

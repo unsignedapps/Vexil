@@ -220,44 +220,44 @@ struct FlagValueCompilationTests {
 
 @FlagContainer
 private struct BooleanTestFlags {
-    @Flag(default: true, description: "Test Flag")
-    var flag: Bool
+    @Flag("Test Flag")
+    var flag = true
 }
 
 @FlagContainer
 private struct StringTestFlags {
-    @Flag(default: "Test", description: "Test Flag")
-    var flag: String
+    @Flag("Test Flag")
+    var flag = "Test"
 }
 
 @FlagContainer
 private struct URLTestFlags {
-    @Flag(default: URL(string: "https://google.com/")!, description: "Test Flag")
-    var flag: URL
+    @Flag("Test Flag")
+    var flag = URL(string: "https://google.com/")!
 }
 
 @FlagContainer
 private struct DateTestFlags {
-    @Flag(default: Date.now, description: "Test Flag")
-    var flag: Date
+    @Flag("Test Flag")
+    var flag = Date.now
 }
 
 @FlagContainer
 private struct DataTestFlags {
-    @Flag(default: Data("hello".utf8), description: "Test Flag")
-    var flag: Data
+    @Flag("Test Flag")
+    var flag = Data("hello".utf8)
 }
 
 @FlagContainer(generateEquatable: false)
 private struct IntTestFlags<Value> where Value: FlagValue & ExpressibleByIntegerLiteral {
-    @Flag(default: 123, description: "Test flag")
-    var flag: Value
+    @Flag("Test flag")
+    var flag: Value = 123
 }
 
 @FlagContainer(generateEquatable: false)
 private struct FloatTestFlags<Value> where Value: FlagValue & ExpressibleByFloatLiteral {
-    @Flag(default: 123.23, description: "Test flag")
-    var flag: Value
+    @Flag("Test flag")
+    var flag: Value = 123.23
 }
 
 private struct RawRepresentableTestStruct: RawRepresentable, FlagValue, Equatable {
@@ -266,32 +266,32 @@ private struct RawRepresentableTestStruct: RawRepresentable, FlagValue, Equatabl
 
 @FlagContainer
 private struct RawRepresentableTestFlags {
-    @Flag(default: RawRepresentableTestStruct(rawValue: "Test"), description: "Test flag")
-    var flag: RawRepresentableTestStruct
+    @Flag("Test flag")
+    var flag = RawRepresentableTestStruct(rawValue: "Test")
 }
 
 @FlagContainer
 private struct OptionalValueTestFlags {
-    @Flag(default: "Test", description: "Test flas")
-    var flag: String?
+    @Flag("Test flas")
+    var flag: String? = "Test"
 }
 
 @FlagContainer
 private struct OptionalNoValueTestFlags {
-    @Flag(default: String?.none, description: "Test flag")
+    @Flag("Test flag")
     var flag: String?
 }
 
 @FlagContainer
 private struct ArrayTestFlags {
-    @Flag(default: [ 123, 456, 789 ], description: "Test flag")
-    var flag: [Int]
+    @Flag("Test flag")
+    var flag: [Int] = [ 123, 456, 789 ]
 }
 
 @FlagContainer
 private struct DictionaryTestFlags {
-    @Flag(default: [ "First": 123, "Second": 456, "Third": 789 ], description: "Test flag")
-    var flag: [String: Int]
+    @Flag("Test flag")
+    var flag: [String: Int] = [ "First": 123, "Second": 456, "Third": 789 ]
 }
 
 private struct CodableTestStruct: Codable, FlagValue, Equatable {
@@ -308,6 +308,6 @@ private struct CodableTestStruct: Codable, FlagValue, Equatable {
 
 @FlagContainer
 private struct CodableTestFlags {
-    @Flag(default: CodableTestStruct(), description: "Test flag")
-    var flag: CodableTestStruct
+    @Flag("Test flag")
+    var flag = CodableTestStruct()
 }

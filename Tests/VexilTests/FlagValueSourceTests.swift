@@ -118,21 +118,21 @@ struct FlagValueSourceTests {
 @FlagContainer
 private struct TestFlags {
 
-    @Flag(default: false, description: "This is a test flag")
-    var testFlag: Bool
+    @Flag("This is a test flag")
+    var testFlag = false
 
-    @Flag(default: true, description: "This is another test flag")
-    var secondTestFlag: Bool
+    @Flag("This is another test flag")
+    var secondTestFlag = true
 
-    @FlagGroup(description: "A test subgroup")
+    @FlagGroup("A test subgroup")
     var subgroup: Subgroup
 }
 
 @FlagContainer
 private struct Subgroup {
 
-    @Flag(default: false, description: "A test flag in a subgroup")
-    var testFlag: Bool
+    @Flag("A test flag in a subgroup")
+    var testFlag = false
 
 }
 
