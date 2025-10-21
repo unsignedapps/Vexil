@@ -1,6 +1,7 @@
 import SwiftUI
 import Vexil
 
+// TextField convenience for floating point
 extension FlagTextField where Value.BoxedValueType: BinaryFloatingPoint {
 
     init(configuration: FlagControlConfiguration<Value>) {

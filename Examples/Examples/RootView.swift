@@ -23,6 +23,7 @@ struct RootView: View {
             Dependencies.current.flags,
             editableSource: Dependencies.current.flags._sources.first
         )
+        .flagControlStyle(.doubleAndBoolean)
 
     }
 

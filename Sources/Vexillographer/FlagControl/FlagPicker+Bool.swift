@@ -1,6 +1,7 @@
 import SwiftUI
 import Vexil
 
+// Convenience for optional bool
 public extension FlagPicker where Value.BoxedValueType == Bool?, SelectionValue == Bool?, Content == DefaultFlagPickerContent<Bool?> {
     init(configuration: FlagControlConfiguration<Value>) {
         self.init(configuration: configuration, selection: \.asOptionalBool) {

@@ -13,7 +13,8 @@ struct FlagPoleContext {
         items.flatMap { $0.items(matching: searchText) }
     }
 
-    @MainActor func styledControl<Value: FlagValue>(configuration: FlagControlConfiguration<Value>) -> AnyView? {
+    @MainActor
+    func styledControl<Value: FlagValue>(configuration: FlagControlConfiguration<Value>) -> AnyView? {
         if let keyPath = keyPathByFlagKeyPath[configuration.keyPath], let style = styles[keyPath] {
             style.control(configuration: configuration)
         } else if let style = styles[ObjectIdentifier(Value.self)] {

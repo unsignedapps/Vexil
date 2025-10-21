@@ -2,10 +2,14 @@ import SwiftUI
 import Vexil
 
 public protocol FlagControlStyle<Value>: DynamicProperty {
+
     associatedtype Value: FlagValue
     associatedtype Body: View
-    @ViewBuilder @MainActor func makeBody(configuration: Configuration<Value>) -> Body
+
     typealias Configuration = FlagControlConfiguration
+
+    @ViewBuilder @MainActor func makeBody(configuration: Configuration<Value>) -> Body
+
 }
 
 public extension View {
@@ -21,6 +25,7 @@ public extension View {
 }
 
 private struct FlagControlStyleModifier<Style: FlagControlStyle>: ViewModifier {
+
     var style: Style
     var key: AnyHashable
 
@@ -30,11 +35,14 @@ private struct FlagControlStyleModifier<Style: FlagControlStyle>: ViewModifier {
                 $0.styles[key] = style
             }
     }
+
 }
 
 extension FlagControlStyle {
-    @MainActor func control(configuration: Configuration<some FlagValue>) -> AnyView? {
+
+    @MainActor
+    func control(configuration: Configuration<some FlagValue>) -> AnyView? {
         (configuration as? Configuration<Value>).map { AnyView(StyledFlagControl(configuration: $0, style: self)) }
     }
-}
 
+}

@@ -1,10 +1,11 @@
 import SwiftUI
 import Vexil
 
+// Public way to create single custom controls
 public struct FlagControl<Value: FlagValue, Content: View>: View {
 
-    var wigwag: FlagWigwag<Value>
-    @ViewBuilder var content: (FlagControlConfiguration<Value>) -> Content
+    private var wigwag: FlagWigwag<Value>
+    private var content: (FlagControlConfiguration<Value>) -> Content
 
     @State private var cachedValue: Value?
     @State private var seed = 0
@@ -41,11 +42,11 @@ public struct FlagControl<Value: FlagValue, Content: View>: View {
         }
     }
 
-    var editableValue: Value? {
+    private var editableValue: Value? {
         flagPoleContext.editableSource?.flagValue(key: wigwag.key)
     }
 
-    var nonEditableValue: Value {
+    private var nonEditableValue: Value {
         let editableSourceID = flagPoleContext.editableSource?.flagValueSourceID
         for source in flagPoleContext.sources where source.flagValueSourceID != editableSourceID {
             if let value = source.flagValue(key: wigwag.key) as Value? {
@@ -55,15 +56,16 @@ public struct FlagControl<Value: FlagValue, Content: View>: View {
         return wigwag.defaultValue
     }
 
-    var resolvedValue: Value {
+    private var resolvedValue: Value {
         editableValue ?? nonEditableValue
     }
 
-    func getValue() -> Value {
+    private func getValue() -> Value {
         cachedValue ?? resolvedValue
     }
 
-    func setValue(_ newValue: Value, transaction: Transaction) {
+    private func setValue(_ newValue: Value, transaction: Transaction) {
+        // TODO: logging
         guard let editableSource = flagPoleContext.editableSource else {
             print("Trying to set a value that isn't editable. This will be ignored.")
             return
@@ -77,7 +79,7 @@ public struct FlagControl<Value: FlagValue, Content: View>: View {
         }
     }
 
-    func resetValue() {
+    private func resetValue() {
         guard let editableSource = flagPoleContext.editableSource else {
             print("Trying to set a value that isn't editable. This will be ignored.")
             return

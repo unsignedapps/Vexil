@@ -1,6 +1,7 @@
 import SwiftUI
 import Vexil
 
+// Convenience for case iterable
 public extension FlagPicker where Value: CaseIterable, SelectionValue == Value, Content == DefaultFlagPickerContent<Value> {
 
     init(configuration: FlagControlConfiguration<Value>) {

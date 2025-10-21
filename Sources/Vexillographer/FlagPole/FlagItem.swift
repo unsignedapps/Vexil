@@ -32,8 +32,8 @@ struct FlagItemContent<Value: FlagValue>: View {
     @State private var isShowingDetail = false
     @FocusState private var isFocused
     
-    @Environment(\.flagPoleContext) var flagPoleContext
-    
+    @Environment(\.flagPoleContext) private var flagPoleContext
+
     var body: some View {
         FlagControl(wigwag) { configuration in
             HStack {

@@ -1,6 +1,9 @@
 import SwiftUI
 import Vexil
 
+// Sheet with flag info
+// - can reset value
+// - can see source hierarchy
 struct FlagDetailView<Value: FlagValue>: View {
 
     var configuration: FlagControlConfiguration<Value>
@@ -20,19 +23,19 @@ struct FlagDetailView<Value: FlagValue>: View {
                 let editableValue = editableSource.flagValue(key: configuration.key) as Value?
                 Section("Current Source") {
                     FlagValueRow(editableSource.flagValueSourceName, value: editableValue)
-                    #if os(macOS)
-                        RowContent("Clear Current Source") {
-                            Button("Clear", role: .destructive) {
-                                configuration.resetValue()
-                            }
-                            .disabled(editableValue == nil)
-                        }
-                    #else
-                        Button("Clear Current Source", role: .destructive) {
+#if os(macOS)
+                    RowContent("Clear Current Source") {
+                        Button("Clear", role: .destructive) {
                             configuration.resetValue()
                         }
                         .disabled(editableValue == nil)
-                    #endif
+                    }
+#else
+                    Button("Clear Current Source", role: .destructive) {
+                        configuration.resetValue()
+                    }
+                    .disabled(editableValue == nil)
+#endif
                 }
             }
             Section("Flagpole Source Hierarchy") {
@@ -46,11 +49,11 @@ struct FlagDetailView<Value: FlagValue>: View {
             }
         }
         .navigationTitle(configuration.name)
-        #if os(macOS)
+#if os(macOS)
             .padding(0) // FIXME: Views for mac
-        #else
+#else
             .navigationBarTitleDisplayMode(.inline)
-        #endif
+#endif
             .toolbar {
                 ToolbarItem {
                     Button {
@@ -64,8 +67,9 @@ struct FlagDetailView<Value: FlagValue>: View {
 }
 
 struct FlagValueRow<Value>: View {
-    var label: String
-    var value: Value?
+
+    private var label: String
+    private var value: Value?
 
     init(_ label: String, value: Value?) {
         self.label = label
@@ -74,6 +78,7 @@ struct FlagValueRow<Value>: View {
 
     var body: some View {
         RowContent(label) {
+            // Clean this up
             if let value {
                 if let value = value as? any OptionalProtocol {
                     if let wrapped = value.wrapped {
@@ -90,4 +95,5 @@ struct FlagValueRow<Value>: View {
             }
         }
     }
+
 }

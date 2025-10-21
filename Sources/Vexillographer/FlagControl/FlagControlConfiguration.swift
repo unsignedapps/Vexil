@@ -1,6 +1,8 @@
 import SwiftUI
 import Vexil
 
+// Binding to a flag value could be a property wrapper but maybe best
+// not to blur the lines
 public struct FlagControlConfiguration<Value: FlagValue> {
 
     private let seed: Int

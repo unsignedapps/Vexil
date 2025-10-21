@@ -9,6 +9,9 @@ struct FeatureFlags {
     @FlagGroup(description: "Builtin types", display: .section)
     var builtinTypes: BuiltinTypes
 
+    @FlagGroup("Custom flags")
+    var customFlags: CustomFlags
+
 }
 
 @FlagContainer
@@ -48,6 +51,25 @@ struct BuiltinTypes {
         case foo
         case bar
         case baz
+    }
+
+}
+
+@FlagContainer
+struct CustomFlags {
+
+    @Flag("A boolean flag")
+    var boolean = true
+
+    @Flag("A double flag")
+    var double = 1729.42
+
+    @Flag("A double and boolaen flag")
+    var doubleAndBoolean = DoubleAndBoolean()
+
+    struct DoubleAndBoolean: Codable, Equatable, FlagValue {
+        var percent = 0.5
+        var isEnabled = false
     }
 
 }

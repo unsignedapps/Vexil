@@ -21,7 +21,7 @@ struct FlagGroupItem<Value: FlagContainer>: FlagPoleItemGroup {
     var name: String {
         group.name
     }
-    
+
     var visibleItems: [any FlagPoleItem] {
         items.filter { $0.isHidden == false }
     }

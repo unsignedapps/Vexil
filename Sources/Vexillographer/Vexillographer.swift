@@ -5,10 +5,11 @@ public struct Vexillographer: View {
 
     @State private var searchText = ""
 
-    public init() {}
+    public init() { }
 
     public var body: some View {
         FlagList(searchText: searchText)
+            // Want to make this opt in?
             .searchable(text: $searchText)
     }
 

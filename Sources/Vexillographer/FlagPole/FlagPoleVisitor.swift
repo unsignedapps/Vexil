@@ -1,18 +1,11 @@
 import SwiftUI
 import Vexil
 
-extension FlagContainer {
-    var keyPathByFlagKeyPath: [FlagKeyPath: AnyKeyPath] {
-        _allFlagKeyPaths.reduce(into: [FlagKeyPath: AnyKeyPath]()) { $0[$1.value] = $1.key }
-    }
-}
-
 class FlagPoleVisitor: FlagVisitor {
 
     var lookup: any FlagLookup
     var items = [any FlagPoleItem]()
     var groupStack = [any FlagPoleItemGroup]()
-    var keyPathStack = [AnyKeyPath]()
     var keyPathByFlagKeyPath = [FlagKeyPath: AnyKeyPath]()
 
     init(lookup: any FlagLookup) {
@@ -47,6 +40,15 @@ class FlagPoleVisitor: FlagVisitor {
         } else {
             items.append(newItem)
         }
+    }
+
+}
+
+private extension FlagContainer {
+
+    /// A map of type-erased key paths by flag key path.
+    var keyPathByFlagKeyPath: [FlagKeyPath: AnyKeyPath] {
+        Dictionary(uniqueKeysWithValues: _allFlagKeyPaths.map { ($0.value, $0.key) })
     }
 
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 import Vexil
 
+// A picker
 public struct FlagPicker<Value: FlagValue, SelectionValue: Hashable, Content: View>: View {
 
     private var name: String
