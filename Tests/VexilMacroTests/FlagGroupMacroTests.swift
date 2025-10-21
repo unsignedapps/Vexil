@@ -24,7 +24,7 @@ final class FlagGroupMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @FlagGroup(description: "Test Flag Group")
+                @FlagGroup("Test Flag Group")
                 var testSubgroup: SubgroupFlags
             }
             """,
@@ -58,7 +58,7 @@ final class FlagGroupMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             struct TestFlags {
-                @FlagGroup(description: "Test Flag Group")
+                @FlagGroup("Test Flag Group")
                 public var testSubgroup: SubgroupFlags
             }
             """,
