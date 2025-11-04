@@ -51,7 +51,7 @@ struct FlagDetailView<Value: FlagValue>: View {
         .navigationTitle(configuration.name)
 #if os(macOS)
             .padding(0) // FIXME: Views for mac
-#else
+#elseif !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .toolbar {

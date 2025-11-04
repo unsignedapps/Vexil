@@ -57,6 +57,7 @@ struct FlagItemContent<Value: FlagValue>: View {
                 .buttonStyle(.plain)
             }
             .focused($isFocused)
+#if !os(tvOS)
             .swipeActions(edge: .trailing) {
                 if configuration.hasValue {
                     Button {
@@ -68,6 +69,7 @@ struct FlagItemContent<Value: FlagValue>: View {
                     .tint(.red)
                 }
             }
+#endif
             .sheet(isPresented: $isShowingDetail) {
                 NavigationView {
                     FlagDetailView(configuration: configuration)
