@@ -98,6 +98,12 @@ public macro FlagGroup(
 @attached(accessor)
 @attached(peer, names: prefixed(`$`))
 public macro FlagGroup(
+    _ description: StaticString
+) = #externalMacro(module: "VexilMacros", type: "FlagGroupMacro")
+
+@attached(accessor)
+@attached(peer, names: prefixed(`$`))
+public macro FlagGroup(
     name: StaticString? = nil,
     keyStrategy: VexilConfiguration.GroupKeyStrategy = .default,
     description: StaticString,

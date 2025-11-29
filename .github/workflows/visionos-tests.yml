@@ -28,8 +28,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ "16.3", "16.4" ] # "26.0" is broken with xcodebuild test
-        os: [ macos-15 ]
+        xcode: [ "26.1" ]
+        os: [ macos-26 ]
     runs-on: ${{ matrix.os }}
 
     env:
@@ -42,7 +42,7 @@ jobs:
         run: |
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=visionOS Simulator,name=Apple Vision Pro,os=2.5" \
+          xcrun xcodebuild build -workspace . -scheme Vexil-Package -skipMacroValidation -destination "generic/platform=visionOS Simulator" \
           | xcbeautify --renderer github-actions
 
   build-visionos:

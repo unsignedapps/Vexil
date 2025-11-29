@@ -15,9 +15,7 @@ let package = Package(
     ],
 
     products: [
-        // Automatic
         .library(name: "Vexil", targets: [ "Vexil" ]),
-//        .library(name: "Vexillographer", targets: [ "Vexillographer" ]),
     ],
 
     dependencies: [
@@ -44,15 +42,6 @@ let package = Package(
             ]
         ),
 
-        // Vexillographer
-
-//        .target(
-//            name: "Vexillographer",
-//            dependencies: [
-//                .target(name: "Vexil"),
-//            ]
-//        ),
-
         // Macros
 
         .macro(
@@ -75,6 +64,25 @@ let package = Package(
 )
 
 #if !os(Linux)
+
+// MARK: - Vexillographer
+
+// Vexillographer is not supported on Linux
+
+package.products.append(
+    .library(name: "Vexillographer", targets: [ "Vexillographer" ])
+)
+
+package.targets.append(
+    .target(
+        name: "Vexillographer",
+        dependencies: [
+            .target(name: "Vexil"),
+        ]
+    )
+)
+
+// MARK: - Macro Testing
 
 // We can't disable macro validation using `swift test` so these are guaranteed to fail on Linux
 package.targets.append(
