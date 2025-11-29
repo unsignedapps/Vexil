@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -5,7 +18,8 @@ import Vexil
 public struct FlagToggle<Value: FlagValue>: View where Value.BoxedValueType == Bool {
 
     private var name: String
-    @Binding private var value: Value
+    @Binding
+    private var value: Value
 
     public init(configuration: FlagControlConfiguration<Value>) {
         self.name = configuration.name
@@ -32,7 +46,8 @@ private extension FlagValue where BoxedValueType == Bool {
 }
 
 protocol FlagToggleRepresentable {
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 }
 
 extension FlagControlConfiguration: FlagToggleRepresentable where Value.BoxedValueType == Bool {

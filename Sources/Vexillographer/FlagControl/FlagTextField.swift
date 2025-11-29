@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -7,7 +20,8 @@ import Vexil
 struct FlagTextField<Value: FlagValue>: View {
 
     private var name: String
-    @Binding private var value: Value
+    @Binding
+    private var value: Value
     private var placeholder: String
     private var formatted: WritableKeyPath<Value, String>
     private var format: (String) -> String
@@ -16,9 +30,11 @@ struct FlagTextField<Value: FlagValue>: View {
     private var keyboardType = UIKeyboardType.default
 #endif
 
-    @State private var cachedText: String?
+    @State
+    private var cachedText: String?
 
-    @FocusState private var isFocused
+    @FocusState
+    private var isFocused
 
     init(
         configuration: FlagControlConfiguration<Value>,
@@ -27,7 +43,7 @@ struct FlagTextField<Value: FlagValue>: View {
         format: @escaping (String) -> String = { $0 },
         editingFormat: @escaping (String) -> String = { $0 }
     ) {
-        name = configuration.name
+        self.name = configuration.name
         _value = configuration.$value
         self.placeholder = placeholder
         self.formatted = formatted

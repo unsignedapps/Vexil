@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -39,10 +52,12 @@ struct FlagGroupItem<Value: FlagContainer>: FlagPoleItemGroup {
                     ForEach(visibleItems, id: \.keyPath, content: \.content)
                 }
             }
+
         case .section:
             Section(group.name) {
                 ForEach(visibleItems, id: \.keyPath, content: \.content)
             }
+
         case .hidden:
             EmptyView()
         }

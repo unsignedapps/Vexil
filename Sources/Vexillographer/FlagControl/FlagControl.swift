@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -7,10 +20,13 @@ public struct FlagControl<Value: FlagValue, Content: View>: View {
     private var wigwag: FlagWigwag<Value>
     private var content: (FlagControlConfiguration<Value>) -> Content
 
-    @State private var cachedValue: Value?
-    @State private var seed = 0
+    @State
+    private var cachedValue: Value?
+    @State
+    private var seed = 0
 
-    @Environment(\.flagPoleContext) private var flagPoleContext
+    @Environment(\.flagPoleContext)
+    private var flagPoleContext
 
     public init(
         _ wigwag: FlagWigwag<Value>,

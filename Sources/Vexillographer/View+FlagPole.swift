@@ -1,10 +1,23 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
 public extension View {
 
-    func flagPole<RootGroup: FlagContainer>(
-        _ flagPole: FlagPole<RootGroup>,
+    func flagPole(
+        _ flagPole: FlagPole<some FlagContainer>,
         editableSource: (any FlagValueSource)? = nil
     ) -> some View {
         modifier(FlagPoleModifier(flagPole: flagPole, editableSource: editableSource))

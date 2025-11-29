@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -12,7 +25,8 @@ public struct FlagControlConfiguration<Value: FlagValue> {
     public let isEditable: Bool
     public let hasValue: Bool
     public let defaultValue: Value
-    @Binding public var value: Value
+    @Binding
+    public var value: Value
     private let _resetValue: () -> Void
 
     init(
@@ -34,7 +48,7 @@ public struct FlagControlConfiguration<Value: FlagValue> {
         self.hasValue = hasValue
         self.defaultValue = defaultValue
         _value = value
-        _resetValue = resetValue
+        self._resetValue = resetValue
     }
 
     public var key: String {

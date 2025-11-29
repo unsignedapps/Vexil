@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -6,12 +19,14 @@ protocol FlagPoleItem {
     var keyPath: FlagKeyPath { get }
     var name: String { get }
     var isHidden: Bool { get }
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 
 }
 
 extension FlagPoleItem {
-    @MainActor var content: AnyView { AnyView(makeContent()) }
+    @MainActor
+    var content: AnyView { AnyView(makeContent()) }
 }
 
 extension FlagPoleItem {

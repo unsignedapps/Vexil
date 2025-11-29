@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -30,7 +43,8 @@ private extension FlagValue where BoxedValueType: BinaryInteger {
 }
 
 protocol IntegerFlagTextFieldRepresentable {
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 }
 
 extension FlagControlConfiguration: IntegerFlagTextFieldRepresentable where Value.BoxedValueType: BinaryInteger {
@@ -67,7 +81,8 @@ private extension FlagValue where BoxedValueType: OptionalProtocol, BoxedValueTy
 }
 
 protocol OptionalIntegerFlagTextFieldRepresentable {
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 }
 
 extension FlagControlConfiguration: OptionalIntegerFlagTextFieldRepresentable where Value.BoxedValueType: OptionalProtocol, Value.BoxedValueType.Wrapped: BinaryInteger {

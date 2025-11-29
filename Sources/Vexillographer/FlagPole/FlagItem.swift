@@ -1,38 +1,54 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
 struct FlagItem<Value: FlagValue>: FlagPoleItem {
-    
+
     var flag: FlagWigwag<Value>
-    
+
     init(_ flag: FlagWigwag<Value>) {
         self.flag = flag
     }
-    
+
     var isHidden: Bool {
         flag.displayOption == .hidden
     }
-    
+
     var keyPath: FlagKeyPath {
         flag.keyPath
     }
-    
+
     var name: String { flag.name }
-    
+
     func makeContent() -> any View {
         FlagItemContent(wigwag: flag)
     }
-    
+
 }
 
 struct FlagItemContent<Value: FlagValue>: View {
-    
+
     var wigwag: FlagWigwag<Value>
-    
-    @State private var isShowingDetail = false
-    @FocusState private var isFocused
-    
-    @Environment(\.flagPoleContext) private var flagPoleContext
+
+    @State
+    private var isShowingDetail = false
+    @FocusState
+    private var isFocused
+
+    @Environment(\.flagPoleContext)
+    private var flagPoleContext
 
     var body: some View {
         FlagControl(wigwag) { configuration in
@@ -58,23 +74,23 @@ struct FlagItemContent<Value: FlagValue>: View {
             }
             .focused($isFocused)
 #if !os(tvOS)
-            .swipeActions(edge: .trailing) {
-                if configuration.hasValue {
-                    Button {
-                        configuration.resetValue()
-                    } label: {
-                        Label("Clear", systemImage: "trash.fill")
-                            .imageScale(.large)
+                .swipeActions(edge: .trailing) {
+                    if configuration.hasValue {
+                        Button {
+                            configuration.resetValue()
+                        } label: {
+                            Label("Clear", systemImage: "trash.fill")
+                                .imageScale(.large)
+                        }
+                        .tint(.red)
                     }
-                    .tint(.red)
                 }
-            }
 #endif
-            .sheet(isPresented: $isShowingDetail) {
-                NavigationView {
-                    FlagDetailView(configuration: configuration)
+                .sheet(isPresented: $isShowingDetail) {
+                    NavigationView {
+                        FlagDetailView(configuration: configuration)
+                    }
                 }
-            }
         }
     }
 }
@@ -82,7 +98,7 @@ struct FlagItemContent<Value: FlagValue>: View {
 struct StyledFlagControl<Value: FlagValue>: View {
     var configuration: FlagControlConfiguration<Value>
     var style: any FlagControlStyle<Value>
-    
+
     var body: some View {
         AnyView(style.makeBody(configuration: configuration))
     }
@@ -90,36 +106,36 @@ struct StyledFlagControl<Value: FlagValue>: View {
 
 struct DefaultFlagControl: View {
     var content: any View
-    
-    init<Value: FlagValue>(configuration: FlagControlConfiguration<Value>) {
+
+    init(configuration: FlagControlConfiguration<some FlagValue>) {
         switch configuration {
         case let configuration as any FlagToggleRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any OptionalBooleanFlagPickerRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any CaseIterableFlagPickerRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any OptionalCaseIterableFlagPickerRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any IntegerFlagTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any OptionalIntegerFlagTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any FloatingPointTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any OptionalFloatingPointFlagTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any StringFlagTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         case let configuration as any OptionalStringFlagTextFieldRepresentable:
-            content = configuration.makeContent()
+            self.content = configuration.makeContent()
         default:
-            content = Text("Unimplemented \(configuration.name)").frame(maxWidth: .infinity)
+            self.content = Text("Unimplemented \(configuration.name)").frame(maxWidth: .infinity)
         }
     }
-    
+
     var body: some View {
         AnyView(content)
     }
-    
+
 }

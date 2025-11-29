@@ -1,3 +1,16 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Vexil open source project
+//
+// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Licensed under the MIT license
+//
+// See LICENSE for license information
+//
+// SPDX-License-Identifier: MIT
+//
+//===----------------------------------------------------------------------===//
+
 import SwiftUI
 import Vexil
 
@@ -23,7 +36,8 @@ public extension FlagPicker {
 }
 
 protocol CaseIterableFlagPickerRepresentable {
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 }
 
 extension FlagControlConfiguration: CaseIterableFlagPickerRepresentable where Value: CaseIterable & Hashable {
@@ -33,7 +47,8 @@ extension FlagControlConfiguration: CaseIterableFlagPickerRepresentable where Va
 }
 
 protocol OptionalCaseIterableFlagPickerRepresentable {
-    @MainActor func makeContent() -> any View
+    @MainActor
+    func makeContent() -> any View
 }
 
 extension FlagControlConfiguration: OptionalCaseIterableFlagPickerRepresentable where Value: OptionalProtocol, Value.Wrapped: CaseIterable & Hashable {
