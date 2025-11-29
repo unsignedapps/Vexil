@@ -42,7 +42,7 @@ jobs:
         run: |
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild build -workspace . -scheme Vexil-Package -skipMacroValidation -destination "platform=visionOS Simulator,name=Apple Vision Pro,os=2.5" \
+          xcrun xcodebuild build -workspace . -scheme Vexil-Package -skipMacroValidation -destination "platform=visionOS Simulator,name=Apple Vision Pro,os=26.1" \
           | xcbeautify --renderer github-actions
 
   build-visionos:
