@@ -148,7 +148,6 @@ let snapshot = flagPole.snapshot()
 ### Flags
 
 - <doc:DefiningFlags>
-- ``Flag(name:keyStrategy:default:description:display:)``
 - ``Flag(name:keyStrategy:description:display:)``
 - ``Flag(_:)``
 - ``FlagValue``
@@ -156,6 +155,7 @@ let snapshot = flagPole.snapshot()
 ### Flag Groups
 
 - ``FlagGroup(name:keyStrategy:description:display:)``
+- ``FlagGroup(_:display:)``
 - ``FlagContainer(generateEquatable:)``
 
 ### Snapshots

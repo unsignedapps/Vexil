@@ -57,10 +57,10 @@ struct MyFlags: FlagContainer {
 @FlagContainer
 struct MyFlags {
 
-    @Flag(default: false, description: "Test flag that does something magical")
-    var testFlag: Bool
+    @Flag("Test flag that does something magical")
+    var testFlag = false
 
-    @FlagGroup(description: "Some nested flags")
+    @FlagGroup("Some nested flags")
     var nested: NestedFlags
 
 }
@@ -117,10 +117,17 @@ FlagContainer.init(
 Under Vexil 3, this is now a macro:
 
 ```swift
+// Full macro
 public macro FlagGroup(
     name: StaticString? = nil,
     keyStrategy: VexilConfiguration.GroupKeyStrategy = .default,
     description: StaticString,
+    display: VexilDisplayOption = .navigation
+)
+
+// Or shorter
+public macro FlagGroup(
+    _ description: StaticString,
     display: VexilDisplayOption = .navigation
 )
 ```
@@ -136,14 +143,14 @@ could set your description to `.hidden`; now you pass `.hidden` to display:
 var nested: NestedFlags
 
 // Vexil 3
-@FlagGroup(description: "Nested flags", display: .hidden)
+@FlagGroup("Nested flags", display: .hidden)
 var nested: NestedFlags
 ```
 
 ### Flags
 
 Much like Flag Groups, the `@Flag` property wrapper was replaced with the
-``Flag(name:keyStrategy:default:description:)`` macro, with simplified parameters:
+``Flag(name:keyStrategy:description:display:)`` macro, with simplified parameters:
 
 ```swift
 // Vexil 2
@@ -155,9 +162,6 @@ var magic: Bool
 var magic = false
 
 // Vexil 3
-
-@Flag(default: false, description: "Flag that enables magic")
-var magic: Bool
 
 @Flag("Flag that enables magic")
 var magic = false
@@ -184,18 +188,9 @@ init(
 )
 ```
 
-Both approaches are available via the `@Flag` macro:
+With the `@Flag` macro we now require the property initialiser.
 
 ```swift
-/// Explicit default parameter
-macro Flag<Value: FlagValue>(
-    name: StaticString? = nil,
-    keyStrategy: VexilConfiguration.FlagKeyStrategy = .default,
-    default initialValue: Value,
-    description: StaticString,
-    display: FlagDisplayOption = .default
-)
-
 /// Sets default via property initialiser
 macro Flag(
     name: StaticString? = nil,
@@ -210,6 +205,19 @@ macro Flag(_ description: StaticString)
 
 Same as with the `FlagGroup`, the `codingKeyStrategy` parameter has been shortened
 to `keyStrategy`, and the ability to hide flags has been moved to the `display` property.
+
+>Note:
+>
+>The `default:` parameter option was removed as it included a large foot-gun with cryptic
+>error message. It was decided to remove this potential issue by aligning with
+>[swift-argument-parser](https://github.com/apple/swift-argument-parser)'s approach.
+>
+>As the macro is type-checked without reference to the attached property's type you get errors like:
+>
+>```swift
+>@Flag(default: .enumCase, description: "")             // compiler error: Type of `.enumCase` cannot be inferred.
+>var myFlag: MyEnum
+>```
 
 ## Flag Pole Observation
 

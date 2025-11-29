@@ -56,7 +56,7 @@ public struct FlagGroupMacro {
         self.scopes = property.modifiers.scopeSyntax
 
         self.name = arguments[label: "name"]?.expression
-        self.description = arguments[label: "description"]?.expression
+        self.description = arguments[label: "description"]?.expression ?? arguments[label: nil]?.expression
         self.displayOption = arguments[label: "display"]?.expression
     }
 

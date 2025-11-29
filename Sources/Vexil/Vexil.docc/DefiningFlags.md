@@ -69,14 +69,14 @@ import Vexil
 
 struct NormalFlags: FlagContainer {
 
-    @Flag(default: 10, "This is a demonstration Int flag")
-    var myIntFlag: Int
+    @Flag("This is a demonstration Int flag")
+    var myIntFlag = 10
 
-    @Flag(default: 0.5, "This is a demonstration Double flag")
-    var myDoubleFlag: Double
+    @Flag("This is a demonstration Double flag")
+    var myDoubleFlag = 0.5
 
-    @Flag(default: "Placeholder", "This is a demonstration String flag")
-    var myStringFlag: String
+    @Flag("This is a demonstration String flag")
+    var myStringFlag = "Placeholder""
 
 }
 ```
@@ -98,8 +98,8 @@ enum MyTheme: String, FlagValue, CaseIterable {
 
 struct ThemeFlags {
 
-    @Flag(default: .blue, "The theme to use for the app")
-    var currentTheme: MyTheme
+    @Flag("The theme to use for the app")
+    var currentTheme = MyTheme.blue
     
 }
 ```
@@ -117,8 +117,8 @@ struct MyStruct: FlagValue, Codable {
 
 struct TestFlags: FlagContainer {
 
-    @Flag(defaultValue: MyStruct(property1: "abc123", property2: 123, property3: "🤯"), description: "...")
-    var testFlag: MyStruct
+    @Flag(description: "...")
+    var testFlag = MyStruct(property1: "abc123", property2: 123, property3: "🤯")
     
 }
 ```

@@ -170,7 +170,7 @@ extension FlagContainerMacro: ExtensionMacro {
                                         ])
                                     }
                                 }
-                                ExprSyntax("lhs.\(lastBinding) == rhs.\(lastBinding)")
+                                ExprSyntax("lhs.\(lastBinding.trimmed) == rhs.\(lastBinding.trimmed)")
                             }
                         }
                         .with(\.modifiers, Array(scopes) + [ DeclModifierSyntax(name: .keyword(.static)) ])
