@@ -40,9 +40,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Build and Test
         run: |
+          xcrun xcodebuild -list -workspace .
           set -o pipefail && \
           NSUnbufferedIO=YES \
-          xcrun xcodebuild test -workspace . -scheme Vexil-Package -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 16e" \
+          xcrun xcodebuild test -workspace . -scheme Vexil -skipMacroValidation -destination "platform=iOS Simulator,name=iPhone 16e" \
           | xcbeautify --renderer github-actions
 
   build-ios:
