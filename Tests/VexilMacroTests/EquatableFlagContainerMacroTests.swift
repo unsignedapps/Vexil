@@ -20,7 +20,7 @@ import XCTest
 
 final class EquatableFlagContainerMacroTests: XCTestCase {
 
-    func testDoesntGenerateWhenEmpty() throws {
+    func testGeneratesWhenEmpty() throws {
         assertMacroExpansion(
             """
             @FlagContainer
@@ -48,6 +48,12 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 }
                 var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
                     [:]
+                }
+            }
+
+            extension TestFlags: Equatable {
+                static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    true
                 }
             }
             """,

@@ -50,6 +50,12 @@ final class FlagContainerMacroTests: XCTestCase {
                     [:]
                 }
             }
+
+            extension TestFlags: Equatable {
+                static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    true
+                }
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -87,6 +93,12 @@ final class FlagContainerMacroTests: XCTestCase {
                     [:]
                 }
             }
+
+            extension TestFlags: Equatable {
+                public static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    true
+                }
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -122,6 +134,12 @@ final class FlagContainerMacroTests: XCTestCase {
                 }
                 var _allFlagKeyPaths: [PartialKeyPath<TestFlags>: FlagKeyPath] {
                     [:]
+                }
+            }
+
+            extension TestFlags: Equatable {
+                static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
+                    true
                 }
             }
             """,

@@ -176,4 +176,13 @@ private struct DoubleSubgroupFlags {
     @Flag("Third level test flag")
     var thirdLevelFlag = false
 
+    @FlagGroup("Empty flags")
+    var empty: EmptyFlags
+
+}
+
+// Support for empty Flag Containers
+@FlagContainer
+private struct EmptyFlags {
+    // Intentionally left blank
 }
