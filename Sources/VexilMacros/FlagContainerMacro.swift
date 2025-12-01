@@ -168,8 +168,8 @@ extension FlagContainerMacro: ExtensionMacro {
                                 ExprSyntax("lhs.\(lastBinding.trimmed) == rhs.\(lastBinding.trimmed)")
                             }
 
-                        // If there are no stored properties just return `true`. This matches the synthesised Equatable
-                        // behaviour described in https://github.com/swiftlang/swift-evolution/blob/main/proposals/0185-synthesize-equatable-hashable.md#implementation-details
+                            // If there are no stored properties just return `true`. This matches the synthesised Equatable
+                            // behaviour described in https://github.com/swiftlang/swift-evolution/blob/main/proposals/0185-synthesize-equatable-hashable.md#implementation-details
                         } else {
                             "true"
                         }
