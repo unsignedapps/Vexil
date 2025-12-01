@@ -56,6 +56,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     true
                 }
             }
+
+            extension TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -156,6 +159,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     lhs.otherStoredProperty == rhs.otherStoredProperty
                 }
             }
+
+            extension TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -230,6 +236,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 public static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
                     lhs.someFlag == rhs.someFlag
                 }
+            }
+
+            extension TestFlags: Sendable {
             }
             """,
             macros: [
@@ -309,6 +318,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     lhs.someFlag == rhs.someFlag
                 }
             }
+
+            extension SomeContainer.TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -382,6 +394,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                 static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
                     lhs.someFlag == rhs.someFlag
                 }
+            }
+
+            extension TestFlags: Sendable {
             }
             """,
             macros: [
@@ -478,6 +493,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     lhs.second == rhs.second
                 }
             }
+
+            extension TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -571,6 +589,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
                     lhs.flagGroup == rhs.flagGroup &&
                     lhs.second == rhs.second
                 }
+            }
+
+            extension TestFlags: Sendable {
             }
             """,
             macros: [

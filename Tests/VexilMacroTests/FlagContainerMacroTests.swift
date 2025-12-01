@@ -56,6 +56,9 @@ final class FlagContainerMacroTests: XCTestCase {
                     true
                 }
             }
+
+            extension TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -99,6 +102,9 @@ final class FlagContainerMacroTests: XCTestCase {
                     true
                 }
             }
+
+            extension TestFlags: Sendable {
+            }
             """,
             macros: [
                 "FlagContainer": FlagContainerMacro.self,
@@ -141,6 +147,9 @@ final class FlagContainerMacroTests: XCTestCase {
                 static func ==(lhs: TestFlags, rhs: TestFlags) -> Bool {
                     true
                 }
+            }
+
+            extension TestFlags: Sendable {
             }
             """,
             macros: [
@@ -237,6 +246,9 @@ final class FlagContainerMacroTests: XCTestCase {
                     lhs.flagGroup == rhs.flagGroup &&
                     lhs.second == rhs.second
                 }
+            }
+
+            extension TestFlags: Sendable {
             }
             """,
             macros: [
