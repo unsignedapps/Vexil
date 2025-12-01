@@ -78,11 +78,6 @@ extension FlagContainerMacro: ExtensionMacro {
             shouldGenerateConformance.equatable = false
         }
 
-        // We also can't generate Equatable conformance if there is no variables to generate them
-        if shouldGenerateConformance.equatable, declaration.memberBlock.variables.isEmpty {
-            shouldGenerateConformance.equatable = false
-        }
-
         // Check that conformance doesn't already exist, or that we are inside a unit test.
         // The latter is a workaround for https://github.com/apple/swift-syntax/issues/2031
         guard shouldGenerateConformance.flagContainer else {
@@ -159,8 +154,8 @@ extension FlagContainerMacro: ExtensionMacro {
                     inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "Equatable")) ])
                 ) {
                     var variables = declaration.memberBlock.storedVariables
-                    if variables.isEmpty == false {
-                        try FunctionDeclSyntax("func ==(lhs: \(type), rhs: \(type)) -> Bool") {
+                    try FunctionDeclSyntax("func ==(lhs: \(type), rhs: \(type)) -> Bool") {
+                        if variables.isEmpty == false {
                             if let lastBinding = variables.removeLast().bindings.first?.pattern {
                                 for variable in variables {
                                     if let binding = variable.bindings.first?.pattern {
@@ -172,9 +167,14 @@ extension FlagContainerMacro: ExtensionMacro {
                                 }
                                 ExprSyntax("lhs.\(lastBinding.trimmed) == rhs.\(lastBinding.trimmed)")
                             }
+
+                            // If there are no stored properties just return `true`. This matches the synthesised Equatable
+                            // behaviour described in https://github.com/swiftlang/swift-evolution/blob/main/proposals/0185-synthesize-equatable-hashable.md#implementation-details
+                        } else {
+                            "true"
                         }
-                        .with(\.modifiers, Array(scopes) + [ DeclModifierSyntax(name: .keyword(.static)) ])
                     }
+                    .with(\.modifiers, Array(scopes) + [ DeclModifierSyntax(name: .keyword(.static)) ])
                 },
             ]
         }
