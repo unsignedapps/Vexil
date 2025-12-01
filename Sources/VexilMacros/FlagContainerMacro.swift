@@ -179,6 +179,17 @@ extension FlagContainerMacro: ExtensionMacro {
             ]
         }
 
+        if shouldGenerateConformance.sendable {
+            decls += [
+                ExtensionDeclSyntax(
+                    extendedType: type,
+                    inheritanceClause: .init(inheritedTypes: [ .init(type: TypeSyntax(stringLiteral: "Sendable")) ])
+                ) {
+                    // Member block intentionally left blank
+                },
+            ]
+        }
+
         return decls
     }
 
@@ -214,17 +225,14 @@ private extension TypeSyntax {
 
 private extension [TypeSyntax] {
 
-    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool) {
-        reduce(into: (false, false)) { result, type in
+    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool, sendable: Bool) {
+        reduce(into: (false, false, false)) { result, type in
             if type.identifier == "FlagContainer" {
-                result = (true, result.1)
+                result = (true, result.1, result.2)
             } else if type.identifier == "Equatable" {
-                result = (result.0, true)
-
-                // For some reason Swift 5.9 concatenates these into a single `IdentifierTypeSyntax`
-                // instead of providing them as array items
-            } else if type.identifier == "FlagContainerEquatable" {
-                result = (true, true)
+                result = (result.0, true, result.2)
+            } else if type.identifier == "Sendable" {
+                result = (result.0, result.1, true)
             }
         }
     }
@@ -233,11 +241,11 @@ private extension [TypeSyntax] {
 
 private extension AttributeSyntax {
 
-    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool) {
+    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool, sendable: Bool) {
         if attributeName.identifier == "FlagContainer" {
-            (true, true)
+            (true, true, true)
         } else {
-            (false, false)
+            (false, false, false)
         }
     }
 
