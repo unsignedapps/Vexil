@@ -104,7 +104,9 @@ extension FlagPublisher {
 
                     // Calculate current demand
                     let stillHasDemand = state.withLock { state in
-                        state.demand -= 1
+                        if state.demand > 0 {
+                            state.demand -= 1
+                        }
                         state.demand += additionalDemand
                         return state.demand > 0
                     }
