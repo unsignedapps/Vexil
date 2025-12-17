@@ -39,6 +39,11 @@ public struct FlagWigwag<Output>: Sendable where Output: FlagValue {
     /// The default value for this flag
     public let defaultValue: Output
 
+    /// The current resolved value of this flag
+    public var value: Output {
+        lookup.value(for: keyPath) ?? defaultValue
+    }
+
     /// A human readable name for the flag. Only visible in flag editors like Vexillographer.
     public let name: String
 
