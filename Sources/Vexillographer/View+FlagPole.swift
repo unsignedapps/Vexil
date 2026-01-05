@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Copyright (c) 2026 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -38,7 +38,7 @@ private struct FlagPoleModifier<RootGroup: FlagContainer>: ViewModifier {
                 $0.items = visitor.items
                 $0.keyPathByFlagKeyPath = visitor.keyPathByFlagKeyPath
                 $0.editableSource = editableSource
-                $0.sources = flagPole._sources
+                $0.streamManager = flagPole.manager
             }
     }
 }

@@ -2,7 +2,7 @@
 //
 // This source file is part of the Vexil open source project
 //
-// Copyright (c) 2025 Unsigned Apps and the open source contributors.
+// Copyright (c) 2026 Unsigned Apps and the open source contributors.
 // Licensed under the MIT license
 //
 // See LICENSE for license information
@@ -42,24 +42,24 @@ struct Mutex<Value: ~Copyable>: ~Copyable, Sendable {
 /// This is a lock that will use the most appropriate platform lock under the hood. On Apple platforms
 /// it is effectively a wrapper around `OSAllocatedUnfairLock`. On non-Apple platforms it'll
 /// use `pthread_lock` and friends.
-struct Lock<State>: Sendable {
+package struct Lock<State>: Sendable {
 
     private let platformLock: PlatformLock<State>
 
-    init(uncheckedState: State) {
+    package init(uncheckedState: State) {
         nonisolated(unsafe) let initialState = uncheckedState
         self.platformLock = PlatformLock(initialState)
     }
 
-    init(initialState: State) where State: Sendable {
+    package init(initialState: State) where State: Sendable {
         self.platformLock = PlatformLock(initialState)
     }
 
-    init(_ initialState: State) where State: Sendable  {
+    package init(_ initialState: State) where State: Sendable  {
         self.platformLock = PlatformLock(initialState)
     }
 
-    func withLockUnchecked<R>(_ body: (inout State) throws -> R) rethrows -> R {
+    package func withLockUnchecked<R>(_ body: (inout State) throws -> R) rethrows -> R {
         try platformLock.withLock {
             var state = $0
             do {
@@ -73,7 +73,7 @@ struct Lock<State>: Sendable {
         }
     }
 
-    func withLock<R: Sendable>(_ body: @Sendable (inout State) throws -> R) rethrows -> R {
+    package func withLock<R: Sendable>(_ body: @Sendable (inout State) throws -> R) rethrows -> R {
         try withLockUnchecked(body)
     }
 
