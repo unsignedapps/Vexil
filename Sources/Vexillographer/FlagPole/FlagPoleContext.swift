@@ -18,7 +18,10 @@ struct FlagPoleContext {
 
     var items: [any FlagPoleItem] = []
     var editableSource: (any FlagValueSource)?
-    var sources: [any FlagValueSource] = []
+    var streamManager: Lock<StreamManager>?
+    var sources: [any FlagValueSource] {
+        streamManager?.withLock { $0.sources } ?? []
+    }
     var keyPathByFlagKeyPath = [FlagKeyPath: AnyKeyPath]()
     var styles = [AnyHashable: any FlagControlStyle]()
 

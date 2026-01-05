@@ -23,7 +23,7 @@ import AsyncAlgorithms
 ///                │   │           │  │
 ///     Source 3───┘   └───────────┘  └──► Subscriber 3
 ///
-struct StreamManager {
+package struct StreamManager {
 
     // MARK: - Properties
 
@@ -31,7 +31,7 @@ struct StreamManager {
     ///
     /// The order of this array is the order used when looking up flag values.
     ///
-    var sources: [any FlagValueSource]
+    package var sources: [any FlagValueSource]
 
     /// This channel acts as our central "Subject" (in Combine terms). The channel is
     /// listens to change streams coming from the various sources, and subscribers to this

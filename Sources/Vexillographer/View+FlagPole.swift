@@ -38,7 +38,7 @@ private struct FlagPoleModifier<RootGroup: FlagContainer>: ViewModifier {
                 $0.items = visitor.items
                 $0.keyPathByFlagKeyPath = visitor.keyPathByFlagKeyPath
                 $0.editableSource = editableSource
-                $0.sources = flagPole._sources
+                $0.streamManager = flagPole.manager
             }
     }
 }

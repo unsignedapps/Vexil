@@ -53,7 +53,7 @@ public final class FlagPole<RootGroup>: Sendable where RootGroup: FlagContainer 
     public let _configuration: VexilConfiguration
 
     /// Primary storage
-    let manager: Lock<StreamManager>
+    package let manager: Lock<StreamManager>
 
 
     // MARK: - Sources
