@@ -27,7 +27,7 @@ struct FlagTextField<Value: FlagValue>: View {
     private var format: (String) -> String
     private var editingFormat: (String) -> String
 #if os(iOS) || os(tvOS)
-    private var keyboardType = UIKeyboardType.default
+    var keyboardType = UIKeyboardType.default
 #endif
 
     @State
