@@ -18,13 +18,13 @@ import Vexil
 extension FlagTextField where Value.BoxedValueType: BinaryFloatingPoint {
 
     init(configuration: FlagControlConfiguration<Value>) {
-        self = Self(
+        self.init(
             configuration: configuration,
             formatted: \.asString,
             editingFormat: { $0 },
         )
 #if os(iOS) || os(tvOS)
-        .keyboardType(.decimalPad)
+        keyboardType = .decimalPad
 #endif
     }
 
@@ -56,13 +56,13 @@ extension FlagControlConfiguration: FloatingPointTextFieldRepresentable where Va
 extension FlagTextField {
 
     init<Wrapped>(configuration: FlagControlConfiguration<Wrapped?>) where Value == Wrapped?, Wrapped.BoxedValueType: BinaryFloatingPoint {
-        self = Self(
+        self.init(
             configuration: configuration,
             formatted: \.asStringOrEmpty,
             editingFormat: { $0 },
         )
 #if os(iOS) || os(tvOS)
-        .keyboardType(.decimalPad)
+        keyboardType = .decimalPad
 #endif
 
     }

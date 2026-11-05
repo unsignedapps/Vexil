@@ -13,6 +13,7 @@
 
 #if canImport(VexilMacros)
 
+import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import VexilMacros
@@ -60,8 +61,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
             ],
         )
     }
@@ -163,9 +164,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
-                "Flag": FlagMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
+                "Flag": MacroSpec(type: FlagMacro.self),
             ],
         )
     }
@@ -241,9 +242,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
-                "Flag": FlagMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
+                "Flag": MacroSpec(type: FlagMacro.self),
             ],
         )
     }
@@ -322,9 +323,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension SomeContainer.TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
-                "Flag": FlagMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
+                "Flag": MacroSpec(type: FlagMacro.self),
             ],
         )
     }
@@ -399,9 +400,9 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
-                "Flag": FlagMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
+                "Flag": MacroSpec(type: FlagMacro.self),
             ],
         )
     }
@@ -497,8 +498,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
             ],
         )
     }
@@ -594,8 +595,8 @@ final class EquatableFlagContainerMacroTests: XCTestCase {
             extension TestFlags: Sendable {
             }
             """,
-            macros: [
-                "FlagContainer": FlagContainerMacro.self,
+            macroSpecs: [
+                "FlagContainer": MacroSpec(type: FlagContainerMacro.self, conformances: ["FlagContainer", "Equatable", "Sendable"]),
             ],
         )
     }

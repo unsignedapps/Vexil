@@ -67,9 +67,7 @@ extension FlagContainerMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext,
     ) throws -> [ExtensionDeclSyntax] {
-        var shouldGenerateConformance = protocols.isEmpty && ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
-            ? node.shouldGenerateConformance
-            : protocols.shouldGenerateConformance
+        var shouldGenerateConformance = protocols.shouldGenerateConformance
 
         // Check if the user has disabled Equatable conformance manually
         if
@@ -79,8 +77,7 @@ extension FlagContainerMacro: ExtensionMacro {
             shouldGenerateConformance.equatable = false
         }
 
-        // Check that conformance doesn't already exist, or that we are inside a unit test.
-        // The latter is a workaround for https://github.com/apple/swift-syntax/issues/2031
+        // Check that conformance doesn't already exist
         guard shouldGenerateConformance.flagContainer else {
             return []
         }
@@ -235,18 +232,6 @@ private extension [TypeSyntax] {
             } else if type.identifier == "Sendable" {
                 result = (result.0, result.1, true)
             }
-        }
-    }
-
-}
-
-private extension AttributeSyntax {
-
-    var shouldGenerateConformance: (flagContainer: Bool, equatable: Bool, sendable: Bool) {
-        if attributeName.identifier == "FlagContainer" {
-            (true, true, true)
-        } else {
-            (false, false, false)
         }
     }
 
