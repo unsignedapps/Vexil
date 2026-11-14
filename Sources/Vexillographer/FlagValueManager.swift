@@ -55,8 +55,12 @@ class FlagValueManager<RootGroup>: ObservableObject where RootGroup: FlagContain
     }
 
     func flagValue<Value>(key: String) -> Value? where Value: FlagValue {
-        let snapshot = flagPole.snapshot()
-        return snapshot.flagValue(key: key)
+        for source in flagPole._sources {
+            if let value: Value = source.flagValue(key: key) {
+                return value
+            }
+        }
+        return nil
     }
 
     func setFlagValue<Value>(_ value: Value?, key: String) throws where Value: FlagValue {

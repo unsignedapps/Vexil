@@ -33,8 +33,14 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
     }
 
     var isEditable: Bool {
-        return allItems()
-            .isEmpty == false
+        return Mirror(reflecting: group.wrappedValue)
+            .children
+            .contains { child in
+                guard let label = child.label, let unfurlable = child.value as? Unfurlable else {
+                    return false
+                }
+                return unfurlable.unfurl(label: label, manager: self.manager) != nil
+            }
     }
 
     var isLink: Bool {
@@ -64,10 +70,7 @@ struct UnfurledFlagGroup<Group, Root>: UnfurledFlagItem, Identifiable where Grou
                 guard let label = child.label, let unfurlable = child.value as? Unfurlable else {
                     return nil
                 }
-                guard let unfurled = unfurlable.unfurl(label: label, manager: self.manager) else {
-                    return nil
-                }
-                return unfurled.isEditable ? unfurled : nil
+                return unfurlable.unfurl(label: label, manager: self.manager)
             }
     }
 
