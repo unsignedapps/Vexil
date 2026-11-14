@@ -159,11 +159,15 @@ extension UnfurledFlag: OptionalCaseIterableEditableFlag
 {
     func control<RootGroup>(label: String, manager: FlagValueManager<RootGroup>, showDetail: Binding<Bool>) -> AnyView where RootGroup: FlagContainer {
         let key = info.key
+        let flag = self.flag
 
         return OptionalCaseIterableFlagControl<Value>(
             label: label,
             value: Binding(
-                get: { Value(manager.flagValue(key: key)) },
+                get: {
+                    let value: Value? = manager.flagValue(key: key)
+                    return value ?? flag.defaultValue
+                },
                 set: { newValue in
                     do {
                         try manager.setFlagValue(newValue, key: key)
